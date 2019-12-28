@@ -1,4 +1,4 @@
-package org.pf4j.demo.api;
+package eu.geekhome;
 
 import org.pf4j.ExtensionPoint;
 

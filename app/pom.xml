@@ -2,19 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.pf4j.demo</groupId>
-        <artifactId>pf4j-demo-parent</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <groupId>eu.geekhome</groupId>
+        <artifactId>geekhome-server</artifactId>
+        <version>1.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pf4j-demo-app</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <artifactId>geekhome-server-app</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
-    <name>Demo App</name>
+    <name>App</name>
 
     <properties>
-        <main.class>org.pf4j.demo.Boot</main.class>
+        <main.class>eu.geekhome.Boot</main.class>
     </properties>
 
     <build>
@@ -42,6 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -52,21 +53,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>6</source>
-                    <target>6</target>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -75,12 +61,6 @@
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>${pf4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.pf4j.demo</groupId>
-            <artifactId>pf4j-demo-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- Logs -->

@@ -1,28 +1,28 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.pf4j.demo</groupId>
-        <artifactId>pf4j-demo-parent</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <groupId>eu.geekhome</groupId>
+        <artifactId>geekhome-server</artifactId>
+        <version>1.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pf4j-demo-plugins</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <artifactId>geekhome-server-plugins</artifactId>
+    <version>1.0</version>
     <packaging>pom</packaging>
-    <name>Demo Plugins Parent</name>
+    <name>Plugins Parent</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Override below properties in each plugin's pom.xml -->
-        <plugin.id />
-        <plugin.class />
-        <plugin.version />
-        <plugin.provider />
-        <plugin.dependencies />
+        <plugin.id/>
+        <plugin.class/>
+        <plugin.version/>
+        <plugin.provider/>
+        <plugin.dependencies/>
     </properties>
 
     <build>
@@ -62,36 +62,28 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-                <version>2.8.2</version>
-            </plugin>
         </plugins>
     </build>
-
-    <modules>
-        <module>plugin1</module>
-        <module>plugin2</module>
-    </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>${pf4j.version}</version>
+            <!-- !!! VERY IMPORTANT -->
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.pf4j.demo</groupId>
-            <artifactId>pf4j-demo-api</artifactId>
-            <version>${project.version}</version>
+            <groupId>eu.geekhome</groupId>
+            <artifactId>geekhome-server-app</artifactId>
+            <version>1.0</version>
             <!-- !!! VERY IMPORTANT -->
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
+<modules>  <module>hello</module>
+    <module>welcome</module>
+  </modules>
 </project>
