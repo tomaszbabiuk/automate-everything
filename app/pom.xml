@@ -11,7 +11,7 @@
     <artifactId>geekhome-server-app</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <name>App</name>
+    <name>geekHOME Server Web Application</name>
 
     <properties>
         <main.class>eu.geekhome.Boot</main.class>
@@ -76,10 +76,11 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!-- geekHOME -->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
+            <groupId>geekhome.server</groupId>
+            <artifactId>module-common</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

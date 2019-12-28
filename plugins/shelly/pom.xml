@@ -8,14 +8,22 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>hello-plugin</artifactId>
+    <artifactId>plugin-shelly</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <name>Hello Plugin</name>
+    <name>Shelly Plugin</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>geekhome.server</groupId>
+            <artifactId>module-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
     <properties>
-        <plugin.id>hello-plugin</plugin.id>
-        <plugin.class>eu.geekhome.hello.HelloPlugin</plugin.class>
+        <plugin.id>plugin-shelly</plugin.id>
+        <plugin.class>eu.geekhome.shelly</plugin.class>
         <plugin.version>1.0</plugin.version>
         <plugin.provider/>
         <plugin.dependencies/>

@@ -70,8 +70,6 @@
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
             <version>${pf4j.version}</version>
-            <!-- !!! VERY IMPORTANT -->
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -83,7 +81,8 @@
         </dependency>
     </dependencies>
 
-<modules>  <module>hello</module>
+<modules>
+    <module>shelly</module>
     <module>welcome</module>
   </modules>
 </project>

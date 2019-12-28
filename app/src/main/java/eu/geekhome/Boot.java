@@ -1,8 +1,7 @@
 package eu.geekhome;
 
-import org.apache.commons.lang.StringUtils;
+import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
 import org.pf4j.DefaultPluginManager;
-import org.pf4j.ExtensionFinder;
 import org.pf4j.PluginManager;
 import org.pf4j.PluginWrapper;
 
@@ -15,10 +14,7 @@ import java.util.Set;
 public class Boot {
 
     public static void main(String[] args) {
-        // create the plugin manager
         PluginManager pluginManager = new DefaultPluginManager();
-
-        // load the plugins
         pluginManager.loadPlugins();
 
         // enable a disabled plugin
@@ -28,10 +24,10 @@ public class Boot {
         pluginManager.startPlugins();
 
         // retrieves the extensions for Greeting extension point
-        List<Greeting> greetings = pluginManager.getExtensions(Greeting.class);
+        List<IHardwareManagerAdapter> greetings = pluginManager.getExtensions(IHardwareManagerAdapter.class);
         System.out.println(String.format("Found %d extensions for extension point '%s'", greetings.size(), Greeting.class.getName()));
-        for (Greeting greeting : greetings) {
-            System.out.println(">>> " + greeting.getGreeting());
+        for (IHardwareManagerAdapter greeting : greetings) {
+            System.out.println(">>> " + greeting.getName());
         }
 
         // print extensions from classpath (non plugin)

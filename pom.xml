@@ -6,7 +6,7 @@
     <artifactId>geekhome-server</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-    <name>PF4J Quickstart</name>
+    <name>geekHOME Server</name>
     <repositories>
         <repository>
             <id>sonatype-nexus-snapshots</id>
@@ -44,7 +44,8 @@
         </resources>
     </build>
 
-<modules>  <module>app</module>
+<modules>
+    <module>app</module>
     <module>plugins</module>
   </modules>
 </project>
