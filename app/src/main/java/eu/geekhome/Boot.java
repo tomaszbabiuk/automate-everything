@@ -1,6 +1,10 @@
 package eu.geekhome;
 
+import com.geekhome.common.extensibility.RequiresFeature;
+import com.geekhome.common.extensibility.RequiresMqttFeature;
 import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
+import com.geekhome.moquettemodule.MoquetteBroker;
+import com.geekhome.moquettemodule.MqttBroker;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
 import org.pf4j.PluginWrapper;
@@ -14,6 +18,10 @@ import java.util.Set;
 public class Boot {
 
     public static void main(String[] args) {
+
+
+        MqttBroker mqttBroker = new MoquetteBroker();
+
         PluginManager pluginManager = new DefaultPluginManager();
         pluginManager.loadPlugins();
 
@@ -25,8 +33,16 @@ public class Boot {
 
         // retrieves the extensions for Greeting extension point
         List<IHardwareManagerAdapter> greetings = pluginManager.getExtensions(IHardwareManagerAdapter.class);
-        System.out.println(String.format("Found %d extensions for extension point '%s'", greetings.size(), Greeting.class.getName()));
+        System.out.println(String.format("Found %d extensions for extension point '%s'", greetings.size(), IHardwareManagerAdapter.class.getName()));
         for (IHardwareManagerAdapter greeting : greetings) {
+            if (greeting instanceof RequiresMqttFeature) {
+                ((RequiresMqttFeature)greeting).setMqttBroker(mqttBroker);
+            }
+
+            if (greeting instanceof RequiresFeature) {
+                ((RequiresFeature) greeting).allFeaturesInjected();
+            }
+
             System.out.println(">>> " + greeting.getName());
         }
 
@@ -38,8 +54,8 @@ public class Boot {
         }
 
         System.out.println("Extension classes by classpath:");
-        List<Class<? extends Greeting>> greetingsClasses = pluginManager.getExtensionClasses(Greeting.class);
-        for (Class<? extends Greeting> greeting : greetingsClasses) {
+        List<Class<? extends IHardwareManagerAdapter>> greetingsClasses = pluginManager.getExtensionClasses(IHardwareManagerAdapter.class);
+        for (Class<? extends IHardwareManagerAdapter> greeting : greetingsClasses) {
             System.out.println("   Class: " + greeting.getCanonicalName());
         }
 
@@ -57,8 +73,8 @@ public class Boot {
         // print extensions instances for Greeting extension point for each started plugin
         for (PluginWrapper plugin : startedPlugins) {
             String pluginId = plugin.getDescriptor().getPluginId();
-            System.out.println(String.format("Extensions instances added by plugin '%s' for extension point '%s':", pluginId, Greeting.class.getName()));
-            List<Greeting> extensions = pluginManager.getExtensions(Greeting.class, pluginId);
+            System.out.println(String.format("Extensions instances added by plugin '%s' for extension point '%s':", pluginId, IHardwareManagerAdapter.class.getName()));
+            List<IHardwareManagerAdapter> extensions = pluginManager.getExtensions(IHardwareManagerAdapter.class, pluginId);
             for (Object extension : extensions) {
                 System.out.println("   " + extension);
             }
