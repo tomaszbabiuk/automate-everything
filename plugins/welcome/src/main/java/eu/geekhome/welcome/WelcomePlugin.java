@@ -6,7 +6,6 @@ import org.pf4j.PluginWrapper;
 import org.pf4j.RuntimeMode;
 import org.pf4j.Extension;
 import org.pf4j.Plugin;
-import eu.geekhome.Greeting;
 
 public class WelcomePlugin extends Plugin {
 
@@ -27,15 +26,4 @@ public class WelcomePlugin extends Plugin {
     public void stop() {
         System.out.println("WelcomePlugin.stop()");
     }
-
-    @Extension
-    public static class WelcomeGreeting implements Greeting {
-
-        @Override
-        public String getGreeting() {
-            return "Welcome";
-        }
-
-    }
-
 }
