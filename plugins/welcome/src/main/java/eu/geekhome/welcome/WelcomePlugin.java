@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import org.pf4j.PluginWrapper;
 import org.pf4j.RuntimeMode;
-import org.pf4j.Extension;
 import org.pf4j.Plugin;
 
 public class WelcomePlugin extends Plugin {
