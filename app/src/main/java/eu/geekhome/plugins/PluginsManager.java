@@ -3,18 +3,18 @@ package eu.geekhome.plugins;
 
 import com.geekhome.common.configuration.DescriptiveName;
 import org.pf4j.DefaultPluginManager;
-import org.pf4j.PluginManager;
 import org.pf4j.PluginState;
 import org.pf4j.PluginWrapper;
 
 public class PluginsManager {
 
     private final PluginDto[] _plugins;
+    private final DefaultPluginManager _pluginManager;
 
     public PluginsManager() {
-        PluginManager pluginManager = new DefaultPluginManager();
-        pluginManager.loadPlugins();
-        _plugins = pluginManager
+        _pluginManager = new DefaultPluginManager();
+        _pluginManager.loadPlugins();
+        _plugins = _pluginManager
                 .getPlugins()
                 .stream()
                 .map(this::mapPluginWrapperToPluginDto)
@@ -32,5 +32,26 @@ public class PluginsManager {
 
     public PluginDto[] getPlugins() {
         return _plugins;
+    }
+
+    public PluginDto getPlugin(String id) {
+        PluginWrapper plugin = _pluginManager.getPlugin(id);
+        if (plugin != null) {
+            return mapPluginWrapperToPluginDto(plugin);
+        }
+
+        return null;
+    }
+
+    public PluginDto enablePlugin(String id) {
+        _pluginManager.enablePlugin(id);
+        _pluginManager.startPlugin(id);
+        return getPlugin(id);
+    }
+
+    public PluginDto disablePlugin(String id) {
+        _pluginManager.stopPlugin(id);
+        _pluginManager.disablePlugin(id);
+        return getPlugin(id);
     }
 }
