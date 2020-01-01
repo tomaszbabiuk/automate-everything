@@ -21,7 +21,6 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.pf4j.DefaultPluginManager;
@@ -76,20 +75,6 @@ public class Boot {
     }
 
     private static void startServer() {
-
-//        ResourceConfig resourceConfig = new ResourceConfig();
-//        resourceConfig.register(new AbstractBinder() {
-//
-//            @Override
-//            protected void configure() {
-//                bind(PluginsManager.class).to(PluginsManager.class);
-//            }
-//        });
-
-
-
-
-
         Server server = new Server(80);
 
         ResourceHandler rh0 = new ResourceHandler();

@@ -18,6 +18,6 @@ cd dist
 jar xf ../app/target/*.zip
 
 # run app
-java -jar *.jar
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -jar *.jar
 
 cd -
