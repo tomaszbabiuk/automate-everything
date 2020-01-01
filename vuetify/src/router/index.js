@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Timeline from '../views/Timeline.vue'
 import Inbox from '../views/Inbox.vue'
+import Plugins from '../views/Plugins.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/inbox',
     name: 'inbox',
     component: Inbox
+  },
+  {
+    path: '/plugins',
+    name: 'plugins',
+    component: Plugins
   }
 ]
 
