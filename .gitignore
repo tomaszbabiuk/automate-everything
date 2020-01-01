@@ -1,6 +1,7 @@
 .idea
 *.iml
 target
+dist
 
 # Compiled class file
 *.class

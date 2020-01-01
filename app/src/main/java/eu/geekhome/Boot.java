@@ -78,32 +78,25 @@ public class Boot {
         Server server = new Server(80);
 
         ResourceHandler rh0 = new ResourceHandler();
-        rh0.setDirectoriesListed(false);
+        rh0.setDirectoriesListed(true);
 
         ContextHandler webContext = new ContextHandler();
         webContext.setContextPath("/");
-        webContext.setBaseResource(new PathResource(Paths.get("src/main/resources/dist")));
+        webContext.setBaseResource(new PathResource(Paths.get("" +
+                "web")));
         webContext.setHandler(rh0);
 
 //        ServletContextHandler streamContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
 //        streamContext.setContextPath("/stream");
 //        streamContext.addServlet(new ServletHolder(new MySSEServlet()), "/*");
 
-        ResourceConfig resourceConfig = new ResourceConfig();
         ServletContextHandler restContext = new ServletContextHandler();
         ServletHolder serHol = restContext.addServlet(ServletContainer.class, "/rest/*");
         serHol.setInitOrder(1);
-//        serHol.setInitParameter("jersey.config.server.provider.packages","eu.geekhome.rest");
         serHol.setInitParameter("javax.ws.rs.Application", "eu.geekhome.rest.App");
 
-        //http://www.appsdeveloperblog.com/dependency-injection-hk2-jersey-jax-rs/
-//             <param-name>javax.ws.rs.Application</param-name>
-//      <param-value>com.appsdeveloperblog.app.ws.App</param-value>
-
-
-
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { webContext, /*streamContext,*/ restContext });
+        contexts.setHandlers(new Handler[] { webContext, /*streamContext, */restContext });
 
 
 //        JettyHttpServer server = new JettyHttpServer(80, contexts);
