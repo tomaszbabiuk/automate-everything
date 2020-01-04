@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Timeline from '../views/Timeline.vue'
-import Inbox from '../views/Inbox.vue'
-import Plugins from '../views/Plugins.vue'
+import Home from '../views/Home'
+import Control from '../views/Control'
+import Timeline from '../views/Timeline'
+import Inbox from '../views/Inbox'
+import Plugins from '../views/Plugins'
 
 Vue.use(VueRouter)
 
@@ -12,6 +13,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/control',
+    name: 'control',
+    component: Control
   },
   {
     path: '/timeline',
