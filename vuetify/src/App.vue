@@ -4,7 +4,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        geekHOME
+        geekHOME - {{ $route.name }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -36,7 +36,11 @@
     </v-navigation-drawer>
 
     <v-content class="mx-4 mb-4">
-      <router-view></router-view>
+      <div :class="$route.name">
+        <v-container class="my-5">
+          <router-view></router-view>
+        </v-container>
+      </div>
     </v-content>
   </v-app>
 </template>
@@ -60,7 +64,7 @@ export default {
       { title: "Plugins", route: "/plugins", icon: "plugin" }
     ]
   })
-};
+}
 </script>
 <style lang="scss">
 @import '@/styles/index.scss';

@@ -1,22 +1,18 @@
 <template>
-  <div class="timeline">
-    <h1 class="subheading grey--text">Timeline</h1>
-
-    <v-timeline>
-      <v-timeline-item v-for="(event, i) in events" :key="i" :color="event.color" small>
-        <template v-slot:opposite>
-          <span :class="`headline font-weight-bold ${event.color}--text`" v-text="event.event"></span>
-        </template>
-        <v-card class="elevation-2">
-          <v-card-title class="headline">
-            <v-icon large left>$vuetify.icons.{{event.icon}}</v-icon>
-            {{ event.actor }}
-          </v-card-title>
-          <v-card-text>{{ event.when }}</v-card-text>
-        </v-card>
-      </v-timeline-item>
-    </v-timeline>
-  </div>
+  <v-timeline>
+    <v-timeline-item v-for="(event, i) in events" :key="i" :color="event.color" small>
+      <template v-slot:opposite>
+        <span :class="`headline font-weight-bold ${event.color}--text`" v-text="event.event"></span>
+      </template>
+      <v-card class="elevation-2">
+        <v-card-title class="headline">
+          <v-icon large left>$vuetify.icons.{{event.icon}}</v-icon>
+          {{ event.actor }}
+        </v-card-title>
+        <v-card-text>{{ event.when }}</v-card-text>
+      </v-card>
+    </v-timeline-item>
+  </v-timeline>
 </template>
 
 <script>
