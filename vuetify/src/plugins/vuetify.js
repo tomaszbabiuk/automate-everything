@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
+import pl from '../locale/pl'
+import en from '../locale/en'
 import IconBell from '../components/icons/IconBell'
 import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
@@ -13,6 +15,10 @@ import IconTimeline from '../components/icons/IconTimeline'
 Vue.use(Vuetify);
 
 export default new Vuetify({
+  lang: {
+    locales: { en, pl },
+    current: 'en',
+  },
   icons: {
     values: {
       bell: {
