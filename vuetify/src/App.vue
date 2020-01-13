@@ -4,7 +4,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        geekHOME - {{ $route.name }}
+        geekHOME - {{ $route.name }}:{{ $route.params.locale }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
@@ -24,7 +24,7 @@
       <v-divider></v-divider>
 
       <v-list dense>
-        <v-list-item link v-for="item in navigationItems" :key="item.title" :to="item.route">
+        <v-list-item link v-for="item in navigationItems" :key="item.title" :to='prependLocale(item.route)'>
           <v-list-item-action>
             <v-icon style="fill:#9e9e9e">$vuetify.icon.{{item.icon}}</v-icon>
           </v-list-item-action>
@@ -63,7 +63,13 @@ export default {
       { title: "Settings", route: "/settings", icon: "equalizer" },
       { title: "Plugins", route: "/plugins", icon: "plugin" }
     ]
-  })
+  }),
+
+  methods: {
+    prependLocale: function(to) {
+      return "/" + this.$route.params.locale + "/" + to
+    }
+  }
 }
 </script>
 <style lang="scss">
