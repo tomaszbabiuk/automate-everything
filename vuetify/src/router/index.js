@@ -10,39 +10,28 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/:locale',
-    template: '<router-view />',
-    children: [
-      // {
-      //   path: '/',
-      //   name: 'home',
-      //   component: Home
-      // },
-      {
-        path: 'control',
-        name: 'control',
-        component: Control
-      },
-      {
-        path: 'timeline',
-        name: 'timeline',
-        component: Timeline
-      },
-      {
-        path: 'inbox',
-        name: 'inbox',
-        component: Inbox
-      },
-      {
-        path: 'plugins',
-        name: 'plugins',
-        component: Plugins
-      }
-    ]
+    path: '/control',
+    name: 'control',
+    component: Control
+  },
+  {
+    path: '/timeline',
+    name: 'timeline',
+    component: Timeline
+  },
+  {
+    path: '/inbox',
+    name: 'inbox',
+    component: Inbox
+  },
+  {
+    path: '/plugins',
+    name: 'plugins',
+    component: Plugins
   },
   {
     path: '/',
-    redirect: '/en'
+    redirect: '/inbox'
   }
 ]
 

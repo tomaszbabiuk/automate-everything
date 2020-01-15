@@ -3,15 +3,22 @@
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>
-        geekHOME - {{ $route.name }}
-      </v-toolbar-title>
+      <v-toolbar-title>geekHOME - {{ $route.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon v-if="isPolishLocale">$vuetify.icon.flag_pl</v-icon>
-        <v-icon v-else>$vuetify.icon.flag_uk</v-icon>
-      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon v-if="isPolishLocale">$vuetify.icon.flag_pl</v-icon>
+            <v-icon v-else>$vuetify.icon.flag_uk</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-for="(item, index) in languageSelectorItems" :key="index" @click="selected(item)">
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app>
@@ -57,22 +64,32 @@ export default {
     navigationItems: [
       { title: "Inbox", route: "/inbox", icon: "inbox" },
       { title: "Timeline", route: "/timeline", icon: "timeline" },
-      { title: "Alerts", route: "/alerts", icon: "bell"},
+      { title: "Alerts", route: "/alerts", icon: "bell" },
       { title: "Control", route: "/control", icon: "button" },
       { title: "House", route: "/house", icon: "house" },
-      { title: "Discover", route: "/discover", icon: "crosshair"},
+      { title: "Discover", route: "/discover", icon: "crosshair" },
       { title: "Settings", route: "/settings", icon: "equalizer" },
       { title: "Plugins", route: "/plugins", icon: "plugin" }
-    ]
+    ],
+    languageSelectorItems: [
+        { title: 'English', code: 'en' },
+        { title: 'Polski', code: 'pl' },
+      ],
   }),
 
+  methods: {
+    selected: function(item) {
+      this.$vuetify.lang.current = item.code
+    }
+  },
+
   computed: {
-    isPolishLocale: function () {
-      return this.$vuetify.lang.current === 'pl'
+    isPolishLocale: function() {
+      return this.$vuetify.lang.current === "pl"
     }
   }
-}
+};
 </script>
 <style lang="scss">
-@import '@/styles/index.scss';
+@import "@/styles/index.scss";
 </style>
