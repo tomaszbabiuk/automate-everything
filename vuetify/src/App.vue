@@ -24,8 +24,8 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title">geekHOME</v-list-item-title>
-          <v-list-item-subtitle>Automation Studio</v-list-item-subtitle>
+          <v-list-item-title class="title">{{$vuetify.lang.t('$vuetify.application.name')}}</v-list-item-title>
+          <v-list-item-subtitle>{{$vuetify.lang.t('$vuetify.application.subtitle')}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -37,7 +37,7 @@
             <v-icon style="fill:#9e9e9e">$vuetify.icon.{{item.icon}}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title class="grey--text">{{ item.title }}</v-list-item-title>
+            <v-list-item-title class="grey--text">{{$vuetify.lang.t(item.title)}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -62,14 +62,14 @@ export default {
   data: () => ({
     drawer: false,
     navigationItems: [
-      { title: "Inbox", route: "/inbox", icon: "inbox" },
-      { title: "Timeline", route: "/timeline", icon: "timeline" },
-      { title: "Alerts", route: "/alerts", icon: "bell" },
-      { title: "Control", route: "/control", icon: "button" },
-      { title: "House", route: "/house", icon: "house" },
-      { title: "Discover", route: "/discover", icon: "crosshair" },
-      { title: "Settings", route: "/settings", icon: "equalizer" },
-      { title: "Plugins", route: "/plugins", icon: "plugin" }
+      { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
+      { title: "$vuetify.navigation.timeline", route: "/timeline", icon: "timeline" },
+      { title: "$vuetify.navigation.alerts", route: "/alerts", icon: "bell" },
+      { title: "$vuetify.navigation.control", route: "/control", icon: "button" },
+      { title: "$vuetify.navigation.house", route: "/house", icon: "house" },
+      { title: "$vuetify.navigation.discover", route: "/discover", icon: "crosshair" },
+      { title: "$vuetify.navigation.settings", route: "/settings", icon: "equalizer" },
+      { title: "$vuetify.navigation.plugins", route: "/plugins", icon: "plugin" }
     ],
     languageSelectorItems: [
         { title: 'English', code: 'en' },
