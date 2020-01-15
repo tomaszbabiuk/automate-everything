@@ -4,12 +4,13 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        geekHOME - {{ $route.name }}:{{ $route.params.locale }}
+        geekHOME - {{ $route.name }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+        <v-icon v-if="isPolishLocale">$vuetify.icon.flag_pl</v-icon>
+        <v-icon v-else>$vuetify.icon.flag_uk</v-icon>
       </v-btn>
     </v-app-bar>
 
@@ -24,7 +25,7 @@
       <v-divider></v-divider>
 
       <v-list dense>
-        <v-list-item link v-for="item in navigationItems" :key="item.title" :to='prependLocale(item.route)'>
+        <v-list-item link v-for="item in navigationItems" :key="item.title" :to="item.route">
           <v-list-item-action>
             <v-icon style="fill:#9e9e9e">$vuetify.icon.{{item.icon}}</v-icon>
           </v-list-item-action>
@@ -65,9 +66,9 @@ export default {
     ]
   }),
 
-  methods: {
-    prependLocale: function(to) {
-      return "/" + this.$route.params.locale + "/" + to
+  computed: {
+    isPolishLocale: function () {
+      return this.$vuetify.lang.current === 'pl'
     }
   }
 }
