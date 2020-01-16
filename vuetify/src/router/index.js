@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '../views/Home'
 import Control from '../views/Control'
 import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
@@ -28,6 +27,10 @@ const routes = [
     path: '/plugins',
     name: 'plugins',
     component: Plugins
+  },
+  {
+    path: '/',
+    redirect: '/inbox'
   }
 ]
 
