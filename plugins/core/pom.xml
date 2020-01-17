@@ -8,24 +8,25 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>welcome-plugin</artifactId>
+    <artifactId>core-plugin</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <name>Welcom Plugin</name>
+    <name>Core Plugin</name>
 
     <properties>
-        <plugin.id>welcome-plugin</plugin.id>
-        <plugin.class>eu.geekhome.welcome.WelcomePlugin</plugin.class>
+        <plugin.id>core</plugin.id>
+        <plugin.class>eu.geekhome.coreplugin.CorePlugin</plugin.class>
         <plugin.version>1.0</plugin.version>
-        <plugin.provider/>
+        <plugin.provider>Tomasz Babiuk</plugin.provider>
         <plugin.dependencies/>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <groupId>geekhome.server</groupId>
+            <artifactId>module-common</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

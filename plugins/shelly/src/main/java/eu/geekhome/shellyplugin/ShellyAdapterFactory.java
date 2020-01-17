@@ -1,9 +1,5 @@
-package eu.geekhome.shelly;
+package eu.geekhome.shellyplugin;
 
-import com.geekhome.common.DiscoveryException;
-import com.geekhome.common.OperationMode;
-import com.geekhome.common.RefreshState;
-import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.extensibility.RequiresMqttFeature;
 import com.geekhome.common.hardwaremanager.*;
 import com.geekhome.moquettemodule.MqttBroker;
@@ -13,7 +9,7 @@ import org.pf4j.Extension;
 import java.util.ArrayList;
 
 
-@Extension(ordinal=1)
+@Extension
 public class ShellyAdapterFactory implements IHardwareManagerAdapterFactory, RequiresMqttFeature {
 
     private MqttBroker _mqttBroker;

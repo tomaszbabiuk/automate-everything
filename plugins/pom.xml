@@ -83,6 +83,6 @@
 
 <modules>
     <module>shelly</module>
-    <module>welcome</module>
+    <module>core</module>
   </modules>
 </project>
