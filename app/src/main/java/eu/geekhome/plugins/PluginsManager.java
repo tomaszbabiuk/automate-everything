@@ -3,6 +3,7 @@ package eu.geekhome.plugins;
 
 import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.localization.Language;
+import com.geekhome.common.localization.Resource;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.Plugin;
 import org.pf4j.PluginState;
@@ -25,21 +26,18 @@ public class PluginsManager {
 
     private PluginDto mapPluginWrapperToPluginDto(PluginWrapper pluginWrapper) {
         Plugin plugin = pluginWrapper.getPlugin();
-        String uniqueId = pluginWrapper.getPluginId();
+        String id = pluginWrapper.getPluginId();
+        String version = pluginWrapper.getDescriptor().getVersion();
+        String provider = pluginWrapper.getDescriptor().getProvider();
+        boolean enabled = pluginWrapper.getPluginState() == PluginState.STARTED;
 
         DescriptiveName dn;
         if (plugin instanceof PluginMetadata) {
             PluginMetadata metadata = (PluginMetadata)plugin;
-            String name = metadata.getName().getValue(Language.EN);
-            String description = metadata.getDescription().getValue(Language.EN);
-            dn = new DescriptiveName(name, uniqueId, description);
+            return new PluginDto(id, metadata.getName(), metadata.getDescription(), provider, version, enabled);
         } else {
-            String version = pluginWrapper.getDescriptor().getVersion();
-            String provider = pluginWrapper.getDescriptor().getProvider();
-            dn = new DescriptiveName(uniqueId, uniqueId, version + " by " + provider);
+            return new PluginDto(id,null, null, provider, version, enabled);
         }
-
-        return new PluginDto(dn, pluginWrapper.getPluginState() == PluginState.STARTED);
     }
 
     public PluginDto[] getPlugins() {
