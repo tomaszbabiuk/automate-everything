@@ -4,7 +4,6 @@ import com.geekhome.common.localization.Resource;
 import eu.geekhome.plugins.PluginMetadata;
 
 import org.pf4j.PluginWrapper;
-import org.pf4j.RuntimeMode;
 import org.pf4j.Plugin;
 
 public class CorePlugin extends Plugin implements PluginMetadata {
@@ -29,13 +28,11 @@ public class CorePlugin extends Plugin implements PluginMetadata {
 
     @Override
     public Resource getName() {
-        return new Resource("CORE:plugin_name", "Core", "Core");
+        return R.plugin_name;
     }
 
     @Override
     public Resource getDescription() {
-        return new Resource("CORE:plugin_description",
-                "Core definitions of devices and conditions",
-                "Główne definicje urządzeń i warunków");
+        return R.plugin_description;
     }
 }

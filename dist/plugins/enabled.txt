@@ -1,4 +1,2 @@
-# - load only these plugins
-# - add one plugin id on each line
-# - put this file in plugins folder
 shelly-plugin
+core

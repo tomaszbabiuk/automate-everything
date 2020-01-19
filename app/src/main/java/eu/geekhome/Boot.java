@@ -3,6 +3,7 @@ package eu.geekhome;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.alerts.DashboardAlertService;
 import com.geekhome.common.automation.SystemInfo;
+import com.geekhome.common.configurable.Configurable;
 import com.geekhome.common.extensibility.RequiresFeature;
 import com.geekhome.common.extensibility.RequiresMqttFeature;
 import com.geekhome.common.hardwaremanager.HardwareManager;
@@ -54,6 +55,8 @@ public class Boot {
                     ((RequiresFeature) factory).allFeaturesInjected();
                 }
             }
+
+            List<Configurable> configurables = pluginManager.getExtensions(Configurable.class);
 
 
             TextFileAutomationSettingsPersister settingsPersister = new TextFileAutomationSettingsPersister();
