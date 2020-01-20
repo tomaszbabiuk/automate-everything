@@ -11,13 +11,9 @@ public class R {
             "Core",
             "Core");
 
-    public static Resource field_name = new Resource("CORE:field_name",
+    public static Resource field_name_hint = new Resource("CORE:field_name",
             "Name",
             "Nazwa");
-
-    public static Resource field_name_hint = new Resource("CORE:field_name_hint",
-            "Enter name",
-            "Wprowadź nazwę");
 
     public static Resource configurable_house_add = new Resource("CORE:configurable_house_add",
             "Add house",

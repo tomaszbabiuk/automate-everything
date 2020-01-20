@@ -3,7 +3,6 @@ package eu.geekhome;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.alerts.DashboardAlertService;
 import com.geekhome.common.automation.SystemInfo;
-import com.geekhome.common.configurable.Configurable;
 import com.geekhome.common.extensibility.RequiresFeature;
 import com.geekhome.common.extensibility.RequiresMqttFeature;
 import com.geekhome.common.hardwaremanager.HardwareManager;
@@ -13,7 +12,7 @@ import com.geekhome.common.localization.ResourceLocalizationProvider;
 import com.geekhome.common.settings.AutomationSettings;
 import com.geekhome.common.settings.TextFileAutomationSettingsPersister;
 import com.geekhome.moquettemodule.MoquetteBroker;
-import eu.geekhome.plugins.PluginsManager;
+import eu.geekhome.rest.PluginsManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -55,9 +54,6 @@ public class Boot {
                     ((RequiresFeature) factory).allFeaturesInjected();
                 }
             }
-
-            List<Configurable> configurables = pluginManager.getExtensions(Configurable.class);
-
 
             TextFileAutomationSettingsPersister settingsPersister = new TextFileAutomationSettingsPersister();
             AutomationSettings automationSettings = new AutomationSettings(settingsPersister);

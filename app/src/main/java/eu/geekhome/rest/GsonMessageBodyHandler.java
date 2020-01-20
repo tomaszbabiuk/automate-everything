@@ -42,6 +42,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                 .setPrettyPrinting()
                 .serializeNulls()
                 .registerTypeAdapter(Resource.class, new ResourceGsonTypeAdapter(language))
+                .registerTypeAdapter(Class.class, new ClassGsonTypeAdapter())
                 .create();
     }
 

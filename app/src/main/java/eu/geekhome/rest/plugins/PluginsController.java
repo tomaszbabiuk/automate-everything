@@ -1,27 +1,27 @@
-package eu.geekhome.rest;
+package eu.geekhome.rest.plugins;
 
-import eu.geekhome.plugins.PluginDto;
-import eu.geekhome.plugins.PluginsManager;
+import eu.geekhome.rest.PluginsManager;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("plugins")
-public class Plugins {
+public class PluginsController {
 
     private PluginsManager _pluginsManager;
 
     @Inject
-    public Plugins(PluginsManager pluginsManager) {
+    public PluginsController(PluginsManager pluginsManager) {
         _pluginsManager = pluginsManager;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public PluginDto[] getPlugins(@Context HttpServletRequest request) {
+    public List<PluginDto> getPlugins(@Context HttpServletRequest request) {
         return _pluginsManager.getPlugins();
     }
 

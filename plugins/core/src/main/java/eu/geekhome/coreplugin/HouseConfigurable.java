@@ -37,6 +37,6 @@ public class HouseConfigurable implements Configurable {
         return "house";
     }
 
-    private StringField nameField = new StringField(R.field_name, R.field_name_hint,
+    private StringField nameField = new StringField("name", R.field_name_hint,
             new CombinedValidator<>(new RequiredValidator(), new MaxStringLengthValidator(20)));
 }

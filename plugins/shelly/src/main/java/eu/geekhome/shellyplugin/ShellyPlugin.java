@@ -1,6 +1,6 @@
 package eu.geekhome.shellyplugin;
 import com.geekhome.common.localization.Resource;
-import eu.geekhome.plugins.PluginMetadata;
+import eu.geekhome.rest.PluginMetadata;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
 
