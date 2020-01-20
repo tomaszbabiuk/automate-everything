@@ -8,5 +8,6 @@ public class App extends ResourceConfig {
         packages("eu.geekhome.rest");
         register(new DependencyInjectionBinder());
         register(new GsonMessageBodyHandler());
+        register(new CORSFilter());
     }
 }
