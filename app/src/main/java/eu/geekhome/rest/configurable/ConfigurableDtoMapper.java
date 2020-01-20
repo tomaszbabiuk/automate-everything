@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 public class ConfigurableDtoMapper {
 
     @Inject
-    private FieldDtoMapper _fieldDtoMapper;
+    private FieldDefinitionDtoMapper _fieldDefinitionDtoMapper;
 
     public ConfigurableDto map(Configurable configurable) throws MappingException {
         List<FieldDto> fields = configurable
-                .getFields()
+                .getFieldDefs()
                 .stream()
-                .map(_fieldDtoMapper::map)
+                .map(_fieldDefinitionDtoMapper::map)
                 .collect(Collectors.toList());
 
         List<String> attachableTo = configurable.attachableTo() == null ? null : configurable
@@ -26,7 +26,7 @@ public class ConfigurableDtoMapper {
                 .collect(Collectors.toList());
 
         return new ConfigurableDto(configurable.getClass().getSimpleName(), fields, attachableTo,
-                configurable.getPersistenceId(), configurable.getAddNewRes(), configurable.getIconName());
+                configurable.getAddNewRes(), configurable.getIconName());
     }
 
     private String mapClassToString(Class<?> clazz) {

@@ -8,20 +8,51 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("configurables")
 public class ConfigurableController {
 
     private PluginsManager _pluginsManager;
+    private ConfigurableDtoMapper _configurableDtoMapper;
 
     @Inject
-    public ConfigurableController(PluginsManager pluginsManager) {
+    public ConfigurableController(PluginsManager pluginsManager, ConfigurableDtoMapper configurableDtoMapper) {
         _pluginsManager = pluginsManager;
+        _configurableDtoMapper = configurableDtoMapper;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<ConfigurableDto> getConfigurables(@Context HttpServletRequest request) {
-        return _pluginsManager.getConfigurables();
+        return _pluginsManager
+                .getConfigurables()
+                .stream()
+                .map(_configurableDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/attachableTo/null")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<ConfigurableDto> attachableTo() {
+        return _pluginsManager
+                .getConfigurables()
+                .stream()
+                .filter((x) -> x.attachableTo() == null)
+                .map(_configurableDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/attachableTo/{value}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<ConfigurableDto> attachableTo(@PathParam("value") String value) {
+        return _pluginsManager
+                .getConfigurables()
+                .stream()
+                .filter((x) -> x.attachableTo().stream().map(Class::getSimpleName).collect(Collectors.toList()).contains(value))
+                .map(_configurableDtoMapper::map)
+                .collect(Collectors.toList());
     }
 }

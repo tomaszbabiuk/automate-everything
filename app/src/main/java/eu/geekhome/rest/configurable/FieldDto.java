@@ -14,13 +14,9 @@ public class FieldDto {
     @SerializedName("class")
     private String _clazz;
 
-    @SerializedName("value")
-    private String _value;
-
-    public FieldDto(String clazz, String name, Resource hint, String value) {
+    public FieldDto(String clazz, String name, Resource hint) {
         _name = name;
         _hint = hint;
         _clazz = clazz;
-        _value = value;
     }
 }

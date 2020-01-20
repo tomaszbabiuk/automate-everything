@@ -15,7 +15,23 @@ public class R {
             "Name",
             "Nazwa");
 
+    public static Resource field_description_hint = new Resource("CORE:field_description_hint",
+            "Description",
+            "Opis");
+
     public static Resource configurable_house_add = new Resource("CORE:configurable_house_add",
             "Add house",
             "Dodaj dom");
+
+    public static Resource configurable_device_add = new Resource("CORE:configurable_device_add",
+            "Add device",
+            "Dodaj urządzenie");
+
+    public static Resource configurable_scene_add = new Resource("CORE:configurable_scene_add",
+            "Add scene",
+            "Dodaj scenę");
+
+    public static Resource configurable_group_add = new Resource("CORE:configurable_group_add",
+            "Add group",
+            "Dodaj grupę");
 }
