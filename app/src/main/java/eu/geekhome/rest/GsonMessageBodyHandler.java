@@ -82,7 +82,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                         OutputStream entityStream) throws IOException,
             WebApplicationException {
 
-        Language language = matchLanguage(httpHeaders);
+        Language language = matchLanguage();
 
         OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8);
         try {
@@ -98,11 +98,11 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         }
     }
 
-    private Language matchLanguage(MultivaluedMap<String, Object> httpHeaders) {
+    private Language matchLanguage() {
         if (requestHeaders.getAcceptableLanguages().size() > 0) {
             Locale firstLocale = requestHeaders.getAcceptableLanguages().get(0);
             for (Language language : Language.values()) {
-                if (language.name().toLowerCase().equals(firstLocale.getCountry().toLowerCase())) {
+                if (language.name().toLowerCase().equals(firstLocale.getLanguage().toLowerCase())) {
                     return language;
                 }
             }

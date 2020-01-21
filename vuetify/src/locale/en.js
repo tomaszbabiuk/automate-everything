@@ -1,7 +1,7 @@
 export default {
     application: {
         name: "geekHOME",
-        subtitle: "Automation Studio"
+        subtitle: "Automation Studio",
     },
     navigation: {
         inbox:      "Inbox",
@@ -12,5 +12,14 @@ export default {
         discover:   "Discovery",
         settings:   "Settings",
         plugins:    "Plugins",
+    },
+    plugins_list: {
+        name: "Name",
+        description: "Description",
+        version: "Version",
+        enabled: "Enabled",
+        disabled: "Disabled",
+        enable: "Enable",
+        disable: "Disable",
     }
 }

@@ -14,7 +14,11 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item v-for="(item, index) in languageSelectorItems" :key="index" @click="selected(item)">
+          <v-list-item
+            v-for="(item, index) in languageSelectorItems"
+            :key="index"
+            @click="selected(item)"
+          >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -43,10 +47,18 @@
       </v-list>
     </v-navigation-drawer>
 
+    <v-content>
+      <v-banner single-line sticky v-if="banner">
+        {{ error.message }}
+        <template v-slot:actions>
+          <v-btn text color="deep-purple accent-4">{{error.actionTitle}}</v-btn>
+        </template>
+      </v-banner>
+    </v-content>
     <v-content class="mx-4 mb-4">
       <div :class="$route.name">
         <v-container class="my-5">
-          <router-view></router-view>
+          <router-view v-on:networkerror="handleNetworkError"></router-view>
         </v-container>
       </div>
     </v-content>
@@ -60,32 +72,72 @@ export default {
   components: {},
 
   data: () => ({
+    bannner: false,
+    error: {
+      message: null,
+      actionTitle: null,
+    },
     drawer: false,
     navigationItems: [
       { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
-      { title: "$vuetify.navigation.timeline", route: "/timeline", icon: "timeline" },
+      {
+        title: "$vuetify.navigation.timeline",
+        route: "/timeline",
+        icon: "timeline"
+      },
       { title: "$vuetify.navigation.alerts", route: "/alerts", icon: "bell" },
-      { title: "$vuetify.navigation.control", route: "/control", icon: "button" },
+      {
+        title: "$vuetify.navigation.control",
+        route: "/control",
+        icon: "button"
+      },
       { title: "$vuetify.navigation.house", route: "/house", icon: "house" },
-      { title: "$vuetify.navigation.discover", route: "/discover", icon: "crosshair" },
-      { title: "$vuetify.navigation.settings", route: "/settings", icon: "equalizer" },
-      { title: "$vuetify.navigation.plugins", route: "/plugins", icon: "plugin" }
+      {
+        title: "$vuetify.navigation.discover",
+        route: "/discover",
+        icon: "crosshair"
+      },
+      {
+        title: "$vuetify.navigation.settings",
+        route: "/settings",
+        icon: "equalizer"
+      },
+      {
+        title: "$vuetify.navigation.plugins",
+        route: "/plugins",
+        icon: "plugin"
+      }
     ],
     languageSelectorItems: [
-        { title: 'English', code: 'en' },
-        { title: 'Polski', code: 'pl' },
-      ],
+      { title: "English", code: "en" },
+      { title: "Polski", code: "pl" }
+    ]
   }),
 
   methods: {
     selected: function(item) {
       this.$vuetify.lang.current = item.code
+      localStorage.selectedLanguage = item.code
+      location.href = location.href + ""
+    },
+    handleNetworkError: function(error) {
+      this.bannner = true
+      this.error.message = error
+      this.error.actionTitle = "dupa"
     }
   },
 
   computed: {
     isPolishLocale: function() {
       return this.$vuetify.lang.current === "pl"
+    }
+  },
+
+  mounted: function() {
+    if (typeof localStorage.selectedLanguage === "undefined") {
+      localStorage.selectedLanguage = this.$vuetify.lang.current
+    } else {
+      this.$vuetify.lang.current = localStorage.selectedLanguage
     }
   }
 };
