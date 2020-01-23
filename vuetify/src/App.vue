@@ -51,14 +51,14 @@
       <v-banner single-line sticky v-if="banner">
         {{ error.message }}
         <template v-slot:actions>
-          <v-btn text color="deep-purple accent-4">{{error.actionTitle}}</v-btn>
+          <v-btn text color="deep-purple accent-4" @click="handleErrorAction">{{error.actionTitle}}</v-btn>
         </template>
       </v-banner>
     </v-content>
     <v-content class="mx-4 mb-4">
       <div :class="$route.name">
         <v-container class="my-5">
-          <router-view v-on:networkerror="handleNetworkError"></router-view>
+          <router-view v-on:error="handleError"></router-view>
         </v-container>
       </div>
     </v-content>
@@ -71,48 +71,50 @@ export default {
 
   components: {},
 
-  data: () => ({
-    bannner: false,
-    error: {
-      message: null,
-      actionTitle: null,
-    },
-    drawer: false,
-    navigationItems: [
-      { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
-      {
-        title: "$vuetify.navigation.timeline",
-        route: "/timeline",
-        icon: "timeline"
+  data: function() {
+    return {
+      banner: false,
+      error: {
+        message: null,
+        actionTitle: null
       },
-      { title: "$vuetify.navigation.alerts", route: "/alerts", icon: "bell" },
-      {
-        title: "$vuetify.navigation.control",
-        route: "/control",
-        icon: "button"
-      },
-      { title: "$vuetify.navigation.house", route: "/house", icon: "house" },
-      {
-        title: "$vuetify.navigation.discover",
-        route: "/discover",
-        icon: "crosshair"
-      },
-      {
-        title: "$vuetify.navigation.settings",
-        route: "/settings",
-        icon: "equalizer"
-      },
-      {
-        title: "$vuetify.navigation.plugins",
-        route: "/plugins",
-        icon: "plugin"
-      }
-    ],
-    languageSelectorItems: [
-      { title: "English", code: "en" },
-      { title: "Polski", code: "pl" }
-    ]
-  }),
+      drawer: false,
+      navigationItems: [
+        { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
+        {
+          title: "$vuetify.navigation.timeline",
+          route: "/timeline",
+          icon: "timeline"
+        },
+        { title: "$vuetify.navigation.alerts", route: "/alerts", icon: "bell" },
+        {
+          title: "$vuetify.navigation.control",
+          route: "/control",
+          icon: "button"
+        },
+        { title: "$vuetify.navigation.house", route: "/house", icon: "house" },
+        {
+          title: "$vuetify.navigation.discover",
+          route: "/discover",
+          icon: "crosshair"
+        },
+        {
+          title: "$vuetify.navigation.settings",
+          route: "/settings",
+          icon: "equalizer"
+        },
+        {
+          title: "$vuetify.navigation.plugins",
+          route: "/plugins",
+          icon: "plugin"
+        }
+      ],
+      languageSelectorItems: [
+        { title: "English", code: "en" },
+        { title: "Polski", code: "pl" }
+      ]
+    };
+  },
 
   methods: {
     selected: function(item) {
@@ -120,10 +122,17 @@ export default {
       localStorage.selectedLanguage = item.code
       location.href = location.href + ""
     },
-    handleNetworkError: function(error) {
-      this.bannner = true
-      this.error.message = error
-      this.error.actionTitle = "dupa"
+    handleError: function(error) {
+      if (typeof error === "undefined") {
+        this.banner = false
+      } else {
+        this.banner = true
+        this.error = error
+      }
+    },
+    handleErrorAction: function() {
+      this.banner = false
+      this.error.actionCallback()
     }
   },
 
@@ -140,8 +149,8 @@ export default {
       this.$vuetify.lang.current = localStorage.selectedLanguage
     }
   }
-};
+}
 </script>
 <style lang="scss">
-@import "@/styles/index.scss";
+@import "@/styles/index.scss"
 </style>

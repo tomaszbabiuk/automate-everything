@@ -21,5 +21,8 @@ export default {
         disabled: "Disabled",
         enable: "Enable",
         disable: "Disable",
+    },
+    common: {
+        retry: "Retry"
     }
 }

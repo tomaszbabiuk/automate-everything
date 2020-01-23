@@ -12,17 +12,11 @@
         </v-col>
         <v-col md="3" sm="12" align="right" v-if="plugin.enabled">
           <div class="caption green--text">{{$vuetify.lang.t('$vuetify.plugins_list.enabled')}}</div>
-          <v-chip
-            outlined
-            @click="disable"
-          >{{$vuetify.lang.t('$vuetify.plugins_list.disable')}}</v-chip>
+          <v-chip outlined @click="disable">{{$vuetify.lang.t('$vuetify.plugins_list.disable')}}</v-chip>
         </v-col>
         <v-col md="3" sm="12" align="right" v-else>
           <div class="caption red--text">{{$vuetify.lang.t('$vuetify.plugins_list.disabled')}}</div>
-          <v-chip
-            outlined
-            @click="enable"
-          >{{$vuetify.lang.t('$vuetify.plugins_list.enable')}}</v-chip>
+          <v-chip outlined @click="enable">{{$vuetify.lang.t('$vuetify.plugins_list.enable')}}</v-chip>
         </v-col>
         <v-col md="12" sm="12">
           <div class="caption grey--text">{{$vuetify.lang.t('$vuetify.plugins_list.description')}}</div>
@@ -46,23 +40,33 @@ export default {
     },
     disable() {
       alert("Disabling...");
+    },
+    init() {
+      let lang = this.$vuetify.lang.current;
+
+      axios
+        .get("http://localhost/rest/plugins", {
+          headers: {
+            "Accept-Language": lang
+          }
+        })
+        .then(response => {
+          this.plugins = response.data;
+          localStorage.plugins = response;
+          this.$emit("error", null);
+        })
+        .catch(() => {
+          var errorData = {
+            message: "Problem loading plugins",
+            actionTitle: this.$vuetify.lang.t("$vuetify.common.retry"),
+            actionCallback: () => this.init()
+          };
+          this.$emit("error", errorData);
+        });
     }
   },
   mounted: function() {
-    //this.plugins = localStorage.plugins;
-    let lang = this.$vuetify.lang.current;
-
-    axios
-      .get("http://localhost/rest/plugins", {
-        headers: {
-          "Accept-Language": lang
-        }
-      })
-      .then(response => {
-        this.plugins = response.data;
-        localStorage.plugins = response;
-      })
-      .catch((error) => this.$emit('networkerror', error));
+    this.init();
   }
 };
 </script>

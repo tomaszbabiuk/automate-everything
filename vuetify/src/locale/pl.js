@@ -21,5 +21,8 @@ export default {
         disabled: "Wyłączony",
         enable: "Włącz",
         disable: "Wyłącz",
+    },
+    common: {
+        retry: "Ponów"
     }
 }
