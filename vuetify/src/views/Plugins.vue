@@ -42,14 +42,8 @@ export default {
       alert("Disabling...");
     },
     init() {
-      let lang = this.$vuetify.lang.current;
-      
       utils.axiosInstance
-        .get("/rest/plugins",{
-          headers: {
-            "Accept-Language": lang
-          }
-        })
+        .get("/rest/plugins")
         .then(response => {
           this.plugins = response.data;
           localStorage.plugins = response;
