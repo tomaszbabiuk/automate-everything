@@ -58,7 +58,7 @@
     <v-content class="mx-4 mb-4">
       <div :class="$route.name">
         <v-container class="my-5">
-          <router-view v-on:error="handleError"></router-view>
+          <router-view @error="handleError" @clearError="clearError"></router-view>
         </v-container>
       </div>
     </v-content>
@@ -75,8 +75,9 @@ export default {
     return {
       banner: false,
       error: {
-        message: null,
-        actionTitle: null
+        message: "",
+        actionTitle: "",
+        actionCallback: null
       },
       drawer: false,
       navigationItems: [
@@ -123,12 +124,11 @@ export default {
       location.href = location.href + ""
     },
     handleError: function(error) {
-      if (typeof error === "undefined") {
-        this.banner = false
-      } else {
-        this.banner = true
-        this.error = error
-      }
+      this.banner = true
+      this.error = error
+    },
+    clearError: function() {
+      this.banner = false;
     },
     handleErrorAction: function() {
       this.banner = false

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import * as utils from "../utils.js"
 
 export default {
   data: () => ({
@@ -43,9 +43,9 @@ export default {
     },
     init() {
       let lang = this.$vuetify.lang.current;
-
-      axios
-        .get("http://localhost/rest/plugins", {
+      
+      utils.axiosInstance
+        .get("/rest/plugins",{
           headers: {
             "Accept-Language": lang
           }
@@ -53,7 +53,7 @@ export default {
         .then(response => {
           this.plugins = response.data;
           localStorage.plugins = response;
-          this.$emit("error", null);
+          this.$emit("clearError", null);
         })
         .catch(() => {
           var errorData = {
