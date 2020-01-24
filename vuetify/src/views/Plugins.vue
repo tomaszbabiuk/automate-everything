@@ -28,12 +28,9 @@
 </template>
 
 <script>
-import * as utils from "../utils.js"
+import { client } from "../utils.js"
 
 export default {
-  data: () => ({
-    plugins: null
-  }),
   methods: {
     enable() {
       alert("Enabling...");
@@ -41,26 +38,14 @@ export default {
     disable() {
       alert("Disabling...");
     },
-    init() {
-      utils.axiosInstance
-        .get("/rest/plugins")
-        .then(response => {
-          this.plugins = response.data;
-          localStorage.plugins = response;
-          this.$emit("clearError", null);
-        })
-        .catch(() => {
-          var errorData = {
-            message: "Problem loading plugins",
-            actionTitle: this.$vuetify.lang.t("$vuetify.common.retry"),
-            actionCallback: () => this.init()
-          };
-          this.$emit("error", errorData);
-        });
+  },
+  computed: {
+    plugins () {
+      return this.$store.state.plugins
     }
   },
   mounted: function() {
-    this.init();
+    client.getPlugins()
   }
 };
 </script>

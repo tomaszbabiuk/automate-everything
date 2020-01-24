@@ -48,17 +48,17 @@
     </v-navigation-drawer>
 
     <v-content>
-      <v-banner single-line sticky v-if="banner">
+      <v-banner single-line sticky v-if="error">
         {{ error.message }}
         <template v-slot:actions>
-          <v-btn text color="deep-purple accent-4" @click="handleErrorAction">{{error.actionTitle}}</v-btn>
+          <v-btn text color="deep-purple accent-4" @click="error.actionCallback">{{error.actionTitle}}</v-btn>
         </template>
       </v-banner>
     </v-content>
     <v-content class="mx-4 mb-4">
       <div :class="$route.name">
         <v-container class="my-5">
-          <router-view @error="handleError" @clearError="clearError"></router-view>
+          <router-view></router-view>
         </v-container>
       </div>
     </v-content>
@@ -73,12 +73,6 @@ export default {
 
   data: function() {
     return {
-      banner: false,
-      error: {
-        message: "",
-        actionTitle: "",
-        actionCallback: null
-      },
       drawer: false,
       navigationItems: [
         { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
@@ -122,23 +116,15 @@ export default {
       this.$vuetify.lang.current = item.code
       localStorage.selectedLanguage = item.code
       location.href = location.href + ""
-    },
-    handleError: function(error) {
-      this.banner = true
-      this.error = error
-    },
-    clearError: function() {
-      this.banner = false;
-    },
-    handleErrorAction: function() {
-      this.banner = false
-      this.error.actionCallback()
     }
   },
 
   computed: {
     isPolishLocale: function() {
       return this.$vuetify.lang.current === "pl"
+    },
+    error () {
+      return this.$store.state.error
     }
   },
 
