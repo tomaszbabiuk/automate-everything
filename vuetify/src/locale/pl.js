@@ -23,6 +23,13 @@ export default {
         disable: "Wyłącz",
     },
     common: {
-        retry: "Ponów"
+        retry: "Ponów",
+    },
+    rest: {
+        error: {
+            enabling_plugin: "Nie udało się włączyć rozszerzenia: błąd połączenia.",
+            disabling_plugin: "Nie udało się wyłączyć rozszerzenia: błąd połączenia.",
+            loading_plugins: "Nie udało się pobrać rozszerzeń: błąd połączenia.",
+        }
     }
 }

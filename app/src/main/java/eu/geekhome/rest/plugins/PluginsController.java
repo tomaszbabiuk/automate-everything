@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,13 @@ public class PluginsController {
     public PluginDto getPlugin(@PathParam("id") String id) {
         return _pluginDtoMapper.map(_pluginsManager.getPlugin(id));
     }
+
+//    @OPTIONS
+//    @Path("/{id}/enabled")
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public Response updateEnableStateOptions(@PathParam("id") String id, boolean enable) {
+//        return Response.ok().build();
+//    }
 
     @PUT
     @Path("/{id}/enabled")

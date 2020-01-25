@@ -1,9 +1,6 @@
 package eu.geekhome.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -22,6 +19,7 @@ import com.geekhome.common.localization.Resource;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.codec.Charsets;
 
 public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         MessageBodyReader<Object> {
@@ -60,7 +58,21 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
     public Object readFrom(Class<Object> type, Type genericType,
                            Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
-        throw new UnsupportedOperationException();
+        InputStreamReader streamReader = new InputStreamReader(entityStream, Charsets.UTF_8);
+        try {
+            Type jsonType;
+            if (type.equals(genericType)) {
+                jsonType = type;
+            } else {
+                jsonType = genericType;
+            }
+            return _gsons.get(Language.EN).fromJson(streamReader, jsonType);
+        } finally {
+            try {
+                streamReader.close();
+            } catch (IOException ignored) {
+            }
+        }
     }
 
     @Override

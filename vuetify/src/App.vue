@@ -49,15 +49,15 @@
 
     <v-content>
       <v-banner single-line sticky v-if="error">
-        {{ error.message }}
+        {{$vuetify.lang.t(error.message)}}
         <template v-slot:actions>
-          <v-btn text color="deep-purple accent-4" @click="error.actionCallback">{{error.actionTitle}}</v-btn>
+          <v-btn text color="deep-purple accent-4" @click="error.actionCallback">{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
         </template>
       </v-banner>
     </v-content>
     <v-content class="mx-4 mb-4">
       <div :class="$route.name">
-        <v-container class="my-5">
+        <v-container>
           <router-view></router-view>
         </v-container>
       </div>
