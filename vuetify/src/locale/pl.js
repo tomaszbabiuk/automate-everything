@@ -30,7 +30,7 @@ export default {
             enabling_plugin: "Nie udało się włączyć rozszerzenia: błąd połączenia.",
             disabling_plugin: "Nie udało się wyłączyć rozszerzenia: błąd połączenia.",
             getting_plugins: "Nie udało się pobrać rozszerzeń: błąd połączenia.",
-            getting_root_configurables: "Nie udało się pobrać obiektów konfiguracyjnych: błąd połączenia.",
+            getting_configurables: "Nie udało się pobrać obiektów konfiguracyjnych: błąd połączenia.",
         }
     }
 }

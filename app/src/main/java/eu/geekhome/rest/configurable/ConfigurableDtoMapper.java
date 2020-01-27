@@ -14,14 +14,14 @@ public class ConfigurableDtoMapper {
 
     public ConfigurableDto map(Configurable configurable, List<Configurable> allConfigurables) throws MappingException {
         List<FieldDto> fields = configurable
-                .getFields()
+                .getFieldDefinitions()
                 .stream()
                 .map(_fieldDefinitionDtoMapper::map)
                 .collect(Collectors.toList());
 
         List<ConfigurableDto> children = allConfigurables
                 .stream()
-                .filter((x) -> x.getParent().equals(configurable.getClass()))
+                .filter((x) -> x.getParent() != null && x.getParent().equals(configurable.getClass()))
                 .map((x) -> this.map(x, allConfigurables))
                 .collect(Collectors.toList());
 

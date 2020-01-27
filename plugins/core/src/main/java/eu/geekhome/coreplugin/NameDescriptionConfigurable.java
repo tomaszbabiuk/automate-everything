@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class NameDescriptionConfigurable implements Configurable {
 
     @Override
-    public List<FieldDefinition<?>> getFieldDefs() {
+    public List<FieldDefinition<?>> getFieldDefinitions() {
         ArrayList<FieldDefinition<?>> result = new ArrayList<>();
         result.add(nameField);
         result.add(descriptionField);

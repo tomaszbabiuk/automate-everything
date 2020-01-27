@@ -64,15 +64,15 @@ export const client = {
       })
   },
 
-  getRootConfigurables: function() {
+  getConfigurables: function() {
     return axiosInstance
-      .get("rest/configurables/attachableTo/null")
+      .get("rest/configurables")
       .then(response => { store.commit(SET_ROOT_CONFIGURABLES, response.data)})
       .catch((innerException) => {
         var errorData = {
-          message: "$vuetify.rest.error.getting_root_configurables",
+          message: "$vuetify.rest.error.getting_configurables",
           actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.getRootConfigurables(),
+          actionCallback: () => this.getConfigurables(),
           innerException: innerException
         };
         

@@ -14,12 +14,12 @@ public class RoomConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public Resource getAddNewRes() {
-        return R.configurable_floor_add;
+        return R.configurable_room_add;
     }
 
     @Override
     public Resource getTitleRes() {
-        return R.configurable_floor_title;
+        return R.configurable_room_title;
     }
 
     @Override

@@ -4,7 +4,7 @@
     dense
     :items="configurables"
     item-key="class"
-    item-text="class"
+    item-text="titleRes"
   ></v-treeview>
   </div>
 </template>
@@ -27,7 +27,108 @@ export default {
     }
   },
   mounted: function() {
-    client.getRootConfigurables()
+    client.getConfigurables()
   }
 };
 </script>
+
+/*
+[
+  {
+    "fields": [
+      {
+        "name": "name",
+        "hint": "Name",
+        "class": "StringField"
+      },
+      {
+        "name": "name",
+        "hint": "Description",
+        "class": "StringField"
+      }
+    ],
+    "class": "SceneConfigurable",
+    "addNewRes": "Scenes",
+    "titleRes": "Scenes",
+    "iconName": "scene",
+    "children": []
+  },
+  {
+    "fields": [
+      {
+        "name": "name",
+        "hint": "Name",
+        "class": "StringField"
+      },
+      {
+        "name": "name",
+        "hint": "Description",
+        "class": "StringField"
+      }
+    ],
+    "class": "GroupConfigurable",
+    "addNewRes": "Groups",
+    "titleRes": "Groups",
+    "iconName": "group",
+    "children": []
+  },
+  {
+    "fields": [
+      {
+        "name": "name",
+        "hint": "Name",
+        "class": "StringField"
+      },
+      {
+        "name": "name",
+        "hint": "Description",
+        "class": "StringField"
+      }
+    ],
+    "class": "FloorConfigurable",
+    "addNewRes": "House plan",
+    "titleRes": "House plan",
+    "iconName": "group",
+    "children": [
+      {
+        "fields": [
+          {
+            "name": "name",
+            "hint": "Name",
+            "class": "StringField"
+          },
+          {
+            "name": "name",
+            "hint": "Description",
+            "class": "StringField"
+          }
+        ],
+        "class": "RoomConfigurable",
+        "addNewRes": "Room",
+        "titleRes": "Room",
+        "iconName": "group",
+        "children": []
+      }
+    ]
+  },
+  {
+    "fields": [
+      {
+        "name": "name",
+        "hint": "Name",
+        "class": "StringField"
+      },
+      {
+        "name": "name",
+        "hint": "Description",
+        "class": "StringField"
+      }
+    ],
+    "class": "DeviceConfigurable",
+    "addNewRes": "Devices",
+    "titleRes": "Devices",
+    "iconName": "group",
+    "children": []
+  }
+]
+*/
