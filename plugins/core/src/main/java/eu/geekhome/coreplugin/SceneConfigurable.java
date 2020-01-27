@@ -4,19 +4,22 @@ import com.geekhome.common.configurable.Configurable;
 import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
-import java.util.List;
-
 @Extension
 public class SceneConfigurable extends NameDescriptionConfigurable {
 
     @Override
-    public List<Class<? extends Configurable>> attachableTo() {
+    public Class<? extends Configurable> getParent() {
         return null;
     }
 
     @Override
     public Resource getAddNewRes() {
         return R.configurable_scene_add;
+    }
+
+    @Override
+    public Resource getTitleRes() {
+        return R.configurable_scene_title;
     }
 
     @Override

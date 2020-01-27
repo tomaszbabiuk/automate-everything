@@ -1,5 +1,6 @@
 package eu.geekhome.rest.configurable;
 
+import com.geekhome.common.configurable.Configurable;
 import eu.geekhome.rest.PluginsManager;
 
 import javax.inject.Inject;
@@ -25,6 +26,12 @@ public class ConfigurableController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<ConfigurableDto> getConfigurables(@Context HttpServletRequest request) {
+
+        List<Configurable> allConfigurables = _pluginsManager
+                .getConfigurables();
+
+
+
         return _pluginsManager
                 .getConfigurables()
                 .stream()
@@ -36,12 +43,19 @@ public class ConfigurableController {
     @Path("/attachableTo/null")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<ConfigurableDto> attachableTo() {
-        return _pluginsManager
+        List<ConfigurableDto> rootConfigurables = _pluginsManager
                 .getConfigurables()
                 .stream()
                 .filter((x) -> x.attachableTo() == null)
                 .map(_configurableDtoMapper::map)
                 .collect(Collectors.toList());
+
+        rootConfigurables.forEach(x -> {
+                    List<ConfigurableDto> children = attachableTo(x.getClazz());
+                    x.setChildren(children);
+                });
+
+        return rootConfigurables;
     }
 
     @GET
@@ -51,7 +65,7 @@ public class ConfigurableController {
         return _pluginsManager
                 .getConfigurables()
                 .stream()
-                .filter((x) -> x.attachableTo().stream().map(Class::getSimpleName).collect(Collectors.toList()).contains(value))
+                .filter((x) -> x.attachableTo() != null && x.attachableTo().stream().map(Class::getSimpleName).collect(Collectors.toList()).contains(value))
                 .map(_configurableDtoMapper::map)
                 .collect(Collectors.toList());
     }

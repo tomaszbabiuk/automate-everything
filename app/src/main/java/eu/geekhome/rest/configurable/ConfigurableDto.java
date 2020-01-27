@@ -13,21 +13,29 @@ public class ConfigurableDto {
     @SerializedName("class")
     private String _clazz;
 
-    @SerializedName("attachableTo")
-    private List<String> _attachableTo;
-
     @SerializedName("addNewRes")
     private Resource _addNewRes;
+
+    @SerializedName("titleRes")
+    private Resource _titleRes;
 
     @SerializedName("iconName")
     private String _iconName;
 
-    public ConfigurableDto(String clazz, List<FieldDto> fields, List<String> attachableTo,
-                           Resource addNewRes, String iconName) {
+    @SerializedName("children")
+    private List<ConfigurableDto> _children;
+
+    public ConfigurableDto(Resource titleRes, String clazz, List<FieldDto> fields,
+                           Resource addNewRes, String iconName, List<ConfigurableDto> children) {
+        _titleRes = titleRes;
         _clazz = clazz;
         _fields = fields;
-        _attachableTo = attachableTo;
         _addNewRes = addNewRes;
         _iconName = iconName;
+        _children = children;
+    }
+
+    public String getClazz() {
+        return _clazz;
     }
 }

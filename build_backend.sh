@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# reinstall common module
+cd ../geekhome-server/module-common
+mvn clean install
+cd ../../geekhome-server2
+
 # create artifacts using Maven
 mvn clean package -DskipTests
 

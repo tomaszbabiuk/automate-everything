@@ -1,7 +1,7 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
-import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN} from './plugins/vuex'
+import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_ROOT_CONFIGURABLES} from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -32,20 +32,22 @@ axiosInstance.interceptors.response.use(responseInterceptor, responseErrorHandle
 
 
 export const client = {
-  requestPlugins: function() {
+  getPlugins: function() {
     return axiosInstance
       .get("rest/plugins")
       .then(response => { store.commit(SET_PLUGINS, response.data)})
-      .catch(() => {
+      .catch((innerException) => {
         var errorData = {
-          message: "$vuetify.rest.error.loading_plugins",
+          message: "$vuetify.rest.error.getting_plugins",
           actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.requestPlugins()
+          actionCallback: () => this.getPlugins(),
+          innerException: innerException
         };
 
         store.commit(SET_ERROR, errorData)
       })
   },
+
   enablePlugin: function(pluginId, enable) {
     return axiosInstance
       .put("rest/plugins/" + pluginId + "/enabled", enable)
@@ -60,5 +62,22 @@ export const client = {
         
         store.commit(SET_ERROR, errorData)
       })
-  }
+  },
+
+  getRootConfigurables: function() {
+    return axiosInstance
+      .get("rest/configurables/attachableTo/null")
+      .then(response => { store.commit(SET_ROOT_CONFIGURABLES, response.data)})
+      .catch((innerException) => {
+        var errorData = {
+          message: "$vuetify.rest.error.getting_root_configurables",
+          actionTitle: "$vuetify.common.retry",
+          actionCallback: () => this.getRootConfigurables(),
+          innerException: innerException
+        };
+        
+        store.commit(SET_ERROR, errorData)
+      })
+  },
+
 }

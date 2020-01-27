@@ -4,19 +4,22 @@ import com.geekhome.common.configurable.*;
 import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
-import java.util.List;
-
 @Extension
 public class GroupConfigurable extends NameDescriptionConfigurable {
 
     @Override
-    public List<Class<? extends Configurable>> attachableTo() {
+    public Class<? extends Configurable> getParent() {
         return null;
     }
 
     @Override
     public Resource getAddNewRes() {
         return R.configurable_group_add;
+    }
+
+    @Override
+    public Resource getTitleRes() {
+        return R.configurable_group_title;
     }
 
     @Override

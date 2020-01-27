@@ -47,11 +47,15 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content>
-      <v-banner single-line sticky v-if="error">
+    <v-content v-if="error">
+      <v-banner single-line sticky>
         {{$vuetify.lang.t(error.message)}}
         <template v-slot:actions>
-          <v-btn text color="deep-purple accent-4" @click="error.actionCallback">{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
+          <v-btn
+            text
+            color="deep-purple accent-4"
+            @click="error.actionCallback"
+          >{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
         </template>
       </v-banner>
     </v-content>
@@ -113,30 +117,30 @@ export default {
 
   methods: {
     selected: function(item) {
-      this.$vuetify.lang.current = item.code
-      localStorage.selectedLanguage = item.code
-      location.href = location.href + ""
+      this.$vuetify.lang.current = item.code;
+      localStorage.selectedLanguage = item.code;
+      location.href = location.href + "";
     }
   },
 
   computed: {
     isPolishLocale: function() {
-      return this.$vuetify.lang.current === "pl"
+      return this.$vuetify.lang.current === "pl";
     },
-    error () {
-      return this.$store.state.error
+    error() {
+      return this.$store.state.error;
     }
   },
 
   mounted: function() {
     if (typeof localStorage.selectedLanguage === "undefined") {
-      localStorage.selectedLanguage = this.$vuetify.lang.current
+      localStorage.selectedLanguage = this.$vuetify.lang.current;
     } else {
-      this.$vuetify.lang.current = localStorage.selectedLanguage
+      this.$vuetify.lang.current = localStorage.selectedLanguage;
     }
   }
-}
+};
 </script>
 <style lang="scss">
-@import "@/styles/index.scss"
+@import "@/styles/index.scss";
 </style>

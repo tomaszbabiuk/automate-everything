@@ -19,19 +19,43 @@ public class R {
             "Description",
             "Opis");
 
-    public static Resource configurable_house_add = new Resource("CORE:configurable_house_add",
-            "Add house",
-            "Dodaj dom");
-
     public static Resource configurable_device_add = new Resource("CORE:configurable_device_add",
             "Add device",
             "Dodaj urządzenie");
+
+    public static Resource configurable_device_title = new Resource("CORE:configurable_device_title",
+            "Devices",
+            "Urządzenia");
 
     public static Resource configurable_scene_add = new Resource("CORE:configurable_scene_add",
             "Add scene",
             "Dodaj scenę");
 
+    public static Resource configurable_scene_title = new Resource("CORE:configurable_scene_title",
+            "Scenes",
+            "Sceny");
+
     public static Resource configurable_group_add = new Resource("CORE:configurable_group_add",
             "Add group",
             "Dodaj grupę");
+
+    public static Resource configurable_group_title = new Resource("CORE:configurable_group_title",
+            "Groups",
+            "Grupy");
+
+    public static Resource configurable_floor_add = new Resource("CORE:configurable_floor_add",
+            "Add floor",
+            "Dodaj piętro");
+
+    public static Resource configurable_floor_title = new Resource("CORE:configurable_floor_title",
+            "House plan",
+            "Plan domu");
+
+    public static Resource configurable_room_add = new Resource("CORE:configurable_room_add",
+            "Add room",
+            "Dodaj pokój");
+
+    public static Resource configurable_room_title = new Resource("CORE:configurable_room_title",
+            "Room",
+            "Pokój");
 }

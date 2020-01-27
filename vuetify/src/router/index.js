@@ -4,6 +4,7 @@ import Control from '../views/Control'
 import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
+import House from '../views/House'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/plugins',
     name: 'plugins',
     component: Plugins
+  },
+  {
+    path: '/house',
+    name: 'house',
+    component: House
   },
   {
     path: '/',

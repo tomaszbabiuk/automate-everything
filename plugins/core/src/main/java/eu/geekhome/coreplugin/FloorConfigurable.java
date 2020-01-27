@@ -5,7 +5,7 @@ import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
 @Extension
-public class DeviceConfigurable extends NameDescriptionConfigurable {
+public class FloorConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public Class<? extends Configurable> getParent() {
@@ -14,12 +14,12 @@ public class DeviceConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public Resource getAddNewRes() {
-        return R.configurable_device_add;
+        return R.configurable_floor_add;
     }
 
     @Override
     public Resource getTitleRes() {
-        return R.configurable_device_title;
+        return R.configurable_floor_title;
     }
 
     @Override

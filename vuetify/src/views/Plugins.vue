@@ -12,11 +12,17 @@
         </v-col>
         <v-col md="3" sm="10" align="right" v-if="plugin.enabled">
           <div class="caption green--text">{{$vuetify.lang.t('$vuetify.plugins_list.enabled')}}</div>
-          <v-chip outlined @click="disable(plugin)">{{$vuetify.lang.t('$vuetify.plugins_list.disable')}}</v-chip>
+          <v-chip
+            outlined
+            @click="disable(plugin)"
+          >{{$vuetify.lang.t('$vuetify.plugins_list.disable')}}</v-chip>
         </v-col>
         <v-col md="3" sm="12" align="right" v-else>
           <div class="caption red--text">{{$vuetify.lang.t('$vuetify.plugins_list.disabled')}}</div>
-          <v-chip outlined @click="enable(plugin)">{{$vuetify.lang.t('$vuetify.plugins_list.enable')}}</v-chip>
+          <v-chip
+            outlined
+            @click="enable(plugin)"
+          >{{$vuetify.lang.t('$vuetify.plugins_list.enable')}}</v-chip>
         </v-col>
         <v-col md="12" sm="12">
           <div class="caption grey--text">{{$vuetify.lang.t('$vuetify.plugins_list.description')}}</div>
@@ -28,24 +34,24 @@
 </template>
 
 <script>
-import { client } from "../rest.js"
+import { client } from "../rest.js";
 
 export default {
   methods: {
     enable(plugin) {
-      client.enablePlugin(plugin.id, true)
+      client.enablePlugin(plugin.id, true);
     },
     disable(plugin) {
-      client.enablePlugin(plugin.id, false)
-    },
+      client.enablePlugin(plugin.id, false);
+    }
   },
   computed: {
-    plugins () {
-      return this.$store.state.plugins
+    plugins() {
+      return this.$store.state.plugins;
     }
   },
   mounted: function() {
-    client.requestPlugins()
+    client.getPlugins();
   }
 };
 </script>
