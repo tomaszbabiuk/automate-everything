@@ -30,43 +30,41 @@ public class ConfigurableController {
         List<Configurable> allConfigurables = _pluginsManager
                 .getConfigurables();
 
-
-
         return _pluginsManager
                 .getConfigurables()
                 .stream()
-                .map(_configurableDtoMapper::map)
+                .map((x) -> _configurableDtoMapper.map(x, allConfigurables))
                 .collect(Collectors.toList());
     }
 
-    @GET
-    @Path("/attachableTo/null")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<ConfigurableDto> attachableTo() {
-        List<ConfigurableDto> rootConfigurables = _pluginsManager
-                .getConfigurables()
-                .stream()
-                .filter((x) -> x.attachableTo() == null)
-                .map(_configurableDtoMapper::map)
-                .collect(Collectors.toList());
-
-        rootConfigurables.forEach(x -> {
-                    List<ConfigurableDto> children = attachableTo(x.getClazz());
-                    x.setChildren(children);
-                });
-
-        return rootConfigurables;
-    }
-
-    @GET
-    @Path("/attachableTo/{value}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<ConfigurableDto> attachableTo(@PathParam("value") String value) {
-        return _pluginsManager
-                .getConfigurables()
-                .stream()
-                .filter((x) -> x.attachableTo() != null && x.attachableTo().stream().map(Class::getSimpleName).collect(Collectors.toList()).contains(value))
-                .map(_configurableDtoMapper::map)
-                .collect(Collectors.toList());
-    }
+//    @GET
+//    @Path("/attachableTo/null")
+//    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+//    public List<ConfigurableDto> attachableTo() {
+//        List<ConfigurableDto> rootConfigurables = _pluginsManager
+//                .getConfigurables()
+//                .stream()
+//                .filter((x) -> x.attachableTo() == null)
+//                .map(_configurableDtoMapper::map)
+//                .collect(Collectors.toList());
+//
+//        rootConfigurables.forEach(x -> {
+//                    List<ConfigurableDto> children = attachableTo(x.getClazz());
+//                    x.setChildren(children);
+//                });
+//
+//        return rootConfigurables;
+//    }
+//
+//    @GET
+//    @Path("/attachableTo/{value}")
+//    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+//    public List<ConfigurableDto> attachableTo(@PathParam("value") String value) {
+//        return _pluginsManager
+//                .getConfigurables()
+//                .stream()
+//                .filter((x) -> x.attachableTo() != null && x.attachableTo().stream().map(Class::getSimpleName).collect(Collectors.toList()).contains(value))
+//                .map(_configurableDtoMapper::map)
+//                .collect(Collectors.toList());
+//    }
 }
