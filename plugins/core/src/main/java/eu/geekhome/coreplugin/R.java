@@ -40,6 +40,10 @@ public class R {
             "Dodaj grupę");
 
     public static Resource configurable_group_title = new Resource("CORE:configurable_group_title",
+            "Group",
+            "Grupa");
+
+    public static Resource configurable_groups_title = new Resource("CORE:configurable_groups_title",
             "Groups",
             "Grupy");
 

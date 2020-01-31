@@ -1,20 +1,15 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.configurable.*;
+import com.geekhome.common.configurable.Configurable;
 import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
 @Extension
-public class GroupConfigurable extends NameDescriptionConfigurable {
+public class GroupsConfigurable extends CategoryConfigurable {
 
     @Override
     public Class<? extends Configurable> getParent() {
-        return GroupsConfigurable.class;
-    }
-
-    @Override
-    public Resource getAddNewRes() {
-        return R.configurable_group_add;
+        return null;
     }
 
     @Override
@@ -24,6 +19,6 @@ public class GroupConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public String getIconName() {
-        return "group";
+        return "groups";
     }
 }
