@@ -6,7 +6,9 @@
         :items="configurables"
         item-key="class"
         item-text="titleRes"
+        item-children="children"
         :open.sync="open"
+        :load-children="fetchActions"
         activatable
         color="warning"
         open-on-click
@@ -37,7 +39,7 @@ export default {
     return {
       active: [],
       open: [],
-      configurables: [
+      configurablesOffline: [
         {
           fields: [
             {
@@ -138,9 +140,9 @@ export default {
     };
   },
   computed: {
-    // configurables() {
-    //   return this.$store.state.configurables;
-    // },
+    configurables() {
+      return this.$store.state.configurables;
+    },
     selected() {
       if (!this.active.length) return undefined;
 
@@ -148,6 +150,12 @@ export default {
 
       return this.configurables.find(x => x.class === clazz);
     }
+  },
+  methods: {
+      async fetchActions (item) {
+        console.log(item)
+        return await item.children
+      },
   },
   mounted: function() {
     client.getConfigurables();

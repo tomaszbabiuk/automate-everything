@@ -13,11 +13,12 @@ public class ConfigurableDtoMapper {
     private FieldDefinitionDtoMapper _fieldDefinitionDtoMapper;
 
     public ConfigurableDto map(Configurable configurable, List<Configurable> allConfigurables) throws MappingException {
-        List<FieldDto> fields = configurable
+        List<FieldDto> fields = configurable.getFieldDefinitions() == null ? null : configurable
                 .getFieldDefinitions()
                 .stream()
                 .map(_fieldDefinitionDtoMapper::map)
                 .collect(Collectors.toList());
+
 
         List<ConfigurableDto> children = allConfigurables
                 .stream()
