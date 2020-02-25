@@ -1,7 +1,7 @@
 export default {
     application: {
-        name: "geekHOME",
-        subtitle: "Automation Studio",
+        name: "[manufacturer name]",
+        subtitle: "[product name]",
     },
     navigation: {
         inbox:      "Skrzynka odbiorcza",
