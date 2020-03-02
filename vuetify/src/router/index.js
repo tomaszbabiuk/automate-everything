@@ -5,6 +5,7 @@ import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
 import House from '../views/House'
+import Discover from '../views/Discover'
 
 Vue.use(VueRouter)
 
@@ -13,6 +14,11 @@ const routes = [
     path: '/control',
     name: 'control',
     component: Control
+  },
+  {
+    path: '/discover',
+    name: 'discover',
+    component: Discover
   },
   {
     path: '/timeline',
