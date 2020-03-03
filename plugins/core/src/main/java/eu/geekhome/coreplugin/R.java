@@ -27,6 +27,10 @@ public class R {
             "Devices",
             "Urządzenia");
 
+    public static Resource configurable_device_description = new Resource("CORE:configurable_device_description",
+            "Devices are barebone of Home Automation. Every device is responsible for certain automation action like controlling the garage door, switching the lights, measuring the temperature and many more. Devices can be physical (connected to real ports) or virtual (that exists in automation interface only).",
+            "Urządzenia to podstawowe elementy automatyki budynkowej. Każde urządzenie jest odpowiedzialne za przeprowadzanie akcji automatyzacji jak np. otwieranie bramy garażowej, włączanie światła, mierzenie temperatury itp. Urządzenie może być fizyczne (połączone do prawdziwych portów) lub wirtualne (takie, które istnieje tylko w interfejsie sterowania domem).");
+
     public static Resource configurable_scene_add = new Resource("CORE:configurable_scene_add",
             "Add scene",
             "Dodaj scenę");
@@ -55,6 +59,10 @@ public class R {
             "House plan",
             "Plan domu");
 
+    public static Resource configurable_floor_description = new Resource("CORE:configurable_floor_description",
+            "House plan allows you to better organize your devices. Every house consists of at least one Floor and multiple Rooms. Having house plan created, devices can be grouped together across rooms in which they are installed.",
+            "Plan domu pozwala na lepszą organizację urządzeń. Każdy dom składa się z conajmniej jednego piętra i kilku pokoi. Dzięki planowi, wszystkie urządzenia mogą być pogrupowane wg pomieszczeń w których są zainstalowane.");
+
     public static Resource configurable_room_add = new Resource("CORE:configurable_room_add",
             "Add room",
             "Dodaj pokój");
@@ -62,4 +70,9 @@ public class R {
     public static Resource configurable_room_title = new Resource("CORE:configurable_room_title",
             "Room",
             "Pokój");
+
+    public static Resource configurable_room_description = new Resource("CORE:configurable_room_description",
+            "Rooms are used to organize/group devices in one physical space. Rooms can only be added to Floors",
+            "Pokoje są używane do organizowania/grupowania urządzeń w jednej fizycznej przestrzeni. Pokoje mogą być tylko dodawane do Pięter.");
+
 }

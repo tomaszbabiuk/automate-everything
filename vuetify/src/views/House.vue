@@ -9,12 +9,12 @@
         :open.sync="open"
         activatable
         color="warning"
-        open-on-click
+        
         transition
         returnObject
       >
-        <template v-slot:prepend="{ item, active }">
-          <v-icon v-if="!item.children">mdi-account</v-icon>
+        <template v-slot:prepend="{ item }">
+          <v-icon v-if="!item.children">mdi-plus</v-icon>
         </template>
       </v-treeview>
     </v-col>
@@ -27,28 +27,13 @@
           v-if="!selected"
           class="title grey--text text--lighten-1 font-weight-light"
           style="align-self: center;"
-        >Select a User</div>
-        <v-card v-else :key="selected.id" class="pt-6 mx-auto" flat max-width="400">
-          <v-card-text>
-            <v-avatar v-if="avatar" size="88">
-              <v-img :src="`https://avataaars.io/${avatar}`" class="mb-6"></v-img>
-            </v-avatar>
-            <h3 class="headline mb-2">{{ selected.name }}</h3>
-            <div class="blue--text mb-2">{{ selected.email }}</div>
-            <div class="blue--text subheading font-weight-bold">{{ selected.username }}</div>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-row class="text-left" tag="v-card-text">
-            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">Company:</v-col>
-            <v-col>{{ selected.company.name }}</v-col>
-            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">Website:</v-col>
-            <v-col>
-              <a :href="`//${selected.website}`" target="_blank">{{ selected.website }}</a>
-            </v-col>
-            <v-col class="text-right mr-4 mb-2" tag="strong" cols="5">Phone:</v-col>
-            <v-col>{{ selected.phone }}</v-col>
-          </v-row>
-        </v-card>
+        >Select item from the tree</div>
+        <div v-else>
+          <p class="text-justify">
+            {{selected.description}}
+          </p>
+          <v-btn>Add</v-btn>
+        </div>
       </v-scroll-y-transition>
     </v-col>
   </v-row>
@@ -72,9 +57,7 @@ export default {
     selected() {
       console.log("selected");      
       if (!this.active.length) return undefined;
-      console.log(this.active[0])
-      //return this.$store.configurables.find(user => user.id === id);
-      return null;
+      return this.active[0];
     }
   },
 
@@ -89,8 +72,10 @@ export default {
       newValue
         .map(value => {
           return {
+
             name: value.titleRes,
             key: value.class,
+            description: "Lorem ipsum et dolores",
             children: []
           };
         })
@@ -111,13 +96,20 @@ export default {
       await pause(1500);
 
       let loadDataPromise =  new Promise(function(resolve) {
+
+        // if (item.fields.length > 0) {
+
+        // }
+
         let children = [
           {
-            name: "No items",
-            key: "noitems",
+            name: "0 items",
+            key: "zeroOf" + item.key,
+            description: "There's no groups defined yet",
+            class: item.class
             //TODO: add children property to create a branch
           }
-        ];        
+        ];
         resolve(children);
       });
 

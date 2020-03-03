@@ -27,9 +27,10 @@ public class ConfigurableDtoMapper {
                 .collect(Collectors.toList());
 
         return new ConfigurableDto(configurable.getTitleRes(),
+                configurable.getDescription(),
+                configurable.getAddNewRes(),
                 configurable.getClass().getSimpleName(),
                 fields,
-                configurable.getTitleRes(),
                 configurable.getIconName(),
                 children);
     }

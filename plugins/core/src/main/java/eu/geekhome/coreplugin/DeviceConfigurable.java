@@ -5,7 +5,7 @@ import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
 @Extension
-public class DeviceConfigurable extends NameDescriptionConfigurable {
+public class DeviceConfigurable extends CategoryConfigurable {
 
     @Override
     public Class<? extends Configurable> getParent() {
@@ -18,12 +18,17 @@ public class DeviceConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public Resource getDescription() {
+        return R.configurable_device_description;
+    }
+
+    @Override
     public Resource getTitleRes() {
         return R.configurable_device_title;
     }
 
     @Override
     public String getIconName() {
-        return "group";
+        return "device";
     }
 }

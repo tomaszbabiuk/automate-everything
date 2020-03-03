@@ -10,6 +10,7 @@ public class ConfigurableDto {
     @SerializedName("fields")
     private List<FieldDto> _fields;
 
+    private Resource _descriptionRes;
     @SerializedName("class")
     private String _clazz;
 
@@ -25,9 +26,13 @@ public class ConfigurableDto {
     @SerializedName("children")
     private List<ConfigurableDto> _children;
 
-    public ConfigurableDto(Resource titleRes, String clazz, List<FieldDto> fields,
-                           Resource addNewRes, String iconName, List<ConfigurableDto> children) {
+    @SerializedName("description")
+    private Resource _description;
+
+    public ConfigurableDto(Resource titleRes, Resource descriptionRes, Resource addNewRes, String clazz,
+                           List<FieldDto> fields, String iconName, List<ConfigurableDto> children) {
         _titleRes = titleRes;
+        _descriptionRes = descriptionRes;
         _clazz = clazz;
         _fields = fields;
         _addNewRes = addNewRes;
