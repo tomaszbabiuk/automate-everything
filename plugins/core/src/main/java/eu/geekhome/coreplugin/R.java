@@ -39,17 +39,10 @@ public class R {
             "Scenes",
             "Sceny");
 
-    public static Resource configurable_group_add = new Resource("CORE:configurable_group_add",
-            "Add group",
-            "Dodaj grupę");
+    public static Resource configurable_scene_description = new Resource("CORE:configurable_scene_description",
+            "Scenes are basically a named list of conditions that connected together create behavior. If device is connected to a scene it may behave accordingly to this scene state (like few lamps that are always on when scene x is active or temperature controller will use different temperature settings for scene y)",
+            "Sceny to po prostu nazwane listy warunków, które połączone ze sobą tworzą jasno zdefiniowane zachowanie. Jeżeli urządzenie jest powiązane z daną sceną to będzie dostosowywać swoją automatykę względem tej sceny (np. kilka lamp będzie zawsze włączone, gdy scena x będzie aktywna lub sterownik temperatury będzie wybierał inną temperaturę w zależności od aktywności sceny y)");
 
-    public static Resource configurable_group_title = new Resource("CORE:configurable_group_title",
-            "Group",
-            "Grupa");
-
-    public static Resource configurable_groups_title = new Resource("CORE:configurable_groups_title",
-            "Groups",
-            "Grupy");
 
     public static Resource configurable_floor_add = new Resource("CORE:configurable_floor_add",
             "Add floor",
