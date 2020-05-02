@@ -18,6 +18,11 @@ public class RoomConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public Resource getDescription() {
+        return R.configurable_room_description;
+    }
+
+    @Override
     public Resource getTitleRes() {
         return R.configurable_room_title;
     }

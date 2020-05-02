@@ -3,6 +3,14 @@
 target
 dist
 
+#Visual Studio code
+.project
+.settings
+.history
+.classpath
+.factorypath
+.vscode
+
 # Compiled class file
 *.class
 
