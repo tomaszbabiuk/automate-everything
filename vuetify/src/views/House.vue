@@ -6,12 +6,10 @@
         :items="configurables"
         item-key="class"
         item-text="titleRes"
-        item-children="children"
         :open.sync="open"
         :load-children="fetchActions"
         activatable
         color="warning"
-        open-on-click
         transition
       ></v-treeview>
     </v-col>
@@ -25,7 +23,10 @@
           class="title grey--text text--lighten-1 font-weight-light"
           style="align-self: center;"
         >Select a User</div>
-        <div v-else>Selected</div>
+        <div v-else>
+            Selected
+            <button v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</button>
+        </div>
       </v-scroll-y-transition>
     </v-col>
   </v-row>
@@ -39,104 +40,6 @@ export default {
     return {
       active: [],
       open: [],
-      configurablesOffline: [
-        {
-          fields: [
-            {
-              name: "name",
-              hint: "Name",
-              class: "StringField"
-            },
-            {
-              name: "name",
-              hint: "Description",
-              class: "StringField"
-            }
-          ],
-          class: "SceneConfigurable",
-          addNewRes: "Scenes",
-          titleRes: "Scenes",
-          iconName: "scene",
-          children: []
-        },
-        {
-          fields: [
-            {
-              name: "name",
-              hint: "Name",
-              class: "StringField"
-            },
-            {
-              name: "name",
-              hint: "Description",
-              class: "StringField"
-            }
-          ],
-          class: "GroupConfigurable",
-          addNewRes: "Groups",
-          titleRes: "Groups",
-          iconName: "group",
-          children: []
-        },
-        {
-          fields: [
-            {
-              name: "name",
-              hint: "Name",
-              class: "StringField"
-            },
-            {
-              name: "name",
-              hint: "Description",
-              class: "StringField"
-            }
-          ],
-          class: "FloorConfigurable",
-          addNewRes: "House plan",
-          titleRes: "House plan",
-          iconName: "group",
-          children: [
-            {
-              fields: [
-                {
-                  name: "name",
-                  hint: "Name",
-                  class: "StringField"
-                },
-                {
-                  name: "name",
-                  hint: "Description",
-                  class: "StringField"
-                }
-              ],
-              class: "RoomConfigurable",
-              addNewRes: "Room",
-              titleRes: "Room",
-              iconName: "group",
-              children: []
-            }
-          ]
-        },
-        {
-          fields: [
-            {
-              name: "name",
-              hint: "Name",
-              class: "StringField"
-            },
-            {
-              name: "name",
-              hint: "Description",
-              class: "StringField"
-            }
-          ],
-          class: "DeviceConfigurable",
-          addNewRes: "Devices",
-          titleRes: "Devices",
-          iconName: "group",
-          children: []
-        }
-      ]
     };
   },
   computed: {
@@ -153,8 +56,7 @@ export default {
   },
   methods: {
       async fetchActions (item) {
-        console.log(item)
-        return await item.children
+        return await item.descendants
       },
   },
   mounted: function() {
@@ -162,104 +64,3 @@ export default {
   }
 };
 </script>
-
-/*
-[
-  {
-    "fields": [
-      {
-        "name": "name",
-        "hint": "Name",
-        "class": "StringField"
-      },
-      {
-        "name": "name",
-        "hint": "Description",
-        "class": "StringField"
-      }
-    ],
-    "class": "SceneConfigurable",
-    "addNewRes": "Scenes",
-    "titleRes": "Scenes",
-    "iconName": "scene",
-    "children": []
-  },
-  {
-    "fields": [
-      {
-        "name": "name",
-        "hint": "Name",
-        "class": "StringField"
-      },
-      {
-        "name": "name",
-        "hint": "Description",
-        "class": "StringField"
-      }
-    ],
-    "class": "GroupConfigurable",
-    "addNewRes": "Groups",
-    "titleRes": "Groups",
-    "iconName": "group",
-    "children": []
-  },
-  {
-    "fields": [
-      {
-        "name": "name",
-        "hint": "Name",
-        "class": "StringField"
-      },
-      {
-        "name": "name",
-        "hint": "Description",
-        "class": "StringField"
-      }
-    ],
-    "class": "FloorConfigurable",
-    "addNewRes": "House plan",
-    "titleRes": "House plan",
-    "iconName": "group",
-    "children": [
-      {
-        "fields": [
-          {
-            "name": "name",
-            "hint": "Name",
-            "class": "StringField"
-          },
-          {
-            "name": "name",
-            "hint": "Description",
-            "class": "StringField"
-          }
-        ],
-        "class": "RoomConfigurable",
-        "addNewRes": "Room",
-        "titleRes": "Room",
-        "iconName": "group",
-        "children": []
-      }
-    ]
-  },
-  {
-    "fields": [
-      {
-        "name": "name",
-        "hint": "Name",
-        "class": "StringField"
-      },
-      {
-        "name": "name",
-        "hint": "Description",
-        "class": "StringField"
-      }
-    ],
-    "class": "DeviceConfigurable",
-    "addNewRes": "Devices",
-    "titleRes": "Devices",
-    "iconName": "group",
-    "children": []
-  }
-]
-*/

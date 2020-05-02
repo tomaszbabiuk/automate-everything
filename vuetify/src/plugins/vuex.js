@@ -31,7 +31,6 @@ export default new Vuex.Store({
     [UPDATE_PLUGIN](state, plugin) {
       state.plugins.forEach(element => {
         if (element.id === plugin.id) {
-          console.log("We have you")
           element.enabled = plugin.enabled
         }
       })

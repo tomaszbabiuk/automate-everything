@@ -9,7 +9,7 @@ public class GroupConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public Class<? extends Configurable> getParent() {
-        return GroupsConfigurable.class;
+        return GroupConfigurable.class;
     }
 
     @Override

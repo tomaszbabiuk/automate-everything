@@ -22,17 +22,17 @@ public class ConfigurableDto {
     @SerializedName("iconName")
     private String _iconName;
 
-    @SerializedName("children")
-    private List<ConfigurableDto> _children;
+    @SerializedName("descendants")
+    private List<ConfigurableDto> _descendants;
 
     public ConfigurableDto(Resource titleRes, String clazz, List<FieldDto> fields,
-                           Resource addNewRes, String iconName, List<ConfigurableDto> children) {
+                           Resource addNewRes, String iconName, List<ConfigurableDto> descendants) {
         _titleRes = titleRes;
         _clazz = clazz;
         _fields = fields;
         _addNewRes = addNewRes;
         _iconName = iconName;
-        _children = children;
+        _descendants = descendants;
     }
 
     public String getClazz() {

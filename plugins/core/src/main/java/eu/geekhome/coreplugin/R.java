@@ -43,10 +43,6 @@ public class R {
             "Group",
             "Grupa");
 
-    public static Resource configurable_groups_title = new Resource("CORE:configurable_groups_title",
-            "Groups",
-            "Grupy");
-
     public static Resource configurable_floor_add = new Resource("CORE:configurable_floor_add",
             "Add floor",
             "Dodaj piętro");

@@ -20,7 +20,7 @@ public class ConfigurableDtoMapper {
                 .collect(Collectors.toList());
 
 
-        List<ConfigurableDto> children = allConfigurables
+        List<ConfigurableDto> descendants = allConfigurables
                 .stream()
                 .filter((x) -> x.getParent() != null && x.getParent().equals(configurable.getClass()))
                 .map((x) -> this.map(x, allConfigurables))
@@ -29,8 +29,8 @@ public class ConfigurableDtoMapper {
         return new ConfigurableDto(configurable.getTitleRes(),
                 configurable.getClass().getSimpleName(),
                 fields,
-                configurable.getTitleRes(),
+                configurable.getAddNewRes(),
                 configurable.getIconName(),
-                children);
+                descendants);
     }
 }
