@@ -22,10 +22,10 @@
           v-if="!selected"
           class="title grey--text text--lighten-1 font-weight-light"
           style="align-self: center;"
-        >Select a User</div>
+        >Select item</div>
         <div v-else>
-            Selected
-            <button v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</button>
+            <v-btn v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
+            <v-btn class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
         </div>
       </v-scroll-y-transition>
     </v-col>

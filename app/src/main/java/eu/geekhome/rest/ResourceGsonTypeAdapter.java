@@ -23,6 +23,10 @@ public class ResourceGsonTypeAdapter extends TypeAdapter<Resource> {
 
     @Override
     public void write(final JsonWriter out, final Resource resource) throws IOException {
-        out.value(resource.getValue(_language));
+        if (resource == null) {
+            out.nullValue();
+        } else {
+            out.value(resource.getValue(_language));
+        }
     }
 }
