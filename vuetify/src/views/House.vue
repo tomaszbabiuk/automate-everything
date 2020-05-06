@@ -24,8 +24,26 @@
           style="align-self: center;"
         >Select item</div>
         <div v-else>
-            <v-btn v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
-            <v-btn class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
+          <v-btn @click.stop="dialog = true" class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
+          <v-btn @click.stop="dialog = true" v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
+
+          <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+              <v-card>
+              <v-toolbar dark color="primary">
+                <v-btn icon dark @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>Settings</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn dark text @click="dialog = false">Save</v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+              
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa quasi iusto distinctio sint aliquid nesciunt explicabo minima officiis quia soluta, voluptatem laudantium laboriosam incidunt dolor cupiditate voluptas! Sequi, nostrum quod?
+              
+              </v-card>
+          </v-dialog>
         </div>
       </v-scroll-y-transition>
     </v-col>
@@ -38,6 +56,7 @@ import { client } from "../rest.js";
 export default {
   data: function() {
     return {
+      dialog: false,
       active: [],
       open: [],
     };
