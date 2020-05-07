@@ -24,8 +24,8 @@
           style="align-self: center;"
         >Select item</div>
         <div v-else>
-          <v-btn @click.stop="dialog = true" class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
-          <v-btn @click.stop="dialog = true" v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
+          <v-btn @click.stop="openCreator(descendant)" class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
+          <v-btn @click.stop="openCreator(selected)" v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
 
           <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
               <v-card>
@@ -33,7 +33,7 @@
                 <v-btn icon dark @click="dialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-toolbar-title>Settings</v-toolbar-title>
+                <v-toolbar-title>{{created.addNewRes}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                   <v-btn dark text @click="dialog = false">Save</v-btn>
@@ -59,6 +59,9 @@ export default {
       dialog: false,
       active: [],
       open: [],
+      created: {
+        addNewRes: "n/A"
+      }
     };
   },
   computed: {
@@ -77,6 +80,11 @@ export default {
       async fetchActions (item) {
         return await item.descendants
       },
+      openCreator(submodel) {
+        this.dialog = true;
+        this.created = submodel;
+        console.log(submodel);
+      }
   },
   mounted: function() {
     client.getConfigurables();
