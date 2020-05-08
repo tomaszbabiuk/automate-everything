@@ -33,14 +33,14 @@
                 <v-btn icon dark @click="dialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-toolbar-title>{{created.addNewRes}}</v-toolbar-title>
+                <v-toolbar-title>{{newInstance.addNewRes}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                   <v-btn dark text @click="dialog = false">Save</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
               
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa quasi iusto distinctio sint aliquid nesciunt explicabo minima officiis quia soluta, voluptatem laudantium laboriosam incidunt dolor cupiditate voluptas! Sequi, nostrum quod?
+              <configurable-form v-model="newInstance"> </configurable-form>
               
               </v-card>
           </v-dialog>
@@ -59,7 +59,7 @@ export default {
       dialog: false,
       active: [],
       open: [],
-      created: {
+      newInstance: {
         addNewRes: "n/A"
       }
     };
@@ -82,7 +82,7 @@ export default {
       },
       openCreator(submodel) {
         this.dialog = true;
-        this.created = submodel;
+        this.newInstance = submodel;
         console.log(submodel);
       }
   },
