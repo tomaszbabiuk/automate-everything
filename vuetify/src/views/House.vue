@@ -27,7 +27,7 @@
           <v-btn @click.stop="openCreator(descendant)" class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
           <v-btn @click.stop="openCreator(selected)" v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
 
-          <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+          <v-dialog v-model="dialog" persistent fullscreen transition="dialog-bottom-transition">
               <v-card>
               <v-toolbar dark color="primary">
                 <v-btn icon dark @click="dialog = false">
@@ -36,11 +36,13 @@
                 <v-toolbar-title>{{newInstance.addNewRes}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                  <v-btn dark text @click="dialog = false">Save</v-btn>
+                  <v-btn dark text @click="dialog = false">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
               
-              <configurable-form v-model="newInstance"> </configurable-form>
+              <v-container>
+                <configurable-form v-model="newInstance"> </configurable-form>
+              </v-container>
               
               </v-card>
           </v-dialog>
@@ -82,7 +84,8 @@ export default {
       },
       openCreator(submodel) {
         this.dialog = true;
-        this.newInstance = submodel;
+        const clone = JSON.parse(JSON.stringify(submodel));
+        this.newInstance = clone;
       }
   },
   mounted: function() {

@@ -22,6 +22,10 @@ export default {
         enable: "Włącz",
         disable: "Wyłącz",
     },
+    configurables: {
+        add: "Dodaj",
+        edit: "Edytuj",
+    },
     common: {
         retry: "Ponów",
     },

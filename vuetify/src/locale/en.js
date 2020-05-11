@@ -22,6 +22,10 @@ export default {
         enable: "Enable",
         disable: "Disable",
     },
+    configurables: {
+        add: "Add",
+        edit: "Edit",
+    },
     common: {
         retry: "Retry"
     }
