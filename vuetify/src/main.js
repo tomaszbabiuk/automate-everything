@@ -8,7 +8,8 @@ import ADCard from './components/admindashboard/Card'
 import ADStarsCard from'./components/admindashboard/StatsCard'
 import ADOffset from'./components/admindashboard/Offset'
 
-import ConfigurableForm from './components/geekhome/ConfigurableForm'
+import ConfigurableForm from './components/geekhome/configurable/Form'
+import ConfigurableStringField from './components/geekhome/configurable/StringField'
 
 //material dashboard
 Vue.component('material-card', ADCard)
@@ -17,6 +18,7 @@ Vue.component('helper-offset', ADOffset)
 
 //geekhome
 Vue.component('configurable-form', ConfigurableForm)
+Vue.component('configurable-stringfield', ConfigurableStringField)
 
 Vue.config.productionTip = false
 

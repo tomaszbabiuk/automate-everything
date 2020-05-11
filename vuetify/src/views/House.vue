@@ -83,7 +83,6 @@ export default {
       openCreator(submodel) {
         this.dialog = true;
         this.newInstance = submodel;
-        console.log(submodel);
       }
   },
   mounted: function() {
