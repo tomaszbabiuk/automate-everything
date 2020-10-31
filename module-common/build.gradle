@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":module-synchronization")
+    implementation project(":library-moquette")
+    implementation "com.googlecode.json-simple:json-simple:1.1.1"
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation "org.apache.logging.log4j:log4j-core:2.5"
+    implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-io:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-security:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-server:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-util:9.4.2.v20170220"
+}

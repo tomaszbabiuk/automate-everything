@@ -3,8 +3,6 @@ package eu.geekhome;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.alerts.DashboardAlertService;
 import com.geekhome.common.automation.SystemInfo;
-import com.geekhome.common.extensibility.RequiresFeature;
-import com.geekhome.common.extensibility.RequiresMqttFeature;
 import com.geekhome.common.hardwaremanager.HardwareManager;
 import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
 import com.geekhome.common.localization.ILocalizationProvider;
@@ -12,7 +10,6 @@ import com.geekhome.common.localization.ResourceLocalizationProvider;
 import com.geekhome.common.settings.AutomationSettings;
 import com.geekhome.common.settings.TextFileAutomationSettingsPersister;
 import com.geekhome.moquettemodule.MoquetteBroker;
-import eu.geekhome.rest.PluginsManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -21,39 +18,31 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.pf4j.DefaultPluginManager;
-import org.pf4j.PluginManager;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Boot {
 
     public static void main(String[] args) {
-        PluginManager pluginManager = new DefaultPluginManager();
-        pluginManager.loadPlugins();
-
-        // enable a disabled plugin
-        // pluginManager.enablePlugin("welcome-plugin");
-
-        // start (active/resolved) the plugins
-        pluginManager.startPlugins();
         try {
             final MoquetteBroker mqttBroker = new MoquetteBroker();
             mqttBroker.start();
 
-            List<IHardwareManagerAdapterFactory> hmaFactories = pluginManager.getExtensions(IHardwareManagerAdapterFactory.class);
-            for (IHardwareManagerAdapterFactory factory : hmaFactories) {
-                if (factory instanceof RequiresMqttFeature) {
-                    ((RequiresMqttFeature) factory).setMqttBroker(mqttBroker);
-                }
-
-                if (factory instanceof RequiresFeature) {
-                    ((RequiresFeature) factory).allFeaturesInjected();
-                }
-            }
+            List<IHardwareManagerAdapterFactory> hmaFactories = new ArrayList<>();
+//            List<IHardwareManagerAdapterFactory> hmaFactories = pluginManager.getExtensions(IHardwareManagerAdapterFactory.class);
+//            for (IHardwareManagerAdapterFactory factory : hmaFactories) {
+//                if (factory instanceof RequiresMqttFeature) {
+//                if (factory instanceof RequiresMqttFeature) {
+//                    ((RequiresMqttFeature) factory).setMqttBroker(mqttBroker);
+//                }
+//
+//                if (factory instanceof RequiresFeature) {
+//                    ((RequiresFeature) factory).allFeaturesInjected();
+//                }
+//            }
 
             TextFileAutomationSettingsPersister settingsPersister = new TextFileAutomationSettingsPersister();
             AutomationSettings automationSettings = new AutomationSettings(settingsPersister);
@@ -70,11 +59,11 @@ public class Boot {
         }
 
         // stop the plugins
-        pluginManager.stopPlugins();
+        //pluginManager.stopPlugins();
     }
 
     private static void startServer() {
-        Server server = new Server(80);
+        Server server = new Server(8282);
 
         ResourceHandler rh0 = new ResourceHandler();
         rh0.setDirectoriesListed(true);
@@ -95,16 +84,7 @@ public class Boot {
         serHol.setInitParameter("javax.ws.rs.Application", "eu.geekhome.rest.App");
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { webContext, /*streamContext, */restContext });
-
-
-//        JettyHttpServer server = new JettyHttpServer(80, contexts);
-//        try {
-//            server.start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+        contexts.setHandlers(new Handler[] { webContext /*, streamContext*/, restContext });
 
         server.setHandler(contexts);
 
@@ -115,9 +95,4 @@ public class Boot {
             e.printStackTrace();
         }
     }
-
-    private ResourceConfig resourceConfig() {
-        return new ResourceConfig().register(new PluginsManager());
-    }
-
 }

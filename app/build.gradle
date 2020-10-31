@@ -1,0 +1,44 @@
+plugins {
+    //id 'java-library'
+    //id 'biz.aQute.bnd.builder' version '5.2.0'
+    id 'application'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+
+application {
+    mainClass = 'eu.geekhome.Boot'
+}
+
+
+
+dependencies {
+    implementation project(":module-common")
+    implementation project(":module-synchronization")
+    implementation project(":library-moquette")
+    implementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.9.0'
+    implementation group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.4.0'
+    implementation group: 'org.osgi', name: 'org.osgi.service.jaxrs', version: '1.0.0'
+    implementation group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: '3.4.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-io:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-security:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-server:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-util:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-servlets:9.4.2.v20170220"
+    implementation "org.eclipse.jetty:jetty-servlet:9.4.2.v20170220"
+
+    implementation "org.glassfish.jersey.core:jersey-server:2.32"
+    implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:2.32"
+    implementation "org.glassfish.jersey.inject:jersey-hk2:2.32"
+
+    implementation group: 'org.glassfish.hk2', name: 'hk2-api', version: '2.1.58'
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+}

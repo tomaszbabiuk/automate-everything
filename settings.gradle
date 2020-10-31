@@ -1,0 +1,5 @@
+rootProject.name = 'geekhome-osgi'
+include "app"
+include "library-moquette"
+include "module-synchronization"
+include "module-common"

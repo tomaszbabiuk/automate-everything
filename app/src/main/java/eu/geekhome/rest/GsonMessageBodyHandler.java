@@ -1,10 +1,10 @@
 package eu.geekhome.rest;
 
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Locale;
+import com.geekhome.common.localization.Language;
+import com.geekhome.common.localization.Resource;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -13,13 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
-
-import com.geekhome.common.localization.Language;
-import com.geekhome.common.localization.Resource;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.apache.commons.codec.Charsets;
+import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         MessageBodyReader<Object> {
@@ -58,8 +56,9 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
     public Object readFrom(Class<Object> type, Type genericType,
                            Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
-        InputStreamReader streamReader = new InputStreamReader(entityStream, Charsets.UTF_8);
+        InputStreamReader streamReader = null;
         try {
+            streamReader = new InputStreamReader(entityStream, UTF_8);
             Type jsonType;
             if (type.equals(genericType)) {
                 jsonType = type;
@@ -67,7 +66,11 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                 jsonType = genericType;
             }
             return _gsons.get(Language.EN).fromJson(streamReader, jsonType);
-        } finally {
+        }
+        catch (UnsupportedEncodingException uex) {
+            return null;
+        }
+        finally {
             try {
                 streamReader.close();
             } catch (IOException ignored) {
