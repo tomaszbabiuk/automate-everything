@@ -2,6 +2,4 @@
 
 cd vuetify
 npm run build
-mv dist ../dist/web
-
-cd ../dist
+mv dist ../app/web

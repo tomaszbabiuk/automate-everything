@@ -1,0 +1,17 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+application {
+    mainClass = 'eu.geekhome.osgicontainer.Main'
+}
+
+dependencies {
+    implementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.9.0'
+    implementation group: 'org.apache.felix', name: 'org.apache.felix.main', version: '6.0.3'
+}

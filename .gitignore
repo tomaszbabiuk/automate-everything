@@ -2,6 +2,8 @@
 *.iml
 target
 dist
+build
+.gradle
 
 #Visual Studio code
 .project

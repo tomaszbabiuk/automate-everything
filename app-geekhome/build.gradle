@@ -9,13 +9,9 @@ repositories {
     mavenCentral()
 }
 
-
-
 application {
     mainClass = 'eu.geekhome.Boot'
 }
-
-
 
 dependencies {
     implementation project(":module-common")
