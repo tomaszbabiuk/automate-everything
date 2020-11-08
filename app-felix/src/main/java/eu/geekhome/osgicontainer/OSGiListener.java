@@ -14,7 +14,7 @@ public class OSGiListener {
     public void start() {
 
         Map<String, String> osgiConfig = new HashMap<>();
-        osgiConfig.put(Constants.FRAMEWORK_STORAGE, "/home/tbabiuk/work/felix-framework-6.0.3/cache");
+        osgiConfig.put(Constants.FRAMEWORK_STORAGE, "/home/tbabiuk/work/geekhome-server2/app-felix/cache");
         osgiConfig.put(Constants.FRAMEWORK_STORAGE_CLEAN, "true");
         osgiConfig.put("felix.log.level", "0");
         try {
@@ -52,13 +52,15 @@ public class OSGiListener {
                     bundle.start();
                 } catch (Exception ex) {
                     System.out.println("Failed to start bundle " + bundle.getSymbolicName());
+                    System.out.println(ex);
                 }
             }
         }
 
         private List<URL> getBundles() throws MalformedURLException {
             List<URL> bundleURLs = new ArrayList<>();
-            bundleURLs.add(new URL("file:///home/tbabiuk/work/felix-framework-6.0.3/bundle/plugin-centralheating.jar"));
+            bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/module-services/build/libs/module-services.jar"));
+            bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/library-moquette/build/libs/library-moquette-all.jar"));
             return bundleURLs;
         }
     }

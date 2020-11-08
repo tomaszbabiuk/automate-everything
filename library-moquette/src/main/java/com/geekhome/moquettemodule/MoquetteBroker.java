@@ -1,5 +1,7 @@
 package com.geekhome.moquettemodule;
 
+import eu.geekhome.services.mqtt.MqttBrokerService;
+import eu.geekhome.services.mqtt.MqttListener;
 import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
@@ -18,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public class MoquetteBroker implements MqttBroker {
+public class MoquetteBroker implements MqttBrokerService {
 
     private final Server _mqttBroker;
     private List<MqttListener> listeners = new ArrayList<>();

@@ -7,7 +7,7 @@ import com.geekhome.common.hardwaremanager.IHardwareManager;
 import com.geekhome.common.hardwaremanager.IInputPort;
 import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.configuration.CollectorCollection;
-import com.geekhome.synchronizationmodule.business.SmartEvent;
+import com.geekhome.synchronizationmodule.SmartEvent;
 
 public class CoreAutomationModule implements IAutomationModule {
     private ILogger _logger = LoggingService.getLogger();

@@ -1,7 +1,8 @@
 package com.geekhome.common.extensibility;
 
-import com.geekhome.moquettemodule.MqttBroker;
+
+import eu.geekhome.services.mqtt.MqttBrokerService;
 
 public interface RequiresMqttFeature extends RequiresFeature {
-    void setMqttBroker(MqttBroker broker);
+    void setMqttBroker(MqttBrokerService broker);
 }

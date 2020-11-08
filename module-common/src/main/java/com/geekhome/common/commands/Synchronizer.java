@@ -2,7 +2,7 @@ package com.geekhome.common.commands;
 
 import com.geekhome.common.configuration.*;
 import com.geekhome.common.alerts.DashboardAlertService;
-import com.geekhome.synchronizationmodule.business.SmartEventResult;
+import com.geekhome.synchronizationmodule.*;
 import com.geekhome.common.automation.*;
 import com.geekhome.common.settings.AutomationSettings;
 import com.geekhome.common.localization.ILocalizationProvider;

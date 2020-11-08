@@ -5,6 +5,7 @@ include "app-geekhome"
 
 include "library-moquette"
 
+include "module-services"
 include "module-synchronization"
 include "module-common"
 

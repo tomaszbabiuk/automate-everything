@@ -1,5 +1,6 @@
 plugins {
-    id 'biz.aQute.bnd.builder' version '5.2.0'
+    id 'java-library'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
 repositories {
@@ -9,16 +10,7 @@ repositories {
     mavenCentral()
 }
 
-jar {
-    manifest {
-        attributes('Bundle-Activator': 'eu.geekhome.GeekhomeServerActivator')
-    }
-}
-
 dependencies {
-    implementation project(":module-common")
-    implementation project(":module-synchronization")
-    implementation project(":library-moquette")
     implementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.9.0'
     implementation group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.4.0'
     implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"

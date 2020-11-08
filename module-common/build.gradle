@@ -3,13 +3,15 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
+    maven {
+        url "https://repo.spring.io/libs-release/"
+    }
     mavenCentral()
 }
 
 dependencies {
+    implementation project(":module-services")
     implementation project(":module-synchronization")
-    implementation project(":library-moquette")
     implementation "com.googlecode.json-simple:json-simple:1.1.1"
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation "org.apache.logging.log4j:log4j-core:2.5"

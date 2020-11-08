@@ -9,7 +9,7 @@ import com.geekhome.common.alerts.DashboardAlertService;
 import com.geekhome.common.hardwaremanager.*;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.configuration.CollectorCollection;
-import com.geekhome.synchronizationmodule.business.SmartEvent;
+import com.geekhome.synchronizationmodule.SmartEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;

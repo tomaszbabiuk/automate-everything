@@ -12,6 +12,7 @@ import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.automation.SystemInfo;
 import com.geekhome.common.configuration.CollectorCollection;
 import com.geekhome.common.configuration.ObjectNotFoundException;
+import com.geekhome.synchronizationmodule.*;
 import com.geekhome.synchronizationmodule.business.*;
 
 import java.util.ArrayList;

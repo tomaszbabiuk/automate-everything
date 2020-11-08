@@ -1,8 +1,7 @@
 package com.geekhome.common.automation;
 
 import com.geekhome.common.configuration.CollectorCollection;
-import com.geekhome.common.automation.*;
-import com.geekhome.synchronizationmodule.business.SmartEvent;
+import com.geekhome.synchronizationmodule.SmartEvent;
 
 public interface IAutomationModule {
     void addIndependentConditionAutomationUnits(CollectorCollection<IEvaluableAutomationUnit> conditionsList) throws Exception;
