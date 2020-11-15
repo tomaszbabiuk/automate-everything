@@ -18,7 +18,7 @@ jar {
 dependencies {
     implementation project(":module-common")
     implementation project(":module-synchronization")
-    implementation project(":library-moquette")
+    implementation project(":module-services")
     implementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.9.0'
     implementation group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.4.0'
     implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"

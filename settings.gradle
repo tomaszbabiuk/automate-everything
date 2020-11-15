@@ -1,12 +1,12 @@
 rootProject.name = 'geekhome-osgi'
 
+include "bundle-moquette"
+
 include "app-felix"
 include "app-geekhome"
 
-include "library-moquette"
+include "library-mqtt"
 
 include "module-services"
 include "module-synchronization"
 include "module-common"
-
-include "plugin-centralheating"

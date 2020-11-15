@@ -13,6 +13,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.MqttMessageBuilders;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
+import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+
+@Component(service = MoquetteBroker.class)
 public class MoquetteBroker implements MqttBrokerService {
 
     private final Server _mqttBroker;

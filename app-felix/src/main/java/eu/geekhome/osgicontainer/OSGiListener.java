@@ -60,7 +60,8 @@ public class OSGiListener {
         private List<URL> getBundles() throws MalformedURLException {
             List<URL> bundleURLs = new ArrayList<>();
             bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/module-services/build/libs/module-services.jar"));
-            bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/library-moquette/build/libs/library-moquette-all.jar"));
+            bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/bundle-moquette/build/libs/bundle-moquette-all.jar"));
+            bundleURLs.add(new URL("file:///home/tbabiuk/work/geekhome-server2/library-mqtt/build/libs/library-mqtt.jar"));
             return bundleURLs;
         }
     }
