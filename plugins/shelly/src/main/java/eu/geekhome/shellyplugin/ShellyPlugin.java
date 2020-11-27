@@ -1,9 +1,9 @@
 package eu.geekhome.shellyplugin;
+
+import com.geekhome.common.extensibility.PluginMetadata;
 import com.geekhome.common.localization.Resource;
-import eu.geekhome.rest.PluginMetadata;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
-
 
 public class ShellyPlugin extends Plugin implements PluginMetadata {
 

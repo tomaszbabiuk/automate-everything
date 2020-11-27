@@ -9,17 +9,12 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
 
 import java.nio.file.Paths;
 
-public class GeekhomeServerActivator implements BundleActivator {
+public class Main {
 
-    private Server server = new Server(8282);
-
-    @Override
-    public void start(BundleContext context) throws Exception {
+    public static void main(String[] args) {
         ResourceHandler rh0 = new ResourceHandler();
         rh0.setDirectoriesListed(true);
 
@@ -41,6 +36,7 @@ public class GeekhomeServerActivator implements BundleActivator {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         contexts.setHandlers(new Handler[] { webContext /*, streamContext*/, restContext });
 
+        Server server = new Server(80);
         server.setHandler(contexts);
 
         try {
@@ -49,10 +45,5 @@ public class GeekhomeServerActivator implements BundleActivator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        server.stop();
     }
 }

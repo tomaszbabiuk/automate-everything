@@ -1,4 +1,4 @@
-package eu.geekhome.rest;
+package com.geekhome.common.extensibility;
 
 import com.geekhome.common.localization.Resource;
 

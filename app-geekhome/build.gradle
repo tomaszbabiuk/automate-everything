@@ -1,26 +1,19 @@
 plugins {
-    id 'biz.aQute.bnd.builder' version '5.2.0'
+    id 'application'
 }
 
-repositories {
-    maven {
-        url "https://repo.spring.io/libs-release/"
-    }
-    mavenCentral()
+application {
+    mainClass = 'eu.geekhome.Main'
 }
 
-jar {
-    manifest {
-        attributes('Bundle-Activator': 'eu.geekhome.GeekhomeServerActivator')
-    }
+run {
+    systemProperty 'pf4j.pluginsDir', '../plugins'
 }
 
 dependencies {
     implementation project(":module-common")
     implementation project(":module-synchronization")
     implementation project(":module-services")
-    implementation group: 'org.osgi', name: 'org.osgi.framework', version: '1.9.0'
-    implementation group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.4.0'
     implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"
     implementation "org.eclipse.jetty:jetty-io:9.4.2.v20170220"
     implementation "org.eclipse.jetty:jetty-security:9.4.2.v20170220"
@@ -33,7 +26,28 @@ dependencies {
     implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:2.32"
     implementation "org.glassfish.jersey.inject:jersey-hk2:2.32"
 
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
+
     implementation group: 'org.glassfish.hk2', name: 'hk2-api', version: '2.1.58'
     implementation 'com.google.code.gson:gson:2.8.2'
-
 }
+
+task uberjar(type: Jar, dependsOn: ['compileJava']) {
+    zip64 true
+    from configurations.runtimeClasspath.asFileTree.files.collect {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+        zipTree(it)
+    }
+    from files(sourceSets.main.output.classesDirs)
+    from files(sourceSets.main.resources)
+    manifest {
+        attributes 'Main-Class': 'eu.geekhome.Main'
+    }
+
+    archiveBaseName = "${project.name}"
+    archiveClassifier = "all"
+}
+

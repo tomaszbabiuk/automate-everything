@@ -8,7 +8,6 @@ import com.geekhome.common.settings.AutomationSettings;
 import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.automation.SystemInfo;
-import com.geekhome.synchronizationmodule.business.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

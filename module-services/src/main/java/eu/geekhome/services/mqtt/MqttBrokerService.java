@@ -1,6 +1,8 @@
 package eu.geekhome.services.mqtt;
 
-public interface MqttBrokerService {
+import org.pf4j.ExtensionPoint;
+
+public interface MqttBrokerService extends ExtensionPoint {
     void addMqttListener(MqttListener listener);
 
     void removeMqttListener(MqttListener listener);
