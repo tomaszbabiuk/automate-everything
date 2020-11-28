@@ -4,7 +4,9 @@ package eu.geekhome.rest;
 import com.geekhome.common.configurable.Configurable;
 import org.jvnet.hk2.annotations.Service;
 import org.pf4j.DefaultPluginManager;
+import org.pf4j.JarPluginManager;
 import org.pf4j.PluginWrapper;
+import org.pf4j.ZipPluginManager;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class PluginsManager {
     private final DefaultPluginManager _pluginManager;
 
     public PluginsManager() {
-        _pluginManager = new DefaultPluginManager();
+        _pluginManager = new ZipPluginManager();
         _pluginManager.loadPlugins();
     }
 

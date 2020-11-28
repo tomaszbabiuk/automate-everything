@@ -1,13 +1,10 @@
 plugins {
     id 'application'
-}
-
-application {
-    mainClass = 'eu.geekhome.Main'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 run {
-    systemProperty 'pf4j.pluginsDir', '../plugins'
+    systemProperty 'pf4j.pluginsDir', './plugins'
 }
 
 dependencies {
@@ -31,23 +28,11 @@ dependencies {
 
     implementation group: 'org.glassfish.hk2', name: 'hk2-api', version: '2.1.58'
     implementation 'com.google.code.gson:gson:2.8.2'
+
+    implementation 'org.slf4j:slf4j-api:1.7.5'
+    implementation 'org.slf4j:slf4j-simple:1.6.4'
 }
 
-task uberjar(type: Jar, dependsOn: ['compileJava']) {
-    zip64 true
-    from configurations.runtimeClasspath.asFileTree.files.collect {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
-        zipTree(it)
-    }
-    from files(sourceSets.main.output.classesDirs)
-    from files(sourceSets.main.resources)
-    manifest {
-        attributes 'Main-Class': 'eu.geekhome.Main'
-    }
-
-    archiveBaseName = "${project.name}"
-    archiveClassifier = "all"
+shadowJar {
+    mainClassName = 'eu.geekhome.Main'
 }
-

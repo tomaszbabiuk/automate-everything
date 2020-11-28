@@ -10,6 +10,6 @@ subprojects {
     }
 }
 // plugin location
-ext.pluginsDir = rootProject.buildDir.path + '/plugins'
+ext.pluginsDir = rootProject.buildDir.path + '/../app-geekhome/plugins'
 
 task build(dependsOn: [':app:uberjar'])
