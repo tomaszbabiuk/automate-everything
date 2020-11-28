@@ -16,15 +16,13 @@ public class PluginsManager {
     private final DefaultPluginManager _pluginManager;
 
     public PluginsManager() {
-        _pluginManager = new ZipPluginManager();
+        _pluginManager = new JarPluginManager();
         _pluginManager.loadPlugins();
     }
 
     public List<PluginWrapper> getPlugins() {
-        return _pluginManager
-                .getPlugins();
+        return _pluginManager.getPlugins();
     }
-
 
     public PluginWrapper getPlugin(String id) {
         return _pluginManager.getPlugin(id);

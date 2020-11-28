@@ -3,7 +3,7 @@ subprojects {
     manifest {
       attributes 'Plugin-Class': "${pluginClass}",
           'Plugin-Id': "${pluginId}",
-          'Plugin-Version': "1",
+          'Plugin-Version': "${version}",
           'Plugin-Provider': "${pluginProvider}"
     }
   }
@@ -19,14 +19,19 @@ subprojects {
     archiveExtension ='zip'
   }
 
-  task assemblePlugin(type: Copy) {
+  task assemblePluginZips(type: Copy) {
     from plugin
+    into pluginsDir
+  }
+
+  task assemblePluginJars(type: Copy) {
+    from jar
     into pluginsDir
   }
 }
 
 task assemblePlugins(type: Copy) {
-  dependsOn subprojects.assemblePlugin
+  dependsOn subprojects.assemblePluginJars
 }
 
 build.dependsOn project.tasks.assemblePlugins

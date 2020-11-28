@@ -15,10 +15,6 @@ public class CorePlugin extends Plugin implements PluginMetadata {
     @Override
     public void start() {
         System.out.println("WelcomePlugin.start()");
-        // for testing the development mode
-//        if (RuntimeMode.DEVELOPMENT.equals(wrapper.getRuntimeMode())) {
-//            System.out.println(StringUtils.upperCase("WelcomePlugin"));
-//        }
     }
 
     @Override

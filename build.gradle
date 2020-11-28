@@ -8,8 +8,23 @@ subprojects {
             url "https://repo.spring.io/libs-release/"
         }
     }
+
 }
-// plugin location
+
 ext.pluginsDir = rootProject.buildDir.path + '/../app-geekhome/plugins'
 
-task build(dependsOn: [':app:uberjar'])
+task cleanAll {
+    subprojects.each {
+        it.afterEvaluate {
+            def cleanTask = it.tasks.findByName("clean")
+            if (cleanTask) {
+                dependsOn(cleanTask)
+            }
+        }
+    }
+}
+
+configure(cleanAll) {
+    group = 'build'
+    description = 'Cleans all subprojects'
+}
