@@ -20,8 +20,8 @@ public class Main {
 
         ContextHandler webContext = new ContextHandler();
         webContext.setContextPath("/");
-        webContext.setBaseResource(new PathResource(Paths.get("" +
-                "web")));
+        webContext.setBaseResource(new PathResource(Paths.get(
+                "vuetify/dist")));
         webContext.setHandler(rh0);
 
 //        ServletContextHandler streamContext = new ServletContextHandler(ServletContextHandler.SESSIONS);

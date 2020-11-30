@@ -2,4 +2,5 @@
 
 cd vuetify
 npm run build
-mv dist ../app-geekhome/web
+rm -rf ../app-geekhome/web
+mv -v dist/* ../app-geekhome/web
