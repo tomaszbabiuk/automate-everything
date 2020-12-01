@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-form ref="form">
-        <component v-for="field in value.fields" :hint="field.hint" :initialValue="field.value" :key="field.Name"
+        <component v-for="field in value.fields" :hint="field.hint" :v-model="field.value" :key="field.Name"
           v-bind:is="configurableClassToFormComponent(field.class)">
         </component>
     </v-form>
