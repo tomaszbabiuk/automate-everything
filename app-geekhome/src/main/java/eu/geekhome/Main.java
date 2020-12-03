@@ -36,7 +36,7 @@ public class Main {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         contexts.setHandlers(new Handler[] { webContext /*, streamContext*/, restContext });
 
-        Server server = new Server(80);
+        Server server = new Server(8080);
         server.setHandler(contexts);
 
         try {

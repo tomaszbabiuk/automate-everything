@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "core-js": "^3.8.0",
-    "vue": "^2.6.qw",
+    "vue": "^2.6.12",
     "vue-chartist": "^2.3.1",
     "vue-router": "^3.4.9",
     "vuetify": "^2.3.19",

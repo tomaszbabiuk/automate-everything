@@ -1,8 +1,9 @@
 <template>
   <div>
     <v-form ref="form">
-        <component v-for="field in value.fields" :hint="field.hint" :v-model="field.value" :key="field.Name"
-          v-bind:is="configurableClassToFormComponent(field.class)">
+        <component v-for="field in value.fields" :key="field.def.Name" :hint="field.def.hint" :initialValue="field.value"
+          :instanceId="field.instanceId" :counter="field.counter" :required="field.required"
+          v-bind:is="configurableClassToFormComponent(field.def.class)">
         </component>
     </v-form>
   </div>

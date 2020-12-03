@@ -33,7 +33,7 @@
                 <v-btn icon dark @click="dialog = false">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-toolbar-title>{{newInstance.addNewRes}}</v-toolbar-title>
+                <v-toolbar-title>{{dialogTitle}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                   <v-btn dark text @click="dialog = false">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
@@ -53,7 +53,9 @@
 </template>
 
 <script>
-import { client } from "../rest.js";
+import { client } from "../rest.js"
+import store from '../plugins/vuex'
+import {NEW_INSTANCE} from '../plugins/vuex'
 
 export default {
   data: function() {
@@ -61,12 +63,13 @@ export default {
       dialog: false,
       active: [],
       open: [],
-      newInstance: {
-        addNewRes: "n/A"
-      }
+      dialogTitle: "",
     };
   },
   computed: {
+    newInstance() {
+      return this.$store.state.newInstance
+    },
     configurables() {
       return this.$store.state.configurables;
     },
@@ -82,10 +85,11 @@ export default {
       async fetchActions (item) {
         return await item.descendants
       },
-      openCreator(submodel) {
-        this.dialog = true;
-        const clone = JSON.parse(JSON.stringify(submodel));
-        this.newInstance = clone;
+
+      openCreator(configurable) {
+        this.dialogTitle = configurable.addNewRes
+        store.commit(NEW_INSTANCE, configurable)
+        this.dialog = true
       }
   },
   mounted: function() {

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Utils from '../utils.js'
 
 Vue.use(Vuex);
 
@@ -7,12 +8,15 @@ export const SET_ERROR = 'SET_ERROR'
 export const SET_PLUGINS = 'SET_PLUGINS' 
 export const SET_ROOT_CONFIGURABLES= 'SET_ROOT_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
+export const NEW_INSTANCE = 'NEW_INSTANCE' 
+export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 
 export default new Vuex.Store({
   state: {
     error: null,
     plugins: [],
     configurables: [],
+    newInstance: null,
     counter: 0,
   },
   mutations: {
@@ -35,5 +39,37 @@ export default new Vuex.Store({
         }
       })
     },
+
+    [NEW_INSTANCE](state, configurable) {
+      var newInstance = {
+        class : configurable.class,
+        fields : [],
+        instanceId: Utils.generateUUIDv4(),
+        parentId: null
+      }
+
+      configurable.fields.forEach(element => {
+        var newFieldInstance = {
+          def : JSON.parse(JSON.stringify(element)),
+          value : null,
+          error : null,
+          instanceId: Utils.generateUUIDv4(),
+        }
+        newInstance.fields.push(newFieldInstance)
+      });
+
+      state.newInstance = newInstance
+    },
+
+    [UPDATE_INSTANCE](state, payload) {
+      /*
+        payload should be { instanceId: ..., value:... }
+      */
+      state.newInstance.fields.forEach(element => {
+        if (element.instanceId === payload.instanceId) {
+          element.value = payload.value
+        }
+      })
+    }
   }
 })

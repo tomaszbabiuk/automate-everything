@@ -5,15 +5,20 @@
 </template>
 
 <script>
+import {UPDATE_INSTANCE} from '../../../plugins/vuex'
+
 export default {
-  props: ["value", "hint", "required", "counter"],
+  props: ["initialValue", "instanceId", "hint", "required", "counter"],
   computed: {
     inputVal: {
       get() {
-        return this.value;
+        return this.initialValue;
       },
-      set(val) {
-        this.$emit('input', val);
+      set(value) {
+        this.$store.commit(UPDATE_INSTANCE, { 
+          instanceId: this.instanceId, 
+          value: value 
+          })
       }
     }
   
