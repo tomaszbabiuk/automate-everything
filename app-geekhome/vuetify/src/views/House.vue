@@ -36,12 +36,17 @@
                 <v-toolbar-title>{{dialogTitle}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                  <v-btn dark text @click="dialog = false">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
+                  <v-btn dark text @click="closeCreator">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
                 </v-toolbar-items>
               </v-toolbar>
               
               <v-container>
-                <configurable-form v-model="newInstance"> </configurable-form>
+                <v-form ref="form" v-if="newInstanceDef">
+                  <component v-for="field in newInstanceDef.fields" :key="field.name" :hint="field.hint"
+                    :counter="field.maxSize" :required="field.required" :id="field.name" :initialValue="null"
+                    v-bind:is="configurableClassToFormComponent(field.class)">
+                  </component>
+                </v-form>
               </v-container>
               
               </v-card>
@@ -64,12 +69,10 @@ export default {
       active: [],
       open: [],
       dialogTitle: "",
+      newInstanceDef: null
     };
   },
   computed: {
-    newInstance() {
-      return this.$store.state.newInstance
-    },
     configurables() {
       return this.$store.state.configurables;
     },
@@ -82,14 +85,25 @@ export default {
     }
   },
   methods: {
+      configurableClassToFormComponent: function(clazz) {
+        return "configurable-" + clazz.toLowerCase()
+      },
+
       async fetchActions (item) {
         return await item.descendants
       },
 
       openCreator(configurable) {
+        this.newInstanceDef = JSON.parse(JSON.stringify(configurable))
         this.dialogTitle = configurable.addNewRes
         store.commit(NEW_INSTANCE, configurable)
         this.dialog = true
+      },
+
+      closeCreator() {
+        this.dialog = false
+        client.postNewInstance(store.state.newInstance)
+        store.commit(NEW_INSTANCE, null)
       }
   },
   mounted: function() {

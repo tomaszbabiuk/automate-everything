@@ -8,7 +8,7 @@
 import {UPDATE_INSTANCE} from '../../../plugins/vuex'
 
 export default {
-  props: ["initialValue", "instanceId", "hint", "required", "counter"],
+  props: ["initialValue", "id", "hint", "required", "counter"],
   computed: {
     inputVal: {
       get() {
@@ -16,7 +16,7 @@ export default {
       },
       set(value) {
         this.$store.commit(UPDATE_INSTANCE, { 
-          instanceId: this.instanceId, 
+          name: this.id, 
           value: value 
           })
       }

@@ -28,5 +28,14 @@ export default {
     },
     common: {
         retry: "Retry"
+    },
+    rest: {
+        error: {
+            enabling_plugin: "Unable to enable the plugin: please check internet connection.",
+            disabling_plugin: "Unable to disable the plugin: please check internet connection.",
+            getting_plugins: "Unable to get plugins: please check internet connection.",
+            getting_configurables: "Unable to download configuration objects: please check internet connection.",
+            posting_instance: "Unable to post new configuration object: please check internet connection."
+        }
     }
 }

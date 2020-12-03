@@ -64,6 +64,24 @@ export const client = {
       })
   },
 
+  postNewInstance: function(newInstance) {
+    return axiosInstance
+        .post("rest/instances", newInstance)
+        .than(response => {
+            console.log("Response from posting instance is" + response.data)
+        })
+        .catch((innerException) => {
+                var errorData = {
+                  message: "$vuetify.rest.error.posting_instance",
+                  actionTitle: "$vuetify.common.retry",
+                  actionCallback: () => this.postNewInstance(newInstance),
+                  innerException: innerException
+                };
+
+                store.commit(SET_ERROR, errorData)
+              })
+  },
+
   getConfigurables: function() {
     return axiosInstance
       .get("rest/configurables")

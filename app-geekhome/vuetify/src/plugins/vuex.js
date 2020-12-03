@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Utils from '../utils.js'
 
 Vue.use(Vuex);
 
@@ -43,33 +42,18 @@ export default new Vuex.Store({
     [NEW_INSTANCE](state, configurable) {
       var newInstance = {
         class : configurable.class,
-        fields : [],
-        instanceId: Utils.generateUUIDv4(),
+        fields : {},
         parentId: null
       }
-
-      configurable.fields.forEach(element => {
-        var newFieldInstance = {
-          def : JSON.parse(JSON.stringify(element)),
-          value : null,
-          error : null,
-          instanceId: Utils.generateUUIDv4(),
-        }
-        newInstance.fields.push(newFieldInstance)
-      });
 
       state.newInstance = newInstance
     },
 
     [UPDATE_INSTANCE](state, payload) {
       /*
-        payload should be { instanceId: ..., value:... }
+        payload should be { name: ..., value:... }
       */
-      state.newInstance.fields.forEach(element => {
-        if (element.instanceId === payload.instanceId) {
-          element.value = payload.value
-        }
-      })
+      state.newInstance.fields[payload.name] = payload.value
     }
   }
 })
