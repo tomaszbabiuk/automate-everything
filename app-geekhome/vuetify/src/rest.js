@@ -67,7 +67,7 @@ export const client = {
   postNewInstance: function(newInstance) {
     return axiosInstance
         .post("rest/instances", newInstance)
-        .than(response => {
+        .then(response => {
             console.log("Response from posting instance is" + response.data)
         })
         .catch((innerException) => {

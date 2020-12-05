@@ -1,2 +1,3 @@
 shelly
 core
+sqldelight

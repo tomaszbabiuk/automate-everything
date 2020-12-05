@@ -2,6 +2,7 @@ package eu.geekhome.rest;
 
 
 import com.geekhome.common.configurable.Configurable;
+import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.JarPluginManager;
@@ -43,5 +44,10 @@ public class PluginsManager {
     public List<Configurable> getConfigurables() {
         return _pluginManager
                 .getExtensions(Configurable.class);
+    }
+
+    public List<Repository> getRepositories() {
+        return _pluginManager
+                .getExtensions(Repository.class);
     }
 }

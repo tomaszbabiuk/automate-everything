@@ -60,7 +60,7 @@
 <script>
 import { client } from "../rest.js"
 import store from '../plugins/vuex'
-import {NEW_INSTANCE} from '../plugins/vuex'
+import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
 
 export default {
   data: function() {
@@ -103,7 +103,7 @@ export default {
       closeCreator() {
         this.dialog = false
         client.postNewInstance(store.state.newInstance)
-        store.commit(NEW_INSTANCE, null)
+        store.commit(RESET_INSTANCE)
       }
   },
   mounted: function() {

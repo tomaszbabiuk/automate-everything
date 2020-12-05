@@ -21,7 +21,7 @@ public class Main {
         ContextHandler webContext = new ContextHandler();
         webContext.setContextPath("/");
         webContext.setBaseResource(new PathResource(Paths.get(
-                "vuetify/dist")));
+                "web")));
         webContext.setHandler(rh0);
 
 //        ServletContextHandler streamContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -36,7 +36,7 @@ public class Main {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         contexts.setHandlers(new Handler[] { webContext /*, streamContext*/, restContext });
 
-        Server server = new Server(8080);
+        Server server = new Server(80);
         server.setHandler(contexts);
 
         try {

@@ -8,6 +8,7 @@ export const SET_PLUGINS = 'SET_PLUGINS'
 export const SET_ROOT_CONFIGURABLES= 'SET_ROOT_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
 export const NEW_INSTANCE = 'NEW_INSTANCE' 
+export const RESET_INSTANCE = 'RESET_INSTANCE' 
 export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 
 export default new Vuex.Store({
@@ -47,6 +48,10 @@ export default new Vuex.Store({
       }
 
       state.newInstance = newInstance
+    },
+
+    [RESET_INSTANCE](state) {
+      state.newInstance = null
     },
 
     [UPDATE_INSTANCE](state, payload) {

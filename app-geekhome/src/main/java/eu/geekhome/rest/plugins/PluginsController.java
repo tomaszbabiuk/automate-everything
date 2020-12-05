@@ -40,13 +40,6 @@ public class PluginsController {
         return _pluginDtoMapper.map(_pluginsManager.getPlugin(id));
     }
 
-//    @OPTIONS
-//    @Path("/{id}/enabled")
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public Response updateEnableStateOptions(@PathParam("id") String id, boolean enable) {
-//        return Response.ok().build();
-//    }
-
     @PUT
     @Path("/{id}/enabled")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
