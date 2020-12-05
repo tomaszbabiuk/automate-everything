@@ -24,7 +24,8 @@ public class InstancesController {
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<InstanceDto> postInstances(InstanceDto instanceDto) {
-        _pluginsManager.getRepositories().forEach(Repository::saveInstance);
+        _pluginsManager.getRepositories().forEach(repository ->
+                repository.saveInstance(instanceDto));
 
         return null;
     }
