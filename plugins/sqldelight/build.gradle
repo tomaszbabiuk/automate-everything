@@ -5,19 +5,21 @@ plugins {
 }
 
 dependencies {
-    compileOnly project(':module-services')
-    compileOnly project(':module-common')
-    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
+    shadow project(':module-services')
+    shadow project(':module-common')
+    shadow(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
       exclude group: "org.slf4j"
     }
     kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
     annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
-    implementation "com.squareup.sqldelight:sqlite-driver:1.4.4"
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    compile 'com.squareup.sqldelight:sqlite-driver:1.4.4'
 }
 
-repositories {
-    mavenCentral()
+shadowJar {
+    exclude 'kotlin/**'
+    exclude 'org/intellij/**'
+    exclude 'org/jetbrains/**'
 }
 
 compileKotlin {

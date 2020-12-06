@@ -1,31 +1,26 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
+  }
+}
+
 subprojects {
+  apply plugin: 'com.github.johnrengelman.shadow'
+
   jar {
     manifest {
       attributes 'Plugin-Class': "${pluginClass}",
-          'Plugin-Id': "${pluginId}",
-          'Plugin-Version': "${version}",
-          'Plugin-Provider': "${pluginProvider}"
+                 'Plugin-Id': "${pluginId}",
+                 'Plugin-Version': "${version}",
+                 'Plugin-Provider': "${pluginProvider}"
     }
-  }
-
-  task plugin(type: Jar) {
-    archiveBaseName = "plugin-${pluginId}"
-    into('classes') {
-      with jar
-    }
-    into('lib') {
-      from configurations.compile
-    }
-    archiveExtension ='zip'
-  }
-
-  task assemblePluginZips(type: Copy) {
-    from plugin
-    into pluginsDir
   }
 
   task assemblePluginJars(type: Copy) {
-    from jar
+    from shadowJar
     into pluginsDir
   }
 }

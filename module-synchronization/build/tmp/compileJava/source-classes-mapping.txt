@@ -2,12 +2,12 @@ com/geekhome/synchronizationmodule/SynchronizedFloor.java
  com.geekhome.synchronizationmodule.SynchronizedFloor
 com/geekhome/synchronizationmodule/SynchronizedState.java
  com.geekhome.synchronizationmodule.SynchronizedState
+com/geekhome/synchronizationmodule/SmartEvent.java
+ com.geekhome.synchronizationmodule.SmartEvent
 com/geekhome/synchronizationmodule/SynchronizedDevice.java
  com.geekhome.synchronizationmodule.SynchronizedDevice
 com/geekhome/synchronizationmodule/SynchronizedGeofence.java
  com.geekhome.synchronizationmodule.SynchronizedGeofence
-com/geekhome/synchronizationmodule/SmartEvent.java
- com.geekhome.synchronizationmodule.SmartEvent
 com/geekhome/synchronizationmodule/SynchronizedSystemInfo.java
  com.geekhome.synchronizationmodule.SynchronizedSystemInfo
 com/geekhome/synchronizationmodule/SynchronizationNotificationType.java
@@ -28,12 +28,12 @@ com/geekhome/synchronizationmodule/SynchronizedAlert.java
  com.geekhome.synchronizationmodule.SynchronizedAlert
 com/geekhome/synchronizationmodule/SynchronizedError.java
  com.geekhome.synchronizationmodule.SynchronizedError
+com/geekhome/synchronizationmodule/AlertNotification.java
+ com.geekhome.synchronizationmodule.AlertNotification
 com/geekhome/synchronizationmodule/SynchronizationContentType.java
  com.geekhome.synchronizationmodule.SynchronizationContentType
 com/geekhome/synchronizationmodule/SynchronizedEvaluationResult.java
  com.geekhome.synchronizationmodule.SynchronizedEvaluationResult
-com/geekhome/synchronizationmodule/AlertNotification.java
- com.geekhome.synchronizationmodule.AlertNotification
 com/geekhome/synchronizationmodule/SynchronizedNamedObject.java
  com.geekhome.synchronizationmodule.SynchronizedNamedObject
 com/geekhome/synchronizationmodule/SynchronizedDescription.java

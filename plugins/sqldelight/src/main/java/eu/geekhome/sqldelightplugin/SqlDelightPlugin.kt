@@ -12,7 +12,10 @@ class SqlDelightPlugin(wrapper: PluginWrapper?) : Plugin(wrapper), PluginMetadat
     override fun start() {
         println("Starting SQLDelight plugin")
 
-        val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+
+        Class.forName("org.sqlite.JDBC")
+
+        val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:datarepository.sqlite")
         Database.Schema.create(driver)
     }
 

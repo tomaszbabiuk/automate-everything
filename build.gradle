@@ -8,7 +8,6 @@ subprojects {
             url "https://repo.spring.io/libs-release/"
         }
     }
-
 }
 
 ext.pluginsDir = rootProject.buildDir.path + '/../app-geekhome/plugins'

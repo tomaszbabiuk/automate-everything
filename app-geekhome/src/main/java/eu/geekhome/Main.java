@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ResourceHandler rh0 = new ResourceHandler();
         rh0.setDirectoriesListed(true);
 

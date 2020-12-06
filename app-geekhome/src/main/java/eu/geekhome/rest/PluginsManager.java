@@ -7,7 +7,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.JarPluginManager;
 import org.pf4j.PluginWrapper;
-import org.pf4j.ZipPluginManager;
 
 import java.util.List;
 

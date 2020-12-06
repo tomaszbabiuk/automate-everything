@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS configurableInstance (
+  id INTEGER PRIMARY KEY,
+  class TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM configurableInstance;
+
+selectByClass:
+SELECT *
+FROM configurableInstance
+WHERE class = ?;
+
+insert:
+INSERT INTO configurableInstance(id, class)
+VALUES (_rowid_, ?);
