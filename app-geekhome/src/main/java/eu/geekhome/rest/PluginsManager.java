@@ -5,8 +5,10 @@ import com.geekhome.common.configurable.Configurable;
 import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
 import org.pf4j.DefaultPluginManager;
+import org.pf4j.ExtensionFactory;
 import org.pf4j.JarPluginManager;
 import org.pf4j.PluginWrapper;
+import org.pf4j.SingletonExtensionFactory;
 
 import java.util.List;
 
@@ -16,7 +18,12 @@ public class PluginsManager {
     private final DefaultPluginManager _pluginManager;
 
     public PluginsManager() {
-        _pluginManager = new JarPluginManager();
+        _pluginManager = new JarPluginManager() {
+            @Override
+            protected ExtensionFactory createExtensionFactory() {
+                return new SingletonExtensionFactory();
+            }
+        };
         _pluginManager.loadPlugins();
     }
 

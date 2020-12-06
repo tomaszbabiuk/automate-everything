@@ -5,29 +5,42 @@ import eu.geekhome.services.repository.InstanceDto;
 import eu.geekhome.services.repository.Repository;
 
 import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("instances")
 public class InstancesController {
 
-    private PluginsManager _pluginsManager;
+    private final PluginsManager _pluginsManager;
+    private Repository _repository;
 
     @Inject
     public InstancesController(PluginsManager pluginsManager) {
         _pluginsManager = pluginsManager;
+        _repository = pluginsManager.getRepositories().get(0);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<InstanceDto> postInstances(InstanceDto instanceDto) {
-        _pluginsManager.getRepositories().forEach(repository ->
-                repository.saveInstance(instanceDto));
-
-        return null;
+    public void postInstances(InstanceDto instanceDto) {
+        _repository.saveInstance(instanceDto);
     }
 
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public InstanceDto getInstancesOfClass(long id) {
+        return _repository.getInstance(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<InstanceDto> getInstancesOfClass(@QueryParam("class") String clazz) {
+        if (clazz != null) {
+            return _repository.getInstancesOfClazz(clazz);
+        }
+
+        return _repository.getAllInstances();
+    }
 }

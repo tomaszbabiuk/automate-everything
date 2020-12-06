@@ -1,17 +1,22 @@
 CREATE TABLE IF NOT EXISTS configurableInstance (
-  id INTEGER PRIMARY KEY,
-  class TEXT NOT NULL
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  clazz TEXT NOT NULL
 );
 
 selectAll:
 SELECT *
 FROM configurableInstance;
 
-selectByClass:
+selectByClazz:
 SELECT *
 FROM configurableInstance
-WHERE class = ?;
+WHERE clazz = ?;
+
+selectById:
+SELECT *
+FROM configurableInstance
+WHERE id = ?;
 
 insert:
-INSERT INTO configurableInstance(id, class)
-VALUES (_rowid_, ?);
+INSERT INTO configurableInstance(clazz)
+VALUES (?);

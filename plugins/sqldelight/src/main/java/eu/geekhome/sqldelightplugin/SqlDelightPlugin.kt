@@ -11,12 +11,6 @@ import org.pf4j.PluginWrapper
 class SqlDelightPlugin(wrapper: PluginWrapper?) : Plugin(wrapper), PluginMetadata {
     override fun start() {
         println("Starting SQLDelight plugin")
-
-
-        Class.forName("org.sqlite.JDBC")
-
-        val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:datarepository.sqlite")
-        Database.Schema.create(driver)
     }
 
     override fun stop() {

@@ -20,4 +20,16 @@ public class InstanceDto {
         _clazz = clazz;
         _fields = fields;
     }
+
+    public String getClazz() {
+        return _clazz;
+    }
+
+    public Map<String, String> getFields() {
+        return _fields;
+    }
+
+    public long getId() {
+        return _id;
+    }
 }
