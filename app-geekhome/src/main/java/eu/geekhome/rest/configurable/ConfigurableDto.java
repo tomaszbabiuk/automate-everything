@@ -19,19 +19,23 @@ public class ConfigurableDto {
     @SerializedName("titleRes")
     private Resource _titleRes;
 
-    @SerializedName("iconName")
-    private String _iconName;
+    @SerializedName("descriptionRes")
+    private Resource _descriptionRes;
+
+    @SerializedName("iconRaw")
+    private String _iconRaw;
 
     @SerializedName("descendants")
     private List<ConfigurableDto> _descendants;
 
-    public ConfigurableDto(Resource titleRes, String clazz, List<FieldDto> fields,
-                           Resource addNewRes, String iconName, List<ConfigurableDto> descendants) {
+    public ConfigurableDto(Resource titleRes, Resource descriptionRes, String clazz, List<FieldDto> fields,
+                           Resource addNewRes, String iconRaw, List<ConfigurableDto> descendants) {
         _titleRes = titleRes;
+        _descriptionRes = descriptionRes;
         _clazz = clazz;
         _fields = fields;
         _addNewRes = addNewRes;
-        _iconName = iconName;
+        _iconRaw = iconRaw;
         _descendants = descendants;
     }
 

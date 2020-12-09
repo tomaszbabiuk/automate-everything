@@ -27,10 +27,11 @@ public class ConfigurableDtoMapper {
                 .collect(Collectors.toList());
 
         return new ConfigurableDto(configurable.getTitleRes(),
+                configurable.getDescriptionRes(),
                 configurable.getClass().getSimpleName(),
                 fields,
                 configurable.getAddNewRes(),
-                configurable.getIconName(),
+                configurable.getIconRaw(),
                 descendants);
     }
 }

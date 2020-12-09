@@ -91,7 +91,7 @@ export default {
           route: "/control",
           icon: "button"
         },
-        { title: "$vuetify.navigation.house", route: "/house", icon: "house" },
+        { title: "$vuetify.navigation.house", route: "/house/0", icon: "house" },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover",

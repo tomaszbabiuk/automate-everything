@@ -1,113 +1,73 @@
 <template>
-  <v-row class="pa-4" justify="space-between">
-    <v-col cols="5">
-      <v-treeview
-        :active.sync="active"
-        :items="configurables"
-        item-key="class"
-        item-text="titleRes"
-        :open.sync="open"
-        :load-children="fetchActions"
-        activatable
-        color="warning"
-        transition
-      ></v-treeview>
-    </v-col>
+  <div>
+    <v-breadcrumbs :items="breadcrumbs">
+      <template v-slot:divider>
+        <v-icon>mdi-forward</v-icon>
+      </template>
+    </v-breadcrumbs>
 
-    <v-divider vertical></v-divider>
 
-    <v-col class="d-flex text-center">
-      <v-scroll-y-transition mode="out-in">
-        <div
-          v-if="!selected"
-          class="title grey--text text--lighten-1 font-weight-light"
-          style="align-self: center;"
-        >Select item</div>
-        <div v-else>
-          <v-btn @click.stop="openCreator(descendant)" class="mx-1" v-for="descendant in selected.descendants" :key="descendant.clazz">{{descendant.addNewRes}}</v-btn>
-          <v-btn @click.stop="openCreator(selected)" v-if="selected.addNewRes != null">{{selected.addNewRes}}</v-btn>
+      <v-row v-for="n in Math.ceil(configurables.length / 3)" :key="n">
+        <v-col v-for="i in [0,1,2]" :key="i" sm=12 md="6" lg="4" xl="2">
+          <v-card v-if="(n-1)*3+i<configurables.length">
+            <v-card-title class="headline">
+              <div style="transform: scale(0.5);" v-html="configurables[(n-1)*3+i].iconRaw"></div>
 
-          <v-dialog v-model="dialog" persistent fullscreen transition="dialog-bottom-transition">
-              <v-card>
-              <v-toolbar dark color="primary">
-                <v-btn icon dark @click="dialog = false">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-                <v-toolbar-title>{{dialogTitle}}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark text @click="closeCreator">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
-                </v-toolbar-items>
-              </v-toolbar>
-              
-              <v-container>
-                <v-form ref="form" v-if="newInstanceDef">
-                  <component v-for="field in newInstanceDef.fields" :key="field.name" :hint="field.hint"
-                    :counter="field.maxSize" :required="field.required" :id="field.name" :initialValue="null"
-                    v-bind:is="configurableClassToFormComponent(field.class)">
-                  </component>
-                </v-form>
-              </v-container>
-              
-              </v-card>
-          </v-dialog>
-        </div>
-      </v-scroll-y-transition>
-    </v-col>
-  </v-row>
+              {{configurables[(n-1)*3+i].titleRes}}
+            </v-card-title>
+
+            <v-card-subtitle>{{configurables[(n-1)*3+i].descriptionRes}}</v-card-subtitle>
+
+            <v-card-actions>
+              <v-btn text>
+                Browse
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+  </div>
 </template>
 
+
 <script>
-import { client } from "../rest.js"
-import store from '../plugins/vuex'
-import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
+  import { client } from "../rest.js"
+  // import store from '../plugins/vuex'
+  // import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
 
-export default {
-  data: function() {
-    return {
-      dialog: false,
-      active: [],
-      open: [],
-      dialogTitle: "",
-      newInstanceDef: null
-    };
-  },
-  computed: {
-    configurables() {
-      return this.$store.state.configurables;
-    },
-    selected() {
-      if (!this.active.length) return undefined;
 
-      const clazz = this.active[0];
-
-      return this.configurables.find(x => x.class === clazz);
-    }
-  },
-  methods: {
-      configurableClassToFormComponent: function(clazz) {
-        return "configurable-" + clazz.toLowerCase()
+  export default {
+    data: () => ({
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: 'breadcrumbs_dashboard',
+        },
+        {
+          text: 'Link 1',
+          disabled: false,
+          href: 'breadcrumbs_link_1',
+        },
+        {
+          text: 'Link 2',
+          disabled: true,
+          href: 'breadcrumbs_link_2',
+        },
+      ],
+    }),
+    computed: {
+      configurableChunks() {
+        return this.chunkArray(this.$store.state.configurables);
       },
-
-      async fetchActions (item) {
-        return await item.descendants
-      },
-
-      openCreator(configurable) {
-        this.newInstanceDef = JSON.parse(JSON.stringify(configurable))
-        this.dialogTitle = configurable.addNewRes
-        store.commit(NEW_INSTANCE, configurable)
-        this.dialog = true
-      },
-
-      closeCreator() {
-        this.dialog = false
-        client.postNewInstance(store.state.newInstance)
-        store.commit(RESET_INSTANCE)
+      configurables() {
+        return this.$store.state.configurables;
       }
-  },
-  mounted: function() {
-    client.getConfigurables();
+    },
+    methods: {
+    },
+    mounted: function() {
+      client.getConfigurables();
+    }
   }
-};
 </script>

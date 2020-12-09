@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card flat class="pa-3 mb-3" v-for="plugin in plugins" :key="plugin.name">
+    <v-card class="pa-3 mb-3" v-for="plugin in plugins" :key="plugin.name">
       <v-row>
         <v-col md="8" sm="12">
           <div class="caption grey--text">{{$vuetify.lang.t('$vuetify.plugins_list.name')}}</div>

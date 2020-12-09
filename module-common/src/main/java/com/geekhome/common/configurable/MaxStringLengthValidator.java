@@ -12,8 +12,7 @@ public class MaxStringLengthValidator implements Validator<String> {
 
     @Override
     public Resource getReason() {
-        return new Resource("validator_max_length",
-                "Max length is " + _maxLength + " characters",
+        return new Resource("Max length is " + _maxLength + " characters",
                 "Maksymalna długość to " + _maxLength + " znaków");
     }
 

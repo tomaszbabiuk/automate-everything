@@ -1,7 +1,7 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
-import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_ROOT_CONFIGURABLES} from './plugins/vuex'
+import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_ROOT_CONFIGURABLES, REFRESH_INSTANCES} from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -80,6 +80,22 @@ export const client = {
 
                 store.commit(SET_ERROR, errorData)
               })
+  },
+
+  getInstancesOfClazz: function(clazz) {
+    return axiosInstance
+      .get("rest/instances?class=" + clazz)
+      .then(response => { store.commit(REFRESH_INSTANCES, response.data)})
+      .catch((innerException) => {
+        var errorData = {
+          message: "$vuetify.rest.error.getting_instances",
+          actionTitle: "$vuetify.common.retry",
+          actionCallback: () => this.getAllInstancesOfClazz(clazz),
+          innerException: innerException
+        };
+
+        store.commit(SET_ERROR, errorData)
+      })
   },
 
   getConfigurables: function() {

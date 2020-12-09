@@ -23,12 +23,12 @@ public class ShellyPlugin extends Plugin implements PluginMetadata {
 
     @Override
     public Resource getName() {
-        return new Resource("SHELLY:plugin_name", "Shelly", "Shelly");
+        return new Resource("Shelly", "Shelly");
     }
 
     @Override
     public Resource getDescription() {
-        return new Resource("SHELLY:plugin_description",
+        return new Resource(
                 "Unofficial support for Shelly devices",
                 "Nieoficjalne wsparcie dla urządzeń Shelly");
     }

@@ -5,8 +5,7 @@ import com.geekhome.common.localization.Resource;
 public class RequiredValidator implements Validator<String> {
     @Override
     public Resource getReason() {
-        return new Resource("validator_required_field",
-                "This field is required",
+        return new Resource("This field is required",
                 "To pole jest wymagane");
     }
 

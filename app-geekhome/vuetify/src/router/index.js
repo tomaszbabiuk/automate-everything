@@ -36,7 +36,7 @@ const routes = [
     component: Plugins
   },
   {
-    path: '/house',
+    path: '/house/:id',
     name: 'house',
     component: House
   },

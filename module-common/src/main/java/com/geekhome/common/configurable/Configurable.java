@@ -10,7 +10,8 @@ public interface Configurable extends ExtensionPoint {
     Class<? extends Configurable> getParent();
     Resource getAddNewRes();
     Resource getTitleRes();
-    String getIconName();
+    Resource getDescriptionRes();
+    String getIconRaw();
 }
 
 /*
