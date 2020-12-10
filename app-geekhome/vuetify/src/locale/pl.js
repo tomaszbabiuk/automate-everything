@@ -35,7 +35,8 @@ export default {
             disabling_plugin: "Nie udało się wyłączyć rozszerzenia: błąd połączenia.",
             getting_plugins: "Nie udało się pobrać rozszerzeń: błąd połączenia.",
             getting_configurables: "Nie udało się pobrać obiektów konfiguracyjnych: błąd połączenia.",
-            posting_instance: "Nie udało się zapisać nowego obiektu w bazie: błąd połącznia."
+            posting_instance: "Nie udało się zapisać nowego obiektu w bazie: błąd połącznia.",
+            getting_instance: "Nie udało się pobrać instancji obiektów: błąd połącznia."
         }
     }
 }

@@ -4,7 +4,8 @@ import Control from '../views/Control'
 import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
-import House from '../views/House'
+import Configurables from '../views/Configurables'
+import Instances from '../views/Instances'
 import Discover from '../views/Discover'
 
 Vue.use(VueRouter)
@@ -36,9 +37,14 @@ const routes = [
     component: Plugins
   },
   {
-    path: '/house/:id',
-    name: 'house',
-    component: House
+    path: '/configurables/:clazz',
+    name: 'configurables',
+    component: Configurables
+  },
+  {
+    path: '/instances/:clazz',
+    name: 'instances',
+    component: Instances
   },
   {
     path: '/',

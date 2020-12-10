@@ -30,7 +30,7 @@ public class InstancesController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public InstanceDto getInstancesOfClass(long id) {
+    public InstanceDto getInstancesById(@PathParam("id") long id) {
         return _repository.getInstance(id);
     }
 

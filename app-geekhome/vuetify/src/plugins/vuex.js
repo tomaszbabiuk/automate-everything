@@ -10,14 +10,14 @@ export const UPDATE_PLUGIN = 'UPDATE_PLUGIN'
 export const NEW_INSTANCE = 'NEW_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE' 
 export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
-export const REFRESH_INSTANCES = 'REFRESH_INSTANCES'
+export const SET_INSTANCES = 'SET_INSTANCES'
 
 export default new Vuex.Store({
   state: {
     error: null,
     plugins: [],
     configurables: [],
-    instances: [],
+    instances: {},
     newInstance: null,
     counter: 0,
   },
@@ -63,8 +63,16 @@ export default new Vuex.Store({
       state.newInstance.fields[payload.name] = payload.value
     },
 
-    [REFRESH_INSTANCES](state, instances) {
+    [SET_INSTANCES](state, instances) {
       state.instances = instances
+      // instances.forEach(element => {
+      //   var key = element.class
+      //   if (!Object.prototype.hasOwnProperty.call(state.instances, key)) {
+      //     state.instances['' + key] = []
+      //   }
+
+      //   state.instances['' + key].push(element)
+      // })
     },
   }
 })
