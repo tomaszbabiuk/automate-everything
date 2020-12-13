@@ -1,7 +1,7 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
-import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_ROOT_CONFIGURABLES, SET_INSTANCES} from './plugins/vuex'
+import {SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_CONFIGURABLES, SET_INSTANCES} from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -101,7 +101,7 @@ export const client = {
   getConfigurables: function() {
     return axiosInstance
       .get("rest/configurables")
-      .then(response => { store.commit(SET_ROOT_CONFIGURABLES, response.data)})
+      .then(response => { store.commit(SET_CONFIGURABLES, response.data)})
       .catch((innerException) => {
         var errorData = {
           message: "$vuetify.rest.error.getting_configurables",

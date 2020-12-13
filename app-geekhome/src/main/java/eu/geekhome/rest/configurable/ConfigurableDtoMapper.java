@@ -12,7 +12,7 @@ public class ConfigurableDtoMapper {
     @Inject
     private FieldDefinitionDtoMapper _fieldDefinitionDtoMapper;
 
-    public ConfigurableDto map(Configurable configurable, List<Configurable> allConfigurables) throws MappingException {
+    public ConfigurableDto map(Configurable configurable) throws MappingException {
         List<FieldDto> fields = configurable.getFieldDefinitions() == null ? null : configurable
                 .getFieldDefinitions()
                 .stream()
@@ -20,18 +20,12 @@ public class ConfigurableDtoMapper {
                 .collect(Collectors.toList());
 
 
-        List<ConfigurableDto> descendants = allConfigurables
-                .stream()
-                .filter((x) -> x.getParent() != null && x.getParent().equals(configurable.getClass()))
-                .map((x) -> this.map(x, allConfigurables))
-                .collect(Collectors.toList());
-
         return new ConfigurableDto(configurable.getTitleRes(),
                 configurable.getDescriptionRes(),
                 configurable.getClass().getSimpleName(),
+                configurable.getParent() != null ? configurable.getParent().getSimpleName() : null,
                 fields,
                 configurable.getAddNewRes(),
-                configurable.getIconRaw(),
-                descendants);
+                configurable.getIconRaw());
     }
 }

@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export const SET_ERROR = 'SET_ERROR' 
 export const SET_PLUGINS = 'SET_PLUGINS' 
-export const SET_ROOT_CONFIGURABLES= 'SET_ROOT_CONFIGURABLES' 
+export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
 export const NEW_INSTANCE = 'NEW_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE' 
@@ -30,7 +30,7 @@ export default new Vuex.Store({
       state.plugins = plugins
     },
 
-    [SET_ROOT_CONFIGURABLES](state, configurables) {
+    [SET_CONFIGURABLES](state, configurables) {
       state.configurables = configurables
     },
 
@@ -65,14 +65,6 @@ export default new Vuex.Store({
 
     [SET_INSTANCES](state, instances) {
       state.instances = instances
-      // instances.forEach(element => {
-      //   var key = element.class
-      //   if (!Object.prototype.hasOwnProperty.call(state.instances, key)) {
-      //     state.instances['' + key] = []
-      //   }
-
-      //   state.instances['' + key].push(element)
-      // })
     },
   }
 })

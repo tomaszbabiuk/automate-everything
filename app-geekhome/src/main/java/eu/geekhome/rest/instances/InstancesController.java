@@ -12,12 +12,10 @@ import java.util.List;
 @Path("instances")
 public class InstancesController {
 
-    private final PluginsManager _pluginsManager;
-    private Repository _repository;
+    private final Repository _repository;
 
     @Inject
     public InstancesController(PluginsManager pluginsManager) {
-        _pluginsManager = pluginsManager;
         _repository = pluginsManager.getRepositories().get(0);
     }
 

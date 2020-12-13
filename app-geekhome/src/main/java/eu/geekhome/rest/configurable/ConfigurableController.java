@@ -1,6 +1,5 @@
 package eu.geekhome.rest.configurable;
 
-import com.geekhome.common.configurable.Configurable;
 import eu.geekhome.rest.PluginsManager;
 
 import javax.inject.Inject;
@@ -26,15 +25,10 @@ public class ConfigurableController {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<ConfigurableDto> getConfigurables(@Context HttpServletRequest request) {
-
-        List<Configurable> allConfigurables = _pluginsManager
-                .getConfigurables();
-
         return _pluginsManager
                 .getConfigurables()
                 .stream()
-                .filter((x) -> x.getParent() == null)
-                .map((x) -> _configurableDtoMapper.map(x, allConfigurables))
+                .map(_configurableDtoMapper::map)
                 .collect(Collectors.toList());
     }
 }
