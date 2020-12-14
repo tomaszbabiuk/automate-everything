@@ -9,6 +9,7 @@ export default {
         alerts:     "Alarmy",
         control:    "Sterowanie",
         house:      "Dom",
+        tags:       "Tagi",
         discover:   "Odkrywanie",
         settings:   "Ustawienia",
         plugins:    "Rozszerzenia",

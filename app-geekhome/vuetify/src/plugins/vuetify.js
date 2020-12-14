@@ -8,6 +8,7 @@ import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
 import IconEqualizer from '../components/icons/IconEqualizer'
 import IconHouse from '../components/icons/IconHouse'
+import IconTag from '../components/icons/IconTag'
 import IconInbox from '../components/icons/IconInbox'
 import IconPlugin from '../components/icons/IconPlugin'
 import IconRobot from '../components/icons/IconRobot'
@@ -46,6 +47,9 @@ export default new Vuetify({
       },
       house: {
         component: IconHouse
+      },
+      tag: {
+        component: IconTag
       },
       inbox: {
         component: IconInbox

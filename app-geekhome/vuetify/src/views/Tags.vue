@@ -1,129 +1,195 @@
 <template>
   <div>
-
-
     <v-row>
-      <v-col sm="11" md="11" lg="11" xl="11">
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-forward</v-icon>
-          </template>
-        </v-breadcrumbs>
-      </v-col>
-      <v-col sm="1" md="1" lg="1" xl="1">
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          small
-          color="pink"
+      <v-col col="5">
+        <v-treeview
+          activatable
+          :active.sync="active"
+          item-key="id"
+          item-text="name"
+          color="primary"
+          return-object
+          :items="items"
         >
-        <v-icon dark>
-          mdi-plus
-        </v-icon>
-      </v-btn>
+        </v-treeview>
+      </v-col>
+
+      <v-divider vertical></v-divider>
+
+      <v-col v-if="active.length > 0">
+        <div v-if="active[0].parentId === null">Selected category:</div>
+        <div v-else>Selected tag:</div>
+        <div class="text-h3">{{ active[0].name }}</div>
+        <v-divider></v-divider>
+        <v-btn
+          v-if="active[0].parentId === null"
+          class="ma-2"
+          depressed
+          @click.stop="openNewTagDialog()"
+          color="primary"
+        >
+          Add tag
+        </v-btn>
+        <v-btn depressed class="ma-2" @click.stop="openNewTagDialog()">
+          Edit
+        </v-btn>
+        <v-btn class="ma-2" depressed @click.stop="openNewTagDialog()">
+          Remove
+        </v-btn>
+        or
+        <v-btn
+          class="ma-2"
+          depressed
+          @click.stop="openNewCategoryDialog()"
+          color="primary"
+        >
+          Add category
+        </v-btn>
+      </v-col>
+      <v-col v-else>
+        <v-btn
+          class="ma-2"
+          depressed
+          @click.stop="openNewCategoryDialog()"
+          color="primary"
+        >
+          Add category
+        </v-btn>
       </v-col>
     </v-row>
 
-    <v-row v-for="n in Math.ceil(configurables.length / 3)" :key="n">
-      <v-col v-for="i in [0,1,2]" :key="i" sm="12" md="6" lg="4" xl="2">
-        <v-card v-if="(n-1)*3+i<configurables.length">
-          <v-card-title class="headline">
-            <div style="transform: scale(0.5);" v-html="configurables[(n-1)*3+i].iconRaw"></div>
-            {{configurables[(n-1)*3+i].titleRes}}
-          </v-card-title>
+    <v-dialog
+      v-model="tagDialog"
+      persistent
+      transition="dialog-bottom-transition"
+      width="500"
+    >
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="closeNewTagDialog()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>New tag</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text @click="addNewTag()">{{
+              $vuetify.lang.t("$vuetify.configurables.add")
+            }}</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
 
-          <v-card-subtitle>{{configurables[(n-1)*3+i].descriptionRes}}</v-card-subtitle>
+        <v-container>
+          <v-form ref="form">
+            <v-text-field
+              v-model="tagName"
+              label="Name"
+              :required="true"
+              :counter="50"
+            ></v-text-field>
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-dialog>
 
-          <v-card-actions>
-            <v-btn text  @click="browse(configurables[(n-1)*3+i])">
-              Browse
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-dialog
+      v-model="categoryDialog"
+      persistent
+      transition="dialog-bottom-transition"
+      width="500"
+    >
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="closeNewCategoryDialog()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>New tag category</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text @click="addNewCategory()">{{
+              $vuetify.lang.t("$vuetify.configurables.add")
+            }}</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
 
-    <v-card tile v-for="instance in instances" :key="instance.id">
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{instance.fields['name']}}</v-list-item-title>
-          <v-list-item-subtitle>{{instance.fields['description']}}</v-list-item-subtitle>
-        </v-list-item-content>
-        
-    <v-btn icon>
-      <v-icon>mdi-pencil</v-icon>
-    </v-btn>
-          <v-btn icon>
-      <v-icon>mdi-delete</v-icon>
-    </v-btn>
-      </v-list-item>
-    </v-card>
+        <v-container>
+          <v-form ref="form">
+            <v-text-field
+              v-model="tagName"
+              label="Name"
+              :required="true"
+              :counter="50"
+            ></v-text-field>
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-  import { client } from "../rest.js"
-  // import store from '../plugins/vuex'
-  // import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
-
-
-  export default {
-    data: () => ({
-    }),
-    computed: {
-      breadcrumbs() {
-        var breadcrumbs = []
-        breadcrumbs.push({
-          text: 'House',
-          disabled: false,
-          href: '/configurables/null',
-        })
-
-        var selectedClass = this.getConfigurableClazz()
-        console.log(selectedClass)
-        
-
-        return breadcrumbs
-
+export default {
+  data: () => ({
+    categoryDialog: false,
+    tagDialog: false,
+    tagName: "",
+    active: [],
+    items: [
+      {
+        id: 1,
+        name: "Applications",
+        parentId: null,
+        children: [
+          { id: 2, name: "Calendar : app", parentId: 1 },
+          { id: 3, name: "Chrome : app", parentId: 1 },
+          { id: 4, name: "Webstorm : app", parentId: 1 },
+        ],
       },
-
-      configurables() {
-        var clazz = this.getConfigurableClazz()
-        var filterFunction = (clazz === "null") 
-          ? function(x) { return x.parentClass == null } 
-          : function(x) { return x.parentClass === clazz }
-        
-        return this.$store.state.configurables.filter(filterFunction);
+      {
+        id: 15,
+        parentId: null,
+        name: "Downloads",
+        children: [
+          { id: 16, name: "October : pdf", parentId: 15 },
+          { id: 17, name: "November : pdf", parentId: 15 },
+          { id: 18, name: "Tutorial : html", parentId: 15 },
+        ],
       },
-
-      instances : function() {
-        return this.$store.state.instances
-      }
+    ],
+  }),
+  methods: {
+    openNewCategoryDialog: function () {
+      this.categoryDialog = true;
     },
-    methods: {
-      getConfigurableClazz: function() {
-        return this.$route.params.clazz
-      },
-
-      browse: function(configurable) {
-        this.$router.push({ name: 'configurables', params: { clazz: configurable.class } })
-        this.refresh()
-
-        // if (configurable.descendants.length > 0) {
-        //   this.$router.push({ name: 'configurables', params: { clazz: configurable.class } })
-        // } else {
-        //   this.$router.push({ name: 'instances', params: { clazz: configurable.class } })
-        // }
-      },
-
-      refresh() {
-        client.getConfigurables();
-        client.getInstancesOfClazz(this.getConfigurableClazz());
-      }
+    closeNewCategoryDialog: function () {
+      this.categoryDialog = false;
     },
-    mounted: function() {
-      this.refresh()
-    }
-  }
+    add: function () {
+      this.items.push({
+        id: 16,
+        name: this.tagName,
+        children: [],
+      });
+      
+      this.closeNewCategoryDialog()
+    },
+    openNewTagDialog: function () {
+      this.tagDialog = true;
+    },
+    closeNewTagDialog: function () {
+      this.tagDialog = false;
+    },
+    addNewTag: function () {
+      this.items[0].children.push({
+        id: 17,
+        name: this.tagName,
+        children: [],
+      });
+      
+      this.closeNewTagDialog()
+    },
+  },
+  mounted: function () {
+    console.log(this.getSelectedItem(15));
+  },
+};
 </script>

@@ -9,6 +9,7 @@ export default {
         alerts:     "Alerts",
         control:    "Control",
         house:      "House",
+        tags:       "Tags",
         discover:   "Discovery",
         settings:   "Settings",
         plugins:    "Plugins",

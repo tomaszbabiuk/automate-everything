@@ -5,6 +5,7 @@ import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
 import Configurables from '../views/Configurables'
+import Tags from '../views/Tags'
 import Instances from '../views/Instances'
 import Discover from '../views/Discover'
 
@@ -40,6 +41,11 @@ const routes = [
     path: '/configurables/:clazz',
     name: 'configurables',
     component: Configurables
+  },
+  {
+    path: '/tags',
+    name: 'tags',
+    component: Tags
   },
   {
     path: '/instances/:clazz',

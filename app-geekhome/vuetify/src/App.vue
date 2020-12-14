@@ -85,13 +85,25 @@ export default {
           route: "/timeline",
           icon: "timeline"
         },
-        { title: "$vuetify.navigation.alerts", route: "/alerts", icon: "bell" },
+        { 
+          title: "$vuetify.navigation.alerts",
+          route: "/alerts", 
+          icon: "bell" },
         {
           title: "$vuetify.navigation.control",
           route: "/control",
           icon: "button"
         },
-        { title: "$vuetify.navigation.house", route: "/configurables/null", icon: "house" },
+        { 
+          title: "$vuetify.navigation.house", 
+          route: "/configurables/null", 
+          icon: "house" 
+        },
+        { 
+          title: "$vuetify.navigation.tags", 
+          route: "/tags", 
+          icon: "tag" 
+        },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover",
