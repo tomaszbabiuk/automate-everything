@@ -12,7 +12,16 @@ export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 export const SET_INSTANCES = 'SET_INSTANCES'
 
+export const CLEAR_TAGS = 'CLEAR_TAGS'
 export const POST_TAG = 'POST_TAG'
+
+function mapTagDtoToTagVM(tagDto) {
+  var result = JSON.parse(JSON.stringify(tagDto))
+  if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
+    result['children'] = []
+  }
+  return result
+}
 
 export default new Vuex.Store({
   state: {
@@ -70,18 +79,17 @@ export default new Vuex.Store({
       state.instances = instances
     },
 
-    [POST_TAG](state, tagVM) {
-      if (tagVM.parentId === null) {
-        state.tags.push(tagVM)
+    [CLEAR_TAGS](state) {
+      state.tags = []
+    },
+
+    [POST_TAG](state, tagDto) {
+      if (tagDto.parentId === null) {
+        state.tags.push(mapTagDtoToTagVM(tagDto))
       } else {
         state.tags.forEach(element => {
-          if (element.id === tagVM.parentId) {
-
-            if (!Object.prototype.hasOwnProperty.call(element, 'children')) {
-              element['children'] = []
-            }
-
-            element.children.push(tagVM)
+          if (element.id === tagDto.parentId) {
+            element.children.push(mapTagDtoToTagVM(tagDto))
           }
         })
 
