@@ -25,9 +25,22 @@ public class TagsController {
         return _repository.saveTag(tagDto);
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void putTag(TagDto tagDto) {
+        _repository.updateTag(tagDto);
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<TagDto> getAllTags() {
         return _repository.getAllTags();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void deleteTag(@PathParam("id") long id) {
+        _repository.deleteTag(id);
     }
 }

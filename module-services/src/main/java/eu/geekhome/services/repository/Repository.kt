@@ -12,4 +12,5 @@ interface Repository : ExtensionPoint {
     fun getAllTags(): List<TagDto>
     fun saveTag(tag: TagDto): Long
     fun deleteTag(id: Long)
+    fun updateTag(tagDto: TagDto)
 }

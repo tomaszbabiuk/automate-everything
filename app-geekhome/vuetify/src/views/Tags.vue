@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-banner single-line>
+    <v-banner single-line sticky="true">
       <div class="text-caption" v-if="items.length > 0 && active.length == 0">Select item for more actions</div>
       <template v-slot:actions>
-        <v-btn icon v-if="active.length > 0" @click.stop="editSelected()">
+        <v-btn icon v-if="active.length > 0" @click.stop="openEditActiveTagDialog()">
           <v-icon dark> mdi-pencil </v-icon>
         </v-btn>
 
-        <v-btn icon v-if="active.length > 0">
+        <v-btn icon v-if="active.length > 0" @click.stop="removeActiveTag()">
           <v-icon dark> mdi-delete </v-icon>
         </v-btn>
 
@@ -98,6 +98,7 @@ export default {
     },
     openAddCategoryDialog: function () {
       this.dialog = {
+        name: '',
         titleText: "Add new category",
         actionText: "Add",
         action: this.addNewCategory,
@@ -113,29 +114,50 @@ export default {
         show: true
       };
     },
+    openEditActiveTagDialog: function () {
+      this.dialog = {
+        name: this.active[0].name,
+        titleText: "Edit tag",
+        actionText: "Edit",
+        action: this.editSelectedTag,
+        show: true
+      };
+    },
     addNewCategory: function () {
       let tagDto = {
-        name: this.editedTag.name,
+        id: null,
+        parentId: null,
+        name: this.dialog.name,
       }
-      client.postNewTag(tagDto);
+      client.postTag(tagDto);
       this.closeDialog();
     },
     addNewTag: function () {
       var tagDto = {
+        id: null,
         parentId: this.active[0].id,
         name: this.dialog.name,
       };
 
-      client.postNewTag(tagDto);
+      client.postTag(tagDto);
       this.closeDialog();
     },
-    editSelected: function() {
-      // this.tagName = this.active[0].name
-      // this.tagDialog = true
+    editSelectedTag: function() {
+      var tagDto = {
+        name: this.dialog.name,
+        id: this.active[0].id,
+        parentId: this.active[0].parentId
+      };
+
+      client.putTag(tagDto);
+      this.closeDialog();
+    },
+    removeActiveTag: function() {
+      client.deleteTag(this.active[0].id)
     }
   },
   mounted: function () {
-    client.getTags();
+    client.getTags()
   },
 };
 </script>

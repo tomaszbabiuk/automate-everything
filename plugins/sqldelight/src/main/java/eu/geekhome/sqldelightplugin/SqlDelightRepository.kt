@@ -84,6 +84,12 @@ class SqlDelightRepository : Repository {
         }
     }
 
+    override fun updateTag(tagDto: TagDto) {
+        database.transaction {
+            database.tagQueries.update(tagDto.parentId, tagDto.name, tagDto.id)
+        }
+    }
+
     private fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstance) : InstanceDto {
         val fieldsMap = HashMap<String, String?>()
 

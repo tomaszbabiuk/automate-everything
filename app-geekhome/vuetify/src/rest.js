@@ -2,7 +2,7 @@ import axios from 'axios'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
 import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_CONFIGURABLES, SET_INSTANCES } from './plugins/vuex'
-import { CLEAR_TAGS, POST_TAG } from './plugins/vuex'
+import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -121,7 +121,7 @@ export const client = {
       .then(response => {
         store.commit(CLEAR_TAGS)
         response.data.forEach(element => {
-          store.commit(POST_TAG, element)
+          store.commit(ADD_TAG, element)
         })
       })
       .catch((innerException) => {
@@ -136,18 +136,54 @@ export const client = {
       })
   },
 
-  postNewTag: function (newTag) {
+  postTag: function (newTag) {
     return axiosInstance
       .post("rest/tags", newTag)
       .then(response => {
         newTag.id = response.data
-        store.commit(POST_TAG, newTag)
+        store.commit(ADD_TAG, newTag)
       })
       .catch((innerException) => {
         var errorData = {
-          message: "$vuetify.rest.error.posting_tag",
+          message: "$vuetify.rest.error.putting_tag",
           actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.postNewTag(newTag),
+          actionCallback: () => this.postTag(newTag),
+          innerException: innerException
+        };
+
+        store.commit(SET_ERROR, errorData)
+      })
+  },
+
+  putTag: function (newTag) {
+    return axiosInstance
+      .put("rest/tags", newTag)
+      .then(
+        store.commit(UPDATE_TAG, newTag)
+      )
+      .catch((innerException) => {
+        var errorData = {
+          message: "$vuetify.rest.error.putting_tag",
+          actionTitle: "$vuetify.common.retry",
+          actionCallback: () => this.putTag(newTag),
+          innerException: innerException
+        };
+
+        store.commit(SET_ERROR, errorData)
+      })
+  },
+
+  deleteTag: function (id) {
+    return axiosInstance
+      .delete("rest/tags/" +id)
+      .then(
+        store.commit(REMOVE_TAG, id)
+      )
+      .catch((innerException) => {
+        var errorData = {
+          message: "$vuetify.rest.error.deleting_tag",
+          actionTitle: "$vuetify.common.retry",
+          actionCallback: () => this.deleteTag(id),
           innerException: innerException
         };
 

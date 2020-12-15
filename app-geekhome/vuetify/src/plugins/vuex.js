@@ -13,7 +13,9 @@ export const UPDATE_INSTANCE = 'UPDATE_INSTANCE'
 export const SET_INSTANCES = 'SET_INSTANCES'
 
 export const CLEAR_TAGS = 'CLEAR_TAGS'
-export const POST_TAG = 'POST_TAG'
+export const ADD_TAG = 'ADD_TAG'
+export const UPDATE_TAG = 'UPDATE_TAG'
+export const REMOVE_TAG = 'REMOVE_TAG'
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -83,7 +85,7 @@ export default new Vuex.Store({
       state.tags = []
     },
 
-    [POST_TAG](state, tagDto) {
+    [ADD_TAG](state, tagDto) {
       if (tagDto.parentId === null) {
         state.tags.push(mapTagDtoToTagVM(tagDto))
       } else {
@@ -92,8 +94,37 @@ export default new Vuex.Store({
             element.children.push(mapTagDtoToTagVM(tagDto))
           }
         })
-
       }
+    },
+
+    [UPDATE_TAG](state, tagDto) {
+      state.tags.forEach( parentLevelTag => {
+        if (parentLevelTag.id === tagDto.id) {
+          parentLevelTag.name = tagDto.name
+          parentLevelTag.parentId = tagDto.parentId
+        }
+
+        parentLevelTag.children.forEach( childLevelTag => {
+          if (childLevelTag.id === tagDto.id) {
+            childLevelTag.name = tagDto.name
+            childLevelTag.parentId = tagDto.parentId
+          }
+        })
+      })
+    },
+
+    [REMOVE_TAG](state, id) {
+      state.tags.forEach( (parentLevelTag, parentIndex) => {
+        if (parentLevelTag.id === id) {
+          Vue.delete(state.tags, parentIndex)
+        } else {
+          parentLevelTag.children.forEach((childLevelTag, childIndex) => {
+            if (childLevelTag.id === id) {
+              Vue.delete(parentLevelTag.children, childIndex);
+            }
+          })
+        }
+      })
     }
   }
 })
