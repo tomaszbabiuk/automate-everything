@@ -105,7 +105,7 @@
           <v-toolbar-title>New tag category</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="addNewCategory()">{{
+            <v-btn dark text @click="addNewTagCategory()">{{
               $vuetify.lang.t("$vuetify.configurables.add")
             }}</v-btn>
           </v-toolbar-items>
@@ -127,69 +127,61 @@
 </template>
 
 <script>
+import { client } from "../rest.js"
+
+
 export default {
   data: () => ({
     categoryDialog: false,
     tagDialog: false,
     tagName: "",
     active: [],
-    items: [
-      {
-        id: 1,
-        name: "Applications",
-        parentId: null,
-        children: [
-          { id: 2, name: "Calendar : app", parentId: 1 },
-          { id: 3, name: "Chrome : app", parentId: 1 },
-          { id: 4, name: "Webstorm : app", parentId: 1 },
-        ],
-      },
-      {
-        id: 15,
-        parentId: null,
-        name: "Downloads",
-        children: [
-          { id: 16, name: "October : pdf", parentId: 15 },
-          { id: 17, name: "November : pdf", parentId: 15 },
-          { id: 18, name: "Tutorial : html", parentId: 15 },
-        ],
-      },
-    ],
   }),
+  computed: {
+    items : function() {
+      return this.$store.state.tags
+    }
+  },
   methods: {
     openNewCategoryDialog: function () {
+      this.tagName = ''
       this.categoryDialog = true;
     },
     closeNewCategoryDialog: function () {
       this.categoryDialog = false;
     },
-    add: function () {
-      this.items.push({
-        id: 16,
+    addNewTagCategory: function () {
+      var newTag = {
+        parentId: null,
         name: this.tagName,
-        children: [],
-      });
+        children: []
+      };
+
+      client.postNewTag(newTag)
       
       this.closeNewCategoryDialog()
     },
     openNewTagDialog: function () {
+      this.tagName = ''
       this.tagDialog = true;
     },
     closeNewTagDialog: function () {
       this.tagDialog = false;
     },
     addNewTag: function () {
-      this.items[0].children.push({
-        id: 17,
+      var newTag = {
+        parentId: this.active[0].id,
         name: this.tagName,
-        children: [],
-      });
+        children: []        
+      };
+
+      client.postNewTag(newTag)
       
       this.closeNewTagDialog()
     },
   },
   mounted: function () {
-    console.log(this.getSelectedItem(15));
+    client.getTags()
   },
 };
 </script>

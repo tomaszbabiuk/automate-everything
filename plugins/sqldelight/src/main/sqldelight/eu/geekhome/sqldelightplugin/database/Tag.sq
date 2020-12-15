@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS tag (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  parent_id INTEGER,
+  name TEXT NOT NULL,
+  FOREIGN KEY(parent_id) REFERENCES tag(id)
+);
+
+selectAll:
+SELECT *
+FROM tag;
+
+insert:
+INSERT INTO tag(parent_id, name)
+VALUES (?,?);
+
+delete:
+DELETE FROM tag
+WHERE id == ?;

@@ -38,6 +38,8 @@ export default {
             getting_configurables: "Unable to download configuration objects: please check internet connection.",
             posting_instance: "Unable to post new instance object: please check internet connection.",
             getting_instances: "Unable to get instances: please check internet connection.",
+            getting_tags: "Unable to get tags: please check internet connection.",
+            posting_tag: "Unable to post tag: please check internet connection.",
         }
     }
 }

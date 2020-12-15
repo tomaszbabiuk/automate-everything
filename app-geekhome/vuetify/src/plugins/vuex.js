@@ -12,12 +12,15 @@ export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 export const SET_INSTANCES = 'SET_INSTANCES'
 
+export const POST_TAG = 'POST_TAG'
+
 export default new Vuex.Store({
   state: {
     error: null,
     plugins: [],
     configurables: [],
     instances: {},
+    tags: [],
     newInstance: null,
     counter: 0,
   },
@@ -66,5 +69,23 @@ export default new Vuex.Store({
     [SET_INSTANCES](state, instances) {
       state.instances = instances
     },
+
+    [POST_TAG](state, tagVM) {
+      if (tagVM.parentId === null) {
+        state.tags.push(tagVM)
+      } else {
+        state.tags.forEach(element => {
+          if (element.id === tagVM.parentId) {
+
+            if (!Object.prototype.hasOwnProperty.call(element, 'children')) {
+              element['children'] = []
+            }
+
+            element.children.push(tagVM)
+          }
+        })
+
+      }
+    }
   }
 })
