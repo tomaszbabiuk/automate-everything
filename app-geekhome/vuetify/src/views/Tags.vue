@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-banner single-line sticky="true">
+    <v-banner single-line>
       <div class="text-caption" v-if="items.length > 0 && active.length == 0">Select item for more actions</div>
       <template v-slot:actions>
         <v-btn icon v-if="active.length > 0" @click.stop="openEditActiveTagDialog()">
@@ -58,12 +58,15 @@
         </v-toolbar>
 
         <v-container>
-          <v-form ref="form">
+          <v-form v-model="dialog.valid" ref="form" lazy-validation>
             <v-text-field
+              :rules="[v => !!v || 'Name is required', v => (v && v.length <= 50) || 'Name must be less than 50 characters']"
+              ref="name"
               v-model="dialog.name"
               label="Name"
-              :required="true"
-              :counter="50"
+              required="true"
+              counter="50"
+              validate-on-blur="true"
             ></v-text-field>
           </v-form>
         </v-container>
@@ -79,6 +82,7 @@ export default {
   data: () => ({
     categoryDialog: false,
     dialog: {
+      valid: true,
       show: false,
       titleText: 'title text',
       actionText: 'action text',
@@ -93,6 +97,11 @@ export default {
     },
   },
   methods: {
+    focusOnNameLazy: function() {
+      setTimeout(() => {
+        this.$refs.name.focus()
+      }, 200)
+    },
     closeDialog: function () {
       this.dialog.show = false;
     },
@@ -104,6 +113,7 @@ export default {
         action: this.addNewCategory,
         show: true
       }
+      this.focusOnNameLazy()
     },
     openAddTagDialog: function () {
       this.dialog = {
@@ -112,7 +122,8 @@ export default {
         actionText: "Add",
         action: this.addNewTag,
         show: true
-      };
+      }
+      this.focusOnNameLazy()
     },
     openEditActiveTagDialog: function () {
       this.dialog = {
@@ -121,36 +132,43 @@ export default {
         actionText: "Edit",
         action: this.editSelectedTag,
         show: true
-      };
+      }
+      this.focusOnNameLazy()
     },
     addNewCategory: function () {
-      let tagDto = {
-        id: null,
-        parentId: null,
-        name: this.dialog.name,
+      if (this.$refs.form.validate()) {
+        let tagDto = {
+          id: null,
+          parentId: null,
+          name: this.dialog.name,
+        }
+        client.postTag(tagDto);
+        this.closeDialog();
       }
-      client.postTag(tagDto);
-      this.closeDialog();
     },
     addNewTag: function () {
-      var tagDto = {
-        id: null,
-        parentId: this.active[0].id,
-        name: this.dialog.name,
-      };
+      if (this.$refs.form.validate()) {
+        var tagDto = {
+          id: null,
+          parentId: this.active[0].id,
+          name: this.dialog.name,
+        };
 
-      client.postTag(tagDto);
-      this.closeDialog();
+        client.postTag(tagDto);
+        this.closeDialog();
+      }
     },
     editSelectedTag: function() {
-      var tagDto = {
-        name: this.dialog.name,
-        id: this.active[0].id,
-        parentId: this.active[0].parentId
-      };
+      if (this.$refs.form.validate()) {
+        var tagDto = {
+          name: this.dialog.name,
+          id: this.active[0].id,
+          parentId: this.active[0].parentId
+        };
 
-      client.putTag(tagDto);
-      this.closeDialog();
+        client.putTag(tagDto);
+        this.closeDialog();
+      }
     },
     removeActiveTag: function() {
       client.deleteTag(this.active[0].id)
