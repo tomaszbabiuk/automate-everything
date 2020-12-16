@@ -23,12 +23,15 @@ export default {
         enable: "Włącz",
         disable: "Wyłącz",
     },
-    configurables: {
-        add: "Dodaj",
-        edit: "Edytuj",
-    },
     common: {
         retry: "Ponów",
+        add: "Dodaj",
+        edit: "Edytuj",
+        name: "Nazwa",
+    },
+    validation: {
+        field_required: "To pole jest wymagane",
+        field_lessThan50: "To pole musi zawierać mniej niż 50 znaków",
     },
     rest: {
         error: {
@@ -41,5 +44,9 @@ export default {
             getting_tags: "Nie udało się pobrać tagów: błąd połącznia?",
             posting_tag: "Nie udało się zapisać taga: błąd połącznia?",
         }
+    },
+    tags: {
+        add_tag: "Dodaj tag",
+        add_category: "Dodaj kategorię",
     }
 }

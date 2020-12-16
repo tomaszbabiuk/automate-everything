@@ -23,12 +23,15 @@ export default {
         enable: "Enable",
         disable: "Disable",
     },
-    configurables: {
+    common: {
+        retry: "Retry",
         add: "Add",
         edit: "Edit",
+        name: "Name",
     },
-    common: {
-        retry: "Retry"
+    validation: {
+        field_required: "This field is required",
+        field_lessThan50: "This field must be less than 50 characters",
     },
     rest: {
         error: {
@@ -41,5 +44,9 @@ export default {
             getting_tags: "Unable to get tags: please check internet connection.",
             posting_tag: "Unable to post tag: please check internet connection.",
         }
+    },
+    tags: {
+        add_tag: "Add tag",
+        add_category: "Add category",
     }
 }

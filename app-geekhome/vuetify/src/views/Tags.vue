@@ -17,11 +17,11 @@
           color="primary"
           @click.stop="openAddTagDialog()"
         >
-          Add tag
+          {{$vuetify.lang.t('$vuetify.tags.add_tag')}}
         </v-btn>
 
         <v-btn text color="primary" @click.stop="openAddCategoryDialog()">
-          Add category
+          {{$vuetify.lang.t('$vuetify.tags.add_category')}}
         </v-btn>
       </template>
     </v-banner>
@@ -60,13 +60,13 @@
         <v-container>
           <v-form v-model="dialog.valid" ref="form" lazy-validation>
             <v-text-field
-              :rules="[v => !!v || 'Name is required', v => (v && v.length <= 50) || 'Name must be less than 50 characters']"
+              :rules="[v => !!v || $vuetify.lang.t('$vuetify.validation.field_required'), v => (v && v.length <= 50) || $vuetify.lang.t('$vuetify.validation.field_lessThan50')]"
               ref="name"
               v-model="dialog.name"
-              label="Name"
+              :label="$vuetify.lang.t('$vuetify.common.name')"
               required="true"
               counter="50"
-              validate-on-blur="true"
+              validate-on-blur
             ></v-text-field>
           </v-form>
         </v-container>
@@ -108,8 +108,8 @@ export default {
     openAddCategoryDialog: function () {
       this.dialog = {
         name: '',
-        titleText: "Add new category",
-        actionText: "Add",
+        titleText: this.$vuetify.lang.t('$vuetify.tags.add_category'),
+        actionText: this.$vuetify.lang.t('$vuetify.common.add'),
         action: this.addNewCategory,
         show: true
       }
@@ -118,8 +118,8 @@ export default {
     openAddTagDialog: function () {
       this.dialog = {
         name: '',
-        titleText: "Add new tag",
-        actionText: "Add",
+        titleText: this.$vuetify.lang.t('$vuetify.tags.add_tag'),
+        actionText: this.$vuetify.lang.t('$vuetify.common.add'),
         action: this.addNewTag,
         show: true
       }
@@ -129,7 +129,7 @@ export default {
       this.dialog = {
         name: this.active[0].name,
         titleText: "Edit tag",
-        actionText: "Edit",
+        actionText: this.$vuetify.lang.t('$vuetify.common.edit'),
         action: this.editSelectedTag,
         show: true
       }
