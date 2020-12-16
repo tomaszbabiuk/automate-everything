@@ -76,7 +76,8 @@
 </template>
 
 <script>
-import { client } from "../rest.js";
+import { client } from "../rest.js"
+import Vue from 'vue'
 
 export default {
   data: () => ({
@@ -172,6 +173,7 @@ export default {
     },
     removeActiveTag: function() {
       client.deleteTag(this.active[0].id)
+      Vue.delete(this.active, 0)
     }
   },
   mounted: function () {

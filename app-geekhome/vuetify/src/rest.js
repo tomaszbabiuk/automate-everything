@@ -31,164 +31,92 @@ var responseErrorHandler = function (error) {
 axiosInstance.interceptors.request.use(requestInterceptor, requestErrorHandler)
 axiosInstance.interceptors.response.use(responseInterceptor, responseErrorHandler);
 
-
 export const client = {
-  getPlugins: function () {
-    return axiosInstance
-      .get("rest/plugins")
-      .then(response => { store.commit(SET_PLUGINS, response.data) })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.getting_plugins",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.getPlugins(),
-          innerException: innerException
-        };
+  handleRestError: async function(axiosFunction, postResponseFunction) {
+    try {
+      const response = await axiosFunction()
+      if (postResponseFunction !== null) {
+        postResponseFunction(response)
+      }
+    } catch (innerException) {
+      var errorData = {
+        message: "$vuetify.rest.error",
+        actionTitle: "$vuetify.common.retry",
+        actionCallback: () => this.handleRestError(axiosFunction, postResponseFunction),
+        innerException: innerException
+      }
 
-        store.commit(SET_ERROR, errorData)
-      })
+      store.commit(SET_ERROR, errorData)
+    }
   },
 
-  enablePlugin: function (pluginId, enable) {
-    return axiosInstance
-      .put("rest/plugins/" + pluginId + "/enabled", enable)
-      .then(response => { store.commit(UPDATE_PLUGIN, response.data) })
-      .catch((innerException) => {
-        var errorData = {
-          message: enable ? "$vuetify.rest.error.enabling_plugin" : "$vuetify.rest.error.disabling_plugin",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.enablePlugin(pluginId, enable),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  getPlugins: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/plugins"),
+      (response) => store.commit(SET_PLUGINS, response.data)
+    )
   },
 
-  postNewInstance: function (newInstance) {
-    return axiosInstance
-      .post("rest/instances", newInstance)
-      .then(response => {
-        console.log("Response from posting instance is" + response.data)
-      })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.posting_instance",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.postNewInstance(newInstance),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  enablePlugin: async function (pluginId, enable) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/plugins/" + pluginId + "/enabled", JSON.stringify(enable)),
+      (response) => store.commit(UPDATE_PLUGIN, response.data)
+    )
   },
 
-  getInstancesOfClazz: function (clazz) {
-    return axiosInstance
-      .get("rest/instances?class=" + clazz)
-      .then(response => { store.commit(SET_INSTANCES, response.data) })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.getting_instances",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.getInstancesOfClazz(clazz),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  postNewInstance: async function (newInstance) {
+    await this.handleRestError(
+      () => axiosInstance.post("rest/instances", JSON.stringify(newInstance))
+    )
   },
 
-  getConfigurables: function () {
-    return axiosInstance
-      .get("rest/configurables")
-      .then(response => { store.commit(SET_CONFIGURABLES, response.data) })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.getting_configurables",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.getConfigurables(),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  getInstancesOfClazz: async function (clazz) {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/instances?class=" + clazz),
+      (response) => store.commit(SET_INSTANCES, response.data)
+    )
   },
 
-  getTags: function () {
-    return axiosInstance
-      .get("rest/tags")
-      .then(response => {
+  getConfigurables: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/configurables"),
+      (response) => store.commit(SET_CONFIGURABLES, response.data)
+    )
+  },
+
+  getTags: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/tags"),
+      (response) => {
         store.commit(CLEAR_TAGS)
         response.data.forEach(element => {
           store.commit(ADD_TAG, element)
         })
-      })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.getting_tags",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.getTags(),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+      }
+    )
   },
 
-  postTag: function (newTag) {
-    return axiosInstance
-      .post("rest/tags", newTag)
-      .then(response => {
+  postTag: async function(newTag) {
+    await this.handleRestError(
+      () => axiosInstance.post("rest/tags", JSON.stringify(newTag)),
+      (response) => {
         newTag.id = response.data
         store.commit(ADD_TAG, newTag)
-      })
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.putting_tag",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.postTag(newTag),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+      }
+    )
   },
 
-  putTag: function (newTag) {
-    return axiosInstance
-      .put("rest/tags", newTag)
-      .then(
-        store.commit(UPDATE_TAG, newTag)
-      )
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.putting_tag",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.putTag(newTag),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  putTag: async function (newTag) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/tags", JSON.stringify(newTag)),
+      () => store.commit(UPDATE_TAG, newTag)
+    )
   },
 
-  deleteTag: function (id) {
-    return axiosInstance
-      .delete("rest/tags/" +id)
-      .then(
-        store.commit(REMOVE_TAG, id)
-      )
-      .catch((innerException) => {
-        var errorData = {
-          message: "$vuetify.rest.error.deleting_tag",
-          actionTitle: "$vuetify.common.retry",
-          actionCallback: () => this.deleteTag(id),
-          innerException: innerException
-        };
-
-        store.commit(SET_ERROR, errorData)
-      })
+  deleteTag: async function (id) {
+    await this.handleRestError(
+      () => axiosInstance.delete("rest/tags/" + id),
+      () => store.commit(REMOVE_TAG, id)
+    )
   },
-
 }
