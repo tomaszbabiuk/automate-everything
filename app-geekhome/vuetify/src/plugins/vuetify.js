@@ -8,6 +8,7 @@ import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
 import IconEqualizer from '../components/icons/IconEqualizer'
 import IconHouse from '../components/icons/IconHouse'
+import IconIcons from '../components/icons/IconIcons'
 import IconTag from '../components/icons/IconTag'
 import IconInbox from '../components/icons/IconInbox'
 import IconPlugin from '../components/icons/IconPlugin'
@@ -32,7 +33,6 @@ export default new Vuetify({
       flag_uk: {
         component: IconUK
       },
-
       bell: {
         component: IconBell
       },
@@ -50,6 +50,9 @@ export default new Vuetify({
       },
       tag: {
         component: IconTag
+      },
+      icons: {
+        component: IconIcons
       },
       inbox: {
         component: IconInbox

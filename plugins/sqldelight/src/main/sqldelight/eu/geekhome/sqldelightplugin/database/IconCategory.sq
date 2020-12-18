@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS iconCategory (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM iconCategory;
+
+insert:
+INSERT INTO iconCategory(name)
+VALUES (?);
+
+delete:
+DELETE FROM iconCategory
+WHERE id == ?;
+
+update:
+UPDATE iconCategory
+SET name = ?
+WHERE id= ?;

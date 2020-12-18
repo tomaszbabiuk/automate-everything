@@ -10,6 +10,7 @@ export default {
         control:    "Sterowanie",
         house:      "Dom",
         tags:       "Tagi",
+        icons:      "Ikony",
         discover:   "Odkrywanie",
         settings:   "Ustawienia",
         plugins:    "Rozszerzenia",
@@ -39,5 +40,11 @@ export default {
     tags: {
         add_tag: "Dodaj tag",
         add_category: "Dodaj kategorię",
+        edit_tag: "Edytuj tag",
+    },
+    icons: {
+        add_icon: "Dodaj ikonę",
+        add_category: "Dodaj kategorię",
     }
+
 }

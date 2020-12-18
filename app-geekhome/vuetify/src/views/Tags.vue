@@ -129,7 +129,7 @@ export default {
     openEditActiveTagDialog: function () {
       this.dialog = {
         name: this.active[0].name,
-        titleText: "Edit tag",
+        titleText: this.$vuetify.lang.t('$vuetify.tags.edit_tag'),
         actionText: this.$vuetify.lang.t('$vuetify.common.edit'),
         action: this.editSelectedTag,
         show: true

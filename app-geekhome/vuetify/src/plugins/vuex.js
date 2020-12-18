@@ -17,10 +17,28 @@ export const ADD_TAG = 'ADD_TAG'
 export const UPDATE_TAG = 'UPDATE_TAG'
 export const REMOVE_TAG = 'REMOVE_TAG'
 
+export const CLEAR_ICONS = 'CLEAR_ICONS'
+export const ADD_ICON = 'ADD_ICON'
+export const UPDATE_ICON = 'UPDATE_ICON'
+export const REMOVE_ICON = 'REMOVE_ICON'
+
+export const CLEAR_ICON_CATEGORIES = 'CLEAR_ICON_CATEGORIES'
+export const ADD_ICON_CATEGORY = 'ADD_ICON_CATEGORY'
+export const UPDATE_ICON_CATEGORY = 'UPDATE_ICON_CATEGORY'
+export const REMOVE_ICON_CATEGORY = 'REMOVE_ICON_CATEGORY'
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
     result['children'] = []
+  }
+  return result
+}
+
+function mapIconCategoryDtoToIconCategoryVM(iconCategoryDto) {
+  var result = JSON.parse(JSON.stringify(iconCategoryDto))
+  if (!Object.prototype.hasOwnProperty.call(result, 'icons')) {
+    result['icons'] = []
   }
   return result
 }
@@ -32,9 +50,12 @@ export default new Vuex.Store({
     configurables: [],
     instances: {},
     tags: [],
+    icons: [],
+    iconCategories: [],
     newInstance: null,
     counter: 0,
   },
+
   mutations: {
     [SET_ERROR](state, error) {
       state.error = error
@@ -123,6 +144,55 @@ export default new Vuex.Store({
               Vue.delete(parentLevelTag.children, childIndex);
             }
           })
+        }
+      })
+    },
+
+    [CLEAR_ICON_CATEGORIES](state) {
+      state.iconCategories = []
+    },
+
+    [ADD_ICON_CATEGORY](state, iconCategoryDto) {
+      state.iconCategories.push(mapIconCategoryDtoToIconCategoryVM(iconCategoryDto))
+    },
+
+    [UPDATE_ICON_CATEGORY](state, iconCategoryDto) {
+      state.iconCategories.forEach( element => {
+        if (element.id === iconCategoryDto.id) {
+          element.name = iconCategoryDto.name
+        }
+      })
+    },
+
+    [REMOVE_ICON_CATEGORY](state, id) {
+      state.iconCategories.forEach( (element, i) => {
+        if (element.id === id) {
+          Vue.delete(state.iconCategories, i)
+        }
+      })
+    },
+
+    [CLEAR_ICONS](state) {
+      state.icons = []
+    },
+
+    [ADD_ICON](state, iconDto) {
+      state.icons.push(iconDto)
+    },
+
+    [UPDATE_ICON](state, iconDto) {
+      state.icons.forEach( element => {
+        if (element.id === iconDto.id) {
+          element.raw = iconDto.raw
+          element.iconCategoryId = iconDto.iconCategoryId
+        }
+      })
+    },
+
+    [REMOVE_ICON](state, id) {
+      state.icons.forEach( (element, i) => {
+        if (element.id === id) {
+          Vue.delete(state.icons, i)
         }
       })
     }

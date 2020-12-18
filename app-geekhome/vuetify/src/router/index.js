@@ -6,6 +6,7 @@ import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
 import Configurables from '../views/Configurables'
 import Tags from '../views/Tags'
+import Icons from '../views/Icons'
 import Instances from '../views/Instances'
 import Discover from '../views/Discover'
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/tags',
     name: 'tags',
     component: Tags
+  },
+  {
+    path: '/icons',
+    name: 'icons',
+    component: Icons
   },
   {
     path: '/instances/:clazz',

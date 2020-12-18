@@ -26,7 +26,6 @@ public class R {
     public static Resource configurable_device_title = new Resource(
             "Devices",
             "Urządzenia");
-
     public static Resource configurable_device_description = new Resource(
             "Add/remove devices (sensors, relays, switches, etc.)",
             "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)");

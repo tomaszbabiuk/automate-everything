@@ -104,6 +104,11 @@ export default {
           route: "/tags", 
           icon: "tag" 
         },
+        { 
+          title: "$vuetify.navigation.icons", 
+          route: "/icons", 
+          icon: "icons" 
+        },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover",

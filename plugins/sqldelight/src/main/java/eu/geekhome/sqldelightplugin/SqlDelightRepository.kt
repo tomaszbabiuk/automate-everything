@@ -1,12 +1,8 @@
 package eu.geekhome.sqldelightplugin
 
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
-import eu.geekhome.services.repository.InstanceDto
-import eu.geekhome.services.repository.Repository
-import eu.geekhome.services.repository.TagDto
-import eu.geekhome.sqldelightplugin.database.ConfigurableInstance
-import eu.geekhome.sqldelightplugin.database.Database
-import eu.geekhome.sqldelightplugin.database.Tag
+import eu.geekhome.services.repository.*
+import eu.geekhome.sqldelightplugin.database.*
 import org.pf4j.Extension
 
 @Extension
@@ -87,6 +83,74 @@ class SqlDelightRepository : Repository {
     override fun updateTag(tagDto: TagDto) {
         database.transaction {
             database.tagQueries.update(tagDto.parentId, tagDto.name, tagDto.id)
+        }
+    }
+
+    override fun getAllIconCategories(): List<IconCategoryDto> {
+        fun mapIconCategoryToIconCategoryDto(iconCategory: IconCategory): IconCategoryDto {
+            return IconCategoryDto(iconCategory.id, iconCategory.name)
+        }
+
+        return database
+                .iconCategoryQueries
+                .selectAll()
+                .executeAsList()
+                .map { mapIconCategoryToIconCategoryDto(it) }
+    }
+
+    override fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long {
+        var id: Long = 0
+        database.transaction {
+            database.iconCategoryQueries.insert(iconCategoryDto.name)
+            id = database.generalQueries.lastInsertRowId().executeAsOne()
+        }
+
+        return id
+    }
+
+    override fun deleteIconCategory(id: Long) {
+        database.transaction {
+            database.iconCategoryQueries.delete(id)
+        }
+    }
+
+    override fun updateIconCategory(iconCategoryDto: IconCategoryDto) {
+        database.transaction {
+            database.iconCategoryQueries.update(iconCategoryDto.name, iconCategoryDto.id)
+        }
+    }
+
+    override fun getAllIcons(): List<IconDto> {
+        fun mapIconToIconDto(icon: Icon): IconDto {
+            return IconDto(icon.id, icon.icon_category_id, icon.raw)
+        }
+
+        return database
+                .iconQueries
+                .selectAll()
+                .executeAsList()
+                .map { mapIconToIconDto(it) }
+    }
+
+    override fun saveIcon(iconDto: IconDto): Long {
+        var id: Long = 0
+        database.transaction {
+            database.iconQueries.insert(iconDto.iconCategoryId, iconDto.raw)
+            id = database.generalQueries.lastInsertRowId().executeAsOne()
+        }
+
+        return id
+    }
+
+    override fun deleteIcon(id: Long) {
+        database.transaction {
+            database.iconQueries.delete(id)
+        }
+    }
+
+    override fun updateIcon(iconDto: IconDto) {
+        database.transaction {
+            database.iconQueries.update(iconDto.iconCategoryId, iconDto.raw, iconDto.id)
         }
     }
 

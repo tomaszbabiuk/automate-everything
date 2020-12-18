@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS icon (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  icon_category_id INTEGER NOT NULL,
+  raw TEXT NOT NULL,
+  FOREIGN KEY(icon_category_id) REFERENCES iconCategory(id)
+);
+
+selectAll:
+SELECT *
+FROM icon;
+
+insert:
+INSERT INTO icon(icon_category_id, raw)
+VALUES (?,?);
+
+delete:
+DELETE FROM iconCategory
+WHERE id == ?;
+
+update:
+UPDATE icon
+SET icon_category_id = ?,
+    raw = ?
+WHERE
+    id= ?;

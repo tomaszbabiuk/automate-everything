@@ -3,6 +3,8 @@ import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
 import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_CONFIGURABLES, SET_INSTANCES } from './plugins/vuex'
 import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
+import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY } from './plugins/vuex'
+import { CLEAR_ICONS, ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -117,6 +119,78 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.delete("rest/tags/" + id),
       () => store.commit(REMOVE_TAG, id)
+    )
+  },
+
+  getIconCategories: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/iconcategories"),
+      (response) => {
+        store.commit(CLEAR_ICON_CATEGORIES)
+        response.data.forEach(element => {
+          store.commit(ADD_ICON_CATEGORY, element)
+        })
+      }
+    )
+  },
+
+  postIconCategory: async function(iconCategoryDto) {
+    await this.handleRestError(
+      () => axiosInstance.post("rest/iconcategories", JSON.stringify(iconCategoryDto)),
+      (response) => {
+        iconCategoryDto.id = response.data
+        store.commit(ADD_ICON_CATEGORY, iconCategoryDto)
+      }
+    )
+  },
+
+  putIconCategory: async function (iconCategoryDto) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/iconcategories", JSON.stringify(iconCategoryDto)),
+      () => store.commit(UPDATE_ICON_CATEGORY, iconCategoryDto)
+    )
+  },
+
+  deleteIconCategory: async function (id) {
+    await this.handleRestError(
+      () => axiosInstance.delete("rest/iconcategories/" + id),
+      () => store.commit(REMOVE_ICON_CATEGORY, id)
+    )
+  },
+
+  getIcons: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/icons"),
+      (response) => {
+        store.commit(CLEAR_ICONS)
+        response.data.forEach(element => {
+          store.commit(ADD_ICON, element)
+        })
+      }
+    )
+  },
+
+  postIcon: async function(iconDto) {
+    await this.handleRestError(
+      () => axiosInstance.post("rest/icons", JSON.stringify(iconDto)),
+      (response) => {
+        iconDto.id = response.data
+        store.commit(ADD_ICON, iconDto)
+      }
+    )
+  },
+
+  putIcon: async function (iconDto) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/icons", JSON.stringify(iconDto)),
+      () => store.commit(UPDATE_ICON, iconDto)
+    )
+  },
+
+  deleteIcon: async function (id) {
+    await this.handleRestError(
+      () => axiosInstance.delete("rest/icons/" + id),
+      () => store.commit(REMOVE_ICON, id)
     )
   },
 }

@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName;
 public class FieldInstanceDto {
 
     @SerializedName("id")
-    private long _id;
+    private final long _id;
 
     @SerializedName("name")
-    private String _name;
+    private final String _name;
 
     @SerializedName("value")
-    private String _valueAsString;
+    private final String _valueAsString;
 
     @SerializedName("instanceId")
-    private long _instanceId;
+    private final long _instanceId;
 
     public FieldInstanceDto(long id, String name, String valueAsString, long instanceId) {
         _id = id;

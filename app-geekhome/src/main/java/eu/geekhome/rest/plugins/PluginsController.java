@@ -24,7 +24,7 @@ public class PluginsController {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public List<PluginDto> getPlugins(@Context HttpServletRequest request) {
         return _pluginsManager
                 .getPlugins()
@@ -35,14 +35,14 @@ public class PluginsController {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public PluginDto getPlugin(@PathParam("id") String id) {
         return _pluginDtoMapper.map(_pluginsManager.getPlugin(id));
     }
 
     @PUT
     @Path("/{id}/enabled")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public PluginDto updateEnableState(@PathParam("id") String id, boolean enable) {
         PluginWrapper pluginWrapper = enable ?
                 _pluginsManager.enablePlugin(id) :

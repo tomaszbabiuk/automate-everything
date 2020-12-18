@@ -10,6 +10,7 @@ export default {
         control:    "Control",
         house:      "House",
         tags:       "Tags",
+        icons:      "Icons",
         discover:   "Discovery",
         settings:   "Settings",
         plugins:    "Plugins",
@@ -39,5 +40,11 @@ export default {
     tags: {
         add_tag: "Add tag",
         add_category: "Add category",
+        edit_tag: "Edit tag",
+    },
+    icons: {
+        add_icon: "Add icon",
+        add_category: "Add category",
     }
+
 }
