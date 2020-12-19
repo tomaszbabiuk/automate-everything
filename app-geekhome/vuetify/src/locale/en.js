@@ -29,10 +29,12 @@ export default {
         add: "Add",
         edit: "Edit",
         name: "Name",
+        actions: "Actions",
     },
     validation: {
         field_required: "This field is required",
         field_lessThan50: "This field must be less than 50 characters",
+        field_lessThan1000: "This field must be less than 1000 characters",
     },
     rest: {
         error: "Unable to get data from server: please check internet connection."
@@ -43,8 +45,10 @@ export default {
         edit_tag: "Edit tag",
     },
     icons: {
+        icons: "Icons",
         add_icon: "Add icon",
         add_category: "Add category",
+        edit_category: "Edit category",
     }
 
 }

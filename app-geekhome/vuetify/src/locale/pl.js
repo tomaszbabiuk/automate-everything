@@ -29,10 +29,12 @@ export default {
         add: "Dodaj",
         edit: "Edytuj",
         name: "Nazwa",
+        actions: "Akcje",
     },
     validation: {
         field_required: "To pole jest wymagane",
         field_lessThan50: "To pole musi zawierać mniej niż 50 znaków",
+        field_lessThan1000: "To pole musi zawierać mniej niż 1000 znaków",
     },
     rest: {
         error: "Nie można pobrać danych z serwera, sprawdź połączenie sieciowe"
@@ -43,8 +45,10 @@ export default {
         edit_tag: "Edytuj tag",
     },
     icons: {
+        icons: "Ikony",
         add_icon: "Dodaj ikonę",
         add_category: "Dodaj kategorię",
+        edit_category: "Edytuj kategorię",
     }
 
 }

@@ -8,7 +8,7 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Icons</v-toolbar-title>
+        <v-toolbar-title>{{ $vuetify.lang.t("$vuetify.icons.icons") }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
           right
@@ -17,7 +17,7 @@
           class="mb-2"
           @click.stop="openAddCategoryDialog()"
         >
-          New category
+          {{ $vuetify.lang.t("$vuetify.icons.add_category") }}
         </v-btn>
 
         <v-dialog
@@ -95,14 +95,16 @@
                       !!v ||
                       $vuetify.lang.t('$vuetify.validation.field_required'),
                     (v) =>
-                      (v && v.length <= 4000) ||
-                      $vuetify.lang.t('$vuetify.validation.field_lessThan4000'),
+                      (v && v.length <= 10000) ||
+                      $vuetify.lang.t(
+                        '$vuetify.validation.field_lessThan10000'
+                      ),
                   ]"
                   ref="raw"
                   v-model="iconDialog.raw"
                   :label="$vuetify.lang.t('$vuetify.icons.raw')"
                   required="true"
-                  counter="4000"
+                  counter="10000"
                 ></v-textarea>
               </v-form>
             </v-container>
@@ -129,8 +131,9 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.iconIds`]="{ item }">
-
-      <v-chip v-for="iconId in item.iconIds" :key="iconId"  
+      <v-chip
+        v-for="iconId in item.iconIds"
+        :key="iconId"
         class="ma-2"
         x-large
         @click:close="chip2 = false"
@@ -139,14 +142,18 @@
         label
         outlined
       >
-        <img left :src="'/rest/icons/' + iconId + '/raw'" width="50" height="50" />
+        <img
+          left
+          :src="'/rest/icons/' + iconId + '/raw'"
+          width="50"
+          height="50"
+        />
       </v-chip>
-
     </template>
     <template v-slot:[`item.actions`]="{ item }" }>
       <nobr>
         <v-icon class="mr-2" @click="openAddIconDialog(item)">mdi-plus</v-icon>
-        <v-icon class="mr-2" @click="editIconCategory(item)">mdi-pencil</v-icon>
+        <v-icon class="mr-2" @click="openEditCategoryDialog(item)">mdi-pencil</v-icon>
         <v-icon @click="deleteIconCategory(item)"> mdi-delete </v-icon>
       </nobr>
     </template>
@@ -162,6 +169,7 @@ import { client } from "../rest.js";
 export default {
   data: () => ({
     categoryDialog: {
+      id: -1,
       valid: true,
       show: false,
       titleText: "",
@@ -179,25 +187,7 @@ export default {
       action: function () {},
     },
     dialogDelete: false,
-    headers: [
-      {
-        text: "Name",
-        align: "start",
-        sortable: false,
-        value: "name",
-      },
-      {
-        text: "Icons",
-        value: "iconIds",
-        sortable: false,
-      },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-        align: "end",
-      },
-    ],
+    headers: [],
   }),
 
   computed: {
@@ -239,7 +229,7 @@ export default {
     openAddCategoryDialog: function () {
       this.categoryDialog = {
         name: "",
-        titleText: this.$vuetify.lang.t("$vuetify.tags.add_category"),
+        titleText: this.$vuetify.lang.t("$vuetify.icons.add_category"),
         actionText: this.$vuetify.lang.t("$vuetify.common.add"),
         action: this.addNewCategory,
         show: true,
@@ -256,9 +246,30 @@ export default {
         this.closeCategoryDialog();
       }
     },
+    openEditCategoryDialog: function (categoryDto) {
+      this.categoryDialog = {
+        name: categoryDto.name,
+        titleText: this.$vuetify.lang.t("$vuetify.icons.edit_category"),
+        actionText: this.$vuetify.lang.t("$vuetify.common.edit"),
+        action: this.editCategory,
+        id: categoryDto.id,
+        show: true,
+      };
+      this.focusOnNameLazy();
+    },
+    editCategory: function () {
+      if (this.$refs.categoryForm.validate()) {
+        let categoryDto = {
+          id: this.categoryDialog.id,
+          name: this.categoryDialog.name,
+        };
+        client.putIconCategory(categoryDto);
+        this.closeCategoryDialog();
+      }
+    },
     openAddIconDialog: function (categoryDto) {
       this.iconDialog = {
-        iconCategoryId: categoryDto.id,
+        id: categoryDto.id,
         raw: "",
         titleText: this.$vuetify.lang.t("$vuetify.icons.add_icon"),
         actionText: this.$vuetify.lang.t("$vuetify.common.add"),
@@ -320,6 +331,26 @@ export default {
     },
   },
   mounted: function () {
+    this.headers = [
+      {
+        text: this.$vuetify.lang.t("$vuetify.common.name"),
+        align: "start",
+        sortable: false,
+        value: "name",
+      },
+      {
+        text: this.$vuetify.lang.t("$vuetify.icons.icons"),
+        value: "iconIds",
+        sortable: false,
+      },
+      {
+        text: this.$vuetify.lang.t("$vuetify.common.actions"),
+        value: "actions",
+        sortable: false,
+        align: "end",
+      },
+    ];
+
     client.getIconCategories();
   },
 };
