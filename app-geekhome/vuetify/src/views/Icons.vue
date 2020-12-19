@@ -95,14 +95,14 @@
                       !!v ||
                       $vuetify.lang.t('$vuetify.validation.field_required'),
                     (v) =>
-                      (v && v.length <= 2000) ||
-                      $vuetify.lang.t('$vuetify.validation.field_lessThan2000'),
+                      (v && v.length <= 4000) ||
+                      $vuetify.lang.t('$vuetify.validation.field_lessThan4000'),
                   ]"
                   ref="raw"
                   v-model="iconDialog.raw"
                   :label="$vuetify.lang.t('$vuetify.icons.raw')"
                   required="true"
-                  counter="2000"
+                  counter="4000"
                 ></v-textarea>
               </v-form>
             </v-container>
@@ -128,10 +128,9 @@
         </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:[`icons`]="{ item  }">
+    <template v-slot:[`item.iconIds`]="{ item }">
 
-      {{item}}
-      <v-chip  
+      <v-chip v-for="iconId in item.iconIds" :key="iconId"  
         class="ma-2"
         x-large
         @click:close="chip2 = false"
@@ -140,16 +139,14 @@
         label
         outlined
       >
-        <img left src="/rest/svg" width="50" height="50" />
+        <img left :src="'/rest/icons/' + iconId + '/raw'" width="50" height="50" />
       </v-chip>
 
     </template>
     <template v-slot:[`item.actions`]="{ item }" }>
       <nobr>
         <v-icon class="mr-2" @click="openAddIconDialog(item)">mdi-plus</v-icon>
-        <v-icon class="mr-2" @click="editIconCategory(item)">
-          mdi-pencil</v-icon
-        >
+        <v-icon class="mr-2" @click="editIconCategory(item)">mdi-pencil</v-icon>
         <v-icon @click="deleteIconCategory(item)"> mdi-delete </v-icon>
       </nobr>
     </template>

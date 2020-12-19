@@ -9,6 +9,11 @@ selectAll:
 SELECT *
 FROM icon;
 
+selectById:
+SELECT *
+FROM icon
+WHERE id = ?;
+
 insert:
 INSERT INTO icon(icon_category_id, raw)
 VALUES (?,?);

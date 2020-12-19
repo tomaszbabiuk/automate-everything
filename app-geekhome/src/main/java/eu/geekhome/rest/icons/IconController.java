@@ -37,6 +37,13 @@ public class IconController {
         return _repository.getAllIcons();
     }
 
+    @GET
+    @Path("/{id}/raw")
+    @Produces("image/svg+xml;charset=utf-8")
+    public String getRaw(@PathParam("id") long id) {
+        return _repository.getIcon(id).getRaw();
+    }
+
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

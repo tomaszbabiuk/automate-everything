@@ -20,6 +20,7 @@ interface Repository : ExtensionPoint {
     fun updateIconCategory(iconCategoryDto: IconCategoryDto)
 
     fun getAllIcons(): List<IconDto>
+    fun getIcon(id: Long): IconDto
     fun saveIcon(iconDto: IconDto) : Long
     fun deleteIcon(id: Long)
     fun updateIcon(iconDto: IconDto)

@@ -17,6 +17,10 @@ class SqlDelightRepository : Repository {
         database = Database(driver)
     }
 
+    private fun mapIconToIconDto(icon: Icon): IconDto {
+        return IconDto(icon.id, icon.icon_category_id, icon.raw)
+    }
+
     override fun saveInstance(instanceDto: InstanceDto) {
         database.transaction {
             database.configurableInstanceQueries.insert(instanceDto.clazz)
@@ -128,15 +132,19 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllIcons(): List<IconDto> {
-        fun mapIconToIconDto(icon: Icon): IconDto {
-            return IconDto(icon.id, icon.icon_category_id, icon.raw)
-        }
-
         return database
                 .iconQueries
                 .selectAll()
                 .executeAsList()
                 .map { mapIconToIconDto(it) }
+    }
+
+    override fun getIcon(id: Long): IconDto {
+        return mapIconToIconDto(database
+                    .iconQueries
+                    .selectById(id)
+                    .executeAsOne()
+                )
     }
 
     override fun saveIcon(iconDto: IconDto): Long {
