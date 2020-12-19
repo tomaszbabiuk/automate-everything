@@ -7,6 +7,12 @@ selectAll:
 SELECT *
 FROM iconCategory;
 
+selectAllWithIcons:
+SELECT iconCategory.*,
+       IFNULL((SELECT GROUP_CONCAT(icon.id) FROM icon WHERE icon.icon_category_id=iconCategory.id GROUP BY icon.icon_category_id), '') iconIds
+  FROM iconCategory;
+
+
 insert:
 INSERT INTO iconCategory(name)
 VALUES (?);

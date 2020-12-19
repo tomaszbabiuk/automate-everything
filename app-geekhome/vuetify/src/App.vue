@@ -47,7 +47,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-content v-if="error">
+    <v-main v-if="error">
       <v-banner single-line sticky>
         {{$vuetify.lang.t(error.message)}}
         <template v-slot:actions>
@@ -58,14 +58,14 @@
           >{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
         </template>
       </v-banner>
-    </v-content>
-    <v-content class="mx-4 mb-4">
+    </v-main>
+    <v-main class="mx-4 mb-4">
       <div :class="$route.name">
         <v-container>
           <router-view></router-view>
         </v-container>
       </div>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

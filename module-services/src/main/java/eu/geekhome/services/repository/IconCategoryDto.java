@@ -2,6 +2,8 @@ package eu.geekhome.services.repository;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class IconCategoryDto {
 
     @SerializedName("id")
@@ -10,9 +12,13 @@ public class IconCategoryDto {
     @SerializedName("name")
     private final String _name;
 
-    public IconCategoryDto(long id, String name) {
+    @SerializedName("iconIds")
+    private final List<Long> _iconIds;
+
+    public IconCategoryDto(long id, String name, List<Long> split) {
         _id = id;
         _name = name;
+        _iconIds = split;
     }
 
     public long getId() {
@@ -21,5 +27,9 @@ public class IconCategoryDto {
 
     public String getName() {
         return _name;
+    }
+
+    public List<Long> getIconIds() {
+        return _iconIds;
     }
 }

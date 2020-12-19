@@ -87,13 +87,20 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllIconCategories(): List<IconCategoryDto> {
-        fun mapIconCategoryToIconCategoryDto(iconCategory: IconCategory): IconCategoryDto {
-            return IconCategoryDto(iconCategory.id, iconCategory.name)
+
+        fun mapIconCategoryToIconCategoryDto(iconCategory: SelectAllWithIcons): IconCategoryDto {
+            var iconIds: List<Long>
+            if (iconCategory.iconIds.isNotEmpty()) {
+                iconIds = iconCategory.iconIds.split(',').map { it.toLong() }
+            } else {
+                iconIds = ArrayList()
+            }
+            return IconCategoryDto(iconCategory.id, iconCategory.name, iconIds)
         }
 
         return database
                 .iconCategoryQueries
-                .selectAll()
+                .selectAllWithIcons()
                 .executeAsList()
                 .map { mapIconCategoryToIconCategoryDto(it) }
     }
