@@ -111,18 +111,18 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="deleteDialog.show" max-width="500px">
           <v-card>
             <v-card-title class="headline"
-              >Are you sure you want to delete this item?</v-card-title
+              >{{ $vuetify.lang.t("$vuetify.common.delete_question") }}</v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancel</v-btn
+              <v-btn color="blue darken-1" text @click="closeDeleteDialog()"
+                >{{ $vuetify.lang.t("$vuetify.common.cancel") }}</v-btn
               >
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >OK</v-btn
+              <v-btn color="blue darken-1" text @click="deleteDialog.action()"
+                >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
               >
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -154,7 +154,7 @@
       <nobr>
         <v-icon class="mr-2" @click="openAddIconDialog(item)">mdi-plus</v-icon>
         <v-icon class="mr-2" @click="openEditCategoryDialog(item)">mdi-pencil</v-icon>
-        <v-icon @click="deleteIconCategory(item)"> mdi-delete </v-icon>
+        <v-icon @click="openDeleteCategoryDialog(item)"> mdi-delete </v-icon>
       </nobr>
     </template>
     <template v-slot:no-data>
@@ -186,7 +186,10 @@ export default {
       raw: "",
       action: function () {},
     },
-    dialogDelete: false,
+    deleteDialog:  {
+      show: false,
+      action: function() {},
+    },
     headers: [],
   }),
 
@@ -202,29 +205,32 @@ export default {
 
   watch: {
     dialog(val) {
-      val || this.close();
+      val || this.close()
     },
     dialogDelete(val) {
-      val || this.closeDelete();
+      val || this.closeDelete()
     },
   },
 
   methods: {
     focusOnNameLazy: function () {
       setTimeout(() => {
-        this.$refs.name.focus();
+        this.$refs.name.focus()
       }, 200);
     },
     focusOnRawLazy: function () {
       setTimeout(() => {
-        this.$refs.raw.focus();
+        this.$refs.raw.focus()
       }, 200);
     },
     closeCategoryDialog: function () {
-      this.categoryDialog.show = false;
+      this.categoryDialog.show = false
     },
     closeIconDialog: function () {
-      this.iconDialog.show = false;
+      this.iconDialog.show = false
+    },
+    closeDeleteDialog: function() {
+      this.deleteDialog.show = false
     },
     openAddCategoryDialog: function () {
       this.categoryDialog = {
@@ -266,6 +272,19 @@ export default {
         client.putIconCategory(categoryDto);
         this.closeCategoryDialog();
       }
+    },
+    openDeleteCategoryDialog: function(categoryDto) {
+      this.deleteDialog = {
+        name: categoryDto.name,
+        action: this.deleteCategory,
+        id: categoryDto.id,
+        show: true,
+      };
+    },
+    deleteCategory: function () {
+      let id = this.deleteDialog.id
+      client.deleteIconCategory(id)
+      this.closeDeleteDialog();
     },
     openAddIconDialog: function (categoryDto) {
       this.iconDialog = {

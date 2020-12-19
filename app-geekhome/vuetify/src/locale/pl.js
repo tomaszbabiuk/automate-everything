@@ -30,6 +30,10 @@ export default {
         edit: "Edytuj",
         name: "Nazwa",
         actions: "Akcje",
+        delete_question: "Czy na pewno usunąć ten obiekt?",
+        cancel: "Anuluj",
+        ok: "OK",
+
     },
     validation: {
         field_required: "To pole jest wymagane",

@@ -30,6 +30,9 @@ export default {
         edit: "Edit",
         name: "Name",
         actions: "Actions",
+        delete_question: "Are you sure you want to delete this item?",
+        cancel: "Cancel",
+        ok: "OK",
     },
     validation: {
         field_required: "This field is required",
