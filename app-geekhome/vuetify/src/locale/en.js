@@ -33,11 +33,12 @@ export default {
         delete_question: "Are you sure you want to delete this item?",
         cancel: "Cancel",
         ok: "OK",
+        no_data: "No data",
     },
     validation: {
         field_required: "This field is required",
         field_lessThan50: "This field must be less than 50 characters",
-        field_lessThan1000: "This field must be less than 1000 characters",
+        field_lessThan10000: "This field must be less than 10000 characters",
     },
     rest: {
         error: "Unable to get data from server: please check internet connection."
@@ -52,6 +53,15 @@ export default {
         add_icon: "Add icon",
         add_category: "Add category",
         edit_category: "Edit category",
+        raw: "Raw SVG content",
+        edit_icon: "Edit icon",
+    },
+    dataFooter: {
+        itemsPerPageAll: "All",
+        itemsPerPageText: "Rows per page:",
+        prevPage: "Previous page",
+        nextPage: "Next page",
+        pageText: "undefined-undefined xxx undefined",
     }
 
 }

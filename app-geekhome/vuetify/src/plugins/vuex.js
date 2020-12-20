@@ -17,7 +17,6 @@ export const ADD_TAG = 'ADD_TAG'
 export const UPDATE_TAG = 'UPDATE_TAG'
 export const REMOVE_TAG = 'REMOVE_TAG'
 
-export const CLEAR_ICONS = 'CLEAR_ICONS'
 export const ADD_ICON = 'ADD_ICON'
 export const UPDATE_ICON = 'UPDATE_ICON'
 export const REMOVE_ICON = 'REMOVE_ICON'
@@ -35,13 +34,6 @@ function mapTagDtoToTagVM(tagDto) {
   return result
 }
 
-function mapIconCategoryDtoToIconCategoryVM(iconCategoryDto) {
-  var result = JSON.parse(JSON.stringify(iconCategoryDto))
-  if (!Object.prototype.hasOwnProperty.call(result, 'icons')) {
-    result['icons'] = []
-  }
-  return result
-}
 
 export default new Vuex.Store({
   state: {
@@ -50,7 +42,6 @@ export default new Vuex.Store({
     configurables: [],
     instances: {},
     tags: [],
-    icons: [],
     iconCategories: [],
     newInstance: null,
     counter: 0,
@@ -153,7 +144,7 @@ export default new Vuex.Store({
     },
 
     [ADD_ICON_CATEGORY](state, iconCategoryDto) {
-      state.iconCategories.push(mapIconCategoryDtoToIconCategoryVM(iconCategoryDto))
+      state.iconCategories.push(iconCategoryDto)
     },
 
     [UPDATE_ICON_CATEGORY](state, iconCategoryDto) {
@@ -172,21 +163,23 @@ export default new Vuex.Store({
       })
     },
 
-    [CLEAR_ICONS](state) {
-      state.icons = []
-    },
-
     [ADD_ICON](state, iconDto) {
-      state.icons.push(iconDto)
+      state.iconCategories.forEach( (element) => {
+        if (element.id === iconDto.iconCategoryId) {
+          element.iconIds.push(iconDto.id)
+        }
+      })
     },
 
     [UPDATE_ICON](state, iconDto) {
-      state.icons.forEach( element => {
-        if (element.id === iconDto.id) {
-          element.raw = iconDto.raw
-          element.iconCategoryId = iconDto.iconCategoryId
-        }
-      })
+      console.log("TODO")
+      console.log(state)
+      console.log(iconDto)
+      // state.iconCategories.forEach( element => {
+      //   if (element.id === iconDto.iconCategoryId) {
+      //     element.iconIds.push(iconDto.id+'?aa')
+      //   }
+      // })
     },
 
     [REMOVE_ICON](state, id) {

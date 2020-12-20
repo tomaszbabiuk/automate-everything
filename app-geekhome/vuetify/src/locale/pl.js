@@ -33,12 +33,13 @@ export default {
         delete_question: "Czy na pewno usunąć ten obiekt?",
         cancel: "Anuluj",
         ok: "OK",
+        no_data: "No data",
 
     },
     validation: {
         field_required: "To pole jest wymagane",
         field_lessThan50: "To pole musi zawierać mniej niż 50 znaków",
-        field_lessThan1000: "To pole musi zawierać mniej niż 1000 znaków",
+        field_lessThan10000: "To pole musi zawierać mniej niż 10000 znaków",
     },
     rest: {
         error: "Nie można pobrać danych z serwera, sprawdź połączenie sieciowe"
@@ -53,6 +54,15 @@ export default {
         add_icon: "Dodaj ikonę",
         add_category: "Dodaj kategorię",
         edit_category: "Edytuj kategorię",
+        raw: "Treść w formacie SVG",
+        edit_icon: "Edytuj ikonę"
+    },
+    dataFooter: {
+        itemsPerPageAll: "All",
+        itemsPerPageText: "Wierszy na stronie:",
+        prevPage: "Poprzednia strona",
+        nextPage: "Następna strona",
+        pageText: "%s %s z %s"
     }
 
 }

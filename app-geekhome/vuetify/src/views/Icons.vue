@@ -105,6 +105,7 @@
                   :label="$vuetify.lang.t('$vuetify.icons.raw')"
                   required="true"
                   counter="10000"
+                  validate-on-blur
                 ></v-textarea>
               </v-form>
             </v-container>
@@ -137,12 +138,14 @@
         class="ma-2"
         x-large
         @click:close="chip2 = false"
-        @click="console.log('dupa')"
+        @click="openEditIconDialog({iconId: iconId, iconCategoryId: item.id})"
         close
         label
         outlined
       >
         <img
+        :key="componentKey"
+         
           left
           :src="'/rest/icons/' + iconId + '/raw'"
           width="50"
@@ -158,7 +161,7 @@
       </nobr>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      {{ $vuetify.lang.t("$vuetify.common.no_data") }}
     </template>
   </v-data-table>
 </template>
@@ -169,7 +172,7 @@ import { client } from "../rest.js";
 export default {
   data: () => ({
     categoryDialog: {
-      id: -1,
+      iconCategoryId: -1,
       valid: true,
       show: false,
       titleText: "",
@@ -178,6 +181,7 @@ export default {
       action: function () {},
     },
     iconDialog: {
+      iconId: -1,
       iconCategoryId: -1,
       valid: true,
       show: false,
@@ -191,6 +195,7 @@ export default {
       action: function() {},
     },
     headers: [],
+    componentKey: 0,
   }),
 
   computed: {
@@ -258,7 +263,7 @@ export default {
         titleText: this.$vuetify.lang.t("$vuetify.icons.edit_category"),
         actionText: this.$vuetify.lang.t("$vuetify.common.edit"),
         action: this.editCategory,
-        id: categoryDto.id,
+        iconCategoryId: categoryDto.id,
         show: true,
       };
       this.focusOnNameLazy();
@@ -266,7 +271,7 @@ export default {
     editCategory: function () {
       if (this.$refs.categoryForm.validate()) {
         let categoryDto = {
-          id: this.categoryDialog.id,
+          id: this.categoryDialog.iconCategoryId,
           name: this.categoryDialog.name,
         };
         client.putIconCategory(categoryDto);
@@ -277,25 +282,25 @@ export default {
       this.deleteDialog = {
         name: categoryDto.name,
         action: this.deleteCategory,
-        id: categoryDto.id,
+        iconCategoryId: categoryDto.id,
         show: true,
       };
     },
     deleteCategory: function () {
-      let id = this.deleteDialog.id
+      let id = this.deleteDialog.iconCategoryId
       client.deleteIconCategory(id)
       this.closeDeleteDialog();
     },
     openAddIconDialog: function (categoryDto) {
       this.iconDialog = {
-        id: categoryDto.id,
+        iconCategoryId: categoryDto.id,
         raw: "",
         titleText: this.$vuetify.lang.t("$vuetify.icons.add_icon"),
         actionText: this.$vuetify.lang.t("$vuetify.common.add"),
         action: this.addNewIcon,
         show: true,
       };
-      this.focusOnRawLazy();
+      this.focusOnRawLazy()
     },
     addNewIcon: function () {
       if (this.$refs.iconForm.validate()) {
@@ -307,46 +312,34 @@ export default {
         this.closeIconDialog();
       }
     },
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
+    openEditIconDialog: async function (ids) {
+      this.iconDialog = {
+        iconId: ids.iconId,
+        iconCategoryId: ids.iconCategoryId,
+        raw: "",
+        titleText: this.$vuetify.lang.t("$vuetify.icons.edit_icon"),
+        actionText: this.$vuetify.lang.t("$vuetify.common.edit"),
+        action: this.editIcon,
+        show: true,
+      };
 
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
+      await client.getIconRawWithCallback(ids.iconId,(response) => { 
+        this.iconDialog.raw = response
+      })
 
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
+      this.focusOnRawLazy()
     },
-
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
+    editIcon: function () {
+      if (this.$refs.iconForm.validate()) {
+        let iconDto = {
+          iconCategoryId: this.iconDialog.iconCategoryId,
+          id: this.iconDialog.iconId,
+          raw: this.iconDialog.raw,
+        };
+        client.putIcon(iconDto);
+        this.componentKey++
+        this.closeIconDialog();
       }
-      this.close();
     },
   },
   mounted: function () {

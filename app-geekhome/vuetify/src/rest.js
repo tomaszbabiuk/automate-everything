@@ -4,7 +4,7 @@ import store from './plugins/vuex'
 import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_CONFIGURABLES, SET_INSTANCES } from './plugins/vuex'
 import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
 import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY } from './plugins/vuex'
-import { CLEAR_ICONS, ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
+import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -158,18 +158,6 @@ export const client = {
     )
   },
 
-  getIcons: async function () {
-    await this.handleRestError(
-      () => axiosInstance.get("rest/icons"),
-      (response) => {
-        store.commit(CLEAR_ICONS)
-        response.data.forEach(element => {
-          store.commit(ADD_ICON, element)
-        })
-      }
-    )
-  },
-
   postIcon: async function(iconDto) {
     await this.handleRestError(
       () => axiosInstance.post("rest/icons", JSON.stringify(iconDto)),
@@ -184,6 +172,13 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.put("rest/icons", JSON.stringify(iconDto)),
       () => store.commit(UPDATE_ICON, iconDto)
+    )
+  },
+
+  getIconRawWithCallback: async function(id, callback) {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/icons/"+id +"/raw"),
+      (response) => callback(response.data)
     )
   },
 
