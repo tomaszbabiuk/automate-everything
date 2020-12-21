@@ -25,6 +25,7 @@ public class PluginsManager {
             }
         };
         _pluginManager.loadPlugins();
+        _pluginManager.startPlugins();
     }
 
     public List<PluginWrapper> getPlugins() {
