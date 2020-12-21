@@ -137,7 +137,7 @@
         :key="iconId"
         class="ma-2"
         x-large
-        @click:close="chip2 = false"
+        @click:close="openDeleteIconDialog(iconId)"
         @click="openEditIconDialog({iconId: iconId, iconCategoryId: item.id})"
         close
         label
@@ -147,7 +147,7 @@
         :key="componentKey"
          
           left
-          :src="'/rest/icons/' + iconId + '/raw'"
+          :src="'/rest/icons/' + iconId + '/raw?' + item.refreshCounter"
           width="50"
           height="50"
         />
@@ -193,6 +193,8 @@ export default {
     deleteDialog:  {
       show: false,
       action: function() {},
+      iconId: -1,
+      iconCategoryId: -1,
     },
     headers: [],
     componentKey: 0,
@@ -252,6 +254,7 @@ export default {
         let categoryDto = {
           id: null,
           name: this.categoryDialog.name,
+          iconIds: []
         };
         client.postIconCategory(categoryDto);
         this.closeCategoryDialog();
@@ -280,7 +283,6 @@ export default {
     },
     openDeleteCategoryDialog: function(categoryDto) {
       this.deleteDialog = {
-        name: categoryDto.name,
         action: this.deleteCategory,
         iconCategoryId: categoryDto.id,
         show: true,
@@ -338,8 +340,20 @@ export default {
         };
         client.putIcon(iconDto);
         this.componentKey++
-        this.closeIconDialog();
+        this.closeIconDialog()
       }
+    },
+    openDeleteIconDialog: function(iconId) {
+      this.deleteDialog = {
+        action: this.deleteIcon,
+        iconId: iconId,
+        show: true,
+      };
+    },
+    deleteIcon: function() {
+      let id = this.deleteDialog.iconId
+      client.deleteIcon(id)
+      this.closeDeleteDialog()
     },
   },
   mounted: function () {

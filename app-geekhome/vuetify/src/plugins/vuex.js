@@ -34,6 +34,12 @@ function mapTagDtoToTagVM(tagDto) {
   return result
 }
 
+function mapIconCategoryDtoToIconCategoryVM(tagDto) {
+  var result = JSON.parse(JSON.stringify(tagDto))
+  result.refreshCounter = 0
+  return result
+}
+
 
 export default new Vuex.Store({
   state: {
@@ -144,7 +150,8 @@ export default new Vuex.Store({
     },
 
     [ADD_ICON_CATEGORY](state, iconCategoryDto) {
-      state.iconCategories.push(iconCategoryDto)
+      var iconCategoryVM = mapIconCategoryDtoToIconCategoryVM(iconCategoryDto)
+      state.iconCategories.push(iconCategoryVM)
     },
 
     [UPDATE_ICON_CATEGORY](state, iconCategoryDto) {
@@ -172,21 +179,20 @@ export default new Vuex.Store({
     },
 
     [UPDATE_ICON](state, iconDto) {
-      console.log("TODO")
-      console.log(state)
-      console.log(iconDto)
-      // state.iconCategories.forEach( element => {
-      //   if (element.id === iconDto.iconCategoryId) {
-      //     element.iconIds.push(iconDto.id+'?aa')
-      //   }
-      // })
+      state.iconCategories.forEach( element => {
+        if (element.id === iconDto.iconCategoryId) {
+          element.refreshCounter++
+        }
+      })
     },
 
     [REMOVE_ICON](state, id) {
-      state.icons.forEach( (element, i) => {
-        if (element.id === id) {
-          Vue.delete(state.icons, i)
-        }
+      state.iconCategories.forEach( (categoryElement) => {
+        categoryElement.iconIds.forEach((elementId, i) => {
+          if (elementId === id) {
+            Vue.delete(categoryElement.iconIds, i)
+          }
+        })
       })
     }
   }

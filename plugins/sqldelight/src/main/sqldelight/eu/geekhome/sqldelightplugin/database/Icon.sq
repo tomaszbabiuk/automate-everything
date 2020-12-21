@@ -2,7 +2,11 @@ CREATE TABLE IF NOT EXISTS icon (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   icon_category_id INTEGER NOT NULL,
   raw TEXT NOT NULL,
-  FOREIGN KEY(icon_category_id) REFERENCES iconCategory(id)
+
+  CONSTRAINT fk_icon_category
+    FOREIGN KEY(icon_category_id)
+    REFERENCES iconCategory(id)
+    ON DELETE CASCADE
 );
 
 selectAll:
@@ -19,7 +23,7 @@ INSERT INTO icon(icon_category_id, raw)
 VALUES (?,?);
 
 delete:
-DELETE FROM iconCategory
+DELETE FROM icon
 WHERE id == ?;
 
 update:

@@ -14,6 +14,7 @@ class SqlDelightRepository : Repository {
         Class.forName("org.sqlite.JDBC")
         val driver = JdbcSqliteDriver("jdbc:sqlite:repository.sqlite")
         Database.Schema.create(driver)
+        driver.execute(null, "PRAGMA foreign_keys=ON", 0)
         database = Database(driver)
     }
 
