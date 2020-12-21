@@ -32,9 +32,7 @@ export default {
         actions: "Akcje",
         delete_question: "Czy na pewno usunąć ten obiekt?",
         cancel: "Anuluj",
-        ok: "OK",
-        no_data: "No data",
-
+        ok: "OK"
     },
     validation: {
         field_required: "To pole jest wymagane",
@@ -58,11 +56,15 @@ export default {
         edit_icon: "Edytuj ikonę"
     },
     dataFooter: {
-        itemsPerPageAll: "All",
+        itemsPerPageAll: "Wszystko",
         itemsPerPageText: "Wierszy na stronie:",
         prevPage: "Poprzednia strona",
         nextPage: "Następna strona",
-        pageText: "%s %s z %s"
-    }
+        pageText: "{0}-{1} z {2}"
+    },
+    dataTable: {
+        itemsPerPageText: "Wierszy na stronie"
+    },
+    noDataText: "Brak danych"
 
 }

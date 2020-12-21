@@ -32,8 +32,7 @@ export default {
         actions: "Actions",
         delete_question: "Are you sure you want to delete this item?",
         cancel: "Cancel",
-        ok: "OK",
-        no_data: "No data",
+        ok: "OK"
     },
     validation: {
         field_required: "This field is required",
@@ -61,7 +60,11 @@ export default {
         itemsPerPageText: "Rows per page:",
         prevPage: "Previous page",
         nextPage: "Next page",
-        pageText: "undefined-undefined xxx undefined",
-    }
+        pageText: "{0}-{1} of {2}",
+    },
+    dataTable: {
+        itemsPerPageText: "Rows per page"
+    },
+    noDataText: "No data"
 
 }

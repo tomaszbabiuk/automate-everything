@@ -161,7 +161,7 @@
       </nobr>
     </template>
     <template v-slot:no-data>
-      {{ $vuetify.lang.t("$vuetify.common.no_data") }}
+      {{ $vuetify.lang.t("$noDataText") }}
     </template>
   </v-data-table>
 </template>
