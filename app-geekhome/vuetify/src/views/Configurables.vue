@@ -74,17 +74,29 @@
     computed: {
       breadcrumbs() {
         var breadcrumbs = []
+
+        var selectedClass = this.getConfigurableClazz()
+        
+        var selectedConfigurable = this.getConfigurableByClazz(selectedClass)
+        var isLast = true
+        while (selectedConfigurable != null) {
+          breadcrumbs.push({
+            text: selectedConfigurable.titleRes,
+            disabled: isLast,
+            href: '/configurables/'+selectedConfigurable.class
+          })
+
+          selectedConfigurable = this.getConfigurableByClazz(selectedConfigurable.parentClass)
+          isLast = false
+        }
+
         breadcrumbs.push({
           text: 'House',
           disabled: false,
           href: '/configurables/null',
         })
 
-        var selectedClass = this.getConfigurableClazz()
-        console.log(selectedClass)
-        
-
-        return breadcrumbs
+        return breadcrumbs.reverse()
 
       },
 
@@ -104,6 +116,17 @@
     methods: {
       getConfigurableClazz: function() {
         return this.$route.params.clazz
+      },
+
+      getConfigurableByClazz: function(clazz) {
+        var result = null
+        this.$store.state.configurables.forEach(element => {
+          if (element.class == clazz) {
+            result = element
+          }
+        })
+
+        return result
       },
 
       browse: function(configurable) {

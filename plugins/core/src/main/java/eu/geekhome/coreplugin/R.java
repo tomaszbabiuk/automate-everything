@@ -40,32 +40,31 @@ public class R {
 
     public static Resource configurable_scene_description = new Resource(
             "Scene is a set of conditions that defines specyfic behavior",
-            "Sceny to zbiór warunków, które definiują określone zachowanie"
-    );
+            "Sceny to zbiór warunków, które definiują określone zachowanie");
 
-    public static Resource configurable_floor_add = new Resource(
-            "Add floor",
-            "Dodaj piętro");
 
-    public static Resource configurable_floor_title = new Resource(
-            "House plan",
-            "Plan domu");
+    public static Resource configurable_onoffdevice_add = new Resource(
+            "Add on/off device",
+            "Dodaj urządzenie wł/wył");
 
-    public static Resource configurable_floor_description = new Resource(
-            "Group devices by location (in rooms, at floors)",
-            "Grupuj urządzenia wg ich położenia (w pokojach, na piętrach)");
+    public static Resource configurable_onoffdevice_title = new Resource(
+            "On/Off devices",
+            "Urządzenia wł/wył");
 
-    public static Resource configurable_room_add = new Resource(
-            "Add room",
-            "Dodaj pokój");
+    public static Resource configurable_onoffdevices_description = new Resource(
+            "A very simple to automate on/off devices",
+            "Proste w autmatyzowaniu urządzenia typu: włącz/wyłącz");
 
-    public static Resource configurable_room_title = new Resource(
-            "Room",
-            "Pokój");
+    public static Resource configurable_thermometer_add = new Resource(
+            "Add thermometer",
+            "Dodaj termometr");
 
-    public static Resource configurable_room_description = new Resource(
-            "Rooms are used to group devices in one location",
-            "Pokoje są używane do gromadzenia urządzeń w jednej lokalizacji");
+    public static Resource configurable_thermometer_title = new Resource(
+            "Thermometers",
+            "Termometry");
 
+    public static Resource configurable_thermometers_description = new Resource(
+            "Temperature sensors",
+            "Czujniki temperatury");
 
 }

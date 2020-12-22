@@ -42,4 +42,28 @@ public class ConfigurableDto {
     public String getClazz() {
         return _clazz;
     }
+
+    public List<FieldDto> getFields() {
+        return _fields;
+    }
+
+    public String getParentClazz() {
+        return _parentClazz;
+    }
+
+    public Resource getAddNewRes() {
+        return _addNewRes;
+    }
+
+    public Resource getTitleRes() {
+        return _titleRes;
+    }
+
+    public Resource getDescriptionRes() {
+        return _descriptionRes;
+    }
+
+    public String getIconRaw() {
+        return _iconRaw;
+    }
 }
