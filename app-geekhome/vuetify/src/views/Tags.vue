@@ -90,8 +90,8 @@
         v-for="tag in item.children"
         :key="tag.id"
         class="ma-2"
-        @click:close="openDeleteTagDialog(tagId)"
-        @click="openEditTagDialog(tagId)"
+        @click:close="openDeleteTagDialog(tag.id)"
+        @click="openEditTagDialog(item.id, tag)"
         close
         outlined
       >
@@ -247,45 +247,40 @@ export default {
         this.closeTagDialog();
       }
     },
-    openEditIconDialog: async function (ids) {
-      this.iconDialog = {
-        iconId: ids.iconId,
-        iconCategoryId: ids.iconCategoryId,
-        raw: "",
-        titleText: this.$vuetify.lang.t("$vuetify.icons.edit_icon"),
+    openEditTagDialog: async function (parentId, tagDto) {
+      this.tagDialog = {
+        tagId: tagDto.id,
+        tagParentId: parentId,
+        name: tagDto.name,
+        titleText: this.$vuetify.lang.t("$vuetify.tags.edit_tag"),
         actionText: this.$vuetify.lang.t("$vuetify.common.edit"),
-        action: this.editIcon,
+        action: this.editTag,
         show: true,
       };
 
-      await client.getIconRawWithCallback(ids.iconId,(response) => { 
-        this.iconDialog.raw = response
-      })
-
-      this.focusOnRawLazy()
+      this.focusOnNameLazy()
     },
-    editIcon: function () {
-      if (this.$refs.iconForm.validate()) {
-        let iconDto = {
-          iconCategoryId: this.iconDialog.iconCategoryId,
-          id: this.iconDialog.iconId,
-          raw: this.iconDialog.raw,
+    editTag: function () {
+      if (this.$refs.tagForm.validate()) {
+        let tagDto = {
+          parentId: this.tagDialog.tagParentId,
+          id: this.tagDialog.tagId,
+          name: this.tagDialog.name,
         };
-        client.putIcon(iconDto);
-        this.componentKey++
-        this.closeIconDialog()
+        client.putTag(tagDto);
+        this.closeTagDialog()
       }
     },
-    openDeleteIconDialog: function(iconId) {
+    openDeleteTagDialog: function(tagId) {
       this.deleteDialog = {
-        action: this.deleteIcon,
-        iconId: iconId,
+        action: this.deleteTag,
+        tagId: tagId,
         show: true,
       };
     },
-    deleteIcon: function() {
-      let id = this.deleteDialog.iconId
-      client.deleteIcon(id)
+    deleteTag: function() {
+      let id = this.deleteDialog.tagId
+      client.deleteTag(id)
       this.closeDeleteDialog()
     },
   },
