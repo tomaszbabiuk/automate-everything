@@ -43,8 +43,10 @@ export default {
         error: "Unable to get data from server: please check internet connection."
     },
     tags: {
+        tags: "Tags",
         add_tag: "Add tag",
         add_category: "Add category",
+        edit_category: "Edit category",
         edit_tag: "Edit tag",
     },
     icons: {

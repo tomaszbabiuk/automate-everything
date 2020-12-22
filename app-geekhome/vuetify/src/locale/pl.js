@@ -43,8 +43,10 @@ export default {
         error: "Nie można pobrać danych z serwera, sprawdź połączenie sieciowe"
     },
     tags: {
+        tags: "Tagi",
         add_tag: "Dodaj tag",
         add_category: "Dodaj kategorię",
+        edit_category: "Edytuj kategorię",
         edit_tag: "Edytuj tag",
     },
     icons: {

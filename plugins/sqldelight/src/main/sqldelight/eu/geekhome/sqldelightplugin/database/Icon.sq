@@ -3,10 +3,7 @@ CREATE TABLE IF NOT EXISTS icon (
   icon_category_id INTEGER NOT NULL,
   raw TEXT NOT NULL,
 
-  CONSTRAINT fk_icon_category
-    FOREIGN KEY(icon_category_id)
-    REFERENCES iconCategory(id)
-    ON DELETE CASCADE
+  FOREIGN KEY(icon_category_id) REFERENCES iconCategory(id) ON DELETE CASCADE
 );
 
 selectAll:

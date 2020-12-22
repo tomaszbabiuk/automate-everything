@@ -3,7 +3,6 @@
     :headers="headers"
     :items="items"
     item-key="id"
-    sort-by="calories"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -145,7 +144,6 @@
       >
         <img
         :key="componentKey"
-         
           left
           :src="'/rest/icons/' + iconId + '/raw?' + item.refreshCounter"
           width="50"
@@ -161,7 +159,7 @@
       </nobr>
     </template>
     <template v-slot:no-data>
-      {{ $vuetify.lang.t("$noDataText") }}
+      {{ $vuetify.lang.t("$vuetify.noDataText") }}
     </template>
   </v-data-table>
 </template>
@@ -207,15 +205,6 @@ export default {
 
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close()
-    },
-    dialogDelete(val) {
-      val || this.closeDelete()
     },
   },
 
