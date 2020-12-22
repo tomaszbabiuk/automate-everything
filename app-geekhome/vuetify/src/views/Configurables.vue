@@ -1,29 +1,12 @@
 <template>
   <div>
 
+    <v-breadcrumbs :items="breadcrumbs">
+      <template v-slot:divider>
+        <v-icon>mdi-forward</v-icon>
+      </template>
+    </v-breadcrumbs>
 
-    <v-row>
-      <v-col sm="11" md="11" lg="11" xl="11">
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-forward</v-icon>
-          </template>
-        </v-breadcrumbs>
-      </v-col>
-      <v-col sm="1" md="1" lg="1" xl="1">
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          small
-          color="pink"
-        >
-        <v-icon dark>
-          mdi-plus
-        </v-icon>
-      </v-btn>
-      </v-col>
-    </v-row>
 
     <v-row v-for="n in Math.ceil(configurables.length / 3)" :key="n">
       <v-col v-for="i in [0,1,2]" :key="i" sm="12" md="6" lg="4" xl="2">
@@ -59,6 +42,9 @@
     </v-btn>
       </v-list-item>
     </v-card>
+    <v-btn v-if="canAddFields" fab dark large color="primary" fixed right bottom class="ma-4">
+        <v-icon dark>mdi-plus</v-icon>
+    </v-btn>
   </div>
 </template>
 
@@ -97,7 +83,6 @@
         })
 
         return breadcrumbs.reverse()
-
       },
 
       configurables() {
@@ -107,6 +92,12 @@
           : function(x) { return x.parentClass === clazz }
         
         return this.$store.state.configurables.filter(filterFunction);
+      },
+
+      canAddFields() {
+          var clazz = this.getConfigurableClazz()
+          var configurable = this.getConfigurableByClazz(clazz)
+          return configurable !== null && configurable.fields !== null
       },
 
       instances : function() {
