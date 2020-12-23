@@ -67,6 +67,9 @@ export default {
     dataTable: {
         itemsPerPageText: "Rows per page"
     },
-    noDataText: "No data"
+    noDataText: "No data",
+    configurables: {
+        add: "Add",
+    }
 
 }

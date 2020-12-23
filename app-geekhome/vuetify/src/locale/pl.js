@@ -67,6 +67,9 @@ export default {
     dataTable: {
         itemsPerPageText: "Wierszy na stronie"
     },
-    noDataText: "Brak danych"
+    noDataText: "Brak danych",
+    configurables: {
+        add: "Dodaj",
+    }
 
 }

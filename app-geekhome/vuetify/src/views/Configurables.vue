@@ -7,6 +7,30 @@
       </template>
     </v-breadcrumbs>
 
+    <v-dialog v-model="instanceDialog.show" persistent fullscreen transition="dialog-bottom-transition">
+      <v-card>
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click="closeInstanceDialog()">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>{{instanceDialog.title}}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn dark text @click="instanceDialog.action()">{{$vuetify.lang.t('$vuetify.configurables.add')}}</v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      
+      <v-container>
+        <v-form ref="form" v-if="configurable != null">
+          <component v-for="field in configurable.fields" :key="field.name" :hint="field.hint"
+            :counter="field.maxSize" :required="field.required" :id="field.name" :initialValue="null"
+            v-bind:is="configurableClassToFormComponent(field.class)">
+          </component>
+        </v-form>
+      </v-container>
+      
+      </v-card>
+    </v-dialog>
 
     <v-row v-for="n in Math.ceil(configurables.length / 3)" :key="n">
       <v-col v-for="i in [0,1,2]" :key="i" sm="12" md="6" lg="4" xl="2">
@@ -42,7 +66,7 @@
     </v-btn>
       </v-list-item>
     </v-card>
-    <v-btn v-if="canAddFields" fab dark large color="primary" fixed right bottom class="ma-4">
+    <v-btn v-if="configurable !== null && configurable.fields !== null" fab dark large color="primary" fixed right bottom class="ma-4" @click="showAddNewInstanceDialog()">
         <v-icon dark>mdi-plus</v-icon>
     </v-btn>
   </div>
@@ -50,13 +74,20 @@
 
 <script>
   import { client } from "../rest.js"
-  // import store from '../plugins/vuex'
-  // import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
+  import store from '../plugins/vuex'
+  import {NEW_INSTANCE, RESET_INSTANCE} from '../plugins/vuex'
 
 
   export default {
-    data: () => ({
-    }),
+    data: function() {
+    return {
+      instanceDialog: {
+        show: false,
+        title: "title",
+        action: function() { console.log("dupa") }
+      },
+    };
+  },
     computed: {
       breadcrumbs() {
         var breadcrumbs = []
@@ -94,14 +125,13 @@
         return this.$store.state.configurables.filter(filterFunction);
       },
 
-      canAddFields() {
-          var clazz = this.getConfigurableClazz()
-          var configurable = this.getConfigurableByClazz(clazz)
-          return configurable !== null && configurable.fields !== null
+      instances: function() {
+        return this.$store.state.instances
       },
 
-      instances : function() {
-        return this.$store.state.instances
+      configurable: function() {
+        var clazz = this.getConfigurableClazz()
+          return this.getConfigurableByClazz(clazz)
       }
     },
     methods: {
@@ -120,6 +150,10 @@
         return result
       },
 
+      configurableClassToFormComponent: function(clazz) {
+        return "configurable-" + clazz.toLowerCase()
+      },
+
       browse: function(configurable) {
         this.$router.push({ name: 'configurables', params: { clazz: configurable.class } })
         this.refresh()
@@ -134,10 +168,30 @@
       refresh() {
         client.getConfigurables();
         client.getInstancesOfClazz(this.getConfigurableClazz());
+      },
+
+      showAddNewInstanceDialog: function() {
+        store.commit(NEW_INSTANCE, this.configurable)
+
+        this.instanceDialog = {
+          show: true,
+          title: "Add new instance",
+          action: this.addInstance
+        }
+      },
+
+      closeInstanceDialog: function() {
+        store.commit(RESET_INSTANCE)
+        this.instanceDialog.show = false
+      },
+
+      addInstance: function() {
+
       }
     },
     mounted: function() {
       this.refresh()
+      store.commit(RESET_INSTANCE)
     }
   }
 </script>
