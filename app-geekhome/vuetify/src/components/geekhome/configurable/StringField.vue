@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-text-field v-model="inputVal" :label="hint" :required="required" :counter="counter" :error="error" :error-messages="errorMessages"></v-text-field>
+      <v-text-field v-model="inputVal" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages"></v-text-field>
   </div>
 </template>
 

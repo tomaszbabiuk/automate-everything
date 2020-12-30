@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class FieldDefinition<T> {
     private String _name;
     private Resource _hint;
+    private int _maxSize;
     private Class<T> _valueClazz;
     private FieldBuilder<T> _builder;
     private Validator<T>[] _validators;
@@ -32,20 +33,17 @@ public abstract class FieldDefinition<T> {
         return _builder;
     }
 
-    protected FieldDefinition(String name, Resource hint, Class<T> valueClazz, FieldBuilder<T> builder, Validator<T>... validators) {
+    public int getMaxSize() {
+        return _maxSize;
+    }
+
+    protected FieldDefinition(String name, Resource hint, int maxSize, Class<T> valueClazz, FieldBuilder<T> builder, Validator<T>... validators) {
         _name = name;
         _hint = hint;
+        _maxSize = maxSize;
         _valueClazz = valueClazz;
         _builder = builder;
         _validators = validators;
-    }
-
-    public boolean isRequired() {
-        return false;//TODO
-    }
-
-    public int getMaxSize() {
-        return 30; //TODO
     }
 
     public FieldValidationResult validate(String valueAsString) {

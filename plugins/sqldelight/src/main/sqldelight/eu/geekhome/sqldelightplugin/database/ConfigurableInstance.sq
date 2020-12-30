@@ -1,6 +1,9 @@
 CREATE TABLE IF NOT EXISTS configurableInstance (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  clazz TEXT NOT NULL
+  icon_id INTEGER,
+  clazz TEXT NOT NULL,
+
+  FOREIGN KEY(icon_id) REFERENCES icon(id)
 );
 
 selectAll:

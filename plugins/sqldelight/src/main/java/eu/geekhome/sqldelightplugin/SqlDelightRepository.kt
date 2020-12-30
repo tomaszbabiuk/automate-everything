@@ -179,6 +179,6 @@ class SqlDelightRepository : Repository {
                 .executeAsList()
                 .forEach { fieldsMap[it.name] = it.value }
 
-        return InstanceDto(configurableInstance.id, configurableInstance.clazz, fieldsMap)
+        return InstanceDto(configurableInstance.id, configurableInstance.icon_id, configurableInstance.clazz, fieldsMap)
     }
 }

@@ -9,14 +9,18 @@ public class InstanceDto {
     @SerializedName("id")
     private final long _id;
 
+    @SerializedName("iconId")
+    private final long _iconId;
+
     @SerializedName("class")
     private final String _clazz;
 
     @SerializedName("fields")
     private final Map<String, String> _fields;
 
-    public InstanceDto(long id, String clazz, Map<String, String> fields) {
+    public InstanceDto(long id, Long iconId, String clazz, Map<String, String> fields) {
         _id = id;
+        _iconId = iconId;
         _clazz = clazz;
         _fields = fields;
     }
@@ -31,5 +35,9 @@ public class InstanceDto {
 
     public long getId() {
         return _id;
+    }
+
+    public long getIconId() {
+        return _iconId;
     }
 }

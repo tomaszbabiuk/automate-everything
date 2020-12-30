@@ -24,7 +24,7 @@ public class ThermometerConfigurable extends NameDescriptionConfigurable {
 
     @Override
     public Resource getDescriptionRes() {
-        return R.configurable_thermometer_title;
+        return R.configurable_thermometer_description;
     }
 
     @Override

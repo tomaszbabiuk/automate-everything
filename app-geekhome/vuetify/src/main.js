@@ -16,7 +16,7 @@ Vue.component('material-card', ADCard)
 Vue.component('material-stats-card', ADStarsCard)
 Vue.component('helper-offset', ADOffset)
 
-//geekhome
+//configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
 

@@ -2,7 +2,7 @@ package com.geekhome.common.configurable;
 
 import com.geekhome.common.localization.Resource;
 
-public class RequiredValidator implements Validator<String> {
+public class RequiredStringValidator implements Validator<String> {
     @Override
     public Resource getReason() {
         return new Resource("This field is required",

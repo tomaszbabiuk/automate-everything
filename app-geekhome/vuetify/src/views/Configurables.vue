@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-16">
     <v-breadcrumbs :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-forward</v-icon>
@@ -24,28 +24,81 @@
               $vuetify.lang.t("$vuetify.configurables.add")
             }}</v-btn>
           </v-toolbar-items>
+          <template v-slot:extension>
+            <v-tabs v-model="instanceDialog.activeTab">
+              <v-tab> Data </v-tab>
+              <v-tab> Icon </v-tab>
+              <v-tab> Tags </v-tab>
+
+              <v-tab-item class="ma-4">
+                <v-form ref="form" v-if="configurable != null">
+                  <component
+                    v-for="field in configurable.fields"
+                    :key="field.name"
+                    :hint="field.hint"
+                    :counter="field.maxSize"
+                    :required="field.required"
+                    :id="field.name"
+                    :initialValue="null"
+                    v-bind:is="configurableClassToFormComponent(field.class)"
+                  >
+                  </component>
+                </v-form>
+              </v-tab-item>
+              <v-tab-item>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Kategoria</th>
+                        <th class="text-left">Ikony</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in iconCategories" :key="item.id">
+                        <td>{{ item.name }}</td>
+                        <td>
+                          <v-chip
+                            v-for="iconId in item.iconIds"
+                            :key="iconId"
+                            class="ma-2"
+                            x-large
+                            @click="
+                              openEditIconDialog({
+                                iconId: iconId,
+                                iconCategoryId: item.id,
+                              })
+                            "
+                            label
+                            outlined
+                          >
+                            <img
+                              :key="componentKey"
+                              left
+                              :src="
+                                '/rest/icons/' +
+                                iconId +
+                                '/raw?' +
+                                item.refreshCounter
+                              "
+                              width="50"
+                              height="50"
+                            />
+                          </v-chip>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-tab-item>
+            </v-tabs>
+          </template>
         </v-toolbar>
 
         <v-container>
-          <v-form ref="form" v-if="configurable != null">
-            <component
-              v-for="field in configurable.fields"
-              :key="field.name"
-              :hint="field.hint"
-              :counter="field.maxSize"
-              :required="field.required"
-              :id="field.name"
-              :initialValue="null"
-              v-bind:is="configurableClassToFormComponent(field.class)"
-            >
-            </component>
-          </v-form>
-              <v-overlay :value="formOverlay">
-              <v-progress-circular
-                indeterminate
-                size="64"
-              ></v-progress-circular>
-            </v-overlay>
+          <v-overlay :value="instanceDialog.overlay">
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
         </v-container>
       </v-card>
     </v-dialog>
@@ -74,10 +127,7 @@
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col>
-    </v-row>
-    <v-card tile v-for="instance in instances" :key="instance.id" class="mb-12">
+    <v-card tile v-for="instance in instances" :key="instance.id">
       <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title>{{ instance.fields["name"] }}</v-list-item-title>
@@ -94,7 +144,6 @@
         </v-btn>
       </v-list-item>
     </v-card>
-
 
     <v-btn
       v-if="configurable !== null && configurable.fields !== null"
@@ -121,11 +170,12 @@ import { NEW_INSTANCE, RESET_INSTANCE } from "../plugins/vuex";
 export default {
   data: function () {
     return {
-      formOverlay: false,
       instanceDialog: {
         show: false,
         title: "title",
-        action: function () { }
+        action: function () {},
+        activeTab: 0,
+        overlay: false,
       },
     };
   },
@@ -181,6 +231,10 @@ export default {
       var clazz = this.getConfigurableClazz();
       return this.getConfigurableByClazz(clazz);
     },
+
+    iconCategories: function () {
+      return this.$store.state.iconCategories;
+    },
   },
   methods: {
     getConfigurableClazz: function () {
@@ -218,11 +272,10 @@ export default {
     showAddNewInstanceDialog: function () {
       store.commit(NEW_INSTANCE, this.configurable);
 
-      this.instanceDialog = {
-        show: true,
-        title: "Add new instance",
-        action: this.addInstance,
-      };
+      this.instanceDialog.show = true;
+      this.instanceDialog.title = "Add new instance";
+      this.instanceDialog.action = this.addInstance;
+      this.instanceDialog.activeTab = 0;
     },
 
     closeInstanceDialog: function () {
@@ -231,26 +284,30 @@ export default {
     },
 
     addInstance: function () {
-      this.formOverlay = true
+      this.instanceDialog.overlay = true;
       client.postNewInstance(store.state.newInstance, (validationResult) => {
-        var isFormValid = true
+        var isFormValid = true;
         for (const field in validationResult) {
-            if (!validationResult[field].valid) {
-              isFormValid = false
-            }
+          if (!validationResult[field].valid) {
+            isFormValid = false;
+          }
         }
 
         if (isFormValid) {
-          this.instanceDialog.show = false
+          this.instanceDialog.show = false;
+        } else {
+          this.instanceDialog.activeTab = 0;
         }
 
-        this.formOverlay = false
+        this.instanceDialog.overlay = false;
       });
     },
   },
   mounted: function () {
     this.refresh();
     store.commit(RESET_INSTANCE);
+
+    client.getIconCategories();
   },
 };
 </script>

@@ -6,6 +6,6 @@ public class FieldDefinitionDtoMapper {
 
     public FieldDto map(FieldDefinition<?> field) {
         return new FieldDto(field.getClass().getSimpleName() , field.getName(), field.getHint(),
-                field.isRequired(), field.getMaxSize());
+                field.getMaxSize());
     }
 }

@@ -39,7 +39,7 @@ public class R {
             "Sceny");
 
     public static Resource configurable_scene_description = new Resource(
-            "Scene is a set of conditions that defines specyfic behavior",
+            "Scene is a set of conditions that define specyfic behavior",
             "Sceny to zbiór warunków, które definiują określone zachowanie");
 
 
@@ -63,7 +63,7 @@ public class R {
             "Thermometers",
             "Termometry");
 
-    public static Resource configurable_thermometers_description = new Resource(
+    public static Resource configurable_thermometer_description = new Resource(
             "Temperature sensors",
             "Czujniki temperatury");
 

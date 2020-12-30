@@ -17,14 +17,10 @@ public class FieldDto {
     @SerializedName("maxSize")
     private int _maxSize;
 
-    @SerializedName("required")
-    private boolean _required;
-
-    public FieldDto(String clazz, String name, Resource hint, boolean required, int maxSize) {
+    public FieldDto(String clazz, String name, Resource hint, int maxSize) {
         _name = name;
         _hint = hint;
         _clazz = clazz;
-        _required = required;
         _maxSize = maxSize;
     }
 }
