@@ -2,12 +2,15 @@ package com.geekhome.common.configurable;
 
 import com.geekhome.common.localization.Resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class FieldDefinition<T> {
     private String _name;
     private Resource _hint;
     private Class<T> _valueClazz;
     private FieldBuilder<T> _builder;
-    private Validator<T> _validator;
+    private Validator<T>[] _validators;
 
     public String getName() {
         return _name;
@@ -21,20 +24,20 @@ public abstract class FieldDefinition<T> {
         return _valueClazz;
     }
 
-    public Validator<T> getValidator() {
-        return _validator;
+    public Validator<T>[] getValidators() {
+        return _validators;
     }
 
     public FieldBuilder<T> getBuilder() {
         return _builder;
     }
 
-    protected FieldDefinition(String name, Resource hint, Class<T> valueClazz, FieldBuilder<T> builder, Validator<T> validator) {
+    protected FieldDefinition(String name, Resource hint, Class<T> valueClazz, FieldBuilder<T> builder, Validator<T>... validators) {
         _name = name;
         _hint = hint;
         _valueClazz = valueClazz;
         _builder = builder;
-        _validator = validator;
+        _validators = validators;
     }
 
     public boolean isRequired() {
@@ -43,6 +46,22 @@ public abstract class FieldDefinition<T> {
 
     public int getMaxSize() {
         return 30; //TODO
+    }
+
+    public FieldValidationResult validate(String valueAsString) {
+        boolean isFieldValid = true;
+        List<Resource> failingReasons = new ArrayList<>();
+        T value = _builder.fromPersistableString(valueAsString);
+
+        for (Validator<T> validator : _validators) {
+            boolean isValid = validator.validate(value);
+            if (!isValid) {
+                isFieldValid = false;
+                failingReasons.add(validator.getReason());
+            }
+        }
+
+        return new FieldValidationResult(isFieldValid, failingReasons);
     }
 }
 

@@ -1,5 +1,10 @@
 package eu.geekhome.rest.instances;
 
+import com.geekhome.common.configurable.Configurable;
+import com.geekhome.common.configurable.FieldDefinition;
+import com.geekhome.common.configurable.FieldValidationResult;
+import com.geekhome.common.configurable.Validator;
+import com.geekhome.common.localization.Resource;
 import eu.geekhome.rest.PluginsManager;
 import eu.geekhome.services.repository.InstanceDto;
 import eu.geekhome.services.repository.Repository;
@@ -7,22 +12,57 @@ import eu.geekhome.services.repository.Repository;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Path("instances")
 public class InstancesController {
 
     private final Repository _repository;
+    private final PluginsManager _pluginsManager;
+
+    private Optional<Configurable> findConfigurable(String clazz) {
+        return _pluginsManager
+                .getConfigurables()
+                .stream()
+                .filter((x) -> x.getClass().getSimpleName().equals(clazz))
+                .findFirst();
+    }
 
     @Inject
     public InstancesController(PluginsManager pluginsManager) {
+        _pluginsManager = pluginsManager;
         _repository = pluginsManager.getRepositories().get(0);
     }
 
+    @SuppressWarnings("rawtypes")
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void postInstances(InstanceDto instanceDto) {
-        _repository.saveInstance(instanceDto);
+    public Map<String, FieldValidationResult> postInstances(InstanceDto instanceDto) throws Exception {
+        Optional<Configurable> configurable = findConfigurable(instanceDto.getClazz());
+        if (configurable.isPresent()) {
+            Map<String, FieldValidationResult> validationResult = new HashMap<>();
+            boolean isObjectValid = true;
+
+            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions()) {
+                String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
+                FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
+                validationResult.put(fieldDefinition.getName(), isValid);
+                if (!isValid.isValid()) {
+                    isObjectValid = false;
+                }
+            }
+
+            if (isObjectValid) {
+                _repository.saveInstance(instanceDto);
+            }
+
+            return validationResult;
+        } else {
+            throw new Exception("Unsupported configurable class");
+        }
     }
 
     @GET

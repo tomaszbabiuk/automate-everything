@@ -11,6 +11,8 @@ export const NEW_INSTANCE = 'NEW_INSTANCE'
 export const RESET_INSTANCE = 'RESET_INSTANCE' 
 export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 export const SET_INSTANCES = 'SET_INSTANCES'
+export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
+export const CLEAR_INSTANCE_VALIDATION = 'CLEAR_INSTANCE_VALIDATION'
 
 export const CLEAR_TAGS = 'CLEAR_TAGS'
 export const ADD_TAG = 'ADD_TAG'
@@ -46,7 +48,9 @@ export default new Vuex.Store({
     error: null,
     plugins: [],
     configurables: [],
-    instances: {},
+    instances: [],
+    instanceValidation: [],
+    validation: [],
     tags: [],
     iconCategories: [],
     newInstance: null,
@@ -97,6 +101,14 @@ export default new Vuex.Store({
 
     [SET_INSTANCES](state, instances) {
       state.instances = instances
+    },
+
+    [SET_INSTANCE_VALIDATION](state, validationData) {
+      state.instanceValidation = validationData
+    },
+
+    [CLEAR_INSTANCE_VALIDATION](state) {
+      state.instanceValidation = []
     },
 
     [CLEAR_TAGS](state) {
