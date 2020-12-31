@@ -70,6 +70,9 @@ export default {
     noDataText: "Brak danych",
     configurables: {
         add: "Dodaj",
+        data: "Dane",
+        tags: "Tagi",
+        icon: "Ikona",
     }
 
 }

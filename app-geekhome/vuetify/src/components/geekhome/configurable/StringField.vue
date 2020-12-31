@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {UPDATE_INSTANCE} from '../../../plugins/vuex'
+import {UPDATE_INSTANCE_FIELD} from '../../../plugins/vuex'
 
 export default {
 data: function() {
@@ -24,7 +24,7 @@ data: function() {
         return this.initialValue;
       },
       set(value) {
-        this.$store.commit(UPDATE_INSTANCE, { 
+        this.$store.commit(UPDATE_INSTANCE_FIELD, { 
           name: this.id,
           value: value
           })

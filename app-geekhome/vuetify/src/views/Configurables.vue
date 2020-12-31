@@ -26,13 +26,14 @@
           </v-toolbar-items>
           <template v-slot:extension>
             <v-tabs v-model="instanceDialog.activeTab">
-              <v-tab> Data </v-tab>
-              <v-tab> Icon </v-tab>
-              <v-tab> Tags </v-tab>
+              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.data")}} </v-tab>
+              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.icon")}} </v-tab>
+              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.tags")}} </v-tab>
 
-              <v-tab-item class="ma-4">
+              <v-tab-item >
                 <v-form ref="form" v-if="configurable != null">
                   <component
+                  class="ma-4"
                     v-for="field in configurable.fields"
                     :key="field.name"
                     :hint="field.hint"
@@ -46,50 +47,7 @@
                 </v-form>
               </v-tab-item>
               <v-tab-item>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">Kategoria</th>
-                        <th class="text-left">Ikony</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in iconCategories" :key="item.id">
-                        <td>{{ item.name }}</td>
-                        <td>
-                          <v-chip
-                            v-for="iconId in item.iconIds"
-                            :key="iconId"
-                            class="ma-2"
-                            x-large
-                            @click="
-                              openEditIconDialog({
-                                iconId: iconId,
-                                iconCategoryId: item.id,
-                              })
-                            "
-                            label
-                            outlined
-                          >
-                            <img
-                              :key="componentKey"
-                              left
-                              :src="
-                                '/rest/icons/' +
-                                iconId +
-                                '/raw?' +
-                                item.refreshCounter
-                              "
-                              width="50"
-                              height="50"
-                            />
-                          </v-chip>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                <configurable-icontab></configurable-icontab>
               </v-tab-item>
             </v-tabs>
           </template>
@@ -129,13 +87,20 @@
 
     <v-card tile v-for="instance in instances" :key="instance.id">
       <v-list-item two-line>
+        <v-list-item-icon>
+          <img
+            left
+            :src="'/rest/icons/' + instance.iconId + '/raw'"
+            width="50"
+            height="50"
+          />
+        </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>{{ instance.fields["name"] }}</v-list-item-title>
           <v-list-item-subtitle>{{
             instance.fields["description"]
           }}</v-list-item-subtitle>
         </v-list-item-content>
-
         <v-btn icon>
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
@@ -172,7 +137,7 @@ export default {
     return {
       instanceDialog: {
         show: false,
-        title: "title",
+        title: "",
         action: function () {},
         activeTab: 0,
         overlay: false,
@@ -231,10 +196,6 @@ export default {
       var clazz = this.getConfigurableClazz();
       return this.getConfigurableByClazz(clazz);
     },
-
-    iconCategories: function () {
-      return this.$store.state.iconCategories;
-    },
   },
   methods: {
     getConfigurableClazz: function () {
@@ -270,17 +231,17 @@ export default {
     },
 
     showAddNewInstanceDialog: function () {
-      store.commit(NEW_INSTANCE, this.configurable);
+      store.commit(NEW_INSTANCE, this.configurable)
 
-      this.instanceDialog.show = true;
-      this.instanceDialog.title = "Add new instance";
-      this.instanceDialog.action = this.addInstance;
-      this.instanceDialog.activeTab = 0;
+      this.instanceDialog.show = true
+      this.instanceDialog.title = this.configurable.addNewRes
+      this.instanceDialog.action = this.addInstance
+      this.instanceDialog.activeTab = 0
     },
 
     closeInstanceDialog: function () {
-      store.commit(RESET_INSTANCE);
-      this.instanceDialog.show = false;
+      store.commit(RESET_INSTANCE)
+      this.instanceDialog.show = false
     },
 
     addInstance: function () {
@@ -306,8 +267,6 @@ export default {
   mounted: function () {
     this.refresh();
     store.commit(RESET_INSTANCE);
-
-    client.getIconCategories();
   },
 };
 </script>

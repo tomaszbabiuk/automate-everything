@@ -21,5 +21,5 @@ FROM configurableInstance
 WHERE id = ?;
 
 insert:
-INSERT INTO configurableInstance(clazz)
-VALUES (?);
+INSERT INTO configurableInstance(clazz, icon_id)
+VALUES (?,?);

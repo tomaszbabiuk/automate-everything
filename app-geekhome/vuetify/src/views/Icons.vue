@@ -143,7 +143,6 @@
         outlined
       >
         <img
-        :key="componentKey"
           left
           :src="'/rest/icons/' + iconId + '/raw?' + item.refreshCounter"
           width="50"

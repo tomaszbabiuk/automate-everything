@@ -24,7 +24,7 @@ class SqlDelightRepository : Repository {
 
     override fun saveInstance(instanceDto: InstanceDto) {
         database.transaction {
-            database.configurableInstanceQueries.insert(instanceDto.clazz)
+            database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId)
             val insertedDtoId = database.generalQueries.lastInsertRowId().executeAsOne()
             instanceDto.fields.forEach {
                 database.fieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
