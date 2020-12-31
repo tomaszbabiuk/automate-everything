@@ -80,6 +80,12 @@ class SqlDelightRepository : Repository {
                 .map(this::mapConfigurableInstanceToInstanceDto)
     }
 
+    override fun deleteInstance(id: Long) {
+        database.transaction {
+            database.configurableInstanceQueries.delete(id)
+        }
+    }
+
     override fun getInstance(id: Long): InstanceDto {
         val instance = database
                 .configurableInstanceQueries

@@ -3,8 +3,6 @@ package eu.geekhome.rest.instances;
 import com.geekhome.common.configurable.Configurable;
 import com.geekhome.common.configurable.FieldDefinition;
 import com.geekhome.common.configurable.FieldValidationResult;
-import com.geekhome.common.configurable.Validator;
-import com.geekhome.common.localization.Resource;
 import eu.geekhome.rest.PluginsManager;
 import eu.geekhome.services.repository.InstanceDto;
 import eu.geekhome.services.repository.Repository;
@@ -20,7 +18,7 @@ import java.util.Optional;
 @Path("instances")
 public class InstancesController {
 
-    private final Repository _repository;
+    private Repository _repository;
     private final PluginsManager _pluginsManager;
 
     private Optional<Configurable> findConfigurable(String clazz) {
@@ -34,7 +32,11 @@ public class InstancesController {
     @Inject
     public InstancesController(PluginsManager pluginsManager) {
         _pluginsManager = pluginsManager;
-        _repository = pluginsManager.getRepositories().get(0);
+        try {
+            _repository = pluginsManager.getRepositories().get(0);
+        } catch (Exception ex) {
+            _repository = pluginsManager.getRepositories().get(0);
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -80,5 +82,12 @@ public class InstancesController {
         }
 
         return _repository.getAllInstances();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void deleteInstance(@PathParam("id") long id) {
+        _repository.deleteInstance(id);
     }
 }

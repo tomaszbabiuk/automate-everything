@@ -1,7 +1,8 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
-import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN, SET_CONFIGURABLES, SET_INSTANCES, SET_INSTANCE_VALIDATION } from './plugins/vuex'
+import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN } from './plugins/vuex'
+import { SET_CONFIGURABLES, SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE } from './plugins/vuex'
 import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
 import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY } from './plugins/vuex'
 import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
@@ -82,6 +83,13 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.get("rest/instances?class=" + clazz),
       (response) => store.commit(SET_INSTANCES, response.data)
+    )
+  },
+
+  deleteInstance: async function (id) {
+    await this.handleRestError(
+      () => axiosInstance.delete("rest/instances/" + id),
+      () => store.commit(REMOVE_INSTANCE, id)
     )
   },
 

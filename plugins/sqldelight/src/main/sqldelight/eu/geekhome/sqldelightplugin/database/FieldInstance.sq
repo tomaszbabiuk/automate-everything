@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS fieldInstance (
   instance_id INTEGER,
   name TEXT NOT NULL,
   value TEXT,
-  FOREIGN KEY(instance_id) REFERENCES configurableInstance(id)
+  FOREIGN KEY(instance_id) REFERENCES configurableInstance(id) ON DELETE CASCADE
 );
 
 selectAll:

@@ -8,7 +8,8 @@ export const SET_PLUGINS = 'SET_PLUGINS'
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
 export const NEW_INSTANCE = 'NEW_INSTANCE' 
-export const RESET_INSTANCE = 'RESET_INSTANCE' 
+export const RESET_INSTANCE = 'RESET_INSTANCE'
+export const REMOVE_INSTANCE = 'REMOVE_INSTANCE' 
 export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD' 
 export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON' 
 export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG' 
@@ -83,6 +84,7 @@ export default new Vuex.Store({
 
     [NEW_INSTANCE](state, configurable) {
       var newInstance = {
+        id: null,
         class: configurable.class,
         fields: {},
         iconId: null,
@@ -95,6 +97,14 @@ export default new Vuex.Store({
 
     [RESET_INSTANCE](state) {
       state.newInstance = null
+    },
+
+    [REMOVE_INSTANCE](state, instanceId) {
+      state.instances.forEach( (element, i) => {
+        if (element.id === instanceId) {
+          Vue.delete(state.instances, i)
+        }
+      })
     },
 
     [UPDATE_INSTANCE_FIELD](state, payload) {

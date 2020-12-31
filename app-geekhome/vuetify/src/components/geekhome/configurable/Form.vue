@@ -9,7 +9,7 @@
         :counter="field.maxSize"
         :required="field.required"
         :id="field.name"
-        :initialValue="null"
+        :initialValue="''"
         v-bind:is="configurableClassToFormComponent(field.class)"
       >
       </component>

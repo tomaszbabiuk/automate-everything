@@ -26,11 +26,17 @@
           </v-toolbar-items>
           <template v-slot:extension>
             <v-tabs v-model="instanceDialog.activeTab">
-              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.data")}} </v-tab>
-              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.icon")}} </v-tab>
-              <v-tab> {{$vuetify.lang.t("$vuetify.configurables.tags")}} </v-tab>
+              <v-tab>
+                {{ $vuetify.lang.t("$vuetify.configurables.data") }}
+              </v-tab>
+              <v-tab>
+                {{ $vuetify.lang.t("$vuetify.configurables.icon") }}
+              </v-tab>
+              <v-tab>
+                {{ $vuetify.lang.t("$vuetify.configurables.tags") }}
+              </v-tab>
 
-              <v-tab-item >
+              <v-tab-item>
                 <configurable-form></configurable-form>
               </v-tab-item>
               <v-tab-item>
@@ -98,10 +104,28 @@
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
         <v-btn icon>
-          <v-icon>mdi-delete</v-icon>
+          <v-icon @click="openDeleteInstanceDialog(instance.id)">mdi-delete</v-icon>
         </v-btn>
       </v-list-item>
     </v-card>
+
+    <v-dialog v-model="deleteDialog.show" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">{{
+          $vuetify.lang.t("$vuetify.common.delete_question")
+        }}</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeDeleteDialog()">{{
+            $vuetify.lang.t("$vuetify.common.cancel")
+          }}</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteDialog.action()">{{
+            $vuetify.lang.t("$vuetify.common.ok")
+          }}</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-btn
       v-if="configurable !== null && configurable.fields !== null"
@@ -134,6 +158,12 @@ export default {
         action: function () {},
         activeTab: 0,
         overlay: false,
+      },
+      deleteDialog:  {
+        show: false,
+        action: function() {},
+        instanceId: null,
+        iconCategoryId: null,
       },
     };
   },
@@ -206,10 +236,6 @@ export default {
       return result;
     },
 
-    configurableClassToFormComponent: function (clazz) {
-      return "configurable-" + clazz.toLowerCase();
-    },
-
     browse: function (configurable) {
       this.$router.push({
         name: "configurables",
@@ -224,17 +250,29 @@ export default {
     },
 
     showAddNewInstanceDialog: function () {
-      store.commit(NEW_INSTANCE, this.configurable)
+      store.commit(NEW_INSTANCE, this.configurable);
 
-      this.instanceDialog.show = true
-      this.instanceDialog.title = this.configurable.addNewRes
-      this.instanceDialog.action = this.addInstance
-      this.instanceDialog.activeTab = 0
+      this.instanceDialog.show = true;
+      this.instanceDialog.title = this.configurable.addNewRes;
+      this.instanceDialog.action = this.addInstance;
+      this.instanceDialog.activeTab = 0;
     },
 
     closeInstanceDialog: function () {
-      store.commit(RESET_INSTANCE)
-      this.instanceDialog.show = false
+      store.commit(RESET_INSTANCE);
+      this.instanceDialog.show = false;
+    },
+
+    openDeleteInstanceDialog: function(instanceId) {
+      this.deleteDialog = {
+        action: this.deleteInstance,
+        instanceId: instanceId,
+        show: true,
+      };
+    },
+
+    closeDeleteDialog: function() {
+      this.deleteDialog.show = false
     },
 
     addInstance: function () {
@@ -255,6 +293,12 @@ export default {
 
         this.instanceDialog.overlay = false;
       });
+    },
+
+    deleteInstance: function () {
+      var instanceId = this.deleteDialog.instanceId
+      client.deleteInstance(instanceId)
+      this.closeDeleteDialog()
     },
   },
   mounted: function () {

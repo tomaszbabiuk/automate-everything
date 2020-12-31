@@ -3,10 +3,10 @@ CREATE TABLE IF NOT EXISTS configurableInstance (
   icon_id INTEGER,
   clazz TEXT NOT NULL,
 
-  FOREIGN KEY(icon_id) REFERENCES icon(id)
+  FOREIGN KEY(icon_id) REFERENCES icon(id) ON DELETE SET NULL
 );
 
-CREATE VIEW configurableInstanceWithTagIds AS
+CREATE VIEW IF NOT EXISTS configurableInstanceWithTagIds AS
 SELECT configurableInstance.*,
        IFNULL((SELECT GROUP_CONCAT(instanceTagging.tag_id) FROM instanceTagging WHERE instanceTagging.instance_id=configurableInstance.id), '') tagIds
   FROM configurableInstance;
@@ -28,3 +28,7 @@ WHERE id = ?;
 insert:
 INSERT INTO configurableInstance(clazz, icon_id)
 VALUES (?,?);
+
+delete:
+DELETE FROM configurableInstance
+WHERE id == ?;

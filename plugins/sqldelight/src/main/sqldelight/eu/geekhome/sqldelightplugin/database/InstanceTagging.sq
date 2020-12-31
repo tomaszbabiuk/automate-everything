@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS instanceTagging (
   tag_id INTEGER NOT NULL,
   instance_id INTEGER NOT NULL,
 
-  FOREIGN KEY(instance_id) REFERENCES configurableInstance(id),
-  FOREIGN KEY(tag_id) REFERENCES tag(id)
+  FOREIGN KEY(instance_id) REFERENCES configurableInstance(id) ON DELETE CASCADE,
+  FOREIGN KEY(tag_id) REFERENCES tag(id) ON DELETE CASCADE
 );
 
 insert:
