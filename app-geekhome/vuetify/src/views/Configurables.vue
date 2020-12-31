@@ -31,23 +31,13 @@
               <v-tab> {{$vuetify.lang.t("$vuetify.configurables.tags")}} </v-tab>
 
               <v-tab-item >
-                <v-form ref="form" v-if="configurable != null">
-                  <component
-                  class="ma-4"
-                    v-for="field in configurable.fields"
-                    :key="field.name"
-                    :hint="field.hint"
-                    :counter="field.maxSize"
-                    :required="field.required"
-                    :id="field.name"
-                    :initialValue="null"
-                    v-bind:is="configurableClassToFormComponent(field.class)"
-                  >
-                  </component>
-                </v-form>
+                <configurable-form></configurable-form>
               </v-tab-item>
               <v-tab-item>
-                <configurable-icontab></configurable-icontab>
+                <configurable-iconselector></configurable-iconselector>
+              </v-tab-item>
+              <v-tab-item>
+                <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
             </v-tabs>
           </template>
@@ -87,12 +77,15 @@
 
     <v-card tile v-for="instance in instances" :key="instance.id">
       <v-list-item two-line>
-        <v-list-item-icon>
+        <v-list-item-icon v-if="instance.iconId === null">
+          <v-icon x-large left>$vuetify.icon.empty</v-icon>
+        </v-list-item-icon>
+        <v-list-item-icon v-else>
           <img
             left
             :src="'/rest/icons/' + instance.iconId + '/raw'"
-            width="50"
-            height="50"
+            width="40"
+            height="40"
           />
         </v-list-item-icon>
         <v-list-item-content>

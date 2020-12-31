@@ -10,7 +10,7 @@ public class InstanceDto {
     private final long _id;
 
     @SerializedName("iconId")
-    private final long _iconId;
+    private final Long _iconId;
 
     @SerializedName("class")
     private final String _clazz;
@@ -37,7 +37,7 @@ public class InstanceDto {
         return _id;
     }
 
-    public long getIconId() {
+    public Long getIconId() {
         return _iconId;
     }
 }

@@ -10,7 +10,8 @@ import ADOffset from'./components/admindashboard/Offset'
 
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
-import ConfigurableIconTab from './components/geekhome/configurable/IconTab'
+import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
+import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 
 //material dashboard
 Vue.component('material-card', ADCard)
@@ -20,7 +21,8 @@ Vue.component('helper-offset', ADOffset)
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
-Vue.component('configurable-icontab', ConfigurableIconTab)
+Vue.component('configurable-iconselector', ConfigurableIconSelector)
+Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 
 Vue.config.productionTip = false
 

@@ -83,7 +83,7 @@ export default new Vuex.Store({
       var newInstance = {
         class : configurable.class,
         fields : {},
-        iconId : -1,
+        iconId : null,
         parentId: null
       }
 
