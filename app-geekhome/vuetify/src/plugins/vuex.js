@@ -11,6 +11,8 @@ export const NEW_INSTANCE = 'NEW_INSTANCE'
 export const RESET_INSTANCE = 'RESET_INSTANCE' 
 export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD' 
 export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON' 
+export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG' 
+export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG' 
 export const SET_INSTANCES = 'SET_INSTANCES'
 export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
 export const CLEAR_INSTANCE_VALIDATION = 'CLEAR_INSTANCE_VALIDATION'
@@ -81,9 +83,10 @@ export default new Vuex.Store({
 
     [NEW_INSTANCE](state, configurable) {
       var newInstance = {
-        class : configurable.class,
-        fields : {},
-        iconId : null,
+        class: configurable.class,
+        fields: {},
+        iconId: null,
+        tagIds: [],
         parentId: null
       }
 
@@ -103,6 +106,18 @@ export default new Vuex.Store({
 
     [UPDATE_INSTANCE_ICON](state, iconId) {
       state.newInstance.iconId = iconId
+    },
+
+    [UPDATE_INSTANCE_ADD_TAG](state, tagId) {
+      state.newInstance.tagIds.push(tagId)
+    },
+
+    [UPDATE_INSTANCE_REMOVE_TAG](state, tagId) {
+      state.newInstance.tagIds.forEach( (iTagId, index) => {
+        if (iTagId === tagId) {
+          Vue.delete(state.newInstance.tagIds, index);
+        }
+      })
     },
 
     [SET_INSTANCES](state, instances) {

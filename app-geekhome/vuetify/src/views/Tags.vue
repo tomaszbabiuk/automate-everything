@@ -305,7 +305,7 @@ export default {
       },
     ];
 
-    client.getTags();
+    client.getTags()
   },
 };
 </script>

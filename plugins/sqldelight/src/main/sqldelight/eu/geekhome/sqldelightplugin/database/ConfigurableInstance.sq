@@ -6,18 +6,23 @@ CREATE TABLE IF NOT EXISTS configurableInstance (
   FOREIGN KEY(icon_id) REFERENCES icon(id)
 );
 
+CREATE VIEW configurableInstanceWithTagIds AS
+SELECT configurableInstance.*,
+       IFNULL((SELECT GROUP_CONCAT(instanceTagging.tag_id) FROM instanceTagging WHERE instanceTagging.instance_id=configurableInstance.id), '') tagIds
+  FROM configurableInstance;
+
 selectAll:
 SELECT *
-FROM configurableInstance;
+  FROM configurableInstanceWithTagIds;
 
 selectByClazz:
 SELECT *
-FROM configurableInstance
-WHERE clazz = ?;
+  FROM configurableInstanceWithTagIds
+ WHERE clazz = ?;
 
 selectById:
 SELECT *
-FROM configurableInstance
+FROM configurableInstanceWithTagIds
 WHERE id = ?;
 
 insert:

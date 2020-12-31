@@ -35,9 +35,6 @@ import { client } from "../../../rest.js"
 import { UPDATE_INSTANCE_ICON } from '../../../plugins/vuex'
 
 export default {
-  data: function () {
-    return {};
-  },
   computed: {
     iconCategories: function () {
       return this.$store.state.iconCategories;

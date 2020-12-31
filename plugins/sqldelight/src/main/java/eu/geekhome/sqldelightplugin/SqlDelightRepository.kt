@@ -18,6 +18,34 @@ class SqlDelightRepository : Repository {
         database = Database(driver)
     }
 
+    private fun convertStringOfIdsToList(input: String) : List<Long> {
+        val result: List<Long>
+        if (input.isNotEmpty()) {
+            result = input.split(',').map { it.toLong() }
+        } else {
+            result = ArrayList()
+        }
+
+        return result
+    }
+
+    fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstanceWithTagIds) : InstanceDto {
+        val fieldsMap = HashMap<String, String?>()
+
+        database
+            .fieldInstanceQueries
+            .selectOfConfigurableInstance(configurableInstance.id)
+            .executeAsList()
+            .forEach { fieldsMap[it.name] = it.value }
+
+        return InstanceDto(
+            configurableInstance.id,
+            configurableInstance.icon_id,
+            convertStringOfIdsToList(configurableInstance.tagIds),
+            configurableInstance.clazz,
+            fieldsMap)
+    }
+
     private fun mapIconToIconDto(icon: Icon): IconDto {
         return IconDto(icon.id, icon.icon_category_id, icon.raw)
     }
@@ -29,6 +57,10 @@ class SqlDelightRepository : Repository {
             instanceDto.fields.forEach {
                 database.fieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
             }
+
+            instanceDto.tagIds.forEach {
+                database.instanceTaggingQueries.insert(it, insertedDtoId)
+            }
         }
     }
 
@@ -37,7 +69,7 @@ class SqlDelightRepository : Repository {
                 .configurableInstanceQueries
                 .selectAll()
                 .executeAsList()
-                .map(this::mapConfigurableInstanceToInstanceDto)
+                .map { mapConfigurableInstanceToInstanceDto(it) }
     }
 
     override fun getInstancesOfClazz(clazz: String): List<InstanceDto> {
@@ -94,12 +126,7 @@ class SqlDelightRepository : Repository {
     override fun getAllIconCategories(): List<IconCategoryDto> {
 
         fun mapIconCategoryToIconCategoryDto(iconCategory: SelectAllWithIcons): IconCategoryDto {
-            var iconIds: List<Long>
-            if (iconCategory.iconIds.isNotEmpty()) {
-                iconIds = iconCategory.iconIds.split(',').map { it.toLong() }
-            } else {
-                iconIds = ArrayList()
-            }
+            val iconIds = convertStringOfIdsToList(iconCategory.iconIds)
             return IconCategoryDto(iconCategory.id, iconCategory.name, iconIds)
         }
 
@@ -168,17 +195,5 @@ class SqlDelightRepository : Repository {
         database.transaction {
             database.iconQueries.update(iconDto.iconCategoryId, iconDto.raw, iconDto.id)
         }
-    }
-
-    private fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstance) : InstanceDto {
-        val fieldsMap = HashMap<String, String?>()
-
-        database
-                .fieldInstanceQueries
-                .selectOfConfigurableInstance(configurableInstance.id)
-                .executeAsList()
-                .forEach { fieldsMap[it.name] = it.value }
-
-        return InstanceDto(configurableInstance.id, configurableInstance.icon_id, configurableInstance.clazz, fieldsMap)
     }
 }

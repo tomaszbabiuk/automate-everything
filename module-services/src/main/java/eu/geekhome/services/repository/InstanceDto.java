@@ -2,6 +2,7 @@ package eu.geekhome.services.repository;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 import java.util.Map;
 
 public class InstanceDto {
@@ -18,9 +19,13 @@ public class InstanceDto {
     @SerializedName("fields")
     private final Map<String, String> _fields;
 
-    public InstanceDto(long id, Long iconId, String clazz, Map<String, String> fields) {
+    @SerializedName("tagIds")
+    private final List<Long> _tagIds;
+
+    public InstanceDto(long id, Long iconId, List<Long> tagIds, String clazz, Map<String, String> fields) {
         _id = id;
         _iconId = iconId;
+        _tagIds = tagIds;
         _clazz = clazz;
         _fields = fields;
     }
@@ -39,5 +44,9 @@ public class InstanceDto {
 
     public Long getIconId() {
         return _iconId;
+    }
+
+    public List<Long> getTagIds() {
+        return _tagIds;
     }
 }
