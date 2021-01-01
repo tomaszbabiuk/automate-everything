@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-text-field v-model="inputVal" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages"></v-text-field>
+      <v-text-field v-model="text" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages"></v-text-field>
   </div>
 </template>
 
@@ -11,7 +11,8 @@ export default {
 data: function() {
     return {
       error: false,
-      errorMessages: []
+      errorMessages: [],
+      text: '',
     };
   },
   props: ["initialValue", "id", "hint", "required", "counter"],
@@ -19,23 +20,27 @@ data: function() {
     validation() {
       return this.$store.state.instanceValidation[this.id]
     },
-    inputVal: {
-      get() {
-        return this.initialValue;
-      },
-      set(value) {
-        this.$store.commit(UPDATE_INSTANCE_FIELD, { 
-          name: this.id,
-          value: value
-          })
-      }
-    }
-  
+    storeFieldData() {
+      return this.$store.state.newInstance.fields[this.id]
+    },  
   },
   watch: {
     validation(val) {
       this.error = !val.valid
       this.errorMessages = val.reasons
+    },
+    storeFieldData(value) {
+      console.log('store: ' + value)
+      if (this.text != value) {
+        this.text = value
+      }
+    },
+    text(value) {
+      console.log('text: ' + value)
+      this.$store.commit(UPDATE_INSTANCE_FIELD, { 
+        name: this.id,
+        value: value
+      })
     }
   }
 };

@@ -7,7 +7,7 @@ export const SET_ERROR = 'SET_ERROR'
 export const SET_PLUGINS = 'SET_PLUGINS' 
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
-export const NEW_INSTANCE = 'NEW_INSTANCE' 
+export const ADD_INSTANCE = 'ADD_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const REMOVE_INSTANCE = 'REMOVE_INSTANCE' 
 export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD' 
@@ -82,8 +82,12 @@ export default new Vuex.Store({
       })
     },
 
-    [NEW_INSTANCE](state, configurable) {
-      var newInstance = {
+    [ADD_INSTANCE](state, instance) {
+      state.instances.push(instance)
+    },
+
+    [RESET_INSTANCE](state, configurable) {
+      state.newInstance = {
         id: null,
         class: configurable.class,
         fields: {},
@@ -92,11 +96,9 @@ export default new Vuex.Store({
         parentId: null
       }
 
-      state.newInstance = newInstance
-    },
-
-    [RESET_INSTANCE](state) {
-      state.newInstance = null
+      configurable.fields.forEach(element => {
+        Vue.set(state.newInstance.fields, element.name, '')
+      })
     },
 
     [REMOVE_INSTANCE](state, instanceId) {

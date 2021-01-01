@@ -147,7 +147,7 @@
 <script>
 import { client } from "../rest.js";
 import store from "../plugins/vuex";
-import { NEW_INSTANCE, RESET_INSTANCE } from "../plugins/vuex";
+import { RESET_INSTANCE, ADD_INSTANCE } from "../plugins/vuex";
 
 export default {
   data: function () {
@@ -250,7 +250,7 @@ export default {
     },
 
     showAddNewInstanceDialog: function () {
-      store.commit(NEW_INSTANCE, this.configurable);
+      store.commit(RESET_INSTANCE, this.configurable);
 
       this.instanceDialog.show = true;
       this.instanceDialog.title = this.configurable.addNewRes;
@@ -259,7 +259,6 @@ export default {
     },
 
     closeInstanceDialog: function () {
-      store.commit(RESET_INSTANCE);
       this.instanceDialog.show = false;
     },
 
@@ -287,6 +286,7 @@ export default {
 
         if (isFormValid) {
           this.instanceDialog.show = false;
+          this.$store.commit(ADD_INSTANCE, store.state.newInstance)
         } else {
           this.instanceDialog.activeTab = 0;
         }
@@ -303,7 +303,6 @@ export default {
   },
   mounted: function () {
     this.refresh();
-    store.commit(RESET_INSTANCE);
   },
 };
 </script>
