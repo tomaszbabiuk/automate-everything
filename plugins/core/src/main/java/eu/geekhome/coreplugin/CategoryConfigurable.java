@@ -13,6 +13,9 @@ public abstract class CategoryConfigurable implements Configurable {
     }
 
     @Override
+    public Resource getEditRes() { return null; }
+
+    @Override
     public List<FieldDefinition<?>> getFieldDefinitions() {
         return null;
     }

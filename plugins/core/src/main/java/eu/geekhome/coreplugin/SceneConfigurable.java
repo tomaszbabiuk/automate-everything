@@ -18,6 +18,11 @@ public class SceneConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public Resource getEditRes() {
+        return R.configurable_scene_edit;
+    }
+
+    @Override
     public Resource getTitleRes() {
         return R.configurable_scene_title;
     }

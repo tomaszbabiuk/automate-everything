@@ -18,6 +18,11 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public Resource getEditRes() {
+        return R.configurable_onoffdevice_edit;
+    }
+
+    @Override
     public Resource getTitleRes() {
         return R.configurable_onoffdevice_title;
     }

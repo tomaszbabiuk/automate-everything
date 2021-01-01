@@ -20,9 +20,7 @@
           <v-toolbar-title>{{ instanceDialog.title }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="instanceDialog.action()">{{
-              $vuetify.lang.t("$vuetify.configurables.add")
-            }}</v-btn>
+            <v-btn dark text @click="instanceDialog.action()">{{ instanceDialog.actionText }}</v-btn>
           </v-toolbar-items>
           <template v-slot:extension>
             <v-tabs v-model="instanceDialog.activeTab">
@@ -158,6 +156,7 @@ export default {
         action: function () {},
         activeTab: 0,
         overlay: false,
+        actionText: ""
       },
       deleteDialog:  {
         show: false,
@@ -262,6 +261,7 @@ export default {
 
       this.instanceDialog.show = true
       this.instanceDialog.title = this.configurable.addNewRes
+      this.instanceDialog.actionText = this.$vuetify.lang.t("$vuetify.configurables.add")
       this.instanceDialog.action = this.addInstance
       this.instanceDialog.activeTab = 0
     },
@@ -285,6 +285,7 @@ export default {
     showEditInstanceDialog: function(instance) {
       this.instanceDialog.show = true
       this.instanceDialog.title = this.configurable.editRes
+      this.instanceDialog.actionText = this.$vuetify.lang.t("$vuetify.configurables.edit")
       this.instanceDialog.action = this.editInstance
       this.instanceDialog.activeTab = 0
       this.instanceDialog.instance = instance

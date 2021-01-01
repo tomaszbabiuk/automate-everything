@@ -18,6 +18,11 @@ public class ThermometerConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public Resource getEditRes() {
+        return R.configurable_thermometer_edit;
+    }
+
+    @Override
     public Resource getTitleRes() {
         return R.configurable_thermometer_title;
     }

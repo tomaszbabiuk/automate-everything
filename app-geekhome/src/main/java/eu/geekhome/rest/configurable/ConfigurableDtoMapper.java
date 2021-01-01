@@ -26,6 +26,7 @@ public class ConfigurableDtoMapper {
                 configurable.getParent() != null ? configurable.getParent().getSimpleName() : null,
                 fields,
                 configurable.getAddNewRes(),
+                configurable.getEditRes(),
                 configurable.getIconRaw());
     }
 }

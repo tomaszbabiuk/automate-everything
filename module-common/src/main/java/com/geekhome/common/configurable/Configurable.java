@@ -9,6 +9,7 @@ public interface Configurable extends ExtensionPoint {
     List<FieldDefinition<?>> getFieldDefinitions();
     Class<? extends Configurable> getParent();
     Resource getAddNewRes();
+    Resource getEditRes();
     Resource getTitleRes();
     Resource getDescriptionRes();
     String getIconRaw();

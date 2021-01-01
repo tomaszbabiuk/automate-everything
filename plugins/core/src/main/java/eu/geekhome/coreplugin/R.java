@@ -19,10 +19,6 @@ public class R {
             "Description",
             "Opis");
 
-    public static Resource configurable_device_add = new Resource(
-            "Add device",
-            "Dodaj urządzenie");
-
     public static Resource configurable_device_title = new Resource(
             "Devices",
             "Urządzenia");
@@ -33,6 +29,10 @@ public class R {
     public static Resource configurable_scene_add = new Resource(
             "Add scene",
             "Dodaj scenę");
+
+    public static Resource configurable_scene_edit = new Resource(
+            "Edit scene",
+            "Edytuj scenę");
 
     public static Resource configurable_scene_title = new Resource(
             "Scenes",
@@ -47,6 +47,10 @@ public class R {
             "Add on/off device",
             "Dodaj urządzenie wł/wył");
 
+    public static Resource configurable_onoffdevice_edit = new Resource(
+            "Edit on/off device",
+            "Edytuj urządzenie wł/wył");
+
     public static Resource configurable_onoffdevice_title = new Resource(
             "On/Off devices",
             "Urządzenia wł/wył");
@@ -58,6 +62,10 @@ public class R {
     public static Resource configurable_thermometer_add = new Resource(
             "Add thermometer",
             "Dodaj termometr");
+
+    public static Resource configurable_thermometer_edit = new Resource(
+            "Edit thermometer",
+            "Edytuj termometr");
 
     public static Resource configurable_thermometer_title = new Resource(
             "Thermometers",
