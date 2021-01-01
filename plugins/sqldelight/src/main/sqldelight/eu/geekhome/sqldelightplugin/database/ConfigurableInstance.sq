@@ -29,6 +29,13 @@ insert:
 INSERT INTO configurableInstance(clazz, icon_id)
 VALUES (?,?);
 
+update:
+UPDATE configurableInstance
+SET clazz = ?,
+    icon_id = ?
+WHERE
+    id= ?;
+
 delete:
 DELETE FROM configurableInstance
 WHERE id == ?;

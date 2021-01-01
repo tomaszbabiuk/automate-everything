@@ -67,6 +67,34 @@ public class InstancesController {
         }
     }
 
+    @SuppressWarnings("rawtypes")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Map<String, FieldValidationResult> putInstances(InstanceDto instanceDto) throws Exception {
+        Optional<Configurable> configurable = findConfigurable(instanceDto.getClazz());
+        if (configurable.isPresent()) {
+            Map<String, FieldValidationResult> validationResult = new HashMap<>();
+            boolean isObjectValid = true;
+
+            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions()) {
+                String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
+                FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
+                validationResult.put(fieldDefinition.getName(), isValid);
+                if (!isValid.isValid()) {
+                    isObjectValid = false;
+                }
+            }
+
+            if (isObjectValid) {
+                _repository.updateInstance(instanceDto);
+            }
+
+            return validationResult;
+        } else {
+            throw new Exception("Unsupported configurable class");
+        }
+    }
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

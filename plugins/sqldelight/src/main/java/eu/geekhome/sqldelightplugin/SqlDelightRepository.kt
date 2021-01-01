@@ -64,6 +64,20 @@ class SqlDelightRepository : Repository {
         }
     }
 
+    override fun updateInstance(instanceDto: InstanceDto) {
+        database.transaction {
+            database.configurableInstanceQueries.update(instanceDto.clazz, instanceDto.iconId, instanceDto.id)
+            instanceDto.fields.forEach {
+                database.fieldInstanceQueries.update(it.value, it.key, instanceDto.id)
+            }
+
+            database.instanceTaggingQueries.deleteAllOfInstance(instanceDto.id)
+            instanceDto.tagIds.forEach {
+                database.instanceTaggingQueries.insert(it, instanceDto.id)
+            }
+        }
+    }
+
     override fun getAllInstances(): List<InstanceDto> {
         return database
                 .configurableInstanceQueries

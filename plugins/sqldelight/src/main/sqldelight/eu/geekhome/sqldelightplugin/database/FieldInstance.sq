@@ -18,3 +18,11 @@ WHERE instance_id = ?;
 insert:
 INSERT INTO fieldInstance(instance_id, name, value)
 VALUES (?, ?, ?);
+
+update:
+UPDATE fieldInstance
+SET value = ?
+WHERE
+    name = ?
+    AND
+    instance_id = ?;

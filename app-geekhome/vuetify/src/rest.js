@@ -79,6 +79,18 @@ export const client = {
     )
   },
 
+  putInstance: async function (newInstance, callback) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/instances", JSON.stringify(newInstance)),
+      (response) => {
+        store.commit(SET_INSTANCE_VALIDATION, response.data)
+        if (callback !== null) {
+          callback(response.data)
+        }
+      }
+    )
+  },
+
   getInstancesOfClazz: async function (clazz) {
     await this.handleRestError(
       () => axiosInstance.get("rest/instances?class=" + clazz),

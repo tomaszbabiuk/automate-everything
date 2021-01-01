@@ -8,6 +8,7 @@ export const SET_PLUGINS = 'SET_PLUGINS'
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
 export const ADD_INSTANCE = 'ADD_INSTANCE' 
+export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const REMOVE_INSTANCE = 'REMOVE_INSTANCE' 
 export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD' 
@@ -57,7 +58,13 @@ export default new Vuex.Store({
     validation: [],
     tags: [],
     iconCategories: [],
-    newInstance: null,
+    newInstance: {
+      id: null,
+      class: null,
+      fields: {},
+      iconId: null,
+      tagIds: [],
+    },
     counter: 0,
   },
 
@@ -87,17 +94,24 @@ export default new Vuex.Store({
     },
 
     [RESET_INSTANCE](state, configurable) {
-      state.newInstance = {
-        id: null,
-        class: configurable.class,
-        fields: {},
-        iconId: null,
-        tagIds: [],
-        parentId: null
-      }
+      state.newInstance.id = null
+      state.newInstance.class = configurable.class
+      state.newInstance.iconId = null
+      state.newInstance.tagIds = []
 
       configurable.fields.forEach(element => {
         Vue.set(state.newInstance.fields, element.name, '')
+      })
+    },
+
+    [EDIT_INSTANCE](state, instance) {
+      state.newInstance.id = instance.id
+      state.newInstance.class = instance.class
+      state.newInstance.iconId = instance.iconId
+      state.newInstance.tagIds = instance.tagIds
+
+      Object.keys(instance.fields).forEach(element => {
+        Vue.set(state.newInstance.fields, element, instance.fields[element])
       })
     },
 

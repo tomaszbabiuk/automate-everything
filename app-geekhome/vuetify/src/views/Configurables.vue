@@ -101,10 +101,10 @@
           }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-btn icon>
-          <v-icon>mdi-pencil</v-icon>
+          <v-icon @click="showEditInstanceDialog(instance)">mdi-pencil</v-icon>
         </v-btn>
         <v-btn icon>
-          <v-icon @click="openDeleteInstanceDialog(instance.id)">mdi-delete</v-icon>
+          <v-icon @click="showDeleteInstanceDialog(instance.id)">mdi-delete</v-icon>
         </v-btn>
       </v-list-item>
     </v-card>
@@ -145,9 +145,9 @@
 </template>
 
 <script>
-import { client } from "../rest.js";
-import store from "../plugins/vuex";
-import { RESET_INSTANCE, ADD_INSTANCE } from "../plugins/vuex";
+import { client } from "../rest.js"
+import store from "../plugins/vuex"
+import { RESET_INSTANCE, EDIT_INSTANCE } from "../plugins/vuex"
 
 export default {
   data: function () {
@@ -165,134 +165,163 @@ export default {
         instanceId: null,
         iconCategoryId: null,
       },
-    };
+    }
   },
   computed: {
     breadcrumbs() {
-      var breadcrumbs = [];
+      var breadcrumbs = []
 
-      var selectedClass = this.getConfigurableClazz();
+      var selectedClass = this.getConfigurableClazz()
 
-      var selectedConfigurable = this.getConfigurableByClazz(selectedClass);
-      var isLast = true;
+      var selectedConfigurable = this.getConfigurableByClazz(selectedClass)
+      var isLast = true
       while (selectedConfigurable != null) {
         breadcrumbs.push({
           text: selectedConfigurable.titleRes,
           disabled: isLast,
           href: "/configurables/" + selectedConfigurable.class,
-        });
+        })
 
         selectedConfigurable = this.getConfigurableByClazz(
           selectedConfigurable.parentClass
-        );
-        isLast = false;
+        )
+        isLast = false
       }
 
       breadcrumbs.push({
         text: "House",
         disabled: false,
         href: "/configurables/null",
-      });
+      })
 
-      return breadcrumbs.reverse();
+      return breadcrumbs.reverse()
     },
 
     configurables() {
-      var clazz = this.getConfigurableClazz();
+      var clazz = this.getConfigurableClazz()
       var filterFunction =
         clazz === "null"
           ? function (x) {
-              return x.parentClass == null;
+              return x.parentClass == null
             }
           : function (x) {
-              return x.parentClass === clazz;
-            };
+              return x.parentClass === clazz
+            }
 
-      return this.$store.state.configurables.filter(filterFunction);
+      return this.$store.state.configurables.filter(filterFunction)
     },
 
     instances: function () {
-      return this.$store.state.instances;
+      return this.$store.state.instances
     },
 
     configurable: function () {
-      var clazz = this.getConfigurableClazz();
-      return this.getConfigurableByClazz(clazz);
+      var clazz = this.getConfigurableClazz()
+      return this.getConfigurableByClazz(clazz)
     },
   },
   methods: {
     getConfigurableClazz: function () {
-      return this.$route.params.clazz;
+      return this.$route.params.clazz
     },
 
     getConfigurableByClazz: function (clazz) {
-      var result = null;
+      var result = null
       this.$store.state.configurables.forEach((element) => {
         if (element.class == clazz) {
-          result = element;
+          result = element
         }
-      });
+      })
 
-      return result;
+      return result
     },
 
     browse: function (configurable) {
       this.$router.push({
         name: "configurables",
         params: { clazz: configurable.class },
-      });
-      this.refresh();
+      })
+      this.refresh()
+    },
+
+    refreshConfigurables() {
+      client.getConfigurables()
+    },
+
+    refreshInstances() {
+      client.getInstancesOfClazz(this.getConfigurableClazz())
     },
 
     refresh() {
-      client.getConfigurables();
-      client.getInstancesOfClazz(this.getConfigurableClazz());
+      this.refreshConfigurables()
+      this.refreshInstances()
     },
 
     showAddNewInstanceDialog: function () {
-      store.commit(RESET_INSTANCE, this.configurable);
+      store.commit(RESET_INSTANCE, this.configurable)
 
-      this.instanceDialog.show = true;
-      this.instanceDialog.title = this.configurable.addNewRes;
-      this.instanceDialog.action = this.addInstance;
-      this.instanceDialog.activeTab = 0;
+      this.instanceDialog.show = true
+      this.instanceDialog.title = this.configurable.addNewRes
+      this.instanceDialog.action = this.addInstance
+      this.instanceDialog.activeTab = 0
     },
 
     closeInstanceDialog: function () {
-      this.instanceDialog.show = false;
+      this.instanceDialog.show = false
     },
 
-    openDeleteInstanceDialog: function(instanceId) {
+    showDeleteInstanceDialog: function(instanceId) {
       this.deleteDialog = {
         action: this.deleteInstance,
         instanceId: instanceId,
         show: true,
-      };
+      }
     },
 
     closeDeleteDialog: function() {
       this.deleteDialog.show = false
     },
 
-    addInstance: function () {
-      this.instanceDialog.overlay = true;
-      client.postNewInstance(store.state.newInstance, (validationResult) => {
-        var isFormValid = true;
+    showEditInstanceDialog: function(instance) {
+      this.instanceDialog.show = true
+      this.instanceDialog.title = this.configurable.editRes
+      this.instanceDialog.action = this.editInstance
+      this.instanceDialog.activeTab = 0
+      this.instanceDialog.instance = instance
+
+       setTimeout(() => {
+          store.commit(RESET_INSTANCE, this.configurable)
+          store.commit(EDIT_INSTANCE, instance)
+      }, 200);
+    },
+
+    handleValidationResult: function(validationResult) {
+        var isFormValid = true
         for (const field in validationResult) {
           if (!validationResult[field].valid) {
-            isFormValid = false;
+            isFormValid = false
           }
         }
 
         if (isFormValid) {
-          this.instanceDialog.show = false;
-          this.$store.commit(ADD_INSTANCE, store.state.newInstance)
+          this.instanceDialog.show = false
+          this.refreshInstances()
         } else {
-          this.instanceDialog.activeTab = 0;
+          this.instanceDialog.activeTab = 0
         }
 
-        this.instanceDialog.overlay = false;
-      });
+        this.instanceDialog.overlay = false
+    },
+
+    addInstance: function () {
+      this.instanceDialog.overlay = true
+      
+      client.postNewInstance(store.state.newInstance, this.handleValidationResult)
+    },
+    
+    editInstance: function () {
+      this.instanceDialog.overlay = true
+      client.putInstance(store.state.newInstance, this.handleValidationResult)
     },
 
     deleteInstance: function () {
@@ -302,7 +331,7 @@ export default {
     },
   },
   mounted: function () {
-    this.refresh();
+    this.refresh()
   },
-};
+}
 </script>

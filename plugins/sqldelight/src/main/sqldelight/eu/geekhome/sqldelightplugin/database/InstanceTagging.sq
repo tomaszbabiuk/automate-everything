@@ -11,9 +11,8 @@ insert:
 INSERT INTO instanceTagging(tag_id, instance_id)
 VALUES (?,?);
 
-delete:
+deleteAllOfInstance:
 DELETE FROM instanceTagging
 WHERE
-    tag_id= ? AND
-    instance_id= ?;
+    instance_id = ?;
 
