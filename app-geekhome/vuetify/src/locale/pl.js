@@ -8,7 +8,7 @@ export default {
         timeline:   "Oś czasu",
         alerts:     "Alarmy",
         control:    "Sterowanie",
-        house:      "Dom",
+        objects:    "Obiekty",
         tags:       "Tagi",
         icons:      "Ikony",
         discover:   "Odkrywanie",

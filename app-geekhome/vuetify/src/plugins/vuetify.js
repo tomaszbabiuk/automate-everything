@@ -8,7 +8,7 @@ import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
 import IconEmpty from '../components/icons/IconEmpty'
 import IconEqualizer from '../components/icons/IconEqualizer'
-import IconHouse from '../components/icons/IconHouse'
+import IconObjects from '../components/icons/IconObjects'
 import IconIcons from '../components/icons/IconIcons'
 import IconTag from '../components/icons/IconTag'
 import IconInbox from '../components/icons/IconInbox'
@@ -49,8 +49,8 @@ export default new Vuetify({
       equalizer: {
         component: IconEqualizer
       },
-      house: {
-        component: IconHouse
+      objects: {
+        component: IconObjects
       },
       tag: {
         component: IconTag

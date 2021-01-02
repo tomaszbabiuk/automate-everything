@@ -8,7 +8,7 @@ export default {
         timeline:   "Timeline",
         alerts:     "Alerts",
         control:    "Control",
-        house:      "House",
+        objects:    "Objects",
         tags:       "Tags",
         icons:      "Icons",
         discover:   "Discovery",

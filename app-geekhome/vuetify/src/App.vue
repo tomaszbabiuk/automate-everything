@@ -95,9 +95,9 @@ export default {
           icon: "button"
         },
         { 
-          title: "$vuetify.navigation.house", 
+          title: "$vuetify.navigation.objects", 
           route: "/configurables/null", 
-          icon: "house" 
+          icon: "objects" 
         },
         { 
           title: "$vuetify.navigation.tags", 

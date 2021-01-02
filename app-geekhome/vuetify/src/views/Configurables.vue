@@ -124,7 +124,6 @@
       </div>
     </div>
 
-
     <v-dialog v-model="deleteDialog.show" max-width="500px">
       <v-card>
         <v-card-title class="headline">{{
@@ -210,7 +209,7 @@ export default {
       }
 
       breadcrumbs.push({
-        text: "House",
+        text: this.$vuetify.lang.t("$vuetify.navigation.objects"),
         disabled: false,
         href: "/configurables/null",
       });
@@ -242,8 +241,8 @@ export default {
     },
   },
   methods: {
-    canAddInstances: function() {
-      return this.configurable !== null && this.configurable.fields !== null
+    canAddInstances: function () {
+      return this.configurable !== null && this.configurable.fields !== null;
     },
 
     getConfigurableClazz: function () {
