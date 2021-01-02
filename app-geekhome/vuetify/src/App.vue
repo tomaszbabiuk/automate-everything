@@ -23,6 +23,21 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <template v-slot:extension v-if="showTabs">
+        <v-tabs
+          v-model="tab"
+          align-with-title
+        >
+          <v-tabs-slider color="yellow"></v-tabs-slider>
+
+          <v-tab
+            v-for="tab in tabs"
+            :key="tab"
+          >
+            {{ tab }}
+          </v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" app>
@@ -77,6 +92,11 @@ export default {
 
   data: function() {
     return {
+      showTabs: false,
+      tab: null,
+      tabs: [
+        'web', 'shopping', 'videos', 'images', 'news',
+      ],
       drawer: false,
       navigationItems: [
         { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
@@ -137,6 +157,10 @@ export default {
       this.$vuetify.lang.current = item.code;
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
+    },
+
+    matchTabsVisibilityToRoute: function() {
+      this.showTabs = this.$route.name === 'discover'
     }
   },
 
@@ -148,13 +172,19 @@ export default {
       return this.$store.state.error;
     }
   },
-
+  watch: {
+    $route() {
+      this.matchTabsVisibilityToRoute()
+    },
+  },
   mounted: function() {
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;
     } else {
       this.$vuetify.lang.current = localStorage.selectedLanguage;
     }
+
+    this.matchTabsVisibilityToRoute()
   }
 };
 </script>
