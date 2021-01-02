@@ -48,6 +48,8 @@ export default {
         add_category: "Dodaj kategorię",
         edit_category: "Edytuj kategorię",
         edit_tag: "Edytuj tag",
+        no_tags: "Brak tagów",
+        no_tags_in_category: "Brak tagów w tej kategorii",
     },
     icons: {
         icons: "Ikony",
@@ -55,7 +57,9 @@ export default {
         add_category: "Dodaj kategorię",
         edit_category: "Edytuj kategorię",
         raw: "Treść w formacie SVG",
-        edit_icon: "Edytuj ikonę"
+        edit_icon: "Edytuj ikonę",
+        no_icons: "Brak ikon",
+        no_icons_in_category: "Brak ikon w tej kategorii",
     },
     dataFooter: {
         itemsPerPageAll: "Wszystko",

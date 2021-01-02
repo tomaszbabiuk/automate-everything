@@ -48,6 +48,8 @@ export default {
         add_category: "Add category",
         edit_category: "Edit category",
         edit_tag: "Edit tag",
+        no_tags: "No tags",
+        no_tags_in_category: "No tags in this category",
     },
     icons: {
         icons: "Icons",
