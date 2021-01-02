@@ -56,6 +56,8 @@ export default {
         edit_category: "Edit category",
         raw: "Raw SVG content",
         edit_icon: "Edit icon",
+        no_icons: "No icons",
+        no_icons_in_category: "No icons in this category",
     },
     dataFooter: {
         itemsPerPageAll: "All",
