@@ -10,10 +10,7 @@ import eu.geekhome.services.repository.Repository;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Path("instances")
 public class InstancesController {
@@ -109,7 +106,7 @@ public class InstancesController {
             return _repository.getInstancesOfClazz(clazz);
         }
 
-        return _repository.getAllInstances();
+        return new ArrayList<>();
     }
 
     @DELETE

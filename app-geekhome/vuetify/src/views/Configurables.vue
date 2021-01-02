@@ -20,7 +20,9 @@
           <v-toolbar-title>{{ instanceDialog.title }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="instanceDialog.action()">{{ instanceDialog.actionText }}</v-btn>
+            <v-btn dark text @click="instanceDialog.action()">{{
+              instanceDialog.actionText
+            }}</v-btn>
           </v-toolbar-items>
           <template v-slot:extension>
             <v-tabs v-model="instanceDialog.activeTab">
@@ -79,33 +81,49 @@
       </v-col>
     </v-row>
 
-    <v-card tile v-for="instance in instances" :key="instance.id">
-      <v-list-item two-line>
-        <v-list-item-icon v-if="instance.iconId === null">
-          <v-icon x-large left>$vuetify.icon.empty</v-icon>
-        </v-list-item-icon>
-        <v-list-item-icon v-else>
-          <img
-            left
-            :src="'/rest/icons/' + instance.iconId + '/raw'"
-            width="40"
-            height="40"
-          />
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>{{ instance.fields["name"] }}</v-list-item-title>
-          <v-list-item-subtitle>{{
-            instance.fields["description"]
-          }}</v-list-item-subtitle>
-        </v-list-item-content>
-        <v-btn icon>
-          <v-icon @click="showEditInstanceDialog(instance)">mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon>
-          <v-icon @click="showDeleteInstanceDialog(instance.id)">mdi-delete</v-icon>
-        </v-btn>
-      </v-list-item>
-    </v-card>
+    <div v-if="canAddInstances()">
+      <v-card tile v-for="instance in instances" :key="instance.id">
+        <v-list-item two-line>
+          <v-list-item-icon v-if="instance.iconId === null">
+            <v-icon x-large left>$vuetify.icon.empty</v-icon>
+          </v-list-item-icon>
+          <v-list-item-icon v-else>
+            <img
+              left
+              :src="'/rest/icons/' + instance.iconId + '/raw'"
+              width="40"
+              height="40"
+            />
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>{{ instance.fields["name"] }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              instance.fields["description"]
+            }}</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-btn icon>
+            <v-icon @click="showEditInstanceDialog(instance)"
+              >mdi-pencil</v-icon
+            >
+          </v-btn>
+          <v-btn icon>
+            <v-icon @click="showDeleteInstanceDialog(instance.id)"
+              >mdi-delete</v-icon
+            >
+          </v-btn>
+        </v-list-item>
+        <v-card-actions v-if="instance.tagIds.length > 0">
+          <v-chip v-for="tagId in instance.tagIds" :key="tagId" class="mr-2">{{
+            findTagName(tagId)
+          }}</v-chip>
+        </v-card-actions>
+      </v-card>
+
+      <div v-if="instances.length == 0" class="text-center">
+        {{ $vuetify.lang.t("$vuetify.noDataText") }}
+      </div>
+    </div>
+
 
     <v-dialog v-model="deleteDialog.show" max-width="500px">
       <v-card>
@@ -126,7 +144,7 @@
     </v-dialog>
 
     <v-btn
-      v-if="configurable !== null && configurable.fields !== null"
+      v-if="canAddInstances()"
       fab
       dark
       large
@@ -143,9 +161,13 @@
 </template>
 
 <script>
-import { client } from "../rest.js"
-import store from "../plugins/vuex"
-import { RESET_INSTANCE, EDIT_INSTANCE } from "../plugins/vuex"
+import { client } from "../rest.js";
+import store from "../plugins/vuex";
+import {
+  CLEAR_INSTANCES,
+  RESET_INSTANCE,
+  EDIT_INSTANCE,
+} from "../plugins/vuex";
 
 export default {
   data: function () {
@@ -156,183 +178,218 @@ export default {
         action: function () {},
         activeTab: 0,
         overlay: false,
-        actionText: ""
+        actionText: "",
       },
-      deleteDialog:  {
+      deleteDialog: {
         show: false,
-        action: function() {},
+        action: function () {},
         instanceId: null,
         iconCategoryId: null,
       },
-    }
+    };
   },
   computed: {
     breadcrumbs() {
-      var breadcrumbs = []
+      var breadcrumbs = [];
 
-      var selectedClass = this.getConfigurableClazz()
+      var selectedClass = this.getConfigurableClazz();
 
-      var selectedConfigurable = this.getConfigurableByClazz(selectedClass)
-      var isLast = true
+      var selectedConfigurable = this.getConfigurableByClazz(selectedClass);
+      var isLast = true;
       while (selectedConfigurable != null) {
         breadcrumbs.push({
           text: selectedConfigurable.titleRes,
           disabled: isLast,
           href: "/configurables/" + selectedConfigurable.class,
-        })
+        });
 
         selectedConfigurable = this.getConfigurableByClazz(
           selectedConfigurable.parentClass
-        )
-        isLast = false
+        );
+        isLast = false;
       }
 
       breadcrumbs.push({
         text: "House",
         disabled: false,
         href: "/configurables/null",
-      })
+      });
 
-      return breadcrumbs.reverse()
+      return breadcrumbs.reverse();
     },
 
     configurables() {
-      var clazz = this.getConfigurableClazz()
+      var clazz = this.getConfigurableClazz();
       var filterFunction =
         clazz === "null"
           ? function (x) {
-              return x.parentClass == null
+              return x.parentClass == null;
             }
           : function (x) {
-              return x.parentClass === clazz
-            }
+              return x.parentClass === clazz;
+            };
 
-      return this.$store.state.configurables.filter(filterFunction)
+      return this.$store.state.configurables.filter(filterFunction);
     },
 
     instances: function () {
-      return this.$store.state.instances
+      return this.$store.state.instances;
     },
 
     configurable: function () {
-      var clazz = this.getConfigurableClazz()
-      return this.getConfigurableByClazz(clazz)
+      var clazz = this.getConfigurableClazz();
+      return this.getConfigurableByClazz(clazz);
     },
   },
   methods: {
+    canAddInstances: function() {
+      return this.configurable !== null && this.configurable.fields !== null
+    },
+
     getConfigurableClazz: function () {
-      return this.$route.params.clazz
+      return this.$route.params.clazz;
     },
 
     getConfigurableByClazz: function (clazz) {
-      var result = null
+      var result = null;
       this.$store.state.configurables.forEach((element) => {
         if (element.class == clazz) {
-          result = element
+          result = element;
         }
-      })
+      });
 
-      return result
+      return result;
     },
 
     browse: function (configurable) {
       this.$router.push({
         name: "configurables",
         params: { clazz: configurable.class },
-      })
-      this.refresh()
+      });
+      this.refresh();
     },
 
     refreshConfigurables() {
-      client.getConfigurables()
+      client.getConfigurables();
     },
 
     refreshInstances() {
-      client.getInstancesOfClazz(this.getConfigurableClazz())
+      client.getInstancesOfClazz(this.getConfigurableClazz());
+    },
+
+    refreshTags() {
+      client.getTags();
     },
 
     refresh() {
-      this.refreshConfigurables()
-      this.refreshInstances()
+      this.refreshConfigurables();
+      this.refreshInstances();
+      this.refreshTags();
+    },
+
+    findTagName: function (tagId) {
+      var result = tagId;
+      this.$store.state.tags.forEach((category) => {
+        category.children.forEach((tag) => {
+          if (tag.id === tagId) {
+            result = tag.name;
+            return true;
+          }
+        });
+      });
+
+      return result;
     },
 
     showAddNewInstanceDialog: function () {
-      store.commit(RESET_INSTANCE, this.configurable)
+      store.commit(RESET_INSTANCE, this.configurable);
 
-      this.instanceDialog.show = true
-      this.instanceDialog.title = this.configurable.addNewRes
-      this.instanceDialog.actionText = this.$vuetify.lang.t("$vuetify.configurables.add")
-      this.instanceDialog.action = this.addInstance
-      this.instanceDialog.activeTab = 0
+      this.instanceDialog.show = true;
+      this.instanceDialog.title = this.configurable.addNewRes;
+      this.instanceDialog.actionText = this.$vuetify.lang.t(
+        "$vuetify.configurables.add"
+      );
+      this.instanceDialog.action = this.addInstance;
+      this.instanceDialog.activeTab = 0;
     },
 
     closeInstanceDialog: function () {
-      this.instanceDialog.show = false
+      this.instanceDialog.show = false;
     },
 
-    showDeleteInstanceDialog: function(instanceId) {
+    showDeleteInstanceDialog: function (instanceId) {
       this.deleteDialog = {
         action: this.deleteInstance,
         instanceId: instanceId,
         show: true,
-      }
+      };
     },
 
-    closeDeleteDialog: function() {
-      this.deleteDialog.show = false
+    closeDeleteDialog: function () {
+      this.deleteDialog.show = false;
     },
 
-    showEditInstanceDialog: function(instance) {
-      this.instanceDialog.show = true
-      this.instanceDialog.title = this.configurable.editRes
-      this.instanceDialog.actionText = this.$vuetify.lang.t("$vuetify.configurables.edit")
-      this.instanceDialog.action = this.editInstance
-      this.instanceDialog.activeTab = 0
-      this.instanceDialog.instance = instance
+    showEditInstanceDialog: function (instance) {
+      this.instanceDialog.show = true;
+      this.instanceDialog.title = this.configurable.editRes;
+      this.instanceDialog.actionText = this.$vuetify.lang.t(
+        "$vuetify.configurables.edit"
+      );
+      this.instanceDialog.action = this.editInstance;
+      this.instanceDialog.activeTab = 0;
+      this.instanceDialog.instance = instance;
 
-       setTimeout(() => {
-          store.commit(RESET_INSTANCE, this.configurable)
-          store.commit(EDIT_INSTANCE, instance)
+      setTimeout(() => {
+        store.commit(RESET_INSTANCE, this.configurable);
+        store.commit(EDIT_INSTANCE, instance);
       }, 200);
     },
 
-    handleValidationResult: function(validationResult) {
-        var isFormValid = true
-        for (const field in validationResult) {
-          if (!validationResult[field].valid) {
-            isFormValid = false
-          }
+    handleValidationResult: function (validationResult) {
+      var isFormValid = true;
+      for (const field in validationResult) {
+        if (!validationResult[field].valid) {
+          isFormValid = false;
         }
+      }
 
-        if (isFormValid) {
-          this.instanceDialog.show = false
-          this.refreshInstances()
-        } else {
-          this.instanceDialog.activeTab = 0
-        }
+      if (isFormValid) {
+        this.instanceDialog.show = false;
+        this.refreshInstances();
+      } else {
+        this.instanceDialog.activeTab = 0;
+      }
 
-        this.instanceDialog.overlay = false
+      this.instanceDialog.overlay = false;
     },
 
     addInstance: function () {
-      this.instanceDialog.overlay = true
-      
-      client.postNewInstance(store.state.newInstance, this.handleValidationResult)
+      this.instanceDialog.overlay = true;
+
+      client.postNewInstance(
+        store.state.newInstance,
+        this.handleValidationResult
+      );
     },
-    
+
     editInstance: function () {
-      this.instanceDialog.overlay = true
-      client.putInstance(store.state.newInstance, this.handleValidationResult)
+      this.instanceDialog.overlay = true;
+      client.putInstance(store.state.newInstance, this.handleValidationResult);
     },
 
     deleteInstance: function () {
-      var instanceId = this.deleteDialog.instanceId
-      client.deleteInstance(instanceId)
-      this.closeDeleteDialog()
+      var instanceId = this.deleteDialog.instanceId;
+      client.deleteInstance(instanceId);
+      this.closeDeleteDialog();
+    },
+  },
+  watch: {
+    $route() {
+      this.$store.commit(CLEAR_INSTANCES);
     },
   },
   mounted: function () {
-    this.refresh()
+    this.refresh();
   },
-}
+};
 </script>

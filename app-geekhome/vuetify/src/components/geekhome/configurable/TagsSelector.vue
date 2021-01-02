@@ -8,9 +8,8 @@
             <v-chip
               v-for="tag in tagCategory.children"
               :key="tag.id"
-              class="ma-2"
+              class="mr-2"
               @click="selectUnselectTag(tag.id)"
-              label           
               :color = "isTagIncluded(tag.id) ? 'primary' : ''" >
               {{ tag.name }}
             </v-chip>

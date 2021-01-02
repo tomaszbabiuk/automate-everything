@@ -7,6 +7,7 @@ export const SET_ERROR = 'SET_ERROR'
 export const SET_PLUGINS = 'SET_PLUGINS' 
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
+export const CLEAR_INSTANCES = 'CLEAR_INSTANCES'
 export const ADD_INSTANCE = 'ADD_INSTANCE' 
 export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE'
@@ -91,6 +92,12 @@ export default new Vuex.Store({
 
     [ADD_INSTANCE](state, instance) {
       state.instances.push(instance)
+    },
+
+    [CLEAR_INSTANCES](state) {
+      while (state.instances.length > 0) {
+        Vue.delete(state.instances, 0)
+      }
     },
 
     [RESET_INSTANCE](state, configurable) {
