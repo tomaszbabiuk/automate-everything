@@ -3,6 +3,8 @@ package com.geekhome.common.configuration;
 import com.geekhome.common.*;
 import com.geekhome.common.localization.ILocalizationProvider;
 
+import java.util.List;
+
 public class Mode extends NamedObject implements IPrioritized, IBlocksTarget {
     private int _priority;
 
@@ -21,7 +23,7 @@ public class Mode extends NamedObject implements IPrioritized, IBlocksTarget {
     }
 
     @Override
-    public JSONArrayList<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
+    public List<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
         return null;
     }
 

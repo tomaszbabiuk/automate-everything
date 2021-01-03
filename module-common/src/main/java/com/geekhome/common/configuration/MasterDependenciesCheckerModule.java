@@ -1,6 +1,6 @@
 package com.geekhome.common.configuration;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MasterDependenciesCheckerModule extends DependenciesCheckerModule {
     private MasterConfiguration _masterConfiguration;
@@ -11,7 +11,7 @@ public class MasterDependenciesCheckerModule extends DependenciesCheckerModule {
     }
 
     @Override
-    public void checkDependency(Object source, ArrayList<Dependency> dependencies, int level) {
+    public void checkDependency(Object source, List<Dependency> dependencies, int level) {
         if (source instanceof IBlocksTarget) {
             level++;
 

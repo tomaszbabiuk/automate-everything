@@ -2,15 +2,15 @@ package com.geekhome.common.automation;
 
 import com.geekhome.common.KeyValue;
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONArrayList;
-import com.geekhome.common.configuration.JSONAwareBase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class EvaluationResult extends JSONAwareBase {
+public class EvaluationResult {
     private Object _value;
     private String _interfaceValue;
-    private JSONArrayList<KeyValue> _descriptions;
+    private List<KeyValue> _descriptions;
     private ControlMode _controlMode;
     private boolean _isSignaled;
     private boolean _isConnected;
@@ -72,7 +72,7 @@ public class EvaluationResult extends JSONAwareBase {
     }
 
     @Persistable(name="Descriptions")
-    public JSONArrayList<KeyValue> getDescriptions() {
+    public List<KeyValue> getDescriptions() {
         return _descriptions;
     }
 
@@ -85,12 +85,12 @@ public class EvaluationResult extends JSONAwareBase {
         return _controlMode;
     }
 
-    public void setDescriptions(JSONArrayList<KeyValue> value) {
+    public void setDescriptions(List<KeyValue> value) {
         _descriptions = value;
     }
 
     public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected,
-                            JSONArrayList<KeyValue> descriptions, ControlMode controlMode, boolean isAlternating) {
+                            List<KeyValue> descriptions, ControlMode controlMode, boolean isAlternating) {
         setDescriptions(descriptions);
         setValue(value);
         setInterfaceValue(interfaceValue);
@@ -101,12 +101,12 @@ public class EvaluationResult extends JSONAwareBase {
     }
 
     public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected,
-                            JSONArrayList<KeyValue> descriptions) {
+                            List<KeyValue> descriptions) {
         this(value, interfaceValue, isSignaled, isConnected, descriptions, ControlMode.Auto, false);
     }
 
     public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected) {
-        this(value, interfaceValue, isSignaled, isConnected, new JSONArrayList<>());
+        this(value, interfaceValue, isSignaled, isConnected, new ArrayList<>());
     }
 
     @Override
@@ -125,6 +125,6 @@ public class EvaluationResult extends JSONAwareBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(_value, _interfaceValue, _descriptions != null ? _descriptions.toJSONString() : 0, _controlMode, _isSignaled, _isAlternating, _colorValue);
+        return Objects.hash(_value, _interfaceValue, _descriptions != null ? _descriptions.toString() : 0, _controlMode, _isSignaled, _isAlternating, _colorValue);
     }
 }

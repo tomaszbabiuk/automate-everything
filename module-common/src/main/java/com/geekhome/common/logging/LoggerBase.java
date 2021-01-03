@@ -1,25 +1,25 @@
 package com.geekhome.common.logging;
 
-import com.geekhome.common.configuration.JSONArrayList;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class LoggerBase implements ILogger {
-    private JSONArrayList<TimedLog> _truncatedLogs = new JSONArrayList<>();
-    private JSONArrayList<TimedLog> _activities = new JSONArrayList<>();
-    private JSONArrayList<ErrorLog> _errors = new JSONArrayList<>();
+    private List<TimedLog> _truncatedLogs = new ArrayList<>();
+    private List<TimedLog> _activities = new ArrayList<>();
+    private List<ErrorLog> _errors = new ArrayList<>();
     private int _errorsCount;
 
     private Object _lock = new Object();
 
     @Override
-    public JSONArrayList<TimedLog> getActivities() {
+    public List<TimedLog> getActivities() {
         return _activities;
     }
 
     @Override
-    public JSONArrayList<ErrorLog> getErrors() {
+    public List<ErrorLog> getErrors() {
         return _errors;
     }
 
@@ -59,7 +59,7 @@ public abstract class LoggerBase implements ILogger {
     }
 
     private void logError() {
-        JSONArrayList<TimedLog> stack = new JSONArrayList<>();
+        List<TimedLog> stack = new ArrayList<>();
         stack.addAll(_truncatedLogs);
         ErrorLog errorLog = new ErrorLog(stack);
         addAndTrim(10, errorLog, _errors);
@@ -73,7 +73,7 @@ public abstract class LoggerBase implements ILogger {
         return stack.toString();
     }
 
-    protected <T> void addAndTrim(int maxCollectionSize, T log, JSONArrayList<T> targetList) {
+    protected <T> void addAndTrim(int maxCollectionSize, T log, List<T> targetList) {
         synchronized (_lock) {
             targetList.add(log);
             if (targetList.size() > maxCollectionSize) {
@@ -82,7 +82,7 @@ public abstract class LoggerBase implements ILogger {
         }
     }
 
-    protected <T> void insertAndTrim(int maxCollectionSize, T log, JSONArrayList<T> targetList) {
+    protected <T> void insertAndTrim(int maxCollectionSize, T log, List<T> targetList) {
         synchronized (_lock) {
             targetList.add(0, log);
             if (targetList.size() > maxCollectionSize) {

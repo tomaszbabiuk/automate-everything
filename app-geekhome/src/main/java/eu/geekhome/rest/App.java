@@ -9,5 +9,8 @@ public class App extends ResourceConfig {
         register(new DependencyInjectionBinder());
         register(new GsonMessageBodyHandler());
         register(new CORSFilter());
+        register(new PluginsBootstrap());
     }
+
+
 }

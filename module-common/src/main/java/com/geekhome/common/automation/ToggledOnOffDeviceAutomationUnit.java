@@ -1,12 +1,12 @@
 package com.geekhome.common.automation;
 
-import com.geekhome.common.configuration.JSONArrayList;
 import com.geekhome.common.configuration.OnOffDeviceBase;
 import com.geekhome.common.hardwaremanager.IPort;
 import com.geekhome.common.hardwaremanager.ITogglePort;
 import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.configuration.ObjectNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ToggledOnOffDeviceAutomationUnit<D extends OnOffDeviceBase> extends MultistateDeviceAutomationUnit<D> {
@@ -19,7 +19,7 @@ public class ToggledOnOffDeviceAutomationUnit<D extends OnOffDeviceBase> extends
 
     @Override
     public EvaluationResult buildEvaluationResult() {
-        return new EvaluationResult(getValue(), getState().getName().getName(), isSignaled(), isConnected(), new JSONArrayList<>(), getControlMode(), true);
+        return new EvaluationResult(getValue(), getState().getName().getName(), isSignaled(), isConnected(), new ArrayList<>(), getControlMode(), true);
     }
 
     @Override

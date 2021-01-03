@@ -1,31 +1,29 @@
 package eu.geekhome.rest;
 
-
 import com.geekhome.common.configurable.Configurable;
 import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
-import org.pf4j.DefaultPluginManager;
-import org.pf4j.ExtensionFactory;
-import org.pf4j.JarPluginManager;
-import org.pf4j.PluginWrapper;
-import org.pf4j.SingletonExtensionFactory;
+import org.pf4j.*;
 
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
 import java.util.List;
 
 @Service
 public class PluginsManager {
 
-    private final DefaultPluginManager _pluginManager;
+    private PluginManager _pluginManager;
 
-    public PluginsManager() {
-        _pluginManager = new JarPluginManager() {
-            @Override
-            protected ExtensionFactory createExtensionFactory() {
-                return new SingletonExtensionFactory();
+    public PluginsManager(@Context Application app) throws Exception {
+        for (Object singleton : app.getSingletons()) {
+            if (singleton instanceof PluginsBootstrap) {
+                _pluginManager = ((PluginsBootstrap) singleton).getPluginManager();
+                break;
             }
-        };
-        _pluginManager.loadPlugins();
-        _pluginManager.startPlugins();
+        }
+        if (_pluginManager == null) {
+            throw new Exception("There's no PluginsBootstrap in the app singletons container");
+        }
     }
 
     public List<PluginWrapper> getPlugins() {

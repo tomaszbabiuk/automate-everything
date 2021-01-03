@@ -1,11 +1,10 @@
 package com.geekhome.common.configuration;
 
 import com.geekhome.common.NamedObject;
-import org.json.simple.JSONAware;
 
 import java.util.ArrayList;
 
-public class Block extends NamedObject implements JSONAware {
+public class Block extends NamedObject {
     private String _conditionsIds;
     private String _targetId;
 

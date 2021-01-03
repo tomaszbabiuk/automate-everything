@@ -1,11 +1,10 @@
 package com.geekhome.common;
 
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONAwareBase;
 
 import java.util.Calendar;
 
-public class DateTimeInfo extends JSONAwareBase {
+public class DateTimeInfo {
     private Calendar _dateTime;
 
     @Persistable(name="Year")

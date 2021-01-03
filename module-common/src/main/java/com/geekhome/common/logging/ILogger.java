@@ -1,10 +1,10 @@
 package com.geekhome.common.logging;
 
-import com.geekhome.common.configuration.JSONArrayList;
+import java.util.List;
 
 public interface ILogger {
-    JSONArrayList<TimedLog> getActivities();
-    JSONArrayList<ErrorLog> getErrors();
+    List<TimedLog> getActivities();
+    List<ErrorLog> getErrors();
 
     void verbose(String message);
     void debug(String message);

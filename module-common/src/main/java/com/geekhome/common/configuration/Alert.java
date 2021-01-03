@@ -5,6 +5,7 @@ import com.geekhome.common.localization.ILocalizationProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Alert extends NamedObject implements IBlocksTarget {
     private String _alertServicesIds;
@@ -29,8 +30,7 @@ public class Alert extends NamedObject implements IBlocksTarget {
         return _devicesIds;
     }
 
-    @Override
-    public JSONArrayList<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
+    public List<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
         return null;
     }
 

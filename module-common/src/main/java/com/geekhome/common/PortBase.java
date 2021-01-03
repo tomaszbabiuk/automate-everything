@@ -4,13 +4,10 @@ import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.configuration.Persistable;
 import com.geekhome.common.hardwaremanager.IPort;
 import com.geekhome.common.hardwaremanager.IPortMapper;
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
-public class PortBase implements IPort, JSONAware {
-    public static final String EMPTY = "-";
+public class PortBase implements IPort {
     private String _id;
     private IPortMapper _portMapper;
 
@@ -38,13 +35,5 @@ public class PortBase implements IPort, JSONAware {
         }
 
         return _portMapper.buildPortMappings(getId());
-    }
-
-    @Override
-    public String toJSONString() {
-        JSONObject json = new JSONObject();
-        json.put("Id", getId());
-        json.put("MappedTo", getMappedTo());
-        return json.toJSONString();
     }
 }

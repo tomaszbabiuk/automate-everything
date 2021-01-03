@@ -3,14 +3,13 @@ package com.geekhome.common.automation;
 import com.geekhome.common.IMonitorable;
 import com.geekhome.common.OperationMode;
 import com.geekhome.common.alerts.IAlertService;
-import com.geekhome.common.configuration.JSONArrayList;
 import com.geekhome.common.logging.LoggingService;
 import com.geekhome.common.logging.ILogger;
 import com.geekhome.common.utils.Sleeper;
 import com.geekhome.common.alerts.DashboardAlertService;
-import org.json.simple.JSONAware;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class SystemInfo {
     private OperationMode _operationMode;
     private IOperationModeChangedListener _operationModeChangedListener;
     private ILogger _logger = LoggingService.getLogger();
-    private JSONArrayList<IAlertService> _alertServices;
-    private JSONArrayList<IMonitorable> _monitorables;
+    private List<IAlertService> _alertServices;
+    private List<IMonitorable> _monitorables;
     private Long _restartTime;
 
 
@@ -31,7 +30,7 @@ public class SystemInfo {
         return _operationMode;
     }
 
-    public JSONArrayList<IAlertService> getAlertServices() { return _alertServices; }
+    public List<IAlertService> getAlertServices() { return _alertServices; }
 
 
     public void setOperationMode(OperationMode value) {
@@ -65,16 +64,16 @@ public class SystemInfo {
 
     public SystemInfo(OperationMode operationMode, DashboardAlertService dashboardAlertService) throws Exception {
         _dashboardAlertService = dashboardAlertService;
-        _monitorables = new JSONArrayList<>();
+        _monitorables = new ArrayList<>();
         setOperationMode(operationMode);
     }
 
-    public void initialize(JSONArrayList<IMonitorable> monitorables, JSONArrayList<IAlertService> alertServices) throws Exception {
+    public void initialize(List<IMonitorable> monitorables, List<IAlertService> alertServices) throws Exception {
         registerMonitorables(monitorables);
         registerAlertServices(alertServices);
     }
 
-    private void registerAlertServices(JSONArrayList<IAlertService> value) { _alertServices = value; }
+    private void registerAlertServices(List<IAlertService> value) { _alertServices = value; }
 
     private void registerMonitorables(List<IMonitorable> monitorables) {
         for (IMonitorable monitorable : monitorables) {
@@ -143,7 +142,7 @@ public class SystemInfo {
         }
     }
 
-    public JSONAware getMonitorables() {
+    public List<IMonitorable> getMonitorables() {
         return _monitorables;
     }
 }

@@ -1,7 +1,6 @@
 package com.geekhome.common.automation;
 
 import com.geekhome.common.alerts.IAlertService;
-import com.geekhome.common.configuration.JSONArrayList;
 import com.geekhome.common.configuration.Alert;
 
 import java.util.Arrays;
@@ -9,7 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AlertAutomationUnit extends EvaluableAutomationUnit {
-    private final JSONArrayList<IAlertService> _alertServices;
+    private final List<IAlertService> _alertServices;
     private final List<String> _alertServicesIds;
     private final Alert _alert;
 

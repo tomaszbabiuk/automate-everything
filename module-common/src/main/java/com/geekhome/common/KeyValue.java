@@ -1,9 +1,6 @@
 package com.geekhome.common;
 
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
-
-public class KeyValue implements JSONAware
+public class KeyValue
 {
     private String _key;
     private String _value;
@@ -28,13 +25,5 @@ public class KeyValue implements JSONAware
 
     public void setValue(String value) {
         _value = value;
-    }
-
-    @Override
-    public String toJSONString() {
-        JSONObject json = new JSONObject();
-        json.put("Key", getKey());
-        json.put("Value", getValue());
-        return json.toJSONString();
     }
 }

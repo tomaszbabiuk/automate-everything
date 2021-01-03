@@ -1,3 +1,4 @@
 sqldelight
-shelly
 core
+mqtt
+shelly

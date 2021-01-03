@@ -27,7 +27,8 @@ dependencies {
     implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
 
     implementation group: 'org.glassfish.hk2', name: 'hk2-api', version: '2.1.58'
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation "com.google.code.gson:gson:${gsonVersion}"
+    implementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
 
     implementation 'org.slf4j:slf4j-api:1.7.5'
     implementation 'org.slf4j:slf4j-simple:1.6.4'

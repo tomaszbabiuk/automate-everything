@@ -1,18 +1,18 @@
 package com.geekhome.common.logging;
 
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONArrayList;
-import com.geekhome.common.configuration.JSONAwareBase;
 
-public class ErrorLog extends JSONAwareBase {
-    private JSONArrayList<TimedLog> _logs;
+import java.util.List;
 
-    public ErrorLog(JSONArrayList<TimedLog> logs) {
+public class ErrorLog {
+    private List<TimedLog> _logs;
+
+    public ErrorLog(List<TimedLog> logs) {
         _logs = logs;
     }
 
     @Persistable(name="Logs")
-    public JSONArrayList getLogs() {
+    public List getLogs() {
         return _logs;
     }
 

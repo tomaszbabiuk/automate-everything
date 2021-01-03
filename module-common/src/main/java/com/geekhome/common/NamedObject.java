@@ -2,10 +2,9 @@ package com.geekhome.common;
 
 import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONAwareBase;
 import com.google.gson.annotations.SerializedName;
 
-public class NamedObject extends JSONAwareBase implements INamedObject {
+public class NamedObject implements INamedObject {
 
     @SerializedName("name")
     private DescriptiveName _name;

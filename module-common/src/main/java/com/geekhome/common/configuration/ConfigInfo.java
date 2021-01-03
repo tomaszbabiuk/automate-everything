@@ -1,6 +1,8 @@
 package com.geekhome.common.configuration;
 
-public class ConfigInfo extends JSONAwareBase {
+import java.util.List;
+
+public class ConfigInfo {
     private final MasterConfiguration _masterConfiguration;
 
     public ConfigInfo(MasterConfiguration masterConfiguration) {
@@ -13,7 +15,7 @@ public class ConfigInfo extends JSONAwareBase {
     }
 
     @Persistable(name="Validations")
-    public JSONArrayList<String> getValidations() {
+    public List<String> getValidations() {
         return _masterConfiguration.getVallidations();
     }
 }

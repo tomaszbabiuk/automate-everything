@@ -2,9 +2,8 @@ package com.geekhome.common.automation;
 
 import com.geekhome.common.DateTimeInfo;
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONAwareBase;
 
-public class SystemStatus extends JSONAwareBase {
+public class SystemStatus {
     private DateTimeInfo _date;
     private int _operationMode;
     private String _userName;

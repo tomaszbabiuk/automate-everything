@@ -3,6 +3,9 @@ package com.geekhome.common.configuration;
 import com.geekhome.common.*;
 import com.geekhome.common.localization.ILocalizationProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class OnOffDeviceBase extends MultistateDevice implements IPortDrivenDevice, IRoomDevice, IBlocksTarget {
     private String _portId;
     private String _roomId;
@@ -66,8 +69,8 @@ public abstract class OnOffDeviceBase extends MultistateDevice implements IPortD
     }
 
     @Override
-    public JSONArrayList<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
-        JSONArrayList<DescriptiveName> categories = new JSONArrayList<>();
+    public List<DescriptiveName> buildBlockCategories(ILocalizationProvider localizationProvider) {
+        List<DescriptiveName> categories = new ArrayList<>();
         categories.add(new DescriptiveName(localizationProvider.getValue("C:BlocksEnablingAutomaticControl"), "on"));
         return categories;
     }

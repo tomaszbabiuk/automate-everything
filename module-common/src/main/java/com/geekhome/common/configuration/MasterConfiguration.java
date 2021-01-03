@@ -5,6 +5,7 @@ import com.geekhome.common.localization.ILocalizationProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MasterConfiguration extends Collector implements IMasterDependenciesChecker {
     private final MasterTextFilePersister _configurationProvider;
@@ -31,7 +32,7 @@ public class MasterConfiguration extends Collector implements IMasterDependencie
     private ArrayList<CollectorCollection<? extends IDevice>> _devicesCollectors;
     private ArrayList<CollectorCollection<? extends ICondition>> _conditionsCollectors;
     private ArrayList<IConfigurationValidator> _configurationValidators;
-    private JSONArrayList<String> _validations;
+    private List<String> _validations;
 
     private IInvalidateCacheListener _masterInvalidateCacheListener;
 
@@ -148,7 +149,7 @@ public class MasterConfiguration extends Collector implements IMasterDependencie
         getCalculatedConditons().add(alwaysOnCondition);
     }
 
-    public JSONArrayList<String> getVallidations() {
+    public List<String> getVallidations() {
         if (_validations == null) {
             refreshValidations();
         }
@@ -905,8 +906,8 @@ public class MasterConfiguration extends Collector implements IMasterDependencie
         _configurationValidators = configurationValidators;
     }
 
-    public JSONArrayList<Dependency> buildDependencies(String id) throws ObjectNotFoundException {
-        JSONArrayList<Dependency> dependencies = new JSONArrayList<>();
+    public List<Dependency> buildDependencies(String id) throws ObjectNotFoundException {
+        List<Dependency> dependencies = new ArrayList<>();
 
         Object found = findAnyInAllCollectors(id);
         if (found != null) {
@@ -928,14 +929,14 @@ public class MasterConfiguration extends Collector implements IMasterDependencie
         return null;
     }
 
-    public void checkDependencyInAllDependenciesCheckers(Object obj, ArrayList<Dependency> dependencies, int level) {
+    public void checkDependencyInAllDependenciesCheckers(Object obj, List<Dependency> dependencies, int level) {
         for (DependenciesCheckerModule checker : _dependenciesCheckers) {
             checker.checkDependency(obj, dependencies, level);
         }
     }
 
-    public JSONArrayList<String> validateConfiguration() {
-        JSONArrayList<String> validations = new JSONArrayList<>();
+    public List<String> validateConfiguration() {
+        List<String> validations = new ArrayList<>();
         for (IConfigurationValidator configurationValidator : _configurationValidators) {
             configurationValidator.addValidations(validations);
         }
@@ -944,7 +945,7 @@ public class MasterConfiguration extends Collector implements IMasterDependencie
     }
 
     public void masterRemoveObjectWithItsDependencies(String id) throws Exception {
-        ArrayList<Dependency> dependencies = buildDependencies(id);
+        List<Dependency> dependencies = buildDependencies(id);
 
         if (dependencies.size() > 0) {
             for (int i = dependencies.size() - 1; i >= 0; i--) {

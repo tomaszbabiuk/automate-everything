@@ -1,11 +1,8 @@
 package com.geekhome.common.hardwaremanager;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONAware;
-
 import java.util.Hashtable;
 
-public class InputPortsCollection<T> extends Hashtable<String, IInputPort<T>> implements JSONAware {
+public class InputPortsCollection<T> extends Hashtable<String, IInputPort<T>> {
     private final PortType _type;
 
     public InputPortsCollection(PortType type) {
@@ -38,16 +35,6 @@ public class InputPortsCollection<T> extends Hashtable<String, IInputPort<T>> im
         }
 
         return null;
-    }
-
-    @Override
-    public String toJSONString() {
-        JSONArray jsons = new JSONArray();
-        for(IInputPort<T> port : values()) {
-            jsons.add(port);
-        }
-
-        return jsons.toJSONString();
     }
 }
 

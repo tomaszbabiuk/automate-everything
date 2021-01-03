@@ -2,7 +2,6 @@ package com.geekhome.common;
 
 import com.geekhome.common.configuration.Persistable;
 import com.geekhome.common.logging.LoggingService;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -10,15 +9,16 @@ import java.lang.reflect.Method;
 public class PersistableReflector {
 
     public static String reflectToJson(Object obj) {
-        final JSONObject json = new JSONObject();
-        reflect(obj, new IObjectReflectedDelegate() {
-            @Override
-            public void execute(String persistableName, boolean readOnly, Object persistableValue) {
-                json.put(persistableName, persistableValue);
-            }
-        });
-
-        return json.toString();
+        return null;
+//        final JSONObject json = new JSONObject();
+//        reflect(obj, new IObjectReflectedDelegate() {
+//            @Override
+//            public void execute(String persistableName, boolean readOnly, Object persistableValue) {
+//                json.put(persistableName, persistableValue);
+//            }
+//        });
+//
+//        return json.toString();
     }
 
     public interface IObjectReflectedDelegate {

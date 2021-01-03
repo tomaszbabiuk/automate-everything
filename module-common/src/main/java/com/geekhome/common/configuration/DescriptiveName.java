@@ -2,9 +2,8 @@ package com.geekhome.common.configuration;
 
 import com.geekhome.common.PersistableReflector;
 import com.google.gson.annotations.SerializedName;
-import org.json.simple.JSONAware;
 
-public class DescriptiveName implements JSONAware {
+public class DescriptiveName {
 
     @SerializedName("name")
     private String _name;
@@ -27,11 +26,6 @@ public class DescriptiveName implements JSONAware {
 
     public DescriptiveName(String name, String uid) {
         this(name, uid, "");
-    }
-
-    @Override
-    public String toJSONString() {
-        return PersistableReflector.reflectToJson(this);
     }
 
     @Persistable(name = "Name")

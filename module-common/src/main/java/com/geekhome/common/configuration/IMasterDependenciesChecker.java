@@ -1,9 +1,7 @@
 package com.geekhome.common.configuration;
 
-import com.geekhome.common.configuration.Dependency;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IMasterDependenciesChecker {
-    void checkDependencyInAllDependenciesCheckers(Object obj, ArrayList<Dependency> dependencies, int level);
+    void checkDependencyInAllDependenciesCheckers(Object obj, List<Dependency> dependencies, int level);
 }

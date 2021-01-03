@@ -1,11 +1,10 @@
 package com.geekhome.common.logging;
 
 import com.geekhome.common.configuration.Persistable;
-import com.geekhome.common.configuration.JSONAwareBase;
 
 import java.util.Calendar;
 
-public class TimedLog extends JSONAwareBase {
+public class TimedLog {
     private int _day;
     private int _month;
     private int _year;

@@ -2,9 +2,8 @@ package com.geekhome.common.configuration;
 
 import com.geekhome.common.ConfigurationSaver;
 import com.geekhome.common.NamedObject;
-import org.json.simple.JSONAware;
 
-public class Floor extends NamedObject implements JSONAware {
+public class Floor extends NamedObject {
     private CollectorCollection<Room> _rooms;
     private String _iconName;
 
