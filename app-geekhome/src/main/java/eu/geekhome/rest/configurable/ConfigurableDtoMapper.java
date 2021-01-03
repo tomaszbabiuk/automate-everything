@@ -1,6 +1,6 @@
 package eu.geekhome.rest.configurable;
 
-import com.geekhome.common.configurable.Configurable;
+import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.rest.MappingException;
 
 import javax.inject.Inject;

@@ -1,7 +1,7 @@
 package eu.geekhome.mqttplugin;
 
 import eu.geekhome.services.mqtt.MqttBrokerService;
-import eu.geekhome.services.mqtt.MQTTListener;
+import eu.geekhome.services.mqtt.MqttListener;
 import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
@@ -25,15 +25,15 @@ import java.util.Properties;
 public class MoquetteBroker implements MqttBrokerService {
 
     private final Server _mqttBroker;
-    private final List<MQTTListener> _listeners = new ArrayList<>();
+    private final List<MqttListener> _listeners = new ArrayList<>();
 
     @Override
-    public void addMqttListener(MQTTListener listener) {
+    public void addMqttListener(MqttListener listener) {
         _listeners.add(listener);
     }
 
     @Override
-    public void removeMqttListener(MQTTListener listener) {
+    public void removeMqttListener(MqttListener listener) {
         _listeners.remove(listener);
     }
 
@@ -43,9 +43,9 @@ public class MoquetteBroker implements MqttBrokerService {
 
     static class PublisherListener extends AbstractInterceptHandler {
 
-        private final List<MQTTListener> _listeners;
+        private final List<MqttListener> _listeners;
 
-        PublisherListener(List<MQTTListener> listeners) {
+        PublisherListener(List<MqttListener> listeners) {
             _listeners = listeners;
         }
 
@@ -67,7 +67,7 @@ public class MoquetteBroker implements MqttBrokerService {
 
             System.out.println("Received on topic: " + msg.getTopicName() + ", content: " + msgAsString);
 
-            for (MQTTListener listener : _listeners) {
+            for (MqttListener listener : _listeners) {
                 listener.onPublish(msg.getTopicName(), msgAsString);
             }
         }
@@ -75,7 +75,7 @@ public class MoquetteBroker implements MqttBrokerService {
         @Override
         public void onConnectionLost(InterceptConnectionLostMessage msg) {
             String clientID = msg.getClientID();
-            for (MQTTListener listener : _listeners) {
+            for (MqttListener listener : _listeners) {
                 listener.onDisconnected(clientID);
             }
         }

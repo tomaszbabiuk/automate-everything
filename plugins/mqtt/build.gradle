@@ -7,7 +7,8 @@ dependencies {
     shadow project(':module-services')
     shadow project(':module-common')
     shadow(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
-      exclude group: "org.slf4j"
+        exclude group: "org.slf4j"
+        exclude group: "org.slf4j.impl"
     }
     kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
     annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
@@ -19,6 +20,7 @@ shadowJar {
     exclude 'kotlin/**'
     exclude 'org/intellij/**'
     exclude 'org/jetbrains/**'
+    exclude 'org/slf4j/**'
 }
 
 compileKotlin {

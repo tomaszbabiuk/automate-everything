@@ -1,4 +1,4 @@
-package com.geekhome.common.configurable;
+package eu.geekhome.services.configurable;
 
 public class ConfigurationPersistenceException extends Exception {
     public ConfigurationPersistenceException(String message) {

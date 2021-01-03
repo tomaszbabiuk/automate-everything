@@ -1,9 +1,7 @@
 package com.geekhome.common.hardwaremanager;
 
-import org.pf4j.ExtensionPoint;
-
 import java.util.ArrayList;
 
-public interface IHardwareManagerAdapterFactory extends ExtensionPoint {
+public interface IHardwareManagerAdapterFactory {
     ArrayList<? extends IHardwareManagerAdapter> createAdapters();
 }

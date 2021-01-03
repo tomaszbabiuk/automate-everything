@@ -1,6 +1,6 @@
 package eu.geekhome.rest;
 
-import com.geekhome.common.configurable.Configurable;
+import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
 import org.pf4j.*;

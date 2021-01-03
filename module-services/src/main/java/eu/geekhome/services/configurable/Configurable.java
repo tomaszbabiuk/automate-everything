@@ -1,4 +1,4 @@
-package com.geekhome.common.configurable;
+package eu.geekhome.services.configurable;
 
 import com.geekhome.common.localization.Resource;
 import org.pf4j.ExtensionPoint;

@@ -16,9 +16,9 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
-import eu.geekhome.services.mqtt.MQTTListener;
+import eu.geekhome.services.mqtt.MqttListener;
 
-public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapter, MQTTListener {
+public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapter, MqttListener {
 
     private interface PortIterateListener {
         void onIteratePort(IShellyPort port);

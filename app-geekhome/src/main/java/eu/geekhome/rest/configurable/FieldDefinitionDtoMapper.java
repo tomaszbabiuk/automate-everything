@@ -1,6 +1,6 @@
 package eu.geekhome.rest.configurable;
 
-import com.geekhome.common.configurable.FieldDefinition;
+import eu.geekhome.services.configurable.FieldDefinition;
 
 public class FieldDefinitionDtoMapper {
 

@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.configurable.*;
+import eu.geekhome.services.configurable.*;
 
 import java.util.ArrayList;
 import java.util.List;

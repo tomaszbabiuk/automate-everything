@@ -2,6 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
 }
 dependencies {
+    compile project(":module-common")
     compile group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}"
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

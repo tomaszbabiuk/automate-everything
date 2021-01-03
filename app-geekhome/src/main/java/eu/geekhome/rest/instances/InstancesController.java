@@ -1,8 +1,8 @@
 package eu.geekhome.rest.instances;
 
-import com.geekhome.common.configurable.Configurable;
-import com.geekhome.common.configurable.FieldDefinition;
-import com.geekhome.common.configurable.FieldValidationResult;
+import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.FieldDefinition;
+import eu.geekhome.services.configurable.FieldValidationResult;
 import eu.geekhome.rest.PluginsManager;
 import eu.geekhome.services.repository.InstanceDto;
 import eu.geekhome.services.repository.Repository;

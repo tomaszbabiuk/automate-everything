@@ -10,7 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation project(":module-services")
     implementation project(":module-synchronization")
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "org.apache.logging.log4j:log4j-core:2.5"

@@ -1,34 +1,25 @@
 package eu.geekhome.shellyplugin;
 
-import com.geekhome.common.extensibility.RequiresMqttFeature;
-import com.geekhome.common.hardwaremanager.*;
+import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
+import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
 import eu.geekhome.services.mqtt.MqttBrokerService;
-import org.pf4j.Extension;
 
 import java.util.ArrayList;
 
+class ShellyAdapterFactory implements IHardwareManagerAdapterFactory {
 
-@Extension
-public class ShellyAdapterFactory implements IHardwareManagerAdapterFactory, RequiresMqttFeature {
+    private final MqttBrokerService _mqttBroker;
 
-    private MqttBrokerService _mqttBroker;
-
-    @Override
-    public void setMqttBroker(MqttBrokerService broker) {
-        _mqttBroker = broker;
-    }
-
-    @Override
-    public void allFeaturesInjected() {
+    ShellyAdapterFactory(MqttBrokerService mqttBroker) {
+        _mqttBroker = mqttBroker;
     }
 
     @Override
     public ArrayList<? extends IHardwareManagerAdapter> createAdapters() {
-//        ArrayList<ShellyAdapter> result = new ArrayList<>();
-//        ShellyAdapter adapter = new ShellyAdapter(_mqttBroker);
-//        result.add(adapter);
-//        return result;
+        ArrayList<IHardwareManagerAdapter> result = new ArrayList<>();
+        ShellyAdapter adapter = new ShellyAdapter(_mqttBroker);
+        result.add(adapter);
 
-        return null;
+        return result;
     }
 }

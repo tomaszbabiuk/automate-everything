@@ -1,7 +1,8 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.configurable.*;
 import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.FieldDefinition;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.configurable.Configurable;
+import eu.geekhome.services.configurable.Configurable;
 import com.geekhome.common.localization.Resource;
 import org.pf4j.Extension;
 
