@@ -1,4 +1,4 @@
-package eu.geekhome.rest.configurable;
+package eu.geekhome.services.configurable;
 
 import com.geekhome.common.localization.Resource;
 import com.google.gson.annotations.SerializedName;

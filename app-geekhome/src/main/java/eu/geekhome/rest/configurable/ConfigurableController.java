@@ -1,6 +1,7 @@
 package eu.geekhome.rest.configurable;
 
 import eu.geekhome.rest.PluginsManager;
+import eu.geekhome.services.configurable.ConfigurableDto;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;

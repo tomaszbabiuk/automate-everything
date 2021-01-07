@@ -24,14 +24,14 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
         void onIteratePort(IShellyPort port);
     }
 
-    private static ILogger _logger = LoggingService.getLogger();
+    private static final ILogger _logger = LoggingService.getLogger();
     private final InetAddress _brokerIP;
     private final OkHttpClient _okClient;
     private final Gson _gson;
     private MqttBrokerService _mqttBroker;
-    private ArrayList<ShellyDigitalOutputPort> _ownedDigitalOutputPorts = new ArrayList<>();
-    private ArrayList<ShellyPowerInputPort> _ownedPowerInputPorts = new ArrayList<>();
-    private ArrayList<ShellyPowerOutputPort> _ownedPowerOutputPorts = new ArrayList<>();
+    private final ArrayList<ShellyDigitalOutputPort> _ownedDigitalOutputPorts = new ArrayList<>();
+    private final ArrayList<ShellyPowerInputPort> _ownedPowerInputPorts = new ArrayList<>();
+    private final ArrayList<ShellyPowerOutputPort> _ownedPowerOutputPorts = new ArrayList<>();
 
     public ShellyAdapter(final MqttBrokerService mqttBroker) {
         super(new DescriptiveName("Shelly Adapter", "SHELLY"));

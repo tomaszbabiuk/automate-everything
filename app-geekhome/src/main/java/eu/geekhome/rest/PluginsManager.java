@@ -1,6 +1,8 @@
 package eu.geekhome.rest;
 
+import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
 import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.hardware.HardwarePlugin;
 import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
 import org.pf4j.*;
@@ -8,6 +10,7 @@ import org.pf4j.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PluginsManager {
@@ -54,5 +57,15 @@ public class PluginsManager {
     public List<Repository> getRepositories() {
         return _pluginManager
                 .getExtensions(Repository.class);
+    }
+
+    public List<IHardwareManagerAdapterFactory> getHardwareManagerAdapterFactories() {
+        return _pluginManager
+                .getPlugins()
+                .stream()
+                .filter(plugin -> plugin.getPluginState() == PluginState.STARTED)
+                .filter(plugin -> plugin.getPlugin() instanceof HardwarePlugin)
+                .map(plugin -> ((HardwarePlugin) plugin.getPlugin()).getFactory())
+                .collect(Collectors.toList());
     }
 }

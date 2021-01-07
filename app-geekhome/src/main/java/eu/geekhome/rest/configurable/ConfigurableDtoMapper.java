@@ -2,6 +2,8 @@ package eu.geekhome.rest.configurable;
 
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.rest.MappingException;
+import eu.geekhome.services.configurable.ConfigurableDto;
+import eu.geekhome.services.configurable.FieldDto;
 
 import javax.inject.Inject;
 import java.util.List;

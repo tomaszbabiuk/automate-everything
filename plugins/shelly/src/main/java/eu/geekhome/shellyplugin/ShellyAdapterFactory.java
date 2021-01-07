@@ -2,6 +2,7 @@ package eu.geekhome.shellyplugin;
 
 import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
 import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
+import com.geekhome.common.localization.Resource;
 import eu.geekhome.services.mqtt.MqttBrokerService;
 
 import java.util.ArrayList;
@@ -21,5 +22,10 @@ class ShellyAdapterFactory implements IHardwareManagerAdapterFactory {
         result.add(adapter);
 
         return result;
+    }
+
+    @Override
+    public Resource getName() {
+        return new Resource("Shelly", "Shelly");
     }
 }

@@ -31,10 +31,10 @@
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
           <v-tab
-            v-for="tab in tabs"
-            :key="tab"
+            v-for="factory in hardwareFactories"
+            :key="factory.class"
           >
-            {{ tab }}
+            {{ factory.name }}
           </v-tab>
         </v-tabs>
       </template>
@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import { client } from "./rest.js";
+
 export default {
   name: "App",
 
@@ -94,9 +96,6 @@ export default {
     return {
       showTabs: false,
       tab: null,
-      tabs: [
-        'web', 'shopping', 'videos', 'images', 'news',
-      ],
       drawer: false,
       navigationItems: [
         { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
@@ -165,6 +164,9 @@ export default {
   },
 
   computed: {
+    hardwareFactories: function () {
+      return this.$store.state.hardwareFactories;
+    },
     isPolishLocale: function() {
       return this.$vuetify.lang.current === "pl";
     },
@@ -183,6 +185,8 @@ export default {
     } else {
       this.$vuetify.lang.current = localStorage.selectedLanguage;
     }
+
+    client.getHardwareFactories()
 
     this.matchTabsVisibilityToRoute()
   }

@@ -34,6 +34,8 @@ export const ADD_ICON_CATEGORY = 'ADD_ICON_CATEGORY'
 export const UPDATE_ICON_CATEGORY = 'UPDATE_ICON_CATEGORY'
 export const REMOVE_ICON_CATEGORY = 'REMOVE_ICON_CATEGORY'
 
+export const SET_HARDWARE_FACTORIES = 'SET_HARDWARE_FACTORIES'
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
@@ -59,6 +61,7 @@ export default new Vuex.Store({
     validation: [],
     tags: [],
     iconCategories: [],
+    hardwareFactories: [],
     newInstance: {
       id: null,
       class: null,
@@ -260,6 +263,10 @@ export default new Vuex.Store({
           }
         })
       })
+    },
+
+    [SET_HARDWARE_FACTORIES](state, payload) {
+      state.hardwareFactories = payload
     }
   }
 })
