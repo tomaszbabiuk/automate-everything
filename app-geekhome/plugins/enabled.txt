@@ -1,5 +1,4 @@
-sqldelight
-core
 shelly
-mqtt
 afore
+sqldelight
+mqtt

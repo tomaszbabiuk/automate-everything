@@ -68,4 +68,8 @@ public class PluginsManager {
                 .map(plugin -> ((HardwarePlugin) plugin.getPlugin()).getFactory())
                 .collect(Collectors.toList());
     }
+
+    public void registerStateListener(PluginStateListener listener) {
+        _pluginManager.addPluginStateListener(listener);
+    }
 }

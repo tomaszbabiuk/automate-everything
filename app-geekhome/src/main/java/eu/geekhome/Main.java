@@ -18,7 +18,6 @@ public class Main {
         ContextHandlerCollection contexts = new ContextHandlerCollection();
         contexts.setHandlers(new Handler[] {
                 buildWebContext(),
-                //buildStreamContext(),
                 buildRestContext()
         });
 
@@ -44,13 +43,6 @@ public class Main {
         webContext.setHandler(rh0);
 
         return webContext;
-    }
-
-    private static ContextHandler buildStreamContext() {
-//        ServletContextHandler streamContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-//        streamContext.setContextPath("/stream");
-//        streamContext.addServlet(new ServletHolder(new MySSEServlet()), "/*");
-        return null;
     }
 
     private static ContextHandler buildRestContext() {
