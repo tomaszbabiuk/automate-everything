@@ -33,6 +33,7 @@
           <v-tab
             v-for="factory in hardwareFactories"
             :key="factory.class"
+            :to="'/discover/' + factory.class"
           >
             {{ factory.name }}
           </v-tab>
@@ -130,7 +131,7 @@ export default {
         },
         {
           title: "$vuetify.navigation.discover",
-          route: "/discover",
+          route: "/discover/null",
           icon: "crosshair"
         },
         {
@@ -178,6 +179,13 @@ export default {
     $route() {
       this.matchTabsVisibilityToRoute()
     },
+    tab: function(to) {
+      if (to != null) {
+        //ready to pull factory logs
+        console.log(this.$route.params.clazz)
+      }
+    }
+
   },
   mounted: function() {
     if (typeof localStorage.selectedLanguage === "undefined") {

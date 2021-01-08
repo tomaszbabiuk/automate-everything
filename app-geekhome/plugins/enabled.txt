@@ -2,3 +2,4 @@ sqldelight
 core
 shelly
 mqtt
+afore

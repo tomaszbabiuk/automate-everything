@@ -18,7 +18,7 @@ const routes = [
     component: Control
   },
   {
-    path: '/discover',
+    path: '/discover/:clazz',
     name: 'discover',
     component: Discover
   },
