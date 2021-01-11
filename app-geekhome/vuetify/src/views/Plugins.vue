@@ -35,6 +35,7 @@
 
 <script>
 import { client } from "../rest.js";
+import { sseClient } from "../sse.js"
 
 export default {
   methods: {
@@ -52,6 +53,32 @@ export default {
   },
   mounted: function() {
     client.getPlugins();
-  }
+
+    sseClient.open()
+
+    // this.$sse('/rest/plugins/live', { format: 'json' })
+    //   .then(sse => {
+    //     msgServer = sse;
+
+    //     // Catch any errors (ie. lost connections, etc.)
+    //     sse.onError(e => {
+    //       console.error('lost connection; giving up!', e);
+    //       sse.close();
+    //     });
+
+    //     // Listen for messages without a specified event
+    //     sse.subscribe('pluginChange', (message, rawEvent) => {
+    //       console.log(message);
+    //       console.log(rawEvent);
+    //     });
+    //   })
+    //   .catch(err => {
+    //     console.error('Failed to connect to server', err);
+    //   });
+  },
+  beforeDestroy() {
+    // msgServer.close();
+    sseClient.close()
+  },
 };
 </script>

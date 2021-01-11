@@ -1,4 +1,0 @@
-shelly
-afore
-sqldelight
-mqtt

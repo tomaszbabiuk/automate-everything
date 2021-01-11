@@ -78,10 +78,8 @@ public class PluginsController implements PluginStateListener {
         PluginDto data = _pluginDtoMapper.map(event.getPlugin());
         OutboundSseEvent sseEvent = _sse.newEventBuilder()
                 .name("pluginChange")
-//                .id(String.valueOf(lastEventId))
                 .mediaType(MediaType.APPLICATION_JSON_TYPE)
                 .data(PluginDto.class, data)
-//                .reconnectDelay(4000)
                 .build();
         _sseBroadcaster.broadcast(sseEvent);
     }
