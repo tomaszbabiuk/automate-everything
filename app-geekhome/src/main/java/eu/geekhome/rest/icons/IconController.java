@@ -1,6 +1,6 @@
 package eu.geekhome.rest.icons;
 
-import eu.geekhome.rest.PluginsManager;
+import eu.geekhome.rest.PluginsCoordinator;
 import eu.geekhome.services.repository.IconDto;
 import eu.geekhome.services.repository.Repository;
 
@@ -15,8 +15,8 @@ public class IconController {
     private final Repository _repository;
 
     @Inject
-    public IconController(PluginsManager pluginsManager) {
-        _repository = pluginsManager.getRepositories().get(0);
+    public IconController(PluginsCoordinator pluginsCoordinator) {
+        _repository = pluginsCoordinator.getRepositories().get(0);
     }
 
     @POST

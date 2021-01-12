@@ -4,13 +4,9 @@ import com.geekhome.common.*;
 import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.logging.ILogger;
 import com.geekhome.common.logging.LoggingService;
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
-import com.geekhome.common.hardwaremanager.InputPortsCollection;
-import com.geekhome.common.hardwaremanager.OutputPortsCollection;
-import com.geekhome.common.hardwaremanager.TogglePortsCollection;
-import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.OperationMode;
-import com.geekhome.common.hardwaremanager.HardwareManager;
+import eu.geekhome.services.events.EventsSink;
+import eu.geekhome.services.hardware.*;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -18,19 +14,19 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
-class AforeAdapter extends NamedObject implements IHardwareManagerAdapter {
+class AforeAdapter implements HardwareAdapter {
 
-    public static final String INVERTER_PORT_ID = "INV:192.168.1.4";
+    public static final String INVERTER_PORT_PREFIX = "192.168.1.4";
     private static ILogger _logger = LoggingService.getLogger();
     private final OkHttpClient _okClient;
     private long _lastRefresh;
+    private final AdapterState _state = AdapterState.Initialized;
 
     AforeAdapter() {
-        super(new DescriptiveName("Afore Adapter", "Afore"));
         _okClient = createAuthenticatedClient("admin", "admin");
     }
-
 
     private static OkHttpClient createAuthenticatedClient(final String username,
                                                           final String password) {
@@ -50,18 +46,22 @@ class AforeAdapter extends NamedObject implements IHardwareManagerAdapter {
     }
 
     @Override
-    public void discover(final InputPortsCollection<Boolean> digitalInputPorts,
-                         final OutputPortsCollection<Boolean> digitalOutputPorts,
-                         final InputPortsCollection<Double> powerInputPorts,
-                         final OutputPortsCollection<Integer> powerOutputPorts,
-                         final InputPortsCollection<Double> temperaturePorts,
-                         final TogglePortsCollection togglePorts,
-                         final InputPortsCollection<Double> humidityPorts,
-                         final InputPortsCollection<Double> luminosityPorts) throws DiscoveryException {
+    public String getId() {
+        return "0";
+    }
 
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void discover(PortIdBuilder builder, List<Port> ports, EventsSink<String> eventsSink) {
+        eventsSink.broadcastEvent("Starting discovery");
+
+        String portId = builder.buildPortId(INVERTER_PORT_PREFIX);
         Double inverterPower = readInverterPower();
-        SynchronizedInputPort<Double> inverterPort = new SynchronizedInputPort<>(INVERTER_PORT_ID, inverterPower, 0);
-        powerInputPorts.add(inverterPort);
+        Port<Double, Wattage> inverterPort =
+                new WattageInputPort(portId, inverterPower);
+        ports.add(inverterPort);
+
+        eventsSink.broadcastEvent("Done");
     }
 
     @Override
@@ -100,8 +100,8 @@ class AforeAdapter extends NamedObject implements IHardwareManagerAdapter {
     }
 
     @Override
-    public RefreshState getRefreshState() {
-        return RefreshState.NA;
+    public AdapterState getState() {
+        return _state;
     }
 
     @Override
@@ -113,20 +113,12 @@ class AforeAdapter extends NamedObject implements IHardwareManagerAdapter {
     }
 
     @Override
-    public void stop() {
+    public long getLastDiscoveryTime() {
+        return 0;
     }
 
     @Override
-    public boolean isOperational() {
-        return true;
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public String getStatus() {
+    public Throwable getLastError() {
         return null;
     }
 }

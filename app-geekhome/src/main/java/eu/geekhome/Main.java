@@ -49,7 +49,7 @@ public class Main {
         ServletContextHandler restContext = new ServletContextHandler();
         ServletHolder serHol = restContext.addServlet(ServletContainer.class, "/rest/*");
         serHol.setInitOrder(1);
-        serHol.setInitParameter("javax.ws.rs.Application", "eu.geekhome.rest.App");
+        serHol.setInitParameter("javax.ws.rs.Application", App.class.getName());
         return restContext;
     }
 }

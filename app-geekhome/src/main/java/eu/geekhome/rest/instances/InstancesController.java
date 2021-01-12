@@ -3,7 +3,7 @@ package eu.geekhome.rest.instances;
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.configurable.FieldDefinition;
 import eu.geekhome.services.configurable.FieldValidationResult;
-import eu.geekhome.rest.PluginsManager;
+import eu.geekhome.rest.PluginsCoordinator;
 import eu.geekhome.services.repository.InstanceDto;
 import eu.geekhome.services.repository.Repository;
 
@@ -16,10 +16,10 @@ import java.util.*;
 public class InstancesController {
 
     private Repository _repository;
-    private final PluginsManager _pluginsManager;
+    private final PluginsCoordinator _pluginsCoordinator;
 
     private Optional<Configurable> findConfigurable(String clazz) {
-        return _pluginsManager
+        return _pluginsCoordinator
                 .getConfigurables()
                 .stream()
                 .filter((x) -> x.getClass().getSimpleName().equals(clazz))
@@ -27,12 +27,12 @@ public class InstancesController {
     }
 
     @Inject
-    public InstancesController(PluginsManager pluginsManager) {
-        _pluginsManager = pluginsManager;
+    public InstancesController(PluginsCoordinator pluginsCoordinator) {
+        _pluginsCoordinator = pluginsCoordinator;
         try {
-            _repository = pluginsManager.getRepositories().get(0);
+            _repository = pluginsCoordinator.getRepositories().get(0);
         } catch (Exception ex) {
-            _repository = pluginsManager.getRepositories().get(0);
+            _repository = pluginsCoordinator.getRepositories().get(0);
         }
     }
 

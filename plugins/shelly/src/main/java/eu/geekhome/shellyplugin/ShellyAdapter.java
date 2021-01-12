@@ -8,6 +8,8 @@ import com.geekhome.common.utils.Sleeper;
 import com.geekhome.common.hardwaremanager.*;
 import com.geekhome.common.OperationMode;
 import com.google.gson.Gson;
+import eu.geekhome.services.events.EventsSink;
+import eu.geekhome.services.hardware.*;
 import eu.geekhome.services.mqtt.MqttBrokerService;
 import okhttp3.*;
 
@@ -15,15 +17,17 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import eu.geekhome.services.mqtt.MqttListener;
 
-public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapter, MqttListener {
+public class ShellyAdapter implements HardwareAdapter, MqttListener {
 
     private interface PortIterateListener {
         void onIteratePort(IShellyPort port);
     }
 
+    private final AdapterState _state = AdapterState.Initialized;
     private static final ILogger _logger = LoggingService.getLogger();
     private final InetAddress _brokerIP;
     private final OkHttpClient _okClient;
@@ -34,7 +38,6 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
     private final ArrayList<ShellyPowerOutputPort> _ownedPowerOutputPorts = new ArrayList<>();
 
     public ShellyAdapter(final MqttBrokerService mqttBroker) {
-        super(new DescriptiveName("Shelly Adapter", "SHELLY"));
         _mqttBroker = mqttBroker;
         _brokerIP = resolveIpInLan();
         _okClient = createAnonymousClient();
@@ -52,7 +55,6 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
         return null;
     }
 
-    @Override
     public void discover(final InputPortsCollection<Boolean> digitalInputPorts,
                          final OutputPortsCollection<Boolean> digitalOutputPorts,
                          final InputPortsCollection<Double> powerInputPorts,
@@ -149,6 +151,16 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
     }
 
     @Override
+    public String getId() {
+        return "0";
+    }
+
+    @Override
+    public void discover(PortIdBuilder idBuilder, List<Port> ports, EventsSink<String> eventsSink) {
+
+    }
+
+    @Override
     public boolean canBeRediscovered() {
         return true;
     }
@@ -211,8 +223,8 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
     }
 
     @Override
-    public RefreshState getRefreshState() {
-        return RefreshState.NA;
+    public AdapterState getState() {
+        return _state;
     }
 
     @Override
@@ -239,23 +251,21 @@ public class ShellyAdapter extends NamedObject implements IHardwareManagerAdapte
     public void reconfigure(OperationMode operationMode) throws Exception {
     }
 
-    @Override
     public void start() {
         _mqttBroker.addMqttListener(this);
     }
 
-    @Override
     public void stop() {
         _mqttBroker.removeMqttListener(this);
     }
 
     @Override
-    public boolean isOperational() {
-        return true;
+    public long getLastDiscoveryTime() {
+        return 0;
     }
 
     @Override
-    public String getStatus() {
+    public Throwable getLastError() {
         return null;
     }
 

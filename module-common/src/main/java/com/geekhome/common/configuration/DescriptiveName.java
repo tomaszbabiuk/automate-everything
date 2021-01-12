@@ -1,6 +1,5 @@
 package com.geekhome.common.configuration;
 
-import com.geekhome.common.PersistableReflector;
 import com.google.gson.annotations.SerializedName;
 
 public class DescriptiveName {

@@ -1,8 +1,8 @@
 package eu.geekhome.shellyplugin;
 
 import com.geekhome.common.extensibility.PluginMetadata;
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
 import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.hardware.HardwareAdapterFactory;
 import eu.geekhome.services.hardware.HardwarePlugin;
 import eu.geekhome.services.mqtt.MqttBrokerPlugin;
 import eu.geekhome.services.mqtt.MqttBrokerService;
@@ -26,7 +26,7 @@ public class ShellyPlugin extends HardwarePlugin implements PluginMetadata, Plug
     }
 
     @Override
-    public IHardwareManagerAdapterFactory getFactory() {
+    public HardwareAdapterFactory getFactory() {
         return _factory;
     }
 

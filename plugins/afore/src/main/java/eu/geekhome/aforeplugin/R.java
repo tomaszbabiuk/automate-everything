@@ -8,6 +8,4 @@ public class R {
              "Nieoficjalne wsparcie dla falownika Afore BNT008KTL");
 
     public static Resource plugin_name = new Resource("Afore", "Afore");
-
-    public static Resource factory_name = new Resource("Afore", "Afore");
 }

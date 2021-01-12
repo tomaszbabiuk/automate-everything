@@ -1,11 +1,10 @@
 package eu.geekhome.rest.plugins;
 
-import eu.geekhome.rest.PluginsManager;
+import eu.geekhome.rest.PluginsCoordinator;
 import org.pf4j.PluginStateEvent;
 import org.pf4j.PluginStateListener;
 import org.pf4j.PluginWrapper;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
@@ -23,25 +22,25 @@ import java.util.stream.Collectors;
 @Path("plugins")
 public class PluginsController implements PluginStateListener {
 
-    private final PluginsManager _pluginsManager;
+    private final PluginsCoordinator _pluginsCoordinator;
     private final PluginDtoMapper _pluginDtoMapper;
     private final SseBroadcaster _sseBroadcaster;
     private final Sse _sse;
 
     @Inject
-    public PluginsController(PluginsManager pluginsManager, PluginDtoMapper pluginDtoMapper, Sse sse) {
+    public PluginsController(PluginsCoordinator pluginsCoordinator, PluginDtoMapper pluginDtoMapper, Sse sse) {
         _sse = sse;
         _sseBroadcaster = sse.newBroadcaster();
-        _pluginsManager = pluginsManager;
+        _pluginsCoordinator = pluginsCoordinator;
         _pluginDtoMapper = pluginDtoMapper;
 
-        _pluginsManager.registerStateListener(this);
+        _pluginsCoordinator.registerStateListener(this);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public List<PluginDto> getPlugins(@Context HttpServletRequest request) {
-        return _pluginsManager
+        return _pluginsCoordinator
                 .getPlugins()
                 .stream()
                 .map(_pluginDtoMapper::map)
@@ -52,7 +51,7 @@ public class PluginsController implements PluginStateListener {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public PluginDto getPlugin(@PathParam("id") String id) {
-        return _pluginDtoMapper.map(_pluginsManager.getPlugin(id));
+        return _pluginDtoMapper.map(_pluginsCoordinator.getPlugin(id));
     }
 
     @PUT
@@ -60,8 +59,8 @@ public class PluginsController implements PluginStateListener {
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     public PluginDto updateEnableState(@PathParam("id") String id, boolean enable) {
         PluginWrapper pluginWrapper = enable ?
-                _pluginsManager.enablePlugin(id) :
-                _pluginsManager.disablePlugin(id);
+                _pluginsCoordinator.enablePlugin(id) :
+                _pluginsCoordinator.disablePlugin(id);
 
         return _pluginDtoMapper.map(pluginWrapper);
     }

@@ -1,7 +1,7 @@
 package eu.geekhome.rest;
 
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
 import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.hardware.HardwareAdapterFactory;
 import eu.geekhome.services.hardware.HardwarePlugin;
 import eu.geekhome.services.repository.Repository;
 import org.jvnet.hk2.annotations.Service;
@@ -13,54 +13,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PluginsManager {
+public class PluginsCoordinator extends HolderService<PluginManager> {
 
-    private PluginManager _pluginManager;
-
-    public PluginsManager(@Context Application app) throws Exception {
-        for (Object singleton : app.getSingletons()) {
-            if (singleton instanceof PluginsBootstrap) {
-                _pluginManager = ((PluginsBootstrap) singleton).getPluginManager();
-                break;
-            }
-        }
-        if (_pluginManager == null) {
-            throw new Exception("There's no PluginsBootstrap in the app singletons container");
-        }
+    public PluginsCoordinator(@Context Application app) throws Exception {
+        super(app, PluginManager.class);
     }
 
     public List<PluginWrapper> getPlugins() {
-        return _pluginManager.getPlugins();
+        return getInstance().getPlugins();
     }
 
     public PluginWrapper getPlugin(String id) {
-        return _pluginManager.getPlugin(id);
+        return getInstance().getPlugin(id);
     }
 
     public PluginWrapper enablePlugin(String id) {
-        _pluginManager.enablePlugin(id);
-        _pluginManager.startPlugin(id);
+        getInstance().enablePlugin(id);
+        getInstance().startPlugin(id);
         return getPlugin(id);
     }
 
     public PluginWrapper disablePlugin(String id) {
-        _pluginManager.stopPlugin(id);
-        _pluginManager.disablePlugin(id);
+        getInstance().stopPlugin(id);
+        getInstance().disablePlugin(id);
         return getPlugin(id);
     }
 
     public List<Configurable> getConfigurables() {
-        return _pluginManager
+        return getInstance()
                 .getExtensions(Configurable.class);
     }
 
     public List<Repository> getRepositories() {
-        return _pluginManager
+        return getInstance()
                 .getExtensions(Repository.class);
     }
 
-    public List<IHardwareManagerAdapterFactory> getHardwareManagerAdapterFactories() {
-        return _pluginManager
+    public List<HardwareAdapterFactory> getHardwareManagerAdapterFactories() {
+        return getInstance()
                 .getPlugins()
                 .stream()
                 .filter(plugin -> plugin.getPluginState() == PluginState.STARTED)
@@ -70,6 +60,6 @@ public class PluginsManager {
     }
 
     public void registerStateListener(PluginStateListener listener) {
-        _pluginManager.addPluginStateListener(listener);
+        getInstance().addPluginStateListener(listener);
     }
 }

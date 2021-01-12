@@ -1,18 +1,18 @@
 package eu.geekhome.aforeplugin;
 
-import com.geekhome.common.hardwaremanager.HardwareManager;
 import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapterFactory;
-import com.geekhome.common.localization.ILocalizationProvider;
 import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.hardware.HardwareAdapter;
+import eu.geekhome.services.hardware.HardwareAdapterFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
-class AforeAdapterFactory implements IHardwareManagerAdapterFactory {
+class AforeAdapterFactory implements HardwareAdapterFactory {
 
     @Override
-    public ArrayList<? extends IHardwareManagerAdapter> createAdapters() {
-        ArrayList<IHardwareManagerAdapter> result = new ArrayList<>();
+    public List<HardwareAdapter> createAdapters() {
+        ArrayList<HardwareAdapter> result = new ArrayList<>();
         AforeAdapter adapter = new AforeAdapter();
         result.add(adapter);
 
@@ -20,7 +20,7 @@ class AforeAdapterFactory implements IHardwareManagerAdapterFactory {
     }
 
     @Override
-    public Resource getName() {
-        return R.factory_name;
+    public String getId() {
+        return "AFORE";
     }
 }

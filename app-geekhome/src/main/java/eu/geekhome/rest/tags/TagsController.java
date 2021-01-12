@@ -1,6 +1,6 @@
 package eu.geekhome.rest.tags;
 
-import eu.geekhome.rest.PluginsManager;
+import eu.geekhome.rest.PluginsCoordinator;
 import eu.geekhome.services.repository.Repository;
 import eu.geekhome.services.repository.TagDto;
 
@@ -15,8 +15,8 @@ public class TagsController {
     private final Repository _repository;
 
     @Inject
-    public TagsController(PluginsManager pluginsManager) {
-        _repository = pluginsManager.getRepositories().get(0);
+    public TagsController(PluginsCoordinator pluginsCoordinator) {
+        _repository = pluginsCoordinator.getRepositories().get(0);
     }
 
     @POST
