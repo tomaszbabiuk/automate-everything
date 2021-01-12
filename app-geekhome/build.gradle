@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
 }
 
 run {
@@ -11,29 +12,30 @@ dependencies {
     implementation project(":module-common")
     implementation project(":module-synchronization")
     implementation project(":module-services")
-    implementation "org.eclipse.jetty:jetty-http:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-io:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-security:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-server:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-util:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-servlets:9.4.2.v20170220"
-    implementation "org.eclipse.jetty:jetty-servlet:9.4.2.v20170220"
+
+    implementation "org.eclipse.jetty:jetty-http:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-io:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-security:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-util:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-servlets:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
 
     implementation "org.glassfish.jersey.core:jersey-server:2.32"
     implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:2.32"
-    implementation 'org.glassfish.jersey.containers:jersey-container-servlet:2.32'
+    implementation "org.glassfish.jersey.containers:jersey-container-servlet:2.32"
     implementation "org.glassfish.jersey.inject:jersey-hk2:2.32"
     implementation "org.glassfish.jersey.media:jersey-media-sse:2.32"
+    implementation "org.glassfish.hk2:hk2-api:2.1.58"
 
-    implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
-    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
-
-    implementation group: 'org.glassfish.hk2', name: 'hk2-api', version: '2.1.58'
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
 
-    implementation 'org.slf4j:slf4j-api:1.7.5'
-    implementation 'org.slf4j:slf4j-simple:1.6.4'
+    implementation "org.slf4j:slf4j-api:1.7.5"
+    implementation "org.slf4j:slf4j-simple:1.6.4"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
 }
 
 shadowJar {

@@ -4,15 +4,22 @@ plugins {
 }
 
 dependencies {
+    //common
     shadow project(':module-services')
     shadow project(':module-common')
+
+    //pf4j
     shadow(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
         exclude group: "org.slf4j"
         exclude group: "org.slf4j.impl"
     }
     kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
     annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
+
+    //kotlin
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+
+    //project specific
     compile 'io.moquette:moquette-broker:0.12.1'
 }
 

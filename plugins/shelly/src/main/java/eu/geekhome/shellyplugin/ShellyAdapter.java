@@ -1,7 +1,6 @@
 package eu.geekhome.shellyplugin;
 
 import com.geekhome.common.*;
-import com.geekhome.common.configuration.DescriptiveName;
 import com.geekhome.common.logging.ILogger;
 import com.geekhome.common.logging.LoggingService;
 import com.geekhome.common.utils.Sleeper;
@@ -55,100 +54,100 @@ public class ShellyAdapter implements HardwareAdapter, MqttListener {
         return null;
     }
 
-    public void discover(final InputPortsCollection<Boolean> digitalInputPorts,
-                         final OutputPortsCollection<Boolean> digitalOutputPorts,
-                         final InputPortsCollection<Double> powerInputPorts,
-                         final OutputPortsCollection<Integer> powerOutputPorts,
-                         final InputPortsCollection<Double> temperaturePorts,
-                         final TogglePortsCollection togglePorts,
-                         final InputPortsCollection<Double> humidityPorts,
-                         final InputPortsCollection<Double> luminosityPorts) throws DiscoveryException {
-
-        _logger.info("Starting SHELLY discovery");
-
-        try {
-            final AtomicInteger probedIPs = new AtomicInteger(0);
-            Callback shellyCheckCallback = new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    probedIPs.incrementAndGet();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) {
-                    probedIPs.incrementAndGet();
-
-                    if (response.isSuccessful()) {
-                        try {
-                            System.out.println(response.body().string());
-                            ShellySettingsResponse settingsResponse = _gson.fromJson(response.body().string(), ShellySettingsResponse.class);
-                            response.body().close();
-                            if (settingsResponse != null && settingsResponse.getDevice() != null && settingsResponse.getDevice().getType() != null) {
-                                _logger.info("Shelly FOUND: " + response.request().url());
-
-                                InetAddress shellyIP = InetAddress.getByName(response.request().url().host());
-
-                                hijackShellyIfNeeded(settingsResponse, shellyIP);
-
-                                //TODO: check if that's battery powered device to calculate connection interval
-                                boolean isBatteryPowered = false;
-
-                                long connectionLostInterval = isBatteryPowered ? 60*60*1000L : 40*60*1000L;
-
-                                if (settingsResponse.getRelays() != null) {
-                                    for (int i = 0; i < settingsResponse.getRelays().size(); i++) {
-                                        ShellyDigitalOutputPort output = new ShellyDigitalOutputPort(settingsResponse, i, connectionLostInterval);
-                                        digitalOutputPorts.add(output);
-                                        _ownedDigitalOutputPorts.add(output);
-                                    }
-                                }
-
-                                if (settingsResponse.getLights() != null) {
-                                    for (int i = 0; i < settingsResponse.getLights().size(); i++) {
-                                        ShellyLightResponse lightResponse = callForLightResponse(shellyIP, i);
-                                        ShellyPowerOutputPort output = new ShellyPowerOutputPort(settingsResponse, lightResponse, i, connectionLostInterval);
-                                        powerOutputPorts.add(output);
-                                        _ownedPowerOutputPorts.add(output);
-                                    }
-                                }
-
-                                if (settingsResponse.getMeters() != null) {
-                                    for (int i = 0; i < settingsResponse.getDevice().getNumMeters(); i++) {
-                                        ShellyPowerInputPort input = new ShellyPowerInputPort(settingsResponse, i, connectionLostInterval);
-                                        powerInputPorts.add(input);
-                                        _ownedPowerInputPorts.add(input);
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            _logger.warning("Exception during shelly discovery, 99% it's not a shelly device", ex);
-                        }
-                    } else {
-                        response.body().close();
-                    }
-                }
-            };
-
-            for (int i = 0; i < 255; i++) {
-                InetAddress ipToCheck = InetAddress.getByAddress(new byte[]{
-                        _brokerIP.getAddress()[0],
-                        _brokerIP.getAddress()[1],
-                        _brokerIP.getAddress()[2],
-                        (byte) i
-                });
-
-                _logger.debug("Checking shelly: " + ipToCheck.getHostAddress());
-                checkIfItsShelly(ipToCheck, shellyCheckCallback);
-            }
-
-            while (probedIPs.get() == 255) {
-                Sleeper.trySleep(100);
-            }
-            _logger.info("DONE (SHELLY discovery)");
-        } catch (UnknownHostException e) {
-            throw new DiscoveryException("Error discovering shelly devices", e);
-        }
-    }
+//    public void discover(final InputPortsCollection<Boolean> digitalInputPorts,
+//                         final OutputPortsCollection<Boolean> digitalOutputPorts,
+//                         final InputPortsCollection<Double> powerInputPorts,
+//                         final OutputPortsCollection<Integer> powerOutputPorts,
+//                         final InputPortsCollection<Double> temperaturePorts,
+//                         final TogglePortsCollection togglePorts,
+//                         final InputPortsCollection<Double> humidityPorts,
+//                         final InputPortsCollection<Double> luminosityPorts) throws DiscoveryException {
+//
+//        _logger.info("Starting SHELLY discovery");
+//
+//        try {
+//            final AtomicInteger probedIPs = new AtomicInteger(0);
+//            Callback shellyCheckCallback = new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    probedIPs.incrementAndGet();
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) {
+//                    probedIPs.incrementAndGet();
+//
+//                    if (response.isSuccessful()) {
+//                        try {
+//                            System.out.println(response.body().string());
+//                            ShellySettingsResponse settingsResponse = _gson.fromJson(response.body().string(), ShellySettingsResponse.class);
+//                            response.body().close();
+//                            if (settingsResponse != null && settingsResponse.getDevice() != null && settingsResponse.getDevice().getType() != null) {
+//                                _logger.info("Shelly FOUND: " + response.request().url());
+//
+//                                InetAddress shellyIP = InetAddress.getByName(response.request().url().host());
+//
+//                                hijackShellyIfNeeded(settingsResponse, shellyIP);
+//
+//                                //TODO: check if that's battery powered device to calculate connection interval
+//                                boolean isBatteryPowered = false;
+//
+//                                long connectionLostInterval = isBatteryPowered ? 60*60*1000L : 40*60*1000L;
+//
+//                                if (settingsResponse.getRelays() != null) {
+//                                    for (int i = 0; i < settingsResponse.getRelays().size(); i++) {
+//                                        ShellyDigitalOutputPort output = new ShellyDigitalOutputPort(settingsResponse, i, connectionLostInterval);
+//                                        digitalOutputPorts.add(output);
+//                                        _ownedDigitalOutputPorts.add(output);
+//                                    }
+//                                }
+//
+//                                if (settingsResponse.getLights() != null) {
+//                                    for (int i = 0; i < settingsResponse.getLights().size(); i++) {
+//                                        ShellyLightResponse lightResponse = callForLightResponse(shellyIP, i);
+//                                        ShellyPowerOutputPort output = new ShellyPowerOutputPort(settingsResponse, lightResponse, i, connectionLostInterval);
+//                                        powerOutputPorts.add(output);
+//                                        _ownedPowerOutputPorts.add(output);
+//                                    }
+//                                }
+//
+//                                if (settingsResponse.getMeters() != null) {
+//                                    for (int i = 0; i < settingsResponse.getDevice().getNumMeters(); i++) {
+//                                        ShellyPowerInputPort input = new ShellyPowerInputPort(settingsResponse, i, connectionLostInterval);
+//                                        powerInputPorts.add(input);
+//                                        _ownedPowerInputPorts.add(input);
+//                                    }
+//                                }
+//                            }
+//                        } catch (Exception ex) {
+//                            _logger.warning("Exception during shelly discovery, 99% it's not a shelly device", ex);
+//                        }
+//                    } else {
+//                        response.body().close();
+//                    }
+//                }
+//            };
+//
+//            for (int i = 0; i < 255; i++) {
+//                InetAddress ipToCheck = InetAddress.getByAddress(new byte[]{
+//                        _brokerIP.getAddress()[0],
+//                        _brokerIP.getAddress()[1],
+//                        _brokerIP.getAddress()[2],
+//                        (byte) i
+//                });
+//
+//                _logger.debug("Checking shelly: " + ipToCheck.getHostAddress());
+//                checkIfItsShelly(ipToCheck, shellyCheckCallback);
+//            }
+//
+//            while (probedIPs.get() == 255) {
+//                Sleeper.trySleep(100);
+//            }
+//            _logger.info("DONE (SHELLY discovery)");
+//        } catch (UnknownHostException e) {
+//            throw new DiscoveryException("Error discovering shelly devices", e);
+//        }
+//    }
 
     @Override
     public String getId() {
@@ -157,7 +156,7 @@ public class ShellyAdapter implements HardwareAdapter, MqttListener {
 
     @Override
     public void discover(PortIdBuilder idBuilder, List<Port> ports, EventsSink<String> eventsSink) {
-
+        System.out.println("SHELLY START");
     }
 
     @Override

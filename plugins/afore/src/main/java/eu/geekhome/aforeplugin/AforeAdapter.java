@@ -53,6 +53,7 @@ class AforeAdapter implements HardwareAdapter {
     @SuppressWarnings("rawtypes")
     @Override
     public void discover(PortIdBuilder builder, List<Port> ports, EventsSink<String> eventsSink) {
+        System.out.println("AFORE START");
         eventsSink.broadcastEvent("Starting discovery");
 
         String portId = builder.buildPortId(INVERTER_PORT_PREFIX);
@@ -62,6 +63,7 @@ class AforeAdapter implements HardwareAdapter {
         ports.add(inverterPort);
 
         eventsSink.broadcastEvent("Done");
+        System.out.println("AFORE END");
     }
 
     @Override

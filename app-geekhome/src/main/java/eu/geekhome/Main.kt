@@ -1,55 +1,54 @@
-package eu.geekhome;
+package eu.geekhome
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.PathResource;
-import org.glassfish.jersey.servlet.ServletContainer;
+import org.eclipse.jetty.server.Handler
+import org.eclipse.jetty.server.Server
+import kotlin.jvm.JvmStatic
+import org.eclipse.jetty.server.handler.ContextHandlerCollection
+import org.eclipse.jetty.server.handler.ContextHandler
+import org.eclipse.jetty.server.handler.ResourceHandler
+import org.eclipse.jetty.util.resource.PathResource
+import java.nio.file.Paths
+import org.eclipse.jetty.servlet.ServletContextHandler
+import org.glassfish.jersey.servlet.ServletContainer
+import java.lang.Exception
 
-import java.nio.file.Paths;
+object Main {
 
-public class Main {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val contexts = ContextHandlerCollection()
+        contexts.handlers = arrayOf<Handler>(
+            buildWebContext(),
+            buildRestContext()
+        )
 
-    public static void main(String[] args) {
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {
-                buildWebContext(),
-                buildRestContext()
-        });
-
-        Server server = new Server(80);
-        server.setHandler(contexts);
-
+        val server = Server(80)
+        server.handler = contexts
         try {
-            server.start();
-            server.join();
-        } catch (Exception e) {
-            e.printStackTrace();
+            server.start()
+            server.join()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    private static ContextHandler buildWebContext() {
-        ResourceHandler rh0 = new ResourceHandler();
-        rh0.setDirectoriesListed(true);
-
-        ContextHandler webContext = new ContextHandler();
-        webContext.setContextPath("/");
-        webContext.setBaseResource(new PathResource(Paths.get(
-                "web")));
-        webContext.setHandler(rh0);
-
-        return webContext;
+    private fun buildWebContext(): ContextHandler {
+        val rh0 = ResourceHandler()
+        rh0.isDirectoriesListed = true
+        val webContext = ContextHandler()
+        webContext.contextPath = "/"
+        webContext.baseResource = PathResource(
+            Paths.get("web")
+        )
+        webContext.handler = rh0
+        return webContext
     }
 
-    private static ContextHandler buildRestContext() {
-        ServletContextHandler restContext = new ServletContextHandler();
-        ServletHolder serHol = restContext.addServlet(ServletContainer.class, "/rest/*");
-        serHol.setInitOrder(1);
-        serHol.setInitParameter("javax.ws.rs.Application", App.class.getName());
-        return restContext;
+    private fun buildRestContext(): ContextHandler {
+        val restContext = ServletContextHandler()
+        val serHol = restContext.addServlet(ServletContainer::class.java, "/rest/*")
+        serHol.initOrder = 1
+        serHol.setInitParameter("javax.ws.rs.Application", App::class.java.name)
+        return restContext
     }
 }
