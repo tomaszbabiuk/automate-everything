@@ -22,6 +22,7 @@ import java.net.InetAddress
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.collections.ArrayList
 
 class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter, MqttListener {
     private interface PortIterateListener {
@@ -140,14 +141,14 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 
     override val id = "0"
 
-    override suspend fun discover(
-        idBuilder: PortIdBuilder,
-        ports: MutableList<Port<*, *>>,
-        eventsSink: EventsSink<String>
-    ) {
+    override suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*, *>> {
+        val result = ArrayList<Port<*,*>>()
+
         println("shelly discovery, this will take 10 sec")
         delay(10000)
         println("shelly discovery")
+
+        return result
     }
 
     override fun canBeRediscovered(): Boolean {

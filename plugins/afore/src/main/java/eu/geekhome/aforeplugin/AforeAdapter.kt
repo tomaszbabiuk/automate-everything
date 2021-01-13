@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import okhttp3.*
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AforeAdapter : HardwareAdapter {
 
@@ -17,7 +18,8 @@ class AforeAdapter : HardwareAdapter {
     override val id: String
         get() = "0"
 
-    override suspend fun discover(idBuilder: PortIdBuilder, ports: MutableList<Port<*, *>>, eventsSink: EventsSink<String>) {
+    override suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*, *>> {
+        val result = ArrayList<Port<*,*>>()
 //        println("AFORE START")
 //
 //        eventsSink.broadcastEvent("Starting discovery")
@@ -30,8 +32,14 @@ class AforeAdapter : HardwareAdapter {
 //        println("AFORE END")
 
         println("afore discovery, this will take 10 sec")
-        delay(10000)
+        repeat(100) {
+            delay(1000)
+            println("afore $it")
+        }
+
         println("afore discovery")
+
+        return result
     }
 
     override fun canBeRediscovered(): Boolean {

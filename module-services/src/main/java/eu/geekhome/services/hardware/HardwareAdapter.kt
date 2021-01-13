@@ -6,7 +6,7 @@ import java.util.*
 
 interface HardwareAdapter {
     val id: String
-    suspend fun discover(idBuilder: PortIdBuilder, ports: MutableList<Port<*,*>>, eventsSink: EventsSink<String>)
+    suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*,*>>
     fun canBeRediscovered(): Boolean
 
     @Throws(Exception::class)
