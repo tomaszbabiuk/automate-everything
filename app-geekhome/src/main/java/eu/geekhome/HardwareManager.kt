@@ -64,7 +64,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
 
     data class AdapterBundle(
         internal val adapter: HardwareAdapter,
-        internal val sink: EventsSink<String?>,
-        internal val ports: List<Port<*, *>?>
+        internal val sink: EventsSink<String>,
+        internal val ports: MutableList<Port<*, *>>
     )
 }
