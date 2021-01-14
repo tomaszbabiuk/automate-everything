@@ -81,10 +81,8 @@ class AforeAdapter : HardwareAdapter {
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    override val lastDiscoveryTime: Long
-        get() = TODO("Not yet implemented")
-    override val lastError: Throwable?
-        get() = TODO("Not yet implemented")
+    override val lastDiscoveryTime: Long = 0
+    override val lastError: Throwable? = null
 
     companion object {
         const val INVERTER_PORT_PREFIX = "192.168.1.4"

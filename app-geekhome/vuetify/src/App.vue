@@ -32,10 +32,10 @@
 
           <v-tab
             v-for="factory in hardwareFactories"
-            :key="factory.class"
-            :to="'/discover/' + factory.class"
+            :key="factory"
+            :to="'/discover/' + factory"
           >
-            {{ factory.name }}
+            {{ factory }}
           </v-tab>
         </v-tabs>
       </template>
