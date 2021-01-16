@@ -13,6 +13,8 @@ class HardwareAdapterDtoMapper @Inject internal constructor(
         val portsMapped = bundle.ports.map { portDtoMapper.map(it)}
 
         return HardwareAdapterDto(
+            bundle.adapter.id,
+            bundle.factoryId,
             bundle.adapter.state,
             bundle.adapter.lastDiscoveryTime,
             lastError,

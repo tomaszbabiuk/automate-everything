@@ -16,6 +16,8 @@ class NumberedEventsSink<T> : EventsSink<T> {
     }
 
     override fun broadcastEvent(payload: T) {
+        println("broadcasting event: $payload")
+
         eventCounter++
         val event = NumberedEvent(eventCounter, payload)
         events.add(event)

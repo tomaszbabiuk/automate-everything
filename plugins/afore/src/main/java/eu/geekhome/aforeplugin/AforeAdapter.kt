@@ -5,20 +5,16 @@ import com.geekhome.common.logging.LoggingService
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.hardware.*
 import kotlinx.coroutines.delay
-import okhttp3.*
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AforeAdapter : HardwareAdapter {
+class AforeAdapter : HardwareAdapterBase() {
 
-    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
+//    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
-    override val state = AdapterState.Initialized
-    override val id: String
-        get() = "0"
 
-    override suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*, *>> {
+    override suspend fun internalDisvovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*, *>> {
         val result = ArrayList<Port<*,*>>()
 //        println("AFORE START")
 //
@@ -42,25 +38,21 @@ class AforeAdapter : HardwareAdapter {
         return result
     }
 
-    override fun canBeRediscovered(): Boolean {
-        return false
-    }
-
-    private fun readInverterPower(): Double {
-        try {
-            val inverterResponse = doRequest(okClient, "http://192.168.1.4/status.html")
-            val lines = inverterResponse.split(";").toTypedArray()
-            for (line in lines) {
-                if (line.contains("webdata_now_p")) {
-                    val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
-                    return java.lang.Double.valueOf(s)
-                }
-            }
-        } catch (ex: Exception) {
-            _logger.warning("A problem reading inverter power: ", ex)
-        }
-        return 0.0
-    }
+//    private fun readInverterPower(): Double {
+//        try {
+//            val inverterResponse = doRequest(okClient, "http://192.168.1.4/status.html")
+//            val lines = inverterResponse.split(";").toTypedArray()
+//            for (line in lines) {
+//                if (line.contains("webdata_now_p")) {
+//                    val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
+//                    return java.lang.Double.valueOf(s)
+//                }
+//            }
+//        } catch (ex: Exception) {
+//            _logger.warning("A problem reading inverter power: ", ex)
+//        }
+//        return 0.0
+//    }
 
     @Throws(Exception::class)
     override fun refresh(now: Calendar) {
@@ -81,31 +73,27 @@ class AforeAdapter : HardwareAdapter {
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    override val lastDiscoveryTime: Long = 0
-    override val lastError: Throwable? = null
-
-    companion object {
-        const val INVERTER_PORT_PREFIX = "192.168.1.4"
-        private val _logger = LoggingService.getLogger()
-        private fun createAuthenticatedClient(
-            username: String,
-            password: String
-        ): OkHttpClient {
-            return OkHttpClient.Builder().authenticator { route: Route?, response: Response ->
-                val credential = Credentials.basic(username, password)
-                response.request().newBuilder().header("Authorization", credential).build()
-            }.build()
-        }
-
-        @Throws(Exception::class)
-        private fun doRequest(httpClient: OkHttpClient, anyURL: String): String {
-            val request = Request.Builder().url(anyURL).build()
-            val response = httpClient.newCall(request).execute()
-            if (!response.isSuccessful) {
-                throw IOException("Unexpected code $response")
-            }
-            return response.body()!!.string()
-        }
-    }
-
+//    companion object {
+//        const val INVERTER_PORT_PREFIX = "192.168.1.4"
+//        private val _logger = LoggingService.getLogger()
+//        private fun createAuthenticatedClient(
+//            username: String,
+//            password: String
+//        ): OkHttpClient {
+//            return OkHttpClient.Builder().authenticator { route: Route?, response: Response ->
+//                val credential = Credentials.basic(username, password)
+//                response.request.newBuilder().header("Authorization", credential).build()
+//            }.build()
+//        }
+//
+//        @Throws(Exception::class)
+//        private fun doRequest(httpClient: OkHttpClient, anyURL: String): String {
+//            val request = Request.Builder().url(anyURL).build()
+//            val response = httpClient.newCall(request).execute()
+//            if (!response.isSuccessful) {
+//                throw IOException("Unexpected code $response")
+//            }
+//            return response.body!!.string()
+//        }
+//    }
 }

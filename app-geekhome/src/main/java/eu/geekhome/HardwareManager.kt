@@ -52,7 +52,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
                 factories.remove(factory)
                 val adaptersInFactory = factory.createAdapters()
                 val adapterBundles = adaptersInFactory
-                    .map { adapter: HardwareAdapter -> AdapterBundle(adapter, NumberedEventsSink(), ArrayList()) }
+                    .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, NumberedEventsSink(), ArrayList()) }
                     .toList()
                 factories[factory] = adapterBundles
             }
@@ -69,6 +69,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
     }
 
     data class AdapterBundle(
+        internal val factoryId: String,
         internal val adapter: HardwareAdapter,
         internal val sink: EventsSink<String>,
         internal var ports: MutableList<Port<*, *>>

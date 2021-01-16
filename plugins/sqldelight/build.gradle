@@ -1,18 +1,18 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'  version "${kotlinVersion}"
-    id 'org.jetbrains.kotlin.kapt' version "${kotlinVersion}"
+    id 'org.jetbrains.kotlin.jvm'  version "$kotlinVersion"
+    id 'org.jetbrains.kotlin.kapt' version "$kotlinVersion"
     id 'com.squareup.sqldelight'   version '1.4.4'
 }
 
 dependencies {
     shadow project(':module-services')
     shadow project(':module-common')
-    shadow(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
+    shadow(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {
       exclude group: "org.slf4j"
     }
-    kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
-    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
-    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    kapt(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
+    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     compile 'com.squareup.sqldelight:sqlite-driver:1.4.4'
 }
 

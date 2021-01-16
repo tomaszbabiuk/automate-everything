@@ -7,15 +7,15 @@ import java.util.*
 interface HardwareAdapter {
     val id: String
     suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*,*>>
-    fun canBeRediscovered(): Boolean
 
     @Throws(Exception::class)
     fun refresh(now: Calendar)
-    val state: AdapterState
+    var state: AdapterState
     fun resetLatches()
 
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)
-    val lastDiscoveryTime: Long
-    val lastError: Throwable?
+
+    var lastDiscoveryTime: Long
+    var lastError: Throwable?
 }

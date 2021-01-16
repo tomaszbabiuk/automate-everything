@@ -1,11 +1,15 @@
 package eu.geekhome.shellyplugin;
 
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 public class LanInetAddressHelper {
 
-    static InetAddress getIpInLan() throws SocketException {
+    static List<InetAddress> getIpsInLan() throws SocketException {
+        List<InetAddress> addresses = new ArrayList<>();
+
         for (final Enumeration<NetworkInterface> interfaces =
              NetworkInterface.getNetworkInterfaces();
              interfaces.hasMoreElements(); ) {
@@ -18,14 +22,12 @@ public class LanInetAddressHelper {
             for (final InterfaceAddress addr : cur.getInterfaceAddresses()) {
                 final InetAddress inet_addr = addr.getAddress();
 
-                if (!(inet_addr instanceof Inet4Address)) {
-                    continue;
+                if (inet_addr instanceof Inet4Address) {
+                    addresses.add(inet_addr);
                 }
-
-                return inet_addr;
             }
         }
 
-        return null;
+        return addresses;
     }
 }

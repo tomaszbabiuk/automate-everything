@@ -1,23 +1,24 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'  version "${kotlinVersion}"
-    id 'org.jetbrains.kotlin.kapt' version "${kotlinVersion}"
+    id 'org.jetbrains.kotlin.jvm'  version "$kotlinVersion"
+    id 'org.jetbrains.kotlin.kapt' version "$kotlinVersion"
 }
 
 dependencies {
     compileOnly project(':module-services')
     compileOnly project(':module-common')
-    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
+    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {
         exclude group: "org.slf4j"
         exclude group: "org.slf4j.impl"
     }
-    kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
-    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
+    kapt(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
+    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
 
-    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
-    shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinCoroutinesVersion}"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
-    compileOnly "com.google.code.gson:gson:${gsonVersion}"
-    compileOnly "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    compileOnly "io.ktor:ktor-client-core:$ktorVersion"
+    compileOnly "io.ktor:ktor-client-cio:$ktorVersion"
+    compileOnly "io.ktor:ktor-client-gson:$ktorVersion"
 }
 
 shadowJar {
