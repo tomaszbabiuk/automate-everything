@@ -5,7 +5,7 @@ data class PortDto(
     val isShadowed: Boolean,
     val isOperational: Boolean,
     val nonOperationalTime : Long,
-    val value: String,
+    val value: String?,
     val canRead: Boolean,
     val canWrite: Boolean
 )

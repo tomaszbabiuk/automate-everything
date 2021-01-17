@@ -8,11 +8,11 @@ import java.net.InetAddress
 
 class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress) {
 
-    private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<String>) : ShellySettingsResponse? = coroutineScope {
+    private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<String>) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            eventsSink.broadcastEvent("One shelly found in LAN under ip address: $ipToCheck")
-            response
+            eventsSink.broadcastEvent("One shelly found under ip address: $ipToCheck")
+            Pair(ipToCheck,response)
         } catch (e: Exception) {
             eventsSink.broadcastEvent("$ipToCheck - unknown")
             null
@@ -21,8 +21,8 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
-    suspend fun searchForShellies(eventsSink: EventsSink<String>): List<ShellySettingsResponse?> = coroutineScope {
-        val jobs = ArrayList<Deferred<ShellySettingsResponse?>>()
+    suspend fun searchForShellies(eventsSink: EventsSink<String>): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
+        val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()
 
         for (i in 0..255) {
             val ipToCheck = InetAddress.getByAddress(
@@ -45,7 +45,8 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
 
         val result = jobs
             .filter { it.getCompleted() != null }
-            .map { it.getCompleted() }
+            .map { (it.getCompleted()!!) }
+            .filter { it.second.device != null && it.second.device.type != null}
             .toList()
 
         eventsSink.broadcastEvent("Done looking for shellies, found: ${result.size}")

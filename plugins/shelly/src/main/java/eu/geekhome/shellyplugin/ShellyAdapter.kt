@@ -4,15 +4,15 @@ import com.geekhome.common.OperationMode
 import com.geekhome.common.logging.LoggingService
 import com.google.gson.Gson
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.hardware.HardwareAdapterBase
-import eu.geekhome.services.hardware.Port
-import eu.geekhome.services.hardware.PortIdBuilder
+import eu.geekhome.services.hardware.*
 import eu.geekhome.services.mqtt.MqttBrokerService
 import eu.geekhome.services.mqtt.MqttListener
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
+import io.ktor.client.request.*
 import kotlinx.coroutines.*
+import java.io.IOException
 import java.net.InetAddress
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,8 +23,14 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     }
 
     private var finder: ShellyFinder
+    private val client = createHttpClient()
+    private val brokerIP: InetAddress?
+    private val gson: Gson
+    private val ownedDigitalOutputPorts = ArrayList<ShellyDigitalOutputPort>()
+    private val ownedPowerInputPorts = ArrayList<ShellyPowerInputPort>()
+    private val ownedPowerOutputPorts = ArrayList<ShellyPowerOutputPort>()
 
-    val client = HttpClient(CIO) {
+    private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature)
         engine {
             maxConnectionsCount = 1000
@@ -39,11 +45,6 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         }
     }
 
-    private val brokerIP: InetAddress?
-    private val gson: Gson
-    private val ownedDigitalOutputPorts = ArrayList<ShellyDigitalOutputPort>()
-    private val ownedPowerInputPorts = ArrayList<ShellyPowerInputPort>()
-    private val ownedPowerOutputPorts = ArrayList<ShellyPowerOutputPort>()
 
     private fun resolveIpInLan(): InetAddress? {
         try {
@@ -55,122 +56,21 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         return null
     }
 
-//    @Throws(DiscoveryException::class)
-//    fun discover(
-//        digitalInputPorts: InputPortsCollection<Boolean?>?,
-//        digitalOutputPorts: OutputPortsCollection<Boolean?>,
-//        powerInputPorts: InputPortsCollection<Double?>,
-//        powerOutputPorts: OutputPortsCollection<Int?>,
-//        temperaturePorts: InputPortsCollection<Double?>?,
-//        togglePorts: TogglePortsCollection?,
-//        humidityPorts: InputPortsCollection<Double?>?,
-//        luminosityPorts: InputPortsCollection<Double?>?
-//    ) {
-//        logger.info("Starting SHELLY discovery")
-//        try {
-//            val probedIPs = AtomicInteger(0)
-//            val shellyCheckCallback: Callback = object : Callback {
-//                override fun onFailure(call: Call, e: IOException) {
-//                    probedIPs.incrementAndGet()
-//                }
-//
-//                override fun onResponse(call: Call, response: Response) {
-//                    probedIPs.incrementAndGet()
-//                    if (response.isSuccessful) {
-//                        try {
-//                            println(response.body!!.string())
-//                            val settingsResponse = gson.fromJson(
-//                                response.body!!.string(), ShellySettingsResponse::class.java
-//                            )
-//                            response.body!!.close()
-//                            if (settingsResponse != null && settingsResponse.device != null && settingsResponse.device.type != null) {
-//                                logger.info("Shelly FOUND: " + response.request.url)
-//                                val shellyIP = InetAddress.getByName(response.request.url.host)
-//                                hijackShellyIfNeeded(settingsResponse, shellyIP)
-//
-//                                //TODO: check if that's battery powered device to calculate connection interval
-//                                val isBatteryPowered = false
-//                                val connectionLostInterval = if (isBatteryPowered) 60 * 60 * 1000L else 40 * 60 * 1000L
-//                                if (settingsResponse.relays != null) {
-//                                    for (i in settingsResponse.relays.indices) {
-//                                        val output =
-//                                            ShellyDigitalOutputPort(settingsResponse, i, connectionLostInterval)
-//                                        digitalOutputPorts.add(output)
-//                                        ownedDigitalOutputPorts.add(output)
-//                                    }
-//                                }
-//                                if (settingsResponse.lights != null) {
-//                                    for (i in settingsResponse.lights.indices) {
-//                                        val lightResponse = callForLightResponse(shellyIP, i)
-//                                        val output = ShellyPowerOutputPort(
-//                                            settingsResponse,
-//                                            lightResponse,
-//                                            i,
-//                                            connectionLostInterval
-//                                        )
-//                                        powerOutputPorts.add(output)
-//                                        ownedPowerOutputPorts.add(output)
-//                                    }
-//                                }
-//                                if (settingsResponse.meters != null) {
-//                                    for (i in 0 until settingsResponse.device.numMeters) {
-//                                        val input = ShellyPowerInputPort(settingsResponse, i, connectionLostInterval)
-//                                        powerInputPorts.add(input)
-//                                        ownedPowerInputPorts.add(input)
-//                                    }
-//                                }
-//                            }
-//                        } catch (ex: Exception) {
-//                            logger.warning("Exception during shelly discovery, 99% it's not a shelly device", ex)
-//                        }
-//                    } else {
-//                        response.body!!.close()
-//                    }
-//                }
-//            }
-//            for (i in 0..254) {
-//                val ipToCheck = InetAddress.getByAddress(
-//                    byteArrayOf(
-//                        brokerIP!!.address[0],
-//                        brokerIP.address[1],
-//                        brokerIP.address[2],
-//                        i.toByte()
-//                    )
-//                )
-//                logger.debug("Checking shelly: " + ipToCheck.hostAddress)
-////                checkIfItsShelly(ipToCheck, shellyCheckCallback)
-//            }
-//            while (probedIPs.get() == 255) {
-//                Sleeper.trySleep(100)
-//            }
-//            logger.info("DONE (SHELLY discovery)")
-//        } catch (e: UnknownHostException) {
-//            throw DiscoveryException("Error discovering shelly devices", e)
-//        }
-//    }
+    @Throws(IOException::class)
+    private suspend fun hijackShellyIfNeeded(settings: ShellySettingsResponse, shellyIP: InetAddress) {
+        if (settings.cloud.isEnabled) {
+            disableCloud(shellyIP)
+        }
+        val expectedMqttServerSetting = brokerIP!!.hostAddress + ":1883"
+        if (!settings.mqtt.isEnable || settings.mqtt.server != expectedMqttServerSetting) {
+            enableMQTT(shellyIP)
+        }
+    }
 
-//    @Throws(IOException::class)
-//    private fun hijackShellyIfNeeded(settings: ShellySettingsResponse, shellyIP: InetAddress) {
-//        if (settings.cloud.isEnabled) {
-//            disableCloud(shellyIP)
-//        }
-//        val expectedMqttServerSetting = brokerIP!!.hostAddress + ":1883"
-//        if (!settings.mqtt.isEnable || settings.mqtt.server != expectedMqttServerSetting) {
-//            enableMQTT(shellyIP)
-//        }
-//    }
 
-//    @Suppress("BlockingMethodInNonBlockingContext")
-//    private fun checkIfItsShelly(possibleShellyIP: InetAddress): Response {
-//        val request = Request.Builder()
-//            .url("http://$possibleShellyIP/settings")
-//            .build()
-//
-//        return okClient.newCall(request).execute()
-//    }
-
-//    @Throws(IOException::class)
-//    private fun enableMQTT(shellyIP: InetAddress) {
+    @Throws(IOException::class)
+    private suspend fun enableMQTT(shellyIP: InetAddress) {
+        val response = client.get<String>("http://" + shellyIP + "/settings/mqtt?mqtt_enable=1&mqtt_server=" + brokerIP!!.hostAddress + "%3A1883")
 //        val request = Request.Builder()
 //            .url("http://" + shellyIP + "/settings/mqtt?mqtt_enable=1&mqtt_server=" + brokerIP!!.hostAddress + "%3A1883")
 //            .build()
@@ -178,10 +78,11 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 //        if (!response.isSuccessful) {
 //            throw IOException("Unexpected code $response")
 //        }
-//    }
-//
-//    @Throws(IOException::class)
-//    private fun disableCloud(shellyIP: InetAddress) {
+    }
+
+    @Throws(IOException::class)
+    private suspend fun disableCloud(shellyIP: InetAddress) {
+        val response = client.get<String>("http://$shellyIP/settings/cloud?enabled=0")
 //        val request = Request.Builder()
 //            .url("http://$shellyIP/settings/cloud?enabled=0")
 //            .build()
@@ -189,10 +90,12 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 //        if (!response.isSuccessful) {
 //            throw IOException("Unexpected code $response")
 //        }
-//    }
-//
-//    @Throws(IOException::class)
-//    private fun callForLightResponse(possibleShellyIP: InetAddress, channel: Int): ShellyLightResponse {
+    }
+
+    @Throws(IOException::class)
+    private suspend fun callForLightResponse(possibleShellyIP: InetAddress, channel: Int): ShellyLightResponse {
+        return client.get("http://$possibleShellyIP/light/$channel")
+
 //        val request = Request.Builder()
 //            .url("http://$possibleShellyIP/light/$channel")
 //            .build()
@@ -200,7 +103,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 //        val json = response.body!!.string()
 //        response.body!!.close()
 //        return gson.fromJson(json, ShellyLightResponse::class.java)
-//    }
+    }
 
 
 
@@ -213,6 +116,43 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 
         val discoveryJob = async { finder.searchForShellies(eventsSink) }
         val shellies = discoveryJob.await()
+        shellies.forEach {
+            val shellyIP = it.first
+            val settingsResponse = it.second
+            hijackShellyIfNeeded(settingsResponse, shellyIP)
+
+            //TODO: check if that's battery powered device to calculate connection interval
+//            val isBatteryPowered = false
+//            val connectionLostInterval = if (isBatteryPowered) 60 * 60 * 1000L else 40 * 60 * 1000L
+//            if (settingsResponse.relays != null) {
+//                for (i in settingsResponse.relays.indices) {
+//                    val output =
+//                        ShellyDigitalOutputPort(settingsResponse, i, connectionLostInterval)
+//                    digitalOutputPorts.add(output)
+//                    ownedDigitalOutputPorts.add(output)
+//                }
+//            }
+//            if (settingsResponse.lights != null) {
+//                for (i in settingsResponse.lights.indices) {
+//                    val lightResponse = callForLightResponse(shellyIP, i)
+//                    val output = ShellyPowerOutputPort(
+//                        settingsResponse,
+//                        lightResponse,
+//                        i,
+//                        connectionLostInterval
+//                    )
+//                    powerOutputPorts.add(output)
+//                    ownedPowerOutputPorts.add(output)
+//                }
+//            }
+            if (settingsResponse.meters != null) {
+                for (i in 0 until settingsResponse.device.numMeters) {
+                    val id = idBuilder.buildPortId(settingsResponse.device.hostname, i)
+                    val inputPort = WattageInPort(id, 0.0, SynchronizedReadOperator(Wattage(0.0)))
+                    result.add(inputPort)
+                }
+            }
+        }
 
         result
     }
@@ -247,11 +187,11 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    fun start() {
+    override fun start() {
         mqttBroker.addMqttListener(this)
     }
 
-    fun stop() {
+    override fun stop() {
         mqttBroker.removeMqttListener(this)
     }
 

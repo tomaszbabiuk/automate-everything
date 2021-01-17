@@ -10,7 +10,7 @@ public class PortIdBuilder {
         _adapterId = adapterId;
     }
 
-    public String buildPortId(String portSuffix) {
-        return _factoryId + ":" + _adapterId + ":" + portSuffix;
+    public String buildPortId(String portSuffix, int channel) {
+        return _factoryId + ":" + _adapterId + ":" + portSuffix + ":" + channel;
     }
 }

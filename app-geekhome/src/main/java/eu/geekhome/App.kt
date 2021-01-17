@@ -10,11 +10,6 @@ import eu.geekhome.rest.CORSFilter
 import org.pf4j.PluginManager
 
 class App : ResourceConfig() {
-    private fun startPlugins(pluginManager: PluginManager) {
-        pluginManager.loadPlugins()
-        pluginManager.startPlugins()
-    }
-
     private fun buildPluginManager(): PluginManager {
         return object : JarPluginManager() {
             override fun createExtensionFactory(): ExtensionFactory {
@@ -25,7 +20,8 @@ class App : ResourceConfig() {
 
     init {
         val pluginManager = buildPluginManager()
-        startPlugins(pluginManager)
+        pluginManager.loadPlugins()
+
         val hardwareManager = HardwareManager(pluginManager)
         packages("eu.geekhome.rest")
         register(DependencyInjectionBinder())
@@ -34,6 +30,6 @@ class App : ResourceConfig() {
         register(pluginManager)
         register(hardwareManager)
 
-        hardwareManager.discover()
+        pluginManager.startPlugins()
     }
 }

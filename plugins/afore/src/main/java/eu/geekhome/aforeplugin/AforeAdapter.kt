@@ -73,6 +73,12 @@ class AforeAdapter : HardwareAdapterBase() {
     override fun reconfigure(operationMode: OperationMode) {
     }
 
+    override fun stop() {
+    }
+
+    override fun start() {
+    }
+
 //    companion object {
 //        const val INVERTER_PORT_PREFIX = "192.168.1.4"
 //        private val _logger = LoggingService.getLogger()

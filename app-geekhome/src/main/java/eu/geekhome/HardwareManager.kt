@@ -9,11 +9,10 @@ import java.util.*
 
 class HardwareManager(private val _pluginManager: PluginManager) : PluginStateListener {
 
-    public val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
+    private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
 
     init {
         _pluginManager.addPluginStateListener(this)
-        reloadAdapters()
     }
 
     fun discover() {
@@ -33,39 +32,69 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
         println("Discovery finished")
     }
 
-    private fun cancelDiscovery() {
-        bundles().forEach {
-            it.discoveryJob?.cancel()
-        }
-    }
-
-    public fun bundles(): List<AdapterBundle> {
-        return factories.values.flatten()
-    }
-
-    private fun reloadAdapters() {
-        _pluginManager
-            .plugins
-            .filter { plugin: PluginWrapper -> plugin.plugin is HardwarePlugin }
-            .map { plugin: PluginWrapper -> (plugin.plugin as HardwarePlugin).factory }
-            .forEach { factory: HardwareAdapterFactory ->
-                factories.remove(factory)
-                val adaptersInFactory = factory.createAdapters()
-                val adapterBundles = adaptersInFactory
-                    .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, NumberedEventsSink(), ArrayList()) }
-                    .toList()
-                factories[factory] = adapterBundles
+    private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
+        factories
+            .filter { factory.id == it.key.id }
+            .flatMap { it.value }
+            .forEach {
+                it.discoveryJob?.cancelAndJoin()
+                it.adapter.stop()
             }
     }
 
-    override fun pluginStateChanged(event: PluginStateEvent) {
-        val isPluginStartedOrStopped = event.pluginState == PluginState.STARTED || event.pluginState == PluginState.STOPPED
-        val isHardwarePluginAffected = event.plugin.plugin is HardwarePlugin
-        if (isPluginStartedOrStopped && isHardwarePluginAffected) {
-            cancelDiscovery()
-            reloadAdapters()
-            discover()
+    private suspend fun startAdaptersAndDiscover(factory: HardwareAdapterFactory) = coroutineScope {
+        factories
+            .filter { factory.id == it.key.id }
+            .flatMap { it.value }
+            .forEach {
+                it.adapter.start()
+                val builder = PortIdBuilder(factory.id, it.adapter.id)
+                it.discoveryJob = async {
+                    it.ports = it.adapter.discover(builder, it.sink)
+                }
+            }
+    }
+
+    private suspend fun removeFactory(factory: HardwareAdapterFactory) {
+        cancelDiscoveryAndStopAdapters(factory)
+        factories.remove(factory)
+    }
+
+    private suspend fun addFactory(factory: HardwareAdapterFactory) {
+        if (factories.containsKey(factory)) {
+            cancelDiscoveryAndStopAdapters(factory)
         }
+        removeFactory(factory)
+
+        val adaptersInFactory = factory.createAdapters()
+        val adapterBundles = adaptersInFactory
+            .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, NumberedEventsSink(), ArrayList()) }
+            .toList()
+        factories[factory] = adapterBundles
+
+        startAdaptersAndDiscover(factory)
+    }
+
+    override fun pluginStateChanged(event: PluginStateEvent) {
+        val isHardwarePluginAffected = event.plugin.plugin is HardwarePlugin
+        if (isHardwarePluginAffected) {
+            val hardwarePlugin = event.plugin.plugin as HardwarePlugin
+            if (event.pluginState == PluginState.STARTED) {
+                GlobalScope.launch {
+                    addFactory(hardwarePlugin.factory)
+                }
+            }
+
+            if (event.pluginState == PluginState.STARTED) {
+                GlobalScope.launch {
+                    removeFactory(hardwarePlugin.factory)
+                }
+            }
+        }
+    }
+
+    fun bundles(): List<AdapterBundle> {
+        return factories.values.flatten()
     }
 
     data class AdapterBundle(

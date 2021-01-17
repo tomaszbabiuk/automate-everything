@@ -15,6 +15,8 @@ interface HardwareAdapter {
 
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)
+    fun stop()
+    fun start()
 
     var lastDiscoveryTime: Long
     var lastError: Throwable?

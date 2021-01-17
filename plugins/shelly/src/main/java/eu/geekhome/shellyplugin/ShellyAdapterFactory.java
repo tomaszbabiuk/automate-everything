@@ -1,7 +1,5 @@
 package eu.geekhome.shellyplugin;
 
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
-import com.geekhome.common.localization.Resource;
 import eu.geekhome.services.hardware.HardwareAdapter;
 import eu.geekhome.services.hardware.HardwareAdapterFactory;
 import eu.geekhome.services.mqtt.MqttBrokerService;
