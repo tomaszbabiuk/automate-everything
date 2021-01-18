@@ -1,6 +1,7 @@
-package eu.geekhome.shellyplugin;
+package eu.geekhome.shellyplugin
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+
 
 /*
    "meters":[
@@ -17,11 +18,8 @@ import com.google.gson.annotations.SerializedName;
       }
    ]
  */
-public class ShellyMeterBrief {
-    @SerializedName("power")
-    private double _power;
+data class MeterBriefDto(
 
-    public double getPower() {
-        return _power;
-    }
-}
+    @SerializedName("power")
+    val power: Double
+)

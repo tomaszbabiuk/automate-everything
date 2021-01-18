@@ -41,11 +41,8 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
             jobs.add(job)
         }
 
-        jobs.awaitAll()
-
-        val result = jobs
-            .filter { it.getCompleted() != null }
-            .map { (it.getCompleted()!!) }
+        val result = jobs.awaitAll()
+            .filterNotNull()
             .filter { it.second.device != null && it.second.device.type != null}
             .toList()
 

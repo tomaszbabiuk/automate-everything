@@ -2,14 +2,46 @@ package eu.geekhome.services.hardware
 
 import com.geekhome.common.localization.Resource
 
-sealed class PortValue<T>(val value: T) {
+
+sealed class PortValue<T>(initialValue: T) {
+
+    private var internalValue: T = initialValue
+    var isLatchTriggered = false
+        private set(value) {
+            field = value
+        }
+
+    var value: T
+        get() = this.internalValue
+        set(value) {
+            this.isLatchTriggered = true
+            this.internalValue = value
+        }
+
+    fun resetLatch() {
+        isLatchTriggered = false
+    }
+
     abstract fun fromString(from: String) : T
     abstract fun toFormattedString() : Resource
 }
 
-class Binary(value: Boolean) : PortValue<Boolean>(value) {
-    private val on = Resource("On/High", "Wł/Wysoki")
-    private val off = Resource("Off/Low", "Wył/Niski")
+class BinaryInput(value: Boolean) : PortValue<Boolean>(value) {
+    private val on = Resource("High", "Wysoki")
+    private val off = Resource("Low", "Niski")
+
+    override fun fromString(from: String): Boolean {
+        return from == "true"
+    }
+
+    override fun toFormattedString(): Resource {
+        return if (value) on else off
+    }
+}
+
+class Relay(value: Boolean) : PortValue<Boolean>(value) {
+    private val on = Resource("On", "Wł")
+    private val off = Resource("Off", "Wył")
 
     override fun fromString(from: String): Boolean {
         return from == "true"

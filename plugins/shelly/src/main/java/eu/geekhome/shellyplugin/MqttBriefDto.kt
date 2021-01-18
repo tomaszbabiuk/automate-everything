@@ -1,6 +1,7 @@
-package eu.geekhome.shellyplugin;
+package eu.geekhome.shellyplugin
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+
 
 /*
    "mqtt":{
@@ -18,18 +19,11 @@ import com.google.gson.annotations.SerializedName;
       "update_period":30
    },
  */
-public class ShellyMqttBrief {
+data class MqttBriefDto(
+
     @SerializedName("enable")
-    private boolean _enable;
+    val enable: Boolean,
 
     @SerializedName("server")
-    private String _server;
-
-    public boolean isEnable() {
-        return _enable;
-    }
-
-    public String getServer() {
-        return _server;
-    }
-}
+    val server: String?
+)

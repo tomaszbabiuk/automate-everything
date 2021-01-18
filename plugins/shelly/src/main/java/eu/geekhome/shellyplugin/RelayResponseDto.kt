@@ -1,6 +1,6 @@
-package eu.geekhome.shellyplugin;
+package eu.geekhome.shellyplugin
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 /*
    "relays":[
@@ -22,11 +22,8 @@ import com.google.gson.annotations.SerializedName;
       }
    ],
  */
-public class ShellyRelayBrief {
-    @SerializedName("ison")
-    private boolean _isOn;
+data class RelayResponseDto(
 
-    public boolean isOn() {
-        return _isOn;
-    }
-}
+    @SerializedName("ison")
+    val on: Boolean
+)
