@@ -23,12 +23,16 @@ public class PluginDto {
     @SerializedName("id")
     private String _id;
 
-    public PluginDto(String id, Resource name, Resource description, String provider, String version, boolean enabled) {
+    @SerializedName("isHardwareFactory")
+    private boolean _isHardwareFactory;
+
+    public PluginDto(String id, Resource name, Resource description, String provider, String version, boolean isHardwareFactory, boolean enabled) {
         _name = name;
         _description = description;
         _id = id;
         _provider = provider;
         _version = version;
+        _isHardwareFactory = isHardwareFactory;
         _enabled = enabled;
     }
 

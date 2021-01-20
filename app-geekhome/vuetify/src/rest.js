@@ -6,7 +6,7 @@ import { SET_CONFIGURABLES, SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTA
 import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
 import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY } from './plugins/vuex'
 import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
-import { SET_HARDWARE_FACTORIES } from './plugins/vuex'
+import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
 
 
 export const lang = vuetify.framework.lang
@@ -65,7 +65,9 @@ export const client = {
   enablePlugin: async function (pluginId, enable) {
     await this.handleRestError(
       () => axiosInstance.put("rest/plugins/" + pluginId + "/enabled", JSON.stringify(enable)),
-      (response) => store.commit(UPDATE_PLUGIN, response.data)
+      (response) => {
+        store.commit(UPDATE_PLUGIN, response.data)
+      }
     )
   },
 
@@ -217,10 +219,18 @@ export const client = {
     )
   },
 
-  getHardwareFactories: async function () {
+  getDiscoveryEvents: async function () {
     await this.handleRestError(
-      () => axiosInstance.get("rest/hardwarefactories"),
-      (response) => store.commit(SET_HARDWARE_FACTORIES, response.data)
+      () => axiosInstance.get("rest/discoveryevents"),
+      (response) => {
+        response.data.forEach(element => {
+          store.commit(ADD_DISCOVERY_EVENT, element)
+        })
+      }
     )
   },
+
+  clearDiscoveryEvents: function() {
+    store.commit(CLEAR_DISCOVERY_EVENTS)
+  }
 }

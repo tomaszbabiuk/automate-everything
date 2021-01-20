@@ -36,7 +36,7 @@ class DiscoveryEvents @Inject constructor(
     fun getEvents(): List<HardwareEventDto> {
         val eventsCount = hardwareManager.sink.getNumberOfEvents()
         if (eventsCount > 0) {
-            return (0..eventsCount)
+            return (0 until eventsCount)
                 .map { hardwareManager.sink.getHistoricEvent(it) }
                 .map { eventMapper.map(it) }
                 .toList()

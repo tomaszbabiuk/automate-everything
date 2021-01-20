@@ -34,7 +34,8 @@ export const ADD_ICON_CATEGORY = 'ADD_ICON_CATEGORY'
 export const UPDATE_ICON_CATEGORY = 'UPDATE_ICON_CATEGORY'
 export const REMOVE_ICON_CATEGORY = 'REMOVE_ICON_CATEGORY'
 
-export const SET_HARDWARE_FACTORIES = 'SET_HARDWARE_FACTORIES'
+export const CLEAR_DISCOVERY_EVENTS = 'CLEAR_DISCOVERY_EVENTS'
+export const ADD_DISCOVERY_EVENT = 'ADD_DISCOVERY_EVENT'
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -61,7 +62,7 @@ export default new Vuex.Store({
     validation: [],
     tags: [],
     iconCategories: [],
-    hardwareFactories: [],
+    discoveryEvents: [],
     newInstance: {
       id: null,
       class: null,
@@ -265,8 +266,12 @@ export default new Vuex.Store({
       })
     },
 
-    [SET_HARDWARE_FACTORIES](state, payload) {
-      state.hardwareFactories = payload
-    }
+    [CLEAR_DISCOVERY_EVENTS](state) {
+      state.discoveryEvents = []
+    },
+
+    [ADD_DISCOVERY_EVENT](state, payload) {
+      state.discoveryEvents = [payload]
+    },
   }
 })

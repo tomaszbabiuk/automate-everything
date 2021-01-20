@@ -31,11 +31,11 @@
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
           <v-tab
-            v-for="factory in hardwareFactories"
-            :key="factory"
-            :to="'/discover/' + factory"
+            v-for="factory in factories"
+            :key="factory.id"
+            :to="'/discover/' + factory.id"
           >
-            {{ factory }}
+            {{ factory.name }}
           </v-tab>
         </v-tabs>
       </template>
@@ -95,7 +95,6 @@ export default {
 
   data: function() {
     return {
-      showTabs: false,
       tab: null,
       drawer: false,
       navigationItems: [
@@ -158,34 +157,37 @@ export default {
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
     },
-
-    matchTabsVisibilityToRoute: function() {
-      this.showTabs = this.$route.name === 'discover'
-    }
   },
 
   computed: {
-    hardwareFactories: function () {
-      return this.$store.state.hardwareFactories;
+    plugins() {
+      return this.$store.state.plugins;
+    },
+    factories() {
+      return this.$store.state.plugins.filter(element => {
+        return element.enabled && element.isHardwareFactory
+      })
     },
     isPolishLocale: function() {
       return this.$vuetify.lang.current === "pl";
     },
     error() {
       return this.$store.state.error;
+    },
+    showTabs: function() {
+      return this.$route.name === 'discover' && this.factories.length > 0
     }
   },
-  watch: {
-    $route() {
-      this.matchTabsVisibilityToRoute()
-    },
-    tab: function(to) {
-      if (to != null) {
-        //ready to pull factory logs
-        console.log(this.$route.params.clazz)
+   watch: {
+    factories (factories) {
+      if (factories.length > 0) {
+      console.log(`Old plugins ${factories}`)
+        this.navigationItems[7].route='/discover/' + factories[0].id
+      } else {
+        this.navigationItems[7].route='/discover/null'
       }
-    }
 
+    }
   },
   mounted: function() {
     if (typeof localStorage.selectedLanguage === "undefined") {
@@ -194,9 +196,7 @@ export default {
       this.$vuetify.lang.current = localStorage.selectedLanguage;
     }
 
-    client.getHardwareFactories()
-
-    this.matchTabsVisibilityToRoute()
+    client.getPlugins();
   }
 };
 </script>
