@@ -1,14 +1,16 @@
 package eu.geekhome.aforeplugin;
 
-import com.geekhome.common.hardwaremanager.IHardwareManagerAdapter;
-import com.geekhome.common.localization.Resource;
 import eu.geekhome.services.hardware.HardwareAdapter;
 import eu.geekhome.services.hardware.HardwareAdapterFactory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class AforeAdapterFactory implements HardwareAdapterFactory {
+
+    @NotNull
+    public static final String ID = "AFORE";
 
     @Override
     public List<HardwareAdapter> createAdapters() {
@@ -21,6 +23,6 @@ class AforeAdapterFactory implements HardwareAdapterFactory {
 
     @Override
     public String getId() {
-        return "AFORE";
+        return ID;
     }
 }

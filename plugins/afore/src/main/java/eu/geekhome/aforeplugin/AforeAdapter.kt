@@ -1,11 +1,12 @@
 package eu.geekhome.aforeplugin
 
 import com.geekhome.common.OperationMode
-import com.geekhome.common.logging.LoggingService
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.hardware.*
+import eu.geekhome.services.hardware.HardwareAdapterBase
+import eu.geekhome.services.hardware.HardwareEvent
+import eu.geekhome.services.hardware.Port
+import eu.geekhome.services.hardware.PortIdBuilder
 import kotlinx.coroutines.delay
-import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -14,28 +15,27 @@ class AforeAdapter : HardwareAdapterBase() {
 //    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
 
-    override suspend fun internalDisvovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*, *>> {
+    override suspend fun internalDisvovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*, *>> {
         val result = ArrayList<Port<*,*>>()
-//        println("AFORE START")
-//
-//        eventsSink.broadcastEvent("Starting discovery")
 //        val portId = idBuilder.buildPortId(INVERTER_PORT_PREFIX)
 //        val inverterPower = readInverterPower()
 //        val inverterPort: Port<Double, Wattage> = WattageInputPort(portId, inverterPower)
 //        ports.add(inverterPort)
-//        eventsSink.broadcastEvent("Done")
-//
-//        println("AFORE END")
 
-        println("afore discovery, this will take 10 sec")
+        broadcastEvent(eventsSink, "afore discovery, this will take 10 sec")
         repeat(100) {
             delay(1000)
-            println("afore $it")
+            broadcastEvent(eventsSink, "afore $it")
         }
 
-        println("afore discovery")
+        broadcastEvent(eventsSink, "DONE afore discovery")
 
         return result
+    }
+
+    fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
+        val event = HardwareEvent(AforeAdapterFactory.ID, message)
+        eventsSink.broadcastEvent(event)
     }
 
 //    private fun readInverterPower(): Double {

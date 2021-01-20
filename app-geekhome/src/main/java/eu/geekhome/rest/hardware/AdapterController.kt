@@ -14,6 +14,7 @@ class AdapterController @Inject constructor(
     hardwareManagerHolderService: HardwareManagerHolderService,
     private val mapper: HardwareAdapterDtoMapper
 ) {
+
     private val _hardwareManager: HardwareManager = hardwareManagerHolderService.instance
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -6,7 +6,7 @@ import java.util.*
 
 interface HardwareAdapter {
     val id: String
-    suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<String>) : MutableList<Port<*,*>>
+    suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*,*>>
 
     @Throws(Exception::class)
     fun refresh(now: Calendar)

@@ -9,6 +9,8 @@ import java.util.List;
 
 class ShellyAdapterFactory implements HardwareAdapterFactory {
 
+    public static String ID = "SHELLY";
+
     private final MqttBrokerService _mqttBroker;
 
     ShellyAdapterFactory(MqttBrokerService mqttBroker) {
@@ -26,6 +28,6 @@ class ShellyAdapterFactory implements HardwareAdapterFactory {
 
     @Override
     public String getId() {
-        return "SHELLY";
+        return ID;
     }
 }

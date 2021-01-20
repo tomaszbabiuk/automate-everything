@@ -1,6 +1,7 @@
 package eu.geekhome.shellyplugin
 
 import eu.geekhome.services.events.EventsSink
+import eu.geekhome.services.hardware.HardwareEvent
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -8,20 +9,20 @@ import java.net.InetAddress
 
 class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress) {
 
-    private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<String>) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
+    private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<HardwareEvent>) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            eventsSink.broadcastEvent("One shelly found under ip address: $ipToCheck")
+            broadcastEvent(eventsSink,"One shelly found under ip address: $ipToCheck")
             Pair(ipToCheck,response)
         } catch (e: Exception) {
-            eventsSink.broadcastEvent("$ipToCheck - unknown")
+            broadcastEvent(eventsSink,"$ipToCheck - unknown")
             null
         }
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
-    suspend fun searchForShellies(eventsSink: EventsSink<String>): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
+    suspend fun searchForShellies(eventsSink: EventsSink<HardwareEvent>): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
         val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()
 
         for (i in 0..255) {
@@ -35,7 +36,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
             )
 
             val job = async(start = CoroutineStart.LAZY) {
-                eventsSink.broadcastEvent("Is $ipToCheck a shelly device? Checking...")
+                broadcastEvent(eventsSink,"Is $ipToCheck a shelly device? Checking...")
                 checkIfShelly(ipToCheck, eventsSink)
             }
             jobs.add(job)
@@ -43,11 +44,15 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
 
         val result = jobs.awaitAll()
             .filterNotNull()
-            .filter { it.second.device != null && it.second.device.type != null}
             .toList()
 
-        eventsSink.broadcastEvent("Done looking for shellies, found: ${result.size}")
+        broadcastEvent(eventsSink,"Done looking for shellies, found: ${result.size}")
 
         result
+    }
+
+    fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
+        val event = HardwareEvent(ShellyAdapterFactory.ID, message)
+        eventsSink.broadcastEvent(event)
     }
 }

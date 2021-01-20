@@ -1,18 +1,20 @@
 package eu.geekhome
 
 import eu.geekhome.services.events.EventsSink
+import eu.geekhome.services.events.NumberedEventsListener
 import eu.geekhome.services.events.NumberedEventsSink
 import eu.geekhome.services.hardware.*
 import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*
 
-class HardwareManager(private val _pluginManager: PluginManager) : PluginStateListener {
+class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
+    val sink: EventsSink<HardwareEvent> = NumberedEventsSink()
 
     init {
-        _pluginManager.addPluginStateListener(this)
+        pluginManager.addPluginStateListener(this)
     }
 
     fun discover() {
@@ -23,7 +25,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
                 adapterBundles.forEach { bundle: AdapterBundle ->
                     val builder = PortIdBuilder(factory.id, bundle.adapter.id)
                     bundle.discoveryJob = async {
-                        bundle.ports = bundle.adapter.discover(builder, bundle.sink)
+                        bundle.ports = bundle.adapter.discover(builder, sink)
                     }
                 }
             }
@@ -50,7 +52,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
                 it.adapter.start()
                 val builder = PortIdBuilder(factory.id, it.adapter.id)
                 it.discoveryJob = async {
-                    it.ports = it.adapter.discover(builder, it.sink)
+                    it.ports = it.adapter.discover(builder, sink)
                 }
             }
     }
@@ -68,7 +70,7 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
 
         val adaptersInFactory = factory.createAdapters()
         val adapterBundles = adaptersInFactory
-            .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, NumberedEventsSink(), ArrayList()) }
+            .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, ArrayList()) }
             .toList()
         factories[factory] = adapterBundles
 
@@ -100,7 +102,6 @@ class HardwareManager(private val _pluginManager: PluginManager) : PluginStateLi
     data class AdapterBundle(
         internal val factoryId: String,
         internal val adapter: HardwareAdapter,
-        internal val sink: EventsSink<String>,
         internal var ports: MutableList<Port<*, *>>
     ) {
         var discoveryJob: Deferred<Unit>? = null

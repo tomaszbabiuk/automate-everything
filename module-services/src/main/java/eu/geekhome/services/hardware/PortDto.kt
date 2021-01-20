@@ -10,12 +10,6 @@ data class PortDto(
     @SerializedName("shadowed")
     val shadowed: Boolean,
 
-    @SerializedName("operational")
-    val operational: Boolean,
-
-    @SerializedName("nonOperationalTime")
-    val nonOperationalTime : Long,
-
     @SerializedName("value")
     val value: Resource?,
 

@@ -28,4 +28,12 @@ class NumberedEventsSink<T> : EventsSink<T> {
         eventCounter = 0
         events.clear()
     }
+
+    override fun getNumberOfEvents(): Int {
+        return events.size
+    }
+
+    override fun getHistoricEvent(id: Int): NumberedEvent<T> {
+        return events[id]
+    }
 }

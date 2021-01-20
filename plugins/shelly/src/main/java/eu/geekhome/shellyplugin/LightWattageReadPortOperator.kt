@@ -2,12 +2,12 @@ package eu.geekhome.shellyplugin
 
 import eu.geekhome.services.hardware.Wattage
 
-class ShellyRelayWattageInPortOperator(shellyId: String,
-                                       channel : Int,
-) : ShellyInPortOperator<Wattage> {
+class LightWattageReadPortOperator(shellyId: String,
+                                   channel : Int,
+) : ShellyReadPortOperator<Wattage> {
 
     private val value = Wattage(0.0)
-    override val readTopic = "shellies/$shellyId/relay/$channel/power"
+    override val readTopic = "shellies/$shellyId/light/$channel/power"
 
     override fun read(): Wattage {
         return value

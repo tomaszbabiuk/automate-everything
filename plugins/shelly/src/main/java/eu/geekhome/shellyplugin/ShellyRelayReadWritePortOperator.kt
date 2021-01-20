@@ -1,12 +1,11 @@
 package eu.geekhome.shellyplugin
 
-import com.google.gson.Gson
 import eu.geekhome.services.hardware.Relay
 
-class ShellyRelayInOutPortOperator(
+class ShellyRelayReadWritePortOperator(
     shellyId: String,
     channel: Int,
-) : ShellyInPortOperator<Relay>, ShellyOutPortOperator<Relay> {
+) : ShellyReadPortOperator<Relay>, ShellyWritePortOperator<Relay> {
 
     private val value = Relay(false)
     override val readTopic = "shellies/$shellyId/relay/$channel"

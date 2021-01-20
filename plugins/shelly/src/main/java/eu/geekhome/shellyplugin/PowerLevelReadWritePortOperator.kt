@@ -3,10 +3,10 @@ package eu.geekhome.shellyplugin
 import com.google.gson.Gson
 import eu.geekhome.services.hardware.PowerLevel
 
-class PowerLevelInOutPortOperator(
+class PowerLevelReadWritePortOperator(
     shellyId: String,
     channel: Int,
-) : ShellyInPortOperator<PowerLevel>, ShellyOutPortOperator<PowerLevel> {
+) : ShellyReadPortOperator<PowerLevel>, ShellyWritePortOperator<PowerLevel> {
 
     private val gson = Gson()
     private val value = PowerLevel(0)

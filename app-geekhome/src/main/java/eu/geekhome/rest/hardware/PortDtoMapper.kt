@@ -10,8 +10,6 @@ class PortDtoMapper {
         return PortDto(
             port.id,
             port.isShadowed,
-            port.isOperational,
-            port.nonOperationalTime,
             value,
             port.canRead,
             port.canWrite

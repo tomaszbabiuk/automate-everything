@@ -2,6 +2,30 @@ package eu.geekhome.services.hardware
 
 import java.io.IOException
 
+interface Connectible {
+    var lastSeen : Long
+    var connected : Boolean
+
+    var connectionLostInterval : Long
+
+    fun markDisconnected() {
+        connected = false
+    }
+
+    fun updateLastSeen(now : Long) {
+        lastSeen = now
+        connected = false
+    }
+
+    fun checkIfConnected(now: Long): Boolean {
+        if (connected) {
+            connected = now - lastSeen > connectionLostInterval
+        }
+
+        return connected
+    }
+}
+
 abstract class Port<T,V: PortValue<T>>(
     val id: String,
     val canRead: Boolean,
@@ -10,8 +34,6 @@ abstract class Port<T,V: PortValue<T>>(
     private val writePortOperator: WritePortOperator<V>? = null
 ) {
     var isShadowed: Boolean = false; protected set
-    var isOperational: Boolean = false; protected set
-    var nonOperationalTime : Long = 0; protected set
 
     fun read() : V {
         if (canRead) {
@@ -48,15 +70,30 @@ interface WritePortOperator<V> {
     fun isLatchTriggered(): Boolean
 }
 
-class SynchronizedReadPortOperator<V>(private var value: V) : ReadPortOperator<V> {
-    override fun read(): V {
-        return value
-    }
 
-    fun sync(value: V) {
-        this.value = value
-    }
+class ConnectiblePort<T, V : PortValue<T>>(
+    id : String,
+    canRead: Boolean,
+    canWrite: Boolean,
+    readPortOperator: ReadPortOperator<V>?,
+    writePortOperator: WritePortOperator<V>?)
+    : Port<T, V>(id, canRead, canWrite, readPortOperator, writePortOperator), Connectible {
+
+    override var lastSeen: Long = 0L
+    override var connected: Boolean = false
+    override var connectionLostInterval: Long = 0L
+
+    constructor(id: String, readPortOperator: ReadPortOperator<V>, writePortOperator: WritePortOperator<V>)
+            : this(id, true, true, readPortOperator, writePortOperator)
+
+    constructor(id: String, readPortOperator: ReadPortOperator<V>)
+            : this(id, true, false, readPortOperator, null)
+
+    constructor(id: String, writePortOperator: WritePortOperator<V>)
+            : this(id, false, true, null, writePortOperator)
+
 }
+
 
 class WattageInPort(
         id: String,
@@ -69,11 +106,8 @@ class PowerLevelInOutPort(
         writePortOperator: WritePortOperator<PowerLevel>) :
     Port<Int, PowerLevel>(id, true, true, readPortOperator, writePortOperator)
 
-
 class RelayInOutPort(
         id: String,
         readPortOperator: ReadPortOperator<Relay>,
         writePortOperator: WritePortOperator<Relay>) :
     Port<Boolean, Relay>(id, true, true, readPortOperator, writePortOperator)
-
-
