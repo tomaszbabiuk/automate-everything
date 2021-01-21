@@ -1,10 +1,7 @@
 package eu.geekhome.sqldelightplugin
 
-import com.geekhome.common.extensibility.PluginMetadata
-import com.geekhome.common.localization.Resource
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
-import eu.geekhome.sqldelightplugin.database.Database
+import eu.geekhome.services.extensibility.PluginMetadata
+import eu.geekhome.services.localization.Resource
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 

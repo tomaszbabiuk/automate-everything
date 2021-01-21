@@ -1,6 +1,6 @@
 package eu.geekhome.rest.plugins;
 
-import com.geekhome.common.extensibility.PluginMetadata;
+import eu.geekhome.services.extensibility.PluginMetadata;
 import eu.geekhome.services.hardware.HardwarePlugin;
 import org.pf4j.Plugin;
 import org.pf4j.PluginState;

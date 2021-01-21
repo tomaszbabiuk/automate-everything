@@ -1,6 +1,6 @@
 package eu.geekhome.services.hardware
 
-import com.geekhome.common.localization.Resource
+import eu.geekhome.services.localization.Resource
 
 
 sealed class PortValue<T>(initialValue: T) {

@@ -1,6 +1,5 @@
 package eu.geekhome.services.hardware
 
-import com.geekhome.common.OperationMode
 import eu.geekhome.services.events.EventsSink
 import java.util.*
 

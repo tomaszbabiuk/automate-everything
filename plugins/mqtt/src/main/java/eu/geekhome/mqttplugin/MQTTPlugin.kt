@@ -1,7 +1,7 @@
 package eu.geekhome.mqttplugin
 
-import com.geekhome.common.extensibility.PluginMetadata
-import com.geekhome.common.localization.Resource
+import eu.geekhome.services.extensibility.PluginMetadata
+import eu.geekhome.services.localization.Resource
 import eu.geekhome.services.mqtt.MqttBrokerPlugin
 import eu.geekhome.services.mqtt.MqttBrokerService
 import org.pf4j.Plugin

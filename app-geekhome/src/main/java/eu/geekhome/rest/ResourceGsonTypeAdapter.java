@@ -1,10 +1,10 @@
 package eu.geekhome.rest;
 
-import com.geekhome.common.localization.Language;
-import com.geekhome.common.localization.Resource;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import eu.geekhome.services.localization.Language;
+import eu.geekhome.services.localization.Resource;
 
 import java.io.IOException;
 

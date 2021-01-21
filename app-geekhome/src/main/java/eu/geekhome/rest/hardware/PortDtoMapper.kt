@@ -1,8 +1,8 @@
 package eu.geekhome.rest.hardware
 
-import com.geekhome.common.localization.Resource
 import eu.geekhome.services.hardware.Port
 import eu.geekhome.services.hardware.PortDto
+import eu.geekhome.services.localization.Resource
 
 class PortDtoMapper {
     fun map(port: Port<*, *>): PortDto {

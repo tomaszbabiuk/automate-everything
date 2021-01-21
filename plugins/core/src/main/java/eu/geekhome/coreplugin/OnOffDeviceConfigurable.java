@@ -1,7 +1,7 @@
 package eu.geekhome.coreplugin;
 
 import eu.geekhome.services.configurable.Configurable;
-import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.localization.Resource;
 import org.pf4j.Extension;
 
 @Extension

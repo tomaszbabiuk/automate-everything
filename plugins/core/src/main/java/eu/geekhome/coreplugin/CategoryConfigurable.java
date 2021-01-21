@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.localization.Resource;
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.configurable.FieldDefinition;
 

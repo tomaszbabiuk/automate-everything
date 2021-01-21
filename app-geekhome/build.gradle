@@ -9,8 +9,8 @@ run {
 }
 
 dependencies {
-    implementation project(":module-common")
-    implementation project(":module-synchronization")
+//    implementation project(":module-common")
+//    implementation project(":module-synchronization")
     implementation project(":module-services")
 
     implementation "org.eclipse.jetty:jetty-http:$jettyVersion"

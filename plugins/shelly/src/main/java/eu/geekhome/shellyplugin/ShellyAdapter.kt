@@ -1,7 +1,5 @@
 package eu.geekhome.shellyplugin
 
-import com.geekhome.common.OperationMode
-import com.geekhome.common.logging.LoggingService
 import com.google.gson.Gson
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.hardware.*
@@ -51,7 +49,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
             val addresses = LanInetAddressHelper.ipsInLan
             return addresses[addresses.size - 1]
         } catch (ex: Exception) {
-            logger.error("Problem resolving this machine IP in LAN", ex)
+            //TODO: fix LAN IP finder
         }
         return null
     }
@@ -224,7 +222,6 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     }
 
     override fun onPublish(topicName: String, payload: String) {
-        logger.info("MQTT message: $topicName, content: $payload")
         val now = Calendar.getInstance().timeInMillis
 
         triplets
@@ -251,10 +248,6 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 //                }
 //            }
 //        })
-    }
-
-    companion object {
-        private val logger = LoggingService.getLogger()
     }
 
     init {

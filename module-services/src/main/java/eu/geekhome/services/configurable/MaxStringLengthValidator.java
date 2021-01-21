@@ -1,6 +1,7 @@
 package eu.geekhome.services.configurable;
 
-import com.geekhome.common.localization.Resource;
+
+import eu.geekhome.services.localization.Resource;
 
 public class MaxStringLengthValidator implements Validator<String> {
 
@@ -25,19 +26,3 @@ public class MaxStringLengthValidator implements Validator<String> {
         return fieldValue.length() <= _maxLength;
     }
 }
-
-/*
-class MaxStringLengthValidator(private val maxLength: Int)
-    : Validator<String>
-{
-    override var reason: Int = R.string.validator_max_length
-
-    override fun validate(fieldData: String): Boolean {
-        if (fieldData.isNotEmpty()) {
-            return fieldData.length <= maxLength
-        }
-
-        return true
-    }
-}
- */

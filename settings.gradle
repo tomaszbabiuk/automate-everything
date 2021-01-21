@@ -3,8 +3,6 @@ rootProject.name = 'geekhome-server2'
 include "app-geekhome"
 
 include "module-services"
-include "module-synchronization"
-include "module-common"
 
 include 'plugins'
 

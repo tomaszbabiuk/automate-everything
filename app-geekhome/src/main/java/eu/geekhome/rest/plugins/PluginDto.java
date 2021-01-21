@@ -1,7 +1,8 @@
 package eu.geekhome.rest.plugins;
 
-import com.geekhome.common.localization.Resource;
+
 import com.google.gson.annotations.SerializedName;
+import eu.geekhome.services.localization.Resource;
 
 public class PluginDto {
 

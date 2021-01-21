@@ -1,7 +1,7 @@
 package eu.geekhome.coreplugin;
 
-import com.geekhome.common.extensibility.PluginMetadata;
-import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.extensibility.PluginMetadata;
+import eu.geekhome.services.localization.Resource;
 
 import org.pf4j.PluginWrapper;
 import org.pf4j.Plugin;

@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
     compileOnly project(':module-services')
-    compileOnly project(':module-common')
     compileOnly(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {
         exclude group: "org.slf4j"
         exclude group: "org.slf4j.impl"

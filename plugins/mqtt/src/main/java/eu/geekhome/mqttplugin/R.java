@@ -1,6 +1,6 @@
 package eu.geekhome.mqttplugin;
 
-import com.geekhome.common.localization.Resource;
+import eu.geekhome.services.localization.Resource;
 
 public class R {
     public static Resource plugin_description = new Resource(

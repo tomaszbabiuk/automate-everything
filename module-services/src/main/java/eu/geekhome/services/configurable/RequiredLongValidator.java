@@ -1,6 +1,7 @@
 package eu.geekhome.services.configurable;
 
-import com.geekhome.common.localization.Resource;
+
+import eu.geekhome.services.localization.Resource;
 
 public class RequiredLongValidator implements Validator<Long> {
     @Override

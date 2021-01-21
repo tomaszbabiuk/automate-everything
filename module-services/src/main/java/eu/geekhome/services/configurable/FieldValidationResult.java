@@ -1,7 +1,7 @@
 package eu.geekhome.services.configurable;
 
-import com.geekhome.common.localization.Resource;
 import com.google.gson.annotations.SerializedName;
+import eu.geekhome.services.localization.Resource;
 
 import java.util.List;
 

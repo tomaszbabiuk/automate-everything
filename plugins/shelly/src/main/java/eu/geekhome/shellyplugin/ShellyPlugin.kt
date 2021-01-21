@@ -1,9 +1,9 @@
 package eu.geekhome.shellyplugin
 
-import com.geekhome.common.extensibility.PluginMetadata
-import com.geekhome.common.localization.Resource
+import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.hardware.HardwareAdapterFactory
 import eu.geekhome.services.hardware.HardwarePlugin
+import eu.geekhome.services.localization.Resource
 import eu.geekhome.services.mqtt.MqttBrokerPlugin
 import org.pf4j.PluginState
 import org.pf4j.PluginStateEvent

@@ -1,7 +1,7 @@
 package eu.geekhome.services.hardware
 
-import com.geekhome.common.localization.Resource
 import com.google.gson.annotations.SerializedName
+import eu.geekhome.services.localization.Resource
 
 data class PortDto(
     @SerializedName("id")

@@ -1,6 +1,7 @@
 package eu.geekhome.services.configurable;
 
-import com.geekhome.common.localization.Resource;
+
+import eu.geekhome.services.localization.Resource;
 
 import java.util.ArrayList;
 import java.util.List;

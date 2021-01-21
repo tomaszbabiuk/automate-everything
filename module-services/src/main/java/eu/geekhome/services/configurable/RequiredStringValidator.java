@@ -1,6 +1,7 @@
 package eu.geekhome.services.configurable;
 
-import com.geekhome.common.localization.Resource;
+
+import eu.geekhome.services.localization.Resource;
 
 public class RequiredStringValidator implements Validator<String> {
     @Override
@@ -14,14 +15,3 @@ public class RequiredStringValidator implements Validator<String> {
         return fieldValue != null && !fieldValue.isEmpty();
     }
 }
-
-/*
-class RequiredValidator() : Validator<String>
-{
-    override var reason: Int = R.string.validator_required
-
-    override fun validate(fieldData: String): Boolean {
-        return fieldData.isNotEmpty()
-    }
-}
- */

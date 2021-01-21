@@ -1,10 +1,10 @@
 package eu.geekhome.rest;
 
-import com.geekhome.common.localization.Language;
-import com.geekhome.common.localization.Resource;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import eu.geekhome.services.localization.Language;
+import eu.geekhome.services.localization.Resource;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
