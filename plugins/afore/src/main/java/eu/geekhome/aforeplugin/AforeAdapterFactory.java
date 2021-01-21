@@ -10,7 +10,7 @@ import java.util.List;
 class AforeAdapterFactory implements HardwareAdapterFactory {
 
     @NotNull
-    public static final String ID = "AFORE";
+    public static final String ID = "afore";
 
     @Override
     public List<HardwareAdapter> createAdapters() {

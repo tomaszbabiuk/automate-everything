@@ -1,9 +1,12 @@
 package eu.geekhome.services.events
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 class NumberedEventsSink<T> : EventsSink<T> {
 
     var eventCounter = 0
-    val listeners = ArrayList<NumberedEventsListener<T>>()
+    val listeners = Collections.synchronizedList(ArrayList<NumberedEventsListener<T>>())
 
     val events = ArrayList<NumberedEvent<T>>()
 
@@ -21,7 +24,7 @@ class NumberedEventsSink<T> : EventsSink<T> {
         eventCounter++
         val event = NumberedEvent(eventCounter, payload)
         events.add(event)
-        listeners.forEach { listener -> listener.onEvent(event) }
+        listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
 
     override fun reset() {

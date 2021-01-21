@@ -59,7 +59,7 @@ class DiscoveryEvents @Inject constructor(
     private fun broadcastHardwareEvent(event: NumberedEvent<HardwareEvent>) {
         val dto = eventMapper.map(event)
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
-            .name(dto.factoryId)
+            .name("discoveryEvent")
             .id(dto.no.toString())
             .mediaType(MediaType.APPLICATION_JSON_TYPE)
             .data(HardwareEventDto::class.java, dto)

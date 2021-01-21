@@ -91,8 +91,6 @@ import { client } from "./rest.js";
 export default {
   name: "App",
 
-  components: {},
-
   data: function() {
     return {
       tab: null,
@@ -181,12 +179,10 @@ export default {
    watch: {
     factories (factories) {
       if (factories.length > 0) {
-      console.log(`Old plugins ${factories}`)
         this.navigationItems[7].route='/discover/' + factories[0].id
       } else {
         this.navigationItems[7].route='/discover/null'
       }
-
     }
   },
   mounted: function() {

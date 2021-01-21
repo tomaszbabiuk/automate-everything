@@ -271,7 +271,7 @@ export default new Vuex.Store({
     },
 
     [ADD_DISCOVERY_EVENT](state, payload) {
-      state.discoveryEvents = [payload]
+      state.discoveryEvents.push(payload)
     },
   }
 })

@@ -12,10 +12,9 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
     private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<HardwareEvent>) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            broadcastEvent(eventsSink,"One shelly found under ip address: $ipToCheck")
+            broadcastEvent(eventsSink,"Shelly found! Ip address: $ipToCheck")
             Pair(ipToCheck,response)
         } catch (e: Exception) {
-            broadcastEvent(eventsSink,"$ipToCheck - unknown")
             null
         }
     }
@@ -23,6 +22,15 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
     suspend fun searchForShellies(eventsSink: EventsSink<HardwareEvent>): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
+        val lookupAddressBegin = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
+            0.toByte()))
+        val lookupAddressEnd = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
+            255.toByte()
+        ))
+
+        broadcastEvent(eventsSink,
+            "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd ")
+
         val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()
 
         for (i in 0..255) {
@@ -36,7 +44,6 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
             )
 
             val job = async(start = CoroutineStart.LAZY) {
-                broadcastEvent(eventsSink,"Is $ipToCheck a shelly device? Checking...")
                 checkIfShelly(ipToCheck, eventsSink)
             }
             jobs.add(job)
@@ -52,7 +59,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
     }
 
     fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
-        val event = HardwareEvent(ShellyAdapterFactory.ID, message)
+        val event = HardwareEvent(ShellyPlugin.PLUGIN_ID_SHELLY, message)
         eventsSink.broadcastEvent(event)
     }
 }

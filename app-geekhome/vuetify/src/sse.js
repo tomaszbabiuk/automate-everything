@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store from './plugins/vuex'
+import store, { ADD_DISCOVERY_EVENT } from './plugins/vuex'
 import { UPDATE_PLUGIN } from './plugins/vuex'
 
 export const sseClient = {
@@ -41,9 +41,8 @@ export const sseClient = {
           sse.close();
         });
 
-        sse.subscribe('*', (message) => {
-          console.log(message)
-          //store.commit(UPDATE_PLUGIN, message)
+        sse.subscribe('discoveryEvent', (payload) => {
+          store.commit(ADD_DISCOVERY_EVENT, payload)
         });
       })
       .catch(err => {
