@@ -6,7 +6,7 @@ public enum StateType {
     SignaledAction(2),
     NonSignaledAction(3);
 
-    private int _index;
+    private final int _index;
 
     StateType(int index) {
         _index = index;

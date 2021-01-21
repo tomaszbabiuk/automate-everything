@@ -3,7 +3,7 @@ package com.geekhome.common.configuration;
 import java.util.List;
 
 public class MasterDependenciesCheckerModule extends DependenciesCheckerModule {
-    private MasterConfiguration _masterConfiguration;
+    private final MasterConfiguration _masterConfiguration;
 
     public MasterDependenciesCheckerModule(MasterConfiguration masterConfiguration) {
         super(masterConfiguration);

@@ -7,7 +7,7 @@ import java.util.Calendar;
 
 public class AutomationCycler {
     private boolean _dryRun;
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
     private boolean _enabled;
     private long _than;
 
@@ -20,8 +20,8 @@ public class AutomationCycler {
         return _enabled;
     }
 
-    private MasterAutomation _masterAutomation;
-    private SystemInfo _systemInfo;
+    private final MasterAutomation _masterAutomation;
+    private final SystemInfo _systemInfo;
 
     public AutomationCycler(MasterAutomation masterAutomation, SystemInfo systemInfo) {
         _masterAutomation = masterAutomation;

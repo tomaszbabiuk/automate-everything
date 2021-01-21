@@ -4,9 +4,9 @@ public enum YesNo {
     No(0),
     Yes(1);
 
-    private int _index;
+    private final int _index;
 
-    private YesNo(int index) {
+    YesNo(int index) {
 
         _index = index;
     }

@@ -8,7 +8,7 @@ import com.geekhome.common.localization.ILocalizationProvider;
 import java.util.Calendar;
 
 public class SwitchableAutomationUnit<D extends MultistateDevice> extends MultistateDeviceAutomationUnit<D> {
-    private IOutputPort<Boolean> _outputPort;
+    private final IOutputPort<Boolean> _outputPort;
 
     protected IOutputPort<Boolean> getOutputPort() {
         return _outputPort;

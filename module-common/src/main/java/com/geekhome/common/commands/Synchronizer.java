@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 public class Synchronizer {
 
-    private MasterConfiguration _masterConfiguration;
-    private MasterAutomation _masterAutomation;
-    private AutomationSettings _automationSettings;
-    private ILocalizationProvider _localizationProvider;
-    private SystemInfo _systemInfo;
-    private CommandsProcessor _commandsProcessor;
-    private DashboardAlertService _dashboardAlertService;
+    private final MasterConfiguration _masterConfiguration;
+    private final MasterAutomation _masterAutomation;
+    private final AutomationSettings _automationSettings;
+    private final ILocalizationProvider _localizationProvider;
+    private final SystemInfo _systemInfo;
+    private final CommandsProcessor _commandsProcessor;
+    private final DashboardAlertService _dashboardAlertService;
 
     public Synchronizer(MasterConfiguration masterConfiguration, MasterAutomation masterAutomation,
                         AutomationSettings automationSettings, ILocalizationProvider localizationProvider,

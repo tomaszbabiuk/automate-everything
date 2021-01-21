@@ -8,7 +8,7 @@ public class ConfigurationMetadata {
     private String _from;
     private String _version;
     private int _maxPool;
-    private ArrayList<SectionMetadata> _sections;
+    private final ArrayList<SectionMetadata> _sections;
 
     public ConfigurationMetadata(String version, int maxPool, String comment, String from) {
         _version = version;

@@ -7,9 +7,9 @@ import java.util.Calendar;
 
 class ValueConditionAutomationUnit extends EvaluableAutomationUnit {
     private boolean _previousEvaluation;
-    private ValueCondition _condition;
+    private final ValueCondition _condition;
 
-    private DeviceAutomationUnit _deviceUnit;
+    private final DeviceAutomationUnit _deviceUnit;
 
     ValueConditionAutomationUnit(ValueCondition condition, MasterAutomation masterAutomation) throws Exception {
         super(condition.getName());

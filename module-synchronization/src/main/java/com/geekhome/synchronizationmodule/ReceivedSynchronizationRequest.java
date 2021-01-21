@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class ReceivedSynchronizationRequest extends SynchronizationRequest {
 
     @SerializedName("from")
-    private String _from;
+    private final String _from;
 
     @SerializedName("id")
-    private Long _id;
+    private final Long _id;
 
     public ReceivedSynchronizationRequest(String from, Long id, SynchronizationRequest synchronizationRequest) {
         super(synchronizationRequest.getType(), synchronizationRequest.getParameter(), synchronizationRequest.getValue(), synchronizationRequest.getCode());

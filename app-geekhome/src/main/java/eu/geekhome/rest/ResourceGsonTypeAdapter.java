@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ResourceGsonTypeAdapter extends TypeAdapter<Resource> {
 
-    private Language _language;
+    private final Language _language;
 
     public ResourceGsonTypeAdapter(Language language) {
         _language = language;

@@ -5,7 +5,7 @@ import com.geekhome.common.configuration.Persistable;
 import java.util.Calendar;
 
 public class DateTimeInfo {
-    private Calendar _dateTime;
+    private final Calendar _dateTime;
 
     @Persistable(name="Year")
     public int getYear() {

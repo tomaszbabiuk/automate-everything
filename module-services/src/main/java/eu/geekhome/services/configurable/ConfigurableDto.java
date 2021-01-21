@@ -8,28 +8,28 @@ import java.util.List;
 public class ConfigurableDto {
 
     @SerializedName("fields")
-    private List<FieldDto> _fields;
+    private final List<FieldDto> _fields;
 
     @SerializedName("class")
-    private String _clazz;
+    private final String _clazz;
 
     @SerializedName("parentClass")
-    private String _parentClazz;
+    private final String _parentClazz;
 
     @SerializedName("addNewRes")
-    private Resource _addNewRes;
+    private final Resource _addNewRes;
 
     @SerializedName("editRes")
-    private Resource _editRes;
+    private final Resource _editRes;
 
     @SerializedName("titleRes")
-    private Resource _titleRes;
+    private final Resource _titleRes;
 
     @SerializedName("descriptionRes")
-    private Resource _descriptionRes;
+    private final Resource _descriptionRes;
 
     @SerializedName("iconRaw")
-    private String _iconRaw;
+    private final String _iconRaw;
 
     public ConfigurableDto(Resource titleRes, Resource descriptionRes, String clazz, String parentClazz,
                            List<FieldDto> fields, Resource addNewRes, Resource editRes, String iconRaw) {

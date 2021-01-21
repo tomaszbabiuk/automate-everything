@@ -6,8 +6,8 @@ import com.geekhome.common.configuration.Persistable;
 
 public class BackupInfo extends NamedObject {
     private final String _fromDate;
-    private int _version;
-    private boolean _current;
+    private final int _version;
+    private final boolean _current;
 
     @Persistable(name="Current")
     public boolean isCurrent() {

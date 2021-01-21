@@ -4,10 +4,10 @@ import com.geekhome.common.DateTimeInfo;
 import com.geekhome.common.configuration.Persistable;
 
 public class SystemStatus {
-    private DateTimeInfo _date;
-    private int _operationMode;
-    private String _userName;
-    private boolean _isLicenceAccepted;
+    private final DateTimeInfo _date;
+    private final int _operationMode;
+    private final String _userName;
+    private final boolean _isLicenceAccepted;
 
     @Persistable(name="Date")
     public DateTimeInfo getDate() {

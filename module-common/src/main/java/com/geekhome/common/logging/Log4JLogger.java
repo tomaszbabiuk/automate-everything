@@ -30,8 +30,8 @@ public class Log4JLogger extends LoggerBase {
     private final String LOGGER_NAME = "errors";
     private final String LOG_MAIN_PATH = "logs";
     private final int DAYS_TO_KEEP_ERRORS = 30;
-    private Logger _errorsLogger;
-    private Logger _rootLogger = LogManager.getRootLogger();
+    private final Logger _errorsLogger;
+    private final Logger _rootLogger = LogManager.getRootLogger();
     public Log4JLogger() {
         createErrorsLogger();
         _errorsLogger = LogManager.getLogger(LOGGER_NAME);
@@ -94,8 +94,8 @@ public class Log4JLogger extends LoggerBase {
     }
 
     public class ErrorsCleanUpAction implements Action {
-        private int _days;
-        private File _logsDirectory;
+        private final int _days;
+        private final File _logsDirectory;
 
         public ErrorsCleanUpAction(int days, File logsDirectory) {
             _days = days;

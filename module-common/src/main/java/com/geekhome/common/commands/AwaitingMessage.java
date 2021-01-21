@@ -2,8 +2,8 @@ package com.geekhome.common.commands;
 
 
 public class AwaitingMessage {
-    private String _targetUser;
-    private String _subject;
+    private final String _targetUser;
+    private final String _subject;
     private String _content;
     private String _contentType;
     private String _json;

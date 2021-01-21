@@ -9,8 +9,8 @@ import com.geekhome.common.localization.ILocalizationProvider;
 
 public abstract class SerialAdapterBase extends MonitorableBase implements IHardwareManagerAdapter {
     private final ILocalizationProvider _localizationProvider;
-    private ILogger _logger = LoggingService.getLogger();
-    private String _serialPortName;
+    private final ILogger _logger = LoggingService.getLogger();
+    private final String _serialPortName;
 
     protected void markAsNonOperational(Throwable ex) {
         updateStatus(false, _localizationProvider.getValue("C:AdapterError"));

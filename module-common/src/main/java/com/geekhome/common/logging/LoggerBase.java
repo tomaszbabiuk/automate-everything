@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LoggerBase implements ILogger {
-    private List<TimedLog> _truncatedLogs = new ArrayList<>();
-    private List<TimedLog> _activities = new ArrayList<>();
-    private List<ErrorLog> _errors = new ArrayList<>();
+    private final List<TimedLog> _truncatedLogs = new ArrayList<>();
+    private final List<TimedLog> _activities = new ArrayList<>();
+    private final List<ErrorLog> _errors = new ArrayList<>();
     private int _errorsCount;
 
-    private Object _lock = new Object();
+    private final Object _lock = new Object();
 
     @Override
     public List<TimedLog> getActivities() {

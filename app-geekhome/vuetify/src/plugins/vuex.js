@@ -37,6 +37,9 @@ export const REMOVE_ICON_CATEGORY = 'REMOVE_ICON_CATEGORY'
 export const CLEAR_DISCOVERY_EVENTS = 'CLEAR_DISCOVERY_EVENTS'
 export const ADD_DISCOVERY_EVENT = 'ADD_DISCOVERY_EVENT'
 
+export const CLEAR_HARDWARE_ADAPTERS = 'CLEAR_HARDWARE_ADAPTERS'
+export const ADD_HARDWARE_ADAPTER = 'ADD_HARDWARE_ADAPTER'
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
@@ -63,6 +66,7 @@ export default new Vuex.Store({
     tags: [],
     iconCategories: [],
     discoveryEvents: [],
+    hardwareAdapters: [],
     newInstance: {
       id: null,
       class: null,
@@ -272,6 +276,14 @@ export default new Vuex.Store({
 
     [ADD_DISCOVERY_EVENT](state, payload) {
       state.discoveryEvents.push(payload)
+    },
+
+    [CLEAR_HARDWARE_ADAPTERS](state) {
+      state.hardwareAdapters = []
+    },
+
+    [ADD_HARDWARE_ADAPTER](state, payload) {
+      state.hardwareAdapters.push(payload)
     },
   }
 })

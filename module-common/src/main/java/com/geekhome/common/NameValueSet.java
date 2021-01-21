@@ -3,8 +3,8 @@ package com.geekhome.common;
 import java.util.ArrayList;
 
 public class NameValueSet implements INameValueSet {
-        private ArrayList<DictionaryEntry> _wrapper;
-        private ArrayList<String> _keys;
+        private final ArrayList<DictionaryEntry> _wrapper;
+        private final ArrayList<String> _keys;
 
         public NameValueSet()
         {
@@ -16,7 +16,7 @@ public class NameValueSet implements INameValueSet {
     {
         for (DictionaryEntry entry : _wrapper)
         {
-            if (entry.getKey().toString().toLowerCase().equals(parameter.toLowerCase()))
+            if (entry.getKey().toString().equalsIgnoreCase(parameter))
             {
                 return (String)entry.getValue();
             }

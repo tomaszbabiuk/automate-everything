@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ByteArrayRocks
 {
-    private static ArrayList<Integer> _empty = new ArrayList<>();
+    private static final ArrayList<Integer> _empty = new ArrayList<>();
 
     public static ArrayList<Integer> locate(byte[] self, byte[] candidate)
     {

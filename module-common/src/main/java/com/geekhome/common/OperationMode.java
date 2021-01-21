@@ -5,9 +5,9 @@ public enum OperationMode {
     Configuration(4), // automation off, configuration units only
     Diagnostics(3); // automation off
 
-    private int _index;
+    private final int _index;
 
-    private OperationMode(int index) {
+    OperationMode(int index) {
         _index = index;
     }
 

@@ -4,7 +4,7 @@ import com.geekhome.common.localization.Resource;
 
 public class CombinedValidator<T> implements Validator<T> {
 
-    private Validator<T>[] _validators;
+    private final Validator<T>[] _validators;
 
     public CombinedValidator(Validator<T> ... validators) {
         _validators = validators;

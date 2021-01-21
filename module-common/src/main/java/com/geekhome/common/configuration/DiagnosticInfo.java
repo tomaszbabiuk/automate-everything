@@ -5,8 +5,8 @@ import com.geekhome.common.logging.ILogger;
 import com.geekhome.common.alerts.DashboardAlertService;
 
 public class DiagnosticInfo {
-    private static ILogger _logger = LoggingService.getLogger();
-    private DashboardAlertService _dashboardAlertService;
+    private static final ILogger _logger = LoggingService.getLogger();
+    private final DashboardAlertService _dashboardAlertService;
 
     public DiagnosticInfo(DashboardAlertService dashboardAlertService) {
         _dashboardAlertService = dashboardAlertService;

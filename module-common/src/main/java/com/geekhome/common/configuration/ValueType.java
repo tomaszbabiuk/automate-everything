@@ -6,7 +6,7 @@ public enum ValueType {
     Luminosity(2),
     Power(3);
 
-    private int _index;
+    private final int _index;
 
     ValueType(int index) {
         _index = index;

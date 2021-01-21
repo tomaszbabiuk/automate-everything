@@ -9,28 +9,28 @@ import java.util.List;
 
 public class MasterConfiguration extends Collector implements IMasterDependenciesChecker {
     private final MasterTextFilePersister _configurationProvider;
-    private ILocalizationProvider _localizationProvider;
+    private final ILocalizationProvider _localizationProvider;
     private ArrayList<DependenciesCheckerModule> _dependenciesCheckers;
     private ArrayList<Collector> _collectors;
-    private CollectorCollection<Floor> _floors;
-    private CollectorCollection<MultistateCondition> _multistateConditions;
-    private CollectorCollection<ValueCondition> _valueConditions;
-    private CollectorCollection<DeltaCondition> _deltaConditions;
-    private CollectorCollection<GroupCondition> _groupConditions;
-    private CollectorCollection<TimeCondition> _timeConditions;
-    private CollectorCollection<GeofenceCondition> _geofenceConditions;
-    private CollectorCollection<ICondition> _calculatedConditions;
-    private CollectorCollection<Mode> _modes;
-    private CollectorCollection<Alert> _alerts;
-    private CollectorCollection<KeySwitch> _keySwitches;
-    private CollectorCollection<Block> _blocks;
-    private CollectorCollection<DateCondition> _dateConditions;
-    private CollectorCollection<ReadValueCommand> _readValueCommands;
-    private CollectorCollection<ChangeStateCommand> _changeStateCommands;
-    private CollectorCollection<Geofence> _geofences;
+    private final CollectorCollection<Floor> _floors;
+    private final CollectorCollection<MultistateCondition> _multistateConditions;
+    private final CollectorCollection<ValueCondition> _valueConditions;
+    private final CollectorCollection<DeltaCondition> _deltaConditions;
+    private final CollectorCollection<GroupCondition> _groupConditions;
+    private final CollectorCollection<TimeCondition> _timeConditions;
+    private final CollectorCollection<GeofenceCondition> _geofenceConditions;
+    private final CollectorCollection<ICondition> _calculatedConditions;
+    private final CollectorCollection<Mode> _modes;
+    private final CollectorCollection<Alert> _alerts;
+    private final CollectorCollection<KeySwitch> _keySwitches;
+    private final CollectorCollection<Block> _blocks;
+    private final CollectorCollection<DateCondition> _dateConditions;
+    private final CollectorCollection<ReadValueCommand> _readValueCommands;
+    private final CollectorCollection<ChangeStateCommand> _changeStateCommands;
+    private final CollectorCollection<Geofence> _geofences;
 
-    private ArrayList<CollectorCollection<? extends IDevice>> _devicesCollectors;
-    private ArrayList<CollectorCollection<? extends ICondition>> _conditionsCollectors;
+    private final ArrayList<CollectorCollection<? extends IDevice>> _devicesCollectors;
+    private final ArrayList<CollectorCollection<? extends ICondition>> _conditionsCollectors;
     private ArrayList<IConfigurationValidator> _configurationValidators;
     private List<String> _validations;
 

@@ -33,8 +33,8 @@ public enum SynchronizationCommandType {
     @SerializedName("systeminfo")
     GetSystemInfo("systeminfo", SynchronizationContentType.SystemInfo);
 
-    private String _command;
-    private SynchronizationContentType _contentType;
+    private final String _command;
+    private final SynchronizationContentType _contentType;
 
     SynchronizationCommandType(String command, SynchronizationContentType contentType) {
         _command = command;

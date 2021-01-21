@@ -16,19 +16,19 @@ import java.util.Calendar;
 
 public final class MasterAutomation {
 
-    private static ILogger _logger = LoggingService.getLogger();
-    private AutomationCycler _automationCycler;
-    private SystemInfo _systemInfo;
-    private MasterConfiguration _masterConfiguration;
-    private IHardwareManager _hardwareManager;
-    private DashboardAlertService _dashboardAlertService;
-    private CollectorCollection<IDeviceAutomationUnit> _devices = new CollectorCollection<>();
-    private CollectorCollection<IEvaluableAutomationUnit> _conditions = new CollectorCollection<>();
-    private CollectorCollection<ModeAutomationUnit> _modes = new CollectorCollection<>();
-    private CollectorCollection<BlockAutomationUnit> _blocks = new CollectorCollection<>();
+    private static final ILogger _logger = LoggingService.getLogger();
+    private final AutomationCycler _automationCycler;
+    private final SystemInfo _systemInfo;
+    private final MasterConfiguration _masterConfiguration;
+    private final IHardwareManager _hardwareManager;
+    private final DashboardAlertService _dashboardAlertService;
+    private final CollectorCollection<IDeviceAutomationUnit> _devices = new CollectorCollection<>();
+    private final CollectorCollection<IEvaluableAutomationUnit> _conditions = new CollectorCollection<>();
+    private final CollectorCollection<ModeAutomationUnit> _modes = new CollectorCollection<>();
+    private final CollectorCollection<BlockAutomationUnit> _blocks = new CollectorCollection<>();
     private ArrayList<IAutomationModule> _modules;
     private ArrayList<IAutomationHook> _hooks;
-    private CollectorCollection<AlertAutomationUnit> _alerts = new CollectorCollection<>();
+    private final CollectorCollection<AlertAutomationUnit> _alerts = new CollectorCollection<>();
 
     public CollectorCollection<IDeviceAutomationUnit> getDevices() {
         return _devices;

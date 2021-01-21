@@ -9,9 +9,9 @@ import java.util.Hashtable;
 public class AutomationSettings {
     public static final String TABLE_DEVICES = "Devices";
 
-    private static ILogger Logger = LoggingService.getLogger();
-    private TextFileAutomationSettingsPersister _persister;
-    private Hashtable<String, Hashtable<String, String>> _tables;
+    private static final ILogger Logger = LoggingService.getLogger();
+    private final TextFileAutomationSettingsPersister _persister;
+    private final Hashtable<String, Hashtable<String, String>> _tables;
 
     private void onModified() {
         _persister.save(_tables);
@@ -52,9 +52,7 @@ public class AutomationSettings {
     public void clearSetting(String tableName, String name) {
         Logger.debug(String.format("Clearing automation setting. Section: %s, name: %s", tableName, name));
         Hashtable<String, String> table = getTable(tableName);
-        if (table.containsKey(name)) {
-            table.remove(name);
-        }
+        table.remove(name);
         onModified();
     }
 

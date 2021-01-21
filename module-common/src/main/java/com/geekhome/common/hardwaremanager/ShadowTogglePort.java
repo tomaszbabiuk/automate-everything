@@ -8,7 +8,7 @@ import java.util.Calendar;
 public class ShadowTogglePort<T> extends ConnectiblePortBase implements IShadowTogglePort {
 
     private ITogglePort _target;
-    private ITogglePort _base;
+    private final ITogglePort _base;
 
     public ShadowTogglePort(String id, ITogglePort base) {
         super(id, 0);

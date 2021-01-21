@@ -30,6 +30,6 @@ class MQTTPlugin(wrapper: PluginWrapper?) : MqttBrokerPlugin(wrapper), PluginMet
     }
 
     override fun getBroker(): MqttBrokerService {
-        return _broker;
+        return _broker
     }
 }

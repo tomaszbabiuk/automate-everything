@@ -4,7 +4,7 @@ public enum SynchronizationNotificationType {
     Alerts("alerts"),
     AliveSignal("systeminfo");
 
-    private String _command;
+    private final String _command;
 
     SynchronizationNotificationType(String command) {
         _command = command;

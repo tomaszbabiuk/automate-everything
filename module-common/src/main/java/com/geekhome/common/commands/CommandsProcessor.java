@@ -19,11 +19,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class CommandsProcessor {
-    private ILogger _logger = LoggingService.getLogger();
-    private SystemInfo _systemInfo;
-    private MasterConfiguration _masterConfiguration;
-    private MasterAutomation _masterAutomation;
-    private ILocalizationProvider _localizationProvider;
+    private final ILogger _logger = LoggingService.getLogger();
+    private final SystemInfo _systemInfo;
+    private final MasterConfiguration _masterConfiguration;
+    private final MasterAutomation _masterAutomation;
+    private final ILocalizationProvider _localizationProvider;
 
 
     public CommandsProcessor(SystemInfo systemInfo, MasterConfiguration masterConfiguration,

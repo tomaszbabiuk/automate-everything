@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class DateConditionAutomationUnit extends EvaluableAutomationUnit {
     private final HashMap<String, Integer> _monthNames;
-    private int _startDate;
-    private int _stopDate;
+    private final int _startDate;
+    private final int _stopDate;
 
     public DateConditionAutomationUnit(DateCondition condition, ILocalizationProvider localizationProvider) {
         super(condition.getName());

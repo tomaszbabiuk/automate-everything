@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FailedMessage extends AwaitingMessage {
-    private Date _failedAt;
+    private final Date _failedAt;
 
     @Override
     public String toString() {

@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class MinWorkingTimeCounter {
     private boolean _lastState;
-    private long _maxMillis;
+    private final long _maxMillis;
     private long _switchedOnMillis;
     private long _lastOnMillis;
 

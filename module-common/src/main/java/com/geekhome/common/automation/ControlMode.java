@@ -6,7 +6,7 @@ public enum ControlMode {
     ForcedManual(2),
     AutomationBreak(3);
 
-    private int _index;
+    private final int _index;
 
     ControlMode(int index) {
         _index = index;

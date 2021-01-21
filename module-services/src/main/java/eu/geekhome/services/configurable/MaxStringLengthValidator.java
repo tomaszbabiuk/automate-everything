@@ -4,7 +4,7 @@ import com.geekhome.common.localization.Resource;
 
 public class MaxStringLengthValidator implements Validator<String> {
 
-    private int _maxLength;
+    private final int _maxLength;
 
     public MaxStringLengthValidator(int maxLength) {
         _maxLength = maxLength;

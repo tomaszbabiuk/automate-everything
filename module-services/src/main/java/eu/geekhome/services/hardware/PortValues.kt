@@ -7,9 +7,7 @@ sealed class PortValue<T>(initialValue: T) {
 
     private var internalValue: T = initialValue
     var isLatchTriggered = false
-        private set(value) {
-            field = value
-        }
+        private set
 
     var value: T
         get() = this.internalValue

@@ -3,7 +3,7 @@ package com.geekhome.common.hardwaremanager;
 import java.util.Hashtable;
 
 public class TogglePortsCollection extends Hashtable<String, ITogglePort> {
-    private PortType _type;
+    private final PortType _type;
 
     public TogglePortsCollection(PortType type) {
         _type = type;

@@ -9,7 +9,7 @@ public class DashboardAlertService extends AlertServiceBase {
     private static final String ALERT_SYSTEM_RESTART = "system_restart";
     private static final String ALERT_SYSTEM_SHADOW = "system_shadow";
     private final ILocalizationProvider _localizationProvider;
-    private CollectorCollection<Alert> _alerts = new CollectorCollection<>();
+    private final CollectorCollection<Alert> _alerts = new CollectorCollection<>();
 
     public CollectorCollection<Alert> getAlerts() {
         return _alerts;

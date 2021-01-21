@@ -10,9 +10,9 @@ public enum DependencyType {
     Zone(7),
     Command(8);
 
-    private int _index;
+    private final int _index;
 
-    private DependencyType(int index) {
+    DependencyType(int index) {
         _index = index;
     }
 

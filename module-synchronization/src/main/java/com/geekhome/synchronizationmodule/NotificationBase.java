@@ -6,7 +6,7 @@ public class NotificationBase {
     public static final String KEY_TYPE = "type";
     public static final String KEY_TIMESTAMP = "timestamp";
 
-    private Hashtable<String, String> _properties;
+    private final Hashtable<String, String> _properties;
 
     public Hashtable<String, String> getProperties() {
         return _properties;

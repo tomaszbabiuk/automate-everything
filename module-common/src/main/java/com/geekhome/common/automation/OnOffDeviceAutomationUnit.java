@@ -9,7 +9,7 @@ import com.geekhome.common.configuration.ObjectNotFoundException;
 import java.util.Calendar;
 
 public class OnOffDeviceAutomationUnit<D extends OnOffDeviceBase> extends MultistateDeviceAutomationUnit<D> {
-    private IOutputPort<Boolean> _outputPort;
+    private final IOutputPort<Boolean> _outputPort;
     private Calendar _lastSwitchingOnTime = null;
 
     protected Calendar getLastSwitchingOnTime() {

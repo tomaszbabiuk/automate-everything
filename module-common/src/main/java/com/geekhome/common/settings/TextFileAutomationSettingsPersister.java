@@ -11,7 +11,7 @@ import java.util.Hashtable;
 
 public class TextFileAutomationSettingsPersister  {
     private final String _fileName;
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
 
     public TextFileAutomationSettingsPersister() throws IOException {
         _fileName = createFileName();
@@ -86,7 +86,7 @@ public class TextFileAutomationSettingsPersister  {
                         catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                        String value = line.substring(line.indexOf(" = ") + 3, line.length());
+                        String value = line.substring(line.indexOf(" = ") + 3);
                         props.add(key, value);
                     }
 

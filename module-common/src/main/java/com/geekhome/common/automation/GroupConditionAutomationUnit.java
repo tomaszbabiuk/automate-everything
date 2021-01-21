@@ -6,8 +6,8 @@ import com.geekhome.common.configuration.GroupMatch;
 import java.util.Calendar;
 
 public class GroupConditionAutomationUnit extends EvaluableAutomationUnit {
-    private GroupCondition _condition;
-    private MasterAutomation _masterAutomation;
+    private final GroupCondition _condition;
+    private final MasterAutomation _masterAutomation;
 
     public GroupConditionAutomationUnit(GroupCondition condition, MasterAutomation masterAutomation) {
         super(condition.getName());

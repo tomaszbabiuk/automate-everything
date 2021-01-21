@@ -11,7 +11,7 @@ import java.util.Calendar;
 
 public class ToggledOnOffDeviceAutomationUnit<D extends OnOffDeviceBase> extends MultistateDeviceAutomationUnit<D> {
     private String _previousStateId;
-    private ITogglePort _togglePort;
+    private final ITogglePort _togglePort;
 
     public ITogglePort getPort() {
         return _togglePort;

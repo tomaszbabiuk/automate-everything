@@ -6,8 +6,8 @@ import java.util.Calendar;
 
 public class BlockAutomationUnit extends EvaluableAutomationUnit {
 
-    private Block _block;
-    private MasterAutomation _masterAutomation;
+    private final Block _block;
+    private final MasterAutomation _masterAutomation;
 
     public Block getBlock() {
         return _block;

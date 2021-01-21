@@ -7,7 +7,7 @@ public enum GroupMatch
 
     private final int _index;
 
-    private GroupMatch(int index) {
+    GroupMatch(int index) {
         _index = index;
     }
 

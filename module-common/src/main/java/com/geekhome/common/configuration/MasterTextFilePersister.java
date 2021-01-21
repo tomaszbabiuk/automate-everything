@@ -14,10 +14,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MasterTextFilePersister extends ConfigurationProviderBase {
     @SuppressWarnings("FieldCanBeLocal")
-    private static String CONFIGURATION_NAME = "Configuration";
+    private static final String CONFIGURATION_NAME = "Configuration";
     protected ILogger _logger = LoggingService.getLogger();
-    private ReentrantLock _lock = new ReentrantLock();
-    private String _fileName;
+    private final ReentrantLock _lock = new ReentrantLock();
+    private final String _fileName;
     private BufferedWriter _writer;
 
     private String getFileName() {
@@ -130,7 +130,7 @@ public class MasterTextFilePersister extends ConfigurationProviderBase {
                     INameValueSet props = new NameValueSet();
                     while ((line = br.readLine()) != null && !line.equals("")) {
                         String key = line.substring(0,line.indexOf(" = "));
-                        String value = line.substring(line.indexOf(" = ") + 3, line.length());
+                        String value = line.substring(line.indexOf(" = ") + 3);
                         props.add(key, value);
                     }
 
@@ -170,7 +170,7 @@ public class MasterTextFilePersister extends ConfigurationProviderBase {
                 final File f = file.toFile();
                 try {
                     ConfigurationMetadata metadata = loadMetadataFromFile(f, true);
-                    if (f.getName().toLowerCase().equals("configuration.dat")) {
+                    if (f.getName().equalsIgnoreCase("configuration.dat")) {
                         metadata.setCurrent(true);
                     }
                     DescriptiveName descriptiveName = new DescriptiveName(metadata.getComment(), f.getName());

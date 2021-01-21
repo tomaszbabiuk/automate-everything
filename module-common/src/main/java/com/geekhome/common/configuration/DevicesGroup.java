@@ -3,7 +3,7 @@ package com.geekhome.common.configuration;
 import com.geekhome.common.NamedObject;
 
 public class DevicesGroup extends NamedObject {
-    private CollectorCollection<IDevice> _devices;
+    private final CollectorCollection<IDevice> _devices;
 
     public DevicesGroup(DescriptiveName name) {
         super(name);

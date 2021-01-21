@@ -7,9 +7,9 @@ import java.util.Calendar;
 
 public class DeltaConditionAutomationUnit extends EvaluableAutomationUnit {
     private boolean _previousEvaluation;
-    private DeltaCondition _condition;
-    private IDeviceAutomationUnit _firstDEviceUnit;
-    private IDeviceAutomationUnit _secondDEviceUnit;
+    private final DeltaCondition _condition;
+    private final IDeviceAutomationUnit _firstDEviceUnit;
+    private final IDeviceAutomationUnit _secondDEviceUnit;
 
     public DeltaConditionAutomationUnit(DeltaCondition condition, MasterAutomation masterAutomation) throws Exception {
         super(condition.getName());

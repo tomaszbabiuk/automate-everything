@@ -10,12 +10,12 @@ import com.geekhome.common.configuration.CollectorCollection;
 import com.geekhome.synchronizationmodule.SmartEvent;
 
 public class CoreAutomationModule implements IAutomationModule {
-    private ILogger _logger = LoggingService.getLogger();
-    private SystemInfo _systemInfo;
-    private MasterAutomation _masterAutomation;
-    private MasterConfiguration _masterConfiguration;
-    private ILocalizationProvider _localizationProvider;
-    private IHardwareManager _hardwareManager;
+    private final ILogger _logger = LoggingService.getLogger();
+    private final SystemInfo _systemInfo;
+    private final MasterAutomation _masterAutomation;
+    private final MasterConfiguration _masterConfiguration;
+    private final ILocalizationProvider _localizationProvider;
+    private final IHardwareManager _hardwareManager;
 
     public CoreAutomationModule(ILocalizationProvider localizationProvider, IHardwareManager hardwareManager, SystemInfo systemInfo,
                                 MasterAutomation masterAutomation, MasterConfiguration masterConfiguration) {

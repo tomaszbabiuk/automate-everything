@@ -3,7 +3,7 @@ package com.geekhome.common.hardwaremanager;
 import java.util.Hashtable;
 
 public class OutputPortsCollection<T> extends Hashtable<String, IOutputPort<T>> {
-    private PortType _type;
+    private final PortType _type;
 
     public OutputPortsCollection(PortType type) {
         _type = type;

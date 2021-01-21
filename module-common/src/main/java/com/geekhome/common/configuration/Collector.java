@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public abstract class Collector {
-    private IdPool _pool;
+    private final IdPool _pool;
     protected boolean _isModified;
     private Runnable _modifiedListener;
     private IInvalidateCacheListener _invalidateCacheListener;

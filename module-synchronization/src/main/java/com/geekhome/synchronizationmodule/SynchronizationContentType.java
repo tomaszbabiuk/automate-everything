@@ -39,7 +39,7 @@ public enum SynchronizationContentType {
     @SerializedName("geofences")
     Geofences("geofences");
 
-    private String _str;
+    private final String _str;
 
     SynchronizationContentType(String str) {
         _str = str;

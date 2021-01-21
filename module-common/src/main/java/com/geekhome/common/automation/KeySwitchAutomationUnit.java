@@ -8,7 +8,7 @@ import com.geekhome.common.localization.ILocalizationProvider;
 import java.util.Calendar;
 
 public class KeySwitchAutomationUnit extends VirtualKeySwitchAutomationUnit {
-    private IInputPort<Boolean> _inputPort;
+    private final IInputPort<Boolean> _inputPort;
 
     public KeySwitchAutomationUnit(IInputPort<Boolean> inputPort, KeySwitch device, ILocalizationProvider localizationProvider) throws Exception {
           super(device, localizationProvider);

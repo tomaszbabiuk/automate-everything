@@ -6,10 +6,10 @@ import com.geekhome.common.automation.IDeviceAutomationUnit;
 import java.util.ArrayList;
 
 public class CommandResult {
-    private String _output;
-    private ArrayList<IDeviceAutomationUnit> _automationUnits;
-    private boolean _codeRequired;
-    private IDevice _controlledDevice;
+    private final String _output;
+    private final ArrayList<IDeviceAutomationUnit> _automationUnits;
+    private final boolean _codeRequired;
+    private final IDevice _controlledDevice;
 
     private CommandResult(String output, ArrayList<IDeviceAutomationUnit> automationUnits, boolean codeRequired, IDevice controlledDevice) {
         _output = output;

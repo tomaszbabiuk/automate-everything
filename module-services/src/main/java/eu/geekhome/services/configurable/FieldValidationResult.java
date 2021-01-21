@@ -8,10 +8,10 @@ import java.util.List;
 public class FieldValidationResult {
 
     @SerializedName("valid")
-    private boolean _isValid;
+    private final boolean _isValid;
 
     @SerializedName("reasons")
-    private List<Resource> _reasons;
+    private final List<Resource> _reasons;
 
     public FieldValidationResult(boolean isValid, List<Resource> reasons) {
         _isValid = isValid;

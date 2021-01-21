@@ -104,7 +104,7 @@ class SqlDelightRepository : Repository {
         val instance = database
                 .configurableInstanceQueries
                 .selectById(id)
-                .executeAsOne();
+                .executeAsOne()
 
         return mapConfigurableInstanceToInstanceDto(instance)
     }

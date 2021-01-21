@@ -48,7 +48,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 
     private fun resolveIpInLan(): InetAddress? {
         try {
-            val addresses = LanInetAddressHelper.ipsInLan;
+            val addresses = LanInetAddressHelper.ipsInLan
             return addresses[addresses.size - 1]
         } catch (ex: Exception) {
             logger.error("Problem resolving this machine IP in LAN", ex)

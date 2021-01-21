@@ -5,9 +5,9 @@ public enum PresenceType
     Presence(0),
     Absence(1);
 
-    private int _index;
+    private final int _index;
 
-    private PresenceType(int index) {
+    PresenceType(int index) {
         _index = index;
     }
 

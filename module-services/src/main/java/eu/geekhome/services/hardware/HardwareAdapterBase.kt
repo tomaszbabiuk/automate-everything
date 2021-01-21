@@ -3,8 +3,7 @@ package eu.geekhome.services.hardware
 import eu.geekhome.services.events.EventsSink
 import java.util.*
 
-abstract class HardwareAdapterBase(
-) : HardwareAdapter {
+abstract class HardwareAdapterBase : HardwareAdapter {
 
     override var state = AdapterState.Initialized
     override var lastDiscoveryTime = 0L

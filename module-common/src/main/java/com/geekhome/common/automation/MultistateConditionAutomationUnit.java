@@ -12,7 +12,7 @@ public class MultistateConditionAutomationUnit extends EvaluableAutomationUnit {
     private final List<String> _states;
     private final long _durationMs;
     private boolean _prevValue;
-    private IMultistateDeviceAutomationUnit _deviceUnit;
+    private final IMultistateDeviceAutomationUnit _deviceUnit;
     private boolean _delaying;
     private long _evaluatedAt;
 
@@ -34,9 +34,6 @@ public class MultistateConditionAutomationUnit extends EvaluableAutomationUnit {
 
         _prevValue = currentValue;
 
-        if (_delaying && _evaluatedAt + _durationMs < now.getTimeInMillis()) {
-            return true;
-        }
-        return false;
+        return _delaying && _evaluatedAt + _durationMs < now.getTimeInMillis();
     }
 }

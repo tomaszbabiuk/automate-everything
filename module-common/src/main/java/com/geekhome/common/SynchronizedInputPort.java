@@ -5,7 +5,7 @@ import com.geekhome.common.logging.ILogger;
 import com.geekhome.common.hardwaremanager.IInputPort;
 
 public class SynchronizedInputPort<T> extends ConnectiblePortBase implements IInputPort<T> {
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
     private T _value;
 
     public SynchronizedInputPort(String id, long connectionLostInterval) {

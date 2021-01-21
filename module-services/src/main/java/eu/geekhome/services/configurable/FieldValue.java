@@ -2,7 +2,7 @@ package eu.geekhome.services.configurable;
 
 public abstract class FieldValue<T> {
 
-    private FieldDefinition<T> _definition;
+    private final FieldDefinition<T> _definition;
     private T _value;
 
     protected FieldValue(FieldDefinition<T> definition) {

@@ -2,8 +2,8 @@ package com.geekhome.common;
 
 public class SectionMetadata {
     private String _name;
-    private String _parentUniqueId;
-    private INameValueSet _properties;
+    private final String _parentUniqueId;
+    private final INameValueSet _properties;
 
     public SectionMetadata(String name, String parentUniqueId, INameValueSet properties) {
         _name = name;

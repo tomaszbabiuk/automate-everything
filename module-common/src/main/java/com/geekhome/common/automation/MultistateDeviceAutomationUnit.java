@@ -13,10 +13,10 @@ import com.geekhome.common.configuration.ObjectNotFoundException;
 public abstract class MultistateDeviceAutomationUnit<D extends MultistateDevice> extends DeviceAutomationUnit<String, D> implements IMultistateDeviceAutomationUnit {
     public NamedObject _state;
     public ControlMode _controlMode;
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
 
-    private CollectorCollection<State> _states;
-    private ILocalizationProvider _localizationProvider;
+    private final CollectorCollection<State> _states;
+    private final ILocalizationProvider _localizationProvider;
 
     protected ILocalizationProvider getLocalizationProvider() {
         return _localizationProvider;

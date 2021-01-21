@@ -7,7 +7,7 @@ public enum EqualityOperator
 
     private final int _index;
 
-    private EqualityOperator(int index) {
+    EqualityOperator(int index) {
         _index = index;
     }
 

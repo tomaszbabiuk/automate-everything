@@ -7,7 +7,7 @@ public enum ControlType {
     Code(5),
     Multistate(7);
 
-    private int _index;
+    private final int _index;
 
     ControlType(int index) {
         _index = index;

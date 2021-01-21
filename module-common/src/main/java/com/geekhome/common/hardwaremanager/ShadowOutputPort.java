@@ -8,7 +8,7 @@ import java.util.Calendar;
 public class ShadowOutputPort<T> extends ConnectiblePortBase implements IShadowOutputPort<T> {
 
     private IOutputPort<T> _target;
-    private IOutputPort<T> _base;
+    private final IOutputPort<T> _base;
 
     public ShadowOutputPort(String id, IOutputPort<T> base) {
         super(id, 0);

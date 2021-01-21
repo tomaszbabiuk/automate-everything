@@ -5,7 +5,7 @@ import com.geekhome.common.configuration.TimeCondition;
 import java.util.Calendar;
 
 public class TimeConditionAutomationUnit extends EvaluableAutomationUnit {
-    private TimeCondition _condition;
+    private final TimeCondition _condition;
 
     public TimeConditionAutomationUnit(TimeCondition condition) {
         super(condition.getName());

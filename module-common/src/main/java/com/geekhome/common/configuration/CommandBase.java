@@ -8,6 +8,6 @@ public class CommandBase extends NamedObject {
     }
 
     public boolean matches(String subject) {
-        return subject!= null && !subject.isEmpty() && getName().getName().toLowerCase().equals(subject.toLowerCase());
+        return subject!= null && !subject.isEmpty() && getName().getName().equalsIgnoreCase(subject);
     }
 }

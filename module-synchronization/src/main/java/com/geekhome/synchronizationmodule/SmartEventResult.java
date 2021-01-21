@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class SmartEventResult {
     @SerializedName("success")
-    private boolean _success;
+    private final boolean _success;
 
     public SmartEventResult(boolean success) {
         _success = success;

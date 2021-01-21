@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DependenciesCheckerModule {
-    private IMasterDependenciesChecker _masterDependenciesChecker;
+    private final IMasterDependenciesChecker _masterDependenciesChecker;
 
     public abstract void checkDependency(Object obj, List<Dependency> dependencies, int level);
 

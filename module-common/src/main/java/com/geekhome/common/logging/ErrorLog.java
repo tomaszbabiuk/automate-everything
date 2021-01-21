@@ -5,7 +5,7 @@ import com.geekhome.common.configuration.Persistable;
 import java.util.List;
 
 public class ErrorLog {
-    private List<TimedLog> _logs;
+    private final List<TimedLog> _logs;
 
     public ErrorLog(List<TimedLog> logs) {
         _logs = logs;

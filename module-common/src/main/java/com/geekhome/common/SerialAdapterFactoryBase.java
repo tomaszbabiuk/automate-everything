@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public abstract class SerialAdapterFactoryBase implements IHardwareManagerAdapterFactory {
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
 
     @Override
     public ArrayList<IHardwareManagerAdapter> createAdapters() {

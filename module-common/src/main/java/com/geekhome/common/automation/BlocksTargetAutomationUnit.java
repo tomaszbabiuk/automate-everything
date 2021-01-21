@@ -12,7 +12,7 @@ public class BlocksTargetAutomationUnit extends NamedObject implements IBlocksTa
 
     }
 
-    private Hashtable<String, Hashtable<String, Boolean>> _evaluations;
+    private final Hashtable<String, Hashtable<String, Boolean>> _evaluations;
 
     public void updateEvaluationsTable(BlockAutomationUnit block, String targetParameter) {
         if (!_evaluations.containsKey(targetParameter)) {

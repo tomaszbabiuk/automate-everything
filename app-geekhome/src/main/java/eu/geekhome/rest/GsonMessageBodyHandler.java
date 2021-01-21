@@ -16,6 +16,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -23,7 +24,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         MessageBodyReader<Object> {
 
     private static final String UTF_8 = "UTF-8";
-    private HashMap<Language, Gson> _gsons = new HashMap<>();
+    private final HashMap<Language, Gson> _gsons = new HashMap<>();
 
     public GsonMessageBodyHandler() {
         for (Language language : Language.values()) {
@@ -58,7 +59,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                            MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
         InputStreamReader streamReader = null;
         try {
-            streamReader = new InputStreamReader(entityStream, UTF_8);
+            streamReader = new InputStreamReader(entityStream, StandardCharsets.UTF_8);
             Type jsonType;
             if (type.equals(genericType)) {
                 jsonType = type;
@@ -66,11 +67,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
                 jsonType = genericType;
             }
             return _gsons.get(Language.EN).fromJson(streamReader, jsonType);
-        }
-        catch (UnsupportedEncodingException uex) {
-            return null;
-        }
-        finally {
+        } finally {
             try {
                 streamReader.close();
             } catch (IOException ignored) {
@@ -99,7 +96,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 
         Language language = matchLanguage();
 
-        OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8);
+        OutputStreamWriter writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8);
         try {
             Type jsonType;
             if (type.equals(genericType)) {
@@ -117,7 +114,7 @@ public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
         if (requestHeaders.getAcceptableLanguages().size() > 0) {
             Locale firstLocale = requestHeaders.getAcceptableLanguages().get(0);
             for (Language language : Language.values()) {
-                if (language.name().toLowerCase().equals(firstLocale.getLanguage().toLowerCase())) {
+                if (language.name().equalsIgnoreCase(firstLocale.getLanguage())) {
                     return language;
                 }
             }

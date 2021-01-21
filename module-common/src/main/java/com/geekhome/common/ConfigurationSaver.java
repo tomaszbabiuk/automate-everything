@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 
 public @interface ConfigurationSaver {
-    public String sectionName();
-    public boolean hasChildren();
+    String sectionName();
+    boolean hasChildren();
 }

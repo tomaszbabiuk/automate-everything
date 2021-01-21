@@ -6,7 +6,7 @@ public enum InactiveState {
 
     private final int _index;
 
-    private InactiveState(int index) {
+    InactiveState(int index) {
         _index = index;
     }
 

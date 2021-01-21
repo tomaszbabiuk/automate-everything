@@ -4,16 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class SynchronizationRequest {
     @SerializedName("code")
-    private String _code;
+    private final String _code;
 
     @SerializedName("type")
-    private SynchronizationCommandType _type;
+    private final SynchronizationCommandType _type;
 
     @SerializedName("parameter")
-    private String _parameter;
+    private final String _parameter;
 
     @SerializedName("value")
-    private String _value;
+    private final String _value;
 
     public SynchronizationRequest(SynchronizationCommandType type, String parameter, String value, String code) {
         _type = type;

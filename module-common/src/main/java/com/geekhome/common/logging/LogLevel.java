@@ -11,8 +11,8 @@ public enum LogLevel
     Activity(6, "ACTIVITY"),
     Value(7, "VALUE");
 
-    private int _index;
-    private String _name;
+    private final int _index;
+    private final String _name;
 
     LogLevel(int index, String name) {
         _index = index;

@@ -1,7 +1,7 @@
 package com.geekhome.common.configuration;
 
 public class ObjectNotFoundException extends Exception {
-    private String _uniqueId;
+    private final String _uniqueId;
 
     public ObjectNotFoundException(String uniqueId) {
         this._uniqueId = uniqueId;

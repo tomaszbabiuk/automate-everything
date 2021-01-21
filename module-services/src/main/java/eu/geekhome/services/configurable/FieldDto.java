@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 public class FieldDto {
 
     @SerializedName("name")
-    private String _name;
+    private final String _name;
 
     @SerializedName("hint")
-    private Resource _hint;
+    private final Resource _hint;
 
     @SerializedName("class")
-    private String _clazz;
+    private final String _clazz;
 
     @SerializedName("maxSize")
-    private int _maxSize;
+    private final int _maxSize;
 
     public FieldDto(String clazz, String name, Resource hint, int maxSize) {
         _name = name;

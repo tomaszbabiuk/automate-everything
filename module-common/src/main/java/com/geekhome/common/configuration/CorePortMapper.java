@@ -5,7 +5,7 @@ import com.geekhome.common.hardwaremanager.IPortMapper;
 import java.util.ArrayList;
 
 public class CorePortMapper implements IPortMapper {
-    private MasterConfiguration _masterConfiguration;
+    private final MasterConfiguration _masterConfiguration;
 
     public CorePortMapper(MasterConfiguration masterConfiguration) {
         _masterConfiguration = masterConfiguration;

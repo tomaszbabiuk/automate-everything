@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FieldDefinition<T> {
-    private String _name;
-    private Resource _hint;
-    private int _maxSize;
-    private Class<T> _valueClazz;
-    private FieldBuilder<T> _builder;
-    private Validator<T>[] _validators;
+    private final String _name;
+    private final Resource _hint;
+    private final int _maxSize;
+    private final Class<T> _valueClazz;
+    private final FieldBuilder<T> _builder;
+    private final Validator<T>[] _validators;
 
     public String getName() {
         return _name;

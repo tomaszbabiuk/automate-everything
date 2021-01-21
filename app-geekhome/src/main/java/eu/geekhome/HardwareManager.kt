@@ -1,7 +1,6 @@
 package eu.geekhome
 
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.NumberedEventsListener
 import eu.geekhome.services.events.NumberedEventsSink
 import eu.geekhome.services.hardware.*
 import kotlinx.coroutines.*
@@ -15,23 +14,6 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
 
     init {
         pluginManager.addPluginStateListener(this)
-    }
-
-    fun discover() {
-        println("Discovery started")
-
-        GlobalScope.launch {
-            factories.forEach { (factory: HardwareAdapterFactory, adapterBundles: List<AdapterBundle>) ->
-                adapterBundles.forEach { bundle: AdapterBundle ->
-                    val builder = PortIdBuilder(factory.id, bundle.adapter.id)
-                    bundle.discoveryJob = async {
-                        bundle.ports = bundle.adapter.discover(builder, sink)
-                    }
-                }
-            }
-        }
-
-        println("Discovery finished")
     }
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
@@ -87,7 +69,7 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
                 }
             }
 
-            if (event.pluginState == PluginState.STARTED) {
+            if (event.pluginState == PluginState.STOPPED) {
                 GlobalScope.launch {
                     removeFactory(hardwarePlugin.factory)
                 }

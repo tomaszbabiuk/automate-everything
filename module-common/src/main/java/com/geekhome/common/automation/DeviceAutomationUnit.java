@@ -7,7 +7,7 @@ import com.geekhome.common.hardwaremanager.IPort;
 import java.util.Calendar;
 
 public abstract class DeviceAutomationUnit<R,D extends IDevice> extends BlocksTargetAutomationUnit implements IDeviceAutomationUnit<R> {
-    private D _device;
+    private final D _device;
     private boolean _isConnected = true;
 
     public D getDevice() {

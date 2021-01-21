@@ -10,9 +10,9 @@ public enum DeviceCategory {
     Ventilation(6),
     Monitoring(7);
 
-    private int _index;
+    private final int _index;
 
-    private DeviceCategory(int index) {
+    DeviceCategory(int index) {
         _index = index;
     }
 

@@ -2,8 +2,8 @@ package com.geekhome.common.hardwaremanager;
 
 public class PortNotFoundException extends Exception {
 
-    private String _uniqueId;
-    private PortType _type;
+    private final String _uniqueId;
+    private final PortType _type;
 
     public PortType getType() {
         return _type;

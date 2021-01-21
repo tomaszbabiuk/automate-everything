@@ -16,15 +16,15 @@ import java.util.List;
 public class SystemInfo {
     private OperationMode _operationMode;
     private IOperationModeChangedListener _operationModeChangedListener;
-    private ILogger _logger = LoggingService.getLogger();
+    private final ILogger _logger = LoggingService.getLogger();
     private List<IAlertService> _alertServices;
-    private List<IMonitorable> _monitorables;
+    private final List<IMonitorable> _monitorables;
     private Long _restartTime;
 
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static long RESTART_TIME = 5*60*1000;
-    private DashboardAlertService _dashboardAlertService;
+    private static final long RESTART_TIME = 5*60*1000;
+    private final DashboardAlertService _dashboardAlertService;
 
     public OperationMode getOperationMode() {
         return _operationMode;

@@ -6,25 +6,25 @@ import com.google.gson.annotations.SerializedName;
 public class PluginDto {
 
     @SerializedName("provider")
-    private String _provider;
+    private final String _provider;
 
     @SerializedName("version")
-    private String _version;
+    private final String _version;
 
     @SerializedName("enabled")
-    private boolean _enabled;
+    private final boolean _enabled;
 
     @SerializedName("name")
-    private Resource _name;
+    private final Resource _name;
 
     @SerializedName("description")
-    private Resource _description;
+    private final Resource _description;
 
     @SerializedName("id")
-    private String _id;
+    private final String _id;
 
     @SerializedName("isHardwareFactory")
-    private boolean _isHardwareFactory;
+    private final boolean _isHardwareFactory;
 
     public PluginDto(String id, Resource name, Resource description, String provider, String version, boolean isHardwareFactory, boolean enabled) {
         _name = name;
