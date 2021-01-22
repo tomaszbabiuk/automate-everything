@@ -7,6 +7,7 @@ import org.pf4j.SingletonExtensionFactory
 import eu.geekhome.rest.DependencyInjectionBinder
 import eu.geekhome.rest.GsonMessageBodyHandler
 import eu.geekhome.rest.CORSFilter
+import eu.geekhome.rest.ResourceNotFoundExceptionMapper
 import org.pf4j.PluginManager
 
 class App : ResourceConfig() {
@@ -27,6 +28,7 @@ class App : ResourceConfig() {
         register(DependencyInjectionBinder())
         register(GsonMessageBodyHandler())
         register(CORSFilter())
+        register(ResourceNotFoundExceptionMapper())
         register(pluginManager)
         register(hardwareManager)
 

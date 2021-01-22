@@ -61,7 +61,7 @@ class AforeAdapter : HardwareAdapterBase() {
         }
     }
 
-    override fun resetLatches() {
+    override fun executePendingChanges() {
     }
 
 

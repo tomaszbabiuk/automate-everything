@@ -15,12 +15,12 @@ class AdapterController @Inject constructor(
     private val mapper: HardwareAdapterDtoMapper
 ) {
 
-    private val _hardwareManager: HardwareManager = hardwareManagerHolderService.instance
+    private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @get:GET
     val adapters: List<HardwareAdapterDto>
-        get() = _hardwareManager
+        get() = hardwareManager
             .bundles()
             .map { mapper.map(it)}
 }

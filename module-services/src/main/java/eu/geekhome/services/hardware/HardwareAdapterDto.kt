@@ -18,6 +18,6 @@ data class HardwareAdapterDto (
     @SerializedName("lastError")
     val lastError: String?,
 
-    @SerializedName("ports")
-    val ports: Collection<PortDto>
+    @SerializedName("portsCount")
+    val portsCount: Int
 )

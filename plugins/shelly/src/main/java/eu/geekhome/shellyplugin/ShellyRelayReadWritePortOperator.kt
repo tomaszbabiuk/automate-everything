@@ -7,36 +7,37 @@ class ShellyRelayReadWritePortOperator(
     channel: Int,
 ) : ShellyReadPortOperator<Relay>, ShellyWritePortOperator<Relay> {
 
-    private val value = Relay(false)
+    private val readValue = Relay(false)
+    private var requestedValue : Relay? = null
     override val readTopic = "shellies/$shellyId/relay/$channel"
     override val writeTopic = "shellies/$shellyId/relay/$channel/command"
 
     override fun read(): Relay {
-        return value
+        return readValue
     }
 
     override fun write(value: Relay) {
-        this.value.value = value.value
+        this.requestedValue = value
     }
 
     override fun setValueFromMqttPayload(payload: String) {
         val valueAsBoolean = payload == "on"
-        value.value = valueAsBoolean
+        readValue.value = valueAsBoolean
     }
 
-    override fun convertValueToMqttPayload(): String {
-        return if (value.value) "on" else "off"
-    }
+    override fun getExecutePayload(): String? {
+        if (requestedValue == null) {
+            return null
+        }
 
-    override fun resetLatch() {
-        value.resetLatch()
-    }
-
-    override fun isLatchTriggered(): Boolean {
-        return value.isLatchTriggered
+        return if (requestedValue!!.value) "on" else "off"
     }
 
     fun setValueFromRelayResponse(response: RelayResponseDto) {
-        value.value = response.on
+        readValue.value = response.on
+    }
+
+    override fun reset() {
+        requestedValue = null
     }
 }

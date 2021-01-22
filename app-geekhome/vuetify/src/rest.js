@@ -8,6 +8,7 @@ import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_
 import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
 import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
 import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
+import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -241,6 +242,18 @@ export const client = {
         store.commit(CLEAR_HARDWARE_ADAPTERS)
         response.data.forEach(element => {
           store.commit(ADD_HARDWARE_ADAPTER, element)
+        })
+      }
+    )
+  },
+
+  getPorts: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/ports"),
+      (response) => {
+        store.commit(CLEAR_PORTS)
+        response.data.forEach(element => {
+          store.commit(ADD_PORT, element)
         })
       }
     )

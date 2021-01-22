@@ -10,7 +10,7 @@ interface HardwareAdapter {
     @Throws(Exception::class)
     fun refresh(now: Calendar)
     var state: AdapterState
-    fun resetLatches()
+    fun executePendingChanges()
 
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)

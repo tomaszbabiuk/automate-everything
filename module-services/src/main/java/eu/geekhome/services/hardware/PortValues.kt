@@ -3,23 +3,7 @@ package eu.geekhome.services.hardware
 import eu.geekhome.services.localization.Resource
 
 
-sealed class PortValue<T>(initialValue: T) {
-
-    private var internalValue: T = initialValue
-    var isLatchTriggered = false
-        private set
-
-    var value: T
-        get() = this.internalValue
-        set(value) {
-            this.isLatchTriggered = true
-            this.internalValue = value
-        }
-
-    fun resetLatch() {
-        isLatchTriggered = false
-    }
-
+sealed class PortValue<T>(var value: T) {
     abstract fun fromString(from: String) : T
     abstract fun toFormattedString() : Resource
 }

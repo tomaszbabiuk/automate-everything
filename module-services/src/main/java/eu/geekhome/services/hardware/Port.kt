@@ -30,6 +30,7 @@ abstract class Port<T,V: PortValue<T>>(
     val id: String,
     val canRead: Boolean,
     val canWrite: Boolean,
+    val valueType: Class<V>,
     private val readPortOperator: ReadPortOperator<V>? = null,
     private val writePortOperator: WritePortOperator<V>? = null
 ) {
@@ -66,48 +67,29 @@ interface ReadPortOperator<V> {
 
 interface WritePortOperator<V> {
     fun write(value : V)
-    fun resetLatch()
-    fun isLatchTriggered(): Boolean
+    fun reset()
 }
-
 
 class ConnectiblePort<T, V : PortValue<T>>(
     id : String,
     canRead: Boolean,
     canWrite: Boolean,
+    valueType: Class<V>,
     readPortOperator: ReadPortOperator<V>?,
     writePortOperator: WritePortOperator<V>?)
-    : Port<T, V>(id, canRead, canWrite, readPortOperator, writePortOperator), Connectible {
+    : Port<T, V>(id, canRead, canWrite, valueType, readPortOperator, writePortOperator), Connectible {
 
     override var lastSeen: Long = 0L
     override var connected: Boolean = false
     override var connectionLostInterval: Long = 0L
 
-    constructor(id: String, readPortOperator: ReadPortOperator<V>, writePortOperator: WritePortOperator<V>)
-            : this(id, true, true, readPortOperator, writePortOperator)
+    constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>, writePortOperator: WritePortOperator<V>)
+            : this(id, true, true, valueType, readPortOperator, writePortOperator)
 
-    constructor(id: String, readPortOperator: ReadPortOperator<V>)
-            : this(id, true, false, readPortOperator, null)
+    constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>)
+            : this(id, true, false, valueType, readPortOperator, null)
 
-    constructor(id: String, writePortOperator: WritePortOperator<V>)
-            : this(id, false, true, null, writePortOperator)
+    constructor(id: String, valueType: Class<V>, writePortOperator: WritePortOperator<V>)
+            : this(id, false, true, valueType, null, writePortOperator)
 
 }
-
-
-class WattageInPort(
-        id: String,
-        readPortOperator: ReadPortOperator<Wattage>) :
-    Port<Double, Wattage>(id,true, false, readPortOperator, null)
-
-class PowerLevelInOutPort(
-        id: String,
-        readPortOperator: ReadPortOperator<PowerLevel>,
-        writePortOperator: WritePortOperator<PowerLevel>) :
-    Port<Int, PowerLevel>(id, true, true, readPortOperator, writePortOperator)
-
-class RelayInOutPort(
-        id: String,
-        readPortOperator: ReadPortOperator<Relay>,
-        writePortOperator: WritePortOperator<Relay>) :
-    Port<Boolean, Relay>(id, true, true, readPortOperator, writePortOperator)

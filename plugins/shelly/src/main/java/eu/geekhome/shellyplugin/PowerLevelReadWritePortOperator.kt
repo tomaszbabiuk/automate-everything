@@ -9,16 +9,17 @@ class PowerLevelReadWritePortOperator(
 ) : ShellyReadPortOperator<PowerLevel>, ShellyWritePortOperator<PowerLevel> {
 
     private val gson = Gson()
-    private val value = PowerLevel(0)
+    private val readValue = PowerLevel(0)
+    private var requestedValue : PowerLevel? = null
     override val readTopic = "shellies/$shellyId/light/$channel/status"
     override val writeTopic = "shellies/$shellyId/light/$channel/set"
 
     override fun read(): PowerLevel {
-        return value
+        return readValue
     }
 
     override fun write(value: PowerLevel) {
-        this.value.value = value.value
+        requestedValue = value
     }
 
     override fun setValueFromMqttPayload(payload: String) {
@@ -28,7 +29,7 @@ class PowerLevelReadWritePortOperator(
 
     fun setValueFromLightResponse(lightResponse: LightResponseDto) {
         val valueInPercent = calculateBrightness(lightResponse)
-        value.value = valueInPercent
+        readValue.value = valueInPercent
     }
 
     private fun calculateBrightness(lightResponse: LightResponseDto): Int {
@@ -36,20 +37,20 @@ class PowerLevelReadWritePortOperator(
         return if (isOn) lightResponse.brightness else 0
     }
 
-    override fun convertValueToMqttPayload(): String {
-        val response: LightSetDto = if (value.value == 0) {
+    override fun getExecutePayload(): String? {
+        if (requestedValue == null) {
+            return null
+        }
+
+        val response: LightSetDto = if (requestedValue!!.value == 0) {
             LightSetDto("off", 0)
         } else {
-            LightSetDto("off", value.value)
+            LightSetDto("off", requestedValue!!.value)
         }
         return gson.toJson(response)
     }
 
-    override fun resetLatch() {
-        value.resetLatch()
-    }
-
-    override fun isLatchTriggered(): Boolean {
-        return value.isLatchTriggered
+    override fun reset() {
+        requestedValue = null
     }
 }

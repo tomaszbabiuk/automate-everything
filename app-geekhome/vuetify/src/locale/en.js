@@ -1,7 +1,7 @@
 export default {
     application: {
-        name: "[manufacturer name]",
-        subtitle: "[product name]",
+        name: "Automate Everything",
+        subtitle: "by geekHOME",
     },
     navigation: {
         inbox:      "Inbox",
@@ -32,7 +32,8 @@ export default {
         actions: "Actions",
         delete_question: "Are you sure you want to delete this item?",
         cancel: "Cancel",
-        ok: "OK"
+        ok: "OK",
+        nA: "n/A",
     },
     validation: {
         field_required: "This field is required",
@@ -78,6 +79,14 @@ export default {
         data: "Data",
         tags: "Tags",
         icon: "Icon",
+    },
+    discover: {
+        ports: "Ports",
+        restart_discovery: "Restart discovery",
+        r: "R",
+        w: "W",
+        id: "Id",
+        value: "Value",
+        control: "Control"
     }
-
 }

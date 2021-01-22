@@ -81,6 +81,17 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
         return factories.values.flatten()
     }
 
+    fun findPort(id: String): Pair<Port<*, *>, AdapterBundle>? {
+        bundles().forEach { bundle ->
+            val port = bundle.ports.firstOrNull { it.id == id }
+            if (port != null) {
+                return Pair(port, bundle)
+            }
+        }
+
+        return null
+    }
+
     data class AdapterBundle(
         internal val factoryId: String,
         internal val adapter: HardwareAdapter,

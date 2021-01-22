@@ -14,6 +14,8 @@ import ConfigurableStringField from './components/geekhome/configurable/StringFi
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 
+import PortControl from './components/geekhome/PortControl'
+
 //material dashboard
 Vue.component('material-card', ADCard)
 Vue.component('material-stats-card', ADStarsCard)
@@ -24,6 +26,9 @@ Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
+
+//geekhome
+Vue.component('portcontrol', PortControl)
 
 Vue.config.productionTip = false
 

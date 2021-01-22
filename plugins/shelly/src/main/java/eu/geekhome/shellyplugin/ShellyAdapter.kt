@@ -143,7 +143,10 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         val id = idBuilder.buildPortId(shellyId, channel, "R")
         val operator = ShellyRelayReadWritePortOperator(shellyId, channel)
         operator.setValueFromRelayResponse(relayResponse)
-        val port = ConnectiblePort(id, readPortOperator = operator, writePortOperator = operator )
+        val port = ConnectiblePort(id, Relay::class.java,
+            readPortOperator = operator,
+            writePortOperator = operator
+        )
 
         return Triple(port, operator, operator)
     }
@@ -155,7 +158,9 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     ): Triplet {
         val id = idBuilder.buildPortId(shellyId, channel, "W")
         val operator = ShellyRelayWattageReadPortOperator(shellyId, channel)
-        val port = ConnectiblePort(id, readPortOperator = operator)
+        val port = ConnectiblePort(id, Wattage::class.java,
+            readPortOperator = operator
+        )
 
         return Triplet(port, operator, null)
     }
@@ -169,7 +174,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         val operator = PowerLevelReadWritePortOperator(shellyId, channel)
         operator.setValueFromLightResponse(lightResponse)
         val id = idBuilder.buildPortId(shellyId, channel, "L")
-        val port = ConnectiblePort(id,
+        val port = ConnectiblePort(id, PowerLevel::class.java,
             readPortOperator = operator,
             writePortOperator = operator
         )
@@ -183,7 +188,9 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     ) : Triplet {
         val operator = LightWattageReadPortOperator(shellyId, channel)
         val id = idBuilder.buildPortId(shellyId, channel, "W")
-        val port = ConnectiblePort(id, readPortOperator = operator)
+        val port = ConnectiblePort(id, Wattage::class.java,
+            readPortOperator = operator
+        )
 
         return Triplet(port, operator, null)
     }
@@ -192,7 +199,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     override fun refresh(now: Calendar) {
     }
 
-    override fun resetLatches() {
+    override fun executePendingChanges() {
         triplets
             .mapNotNull { it.third }
             .forEach {
@@ -201,11 +208,10 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     }
 
     private fun executeShellyChanges(shellyOutput: ShellyWritePortOperator<*>) {
-        if (shellyOutput.isLatchTriggered()) {
-            val mqttPayload = shellyOutput.convertValueToMqttPayload()
+        val mqttPayload = shellyOutput.getExecutePayload()
+        if (mqttPayload != null) {
             val topic = shellyOutput.writeTopic
             mqttBroker.publish(topic, mqttPayload)
-            shellyOutput.resetLatch()
         }
     }
 
@@ -240,14 +246,6 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
                     port.markDisconnected()
                 }
             }
-
-//        iterateAllOwnedPorts(object : PortIterateListener {
-//            override fun onIteratePort(port: IShellyPort) {
-//                if (port.id.startsWith(clientID)) {
-//                    port.markDisconnected()
-//                }
-//            }
-//        })
     }
 
     init {

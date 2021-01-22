@@ -11,6 +11,6 @@ public class PortIdBuilder {
     }
 
     public String buildPortId(String portPrefix, int channel, String portSuffix) {
-        return _factoryId + "/" + _adapterId + ":" + portPrefix + "/" + portSuffix + ":" + channel;
+        return _factoryId + "-" + _adapterId + ":" + portPrefix + "-" + portSuffix + ":" + channel;
     }
 }

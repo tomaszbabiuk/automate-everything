@@ -32,7 +32,8 @@ export default {
         actions: "Akcje",
         delete_question: "Czy na pewno usunąć ten obiekt?",
         cancel: "Anuluj",
-        ok: "OK"
+        ok: "OK",
+        nA: "n/d"
     },
     validation: {
         field_required: "To pole jest wymagane",

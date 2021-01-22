@@ -32,13 +32,18 @@ export const sseClient = {
   },
 
   openDiscoveryEvents: function() {
-    Vue.SSE('/rest/discoveryevents/live', { format: 'json' })
+    var openInternal = function(server) {
+      console.log('reconnecting')
+
+      Vue.SSE('/rest/discoveryevents/live', { format: 'json' })
       .then(sse => {
-        this.discoveryEventsMsgServer = sse;
+        server = sse;
 
         sse.onError(e => {
-          console.error('lost connection; giving up!', e);
           sse.close();
+          console.info('lost connection; auto-retrying in 5 secs...', e);
+
+          setTimeout(function() { openInternal(server) }, 5000)
         });
 
         sse.subscribe('discoveryEvent', (payload) => {
@@ -46,8 +51,13 @@ export const sseClient = {
         });
       })
       .catch(err => {
-        console.error('Failed to connect to server', err);
+        console.info('Failed to connect to server; auto-retrying in 5 secs...', err);
+
+        setTimeout(function() { openInternal(server) }, 5000)
       });
+    }
+
+    openInternal(this.discoveryEventsMsgServer)
   },
 
   closeDiscoveryEvents: function() {

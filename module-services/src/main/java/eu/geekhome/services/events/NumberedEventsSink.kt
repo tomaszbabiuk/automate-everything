@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 class NumberedEventsSink<T> : EventsSink<T> {
 
     var eventCounter = 0
-    val listeners = Collections.synchronizedList(ArrayList<NumberedEventsListener<T>>())
+    private val listeners = Collections.synchronizedList(ArrayList<NumberedEventsListener<T>>())
 
     val events = ArrayList<NumberedEvent<T>>()
 
@@ -19,6 +19,10 @@ class NumberedEventsSink<T> : EventsSink<T> {
     }
 
     override fun broadcastEvent(payload: T) {
+        if (events.size > MAX_SIZE) {
+            events.removeAt(0)
+        }
+
         println("broadcasting event: $payload")
 
         eventCounter++
@@ -38,5 +42,9 @@ class NumberedEventsSink<T> : EventsSink<T> {
 
     override fun getHistoricEvent(id: Int): NumberedEvent<T> {
         return events[id]
+    }
+
+    companion object {
+        const val MAX_SIZE = 100
     }
 }
