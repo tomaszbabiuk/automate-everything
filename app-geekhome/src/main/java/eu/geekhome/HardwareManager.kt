@@ -10,7 +10,8 @@ import java.util.*
 class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
-    val sink: EventsSink<HardwareEvent> = NumberedEventsSink()
+    val discoverySink: EventsSink<HardwareEvent> = NumberedEventsSink()
+    val updateSink: EventsSink<PortUpdateEvent> = NumberedEventsSink()
 
     init {
         pluginManager.addPluginStateListener(this)
@@ -31,10 +32,10 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
             .filter { factory.id == it.key.id }
             .flatMap { it.value }
             .forEach {
-                it.adapter.start()
+                it.adapter.start(updateSink)
                 val builder = PortIdBuilder(factory.id, it.adapter.id)
                 it.discoveryJob = async {
-                    it.ports = it.adapter.discover(builder, sink)
+                    it.ports = it.adapter.discover(builder, discoverySink)
                 }
             }
     }
@@ -81,7 +82,7 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
         return factories.values.flatten()
     }
 
-    fun findPort(id: String): Pair<Port<*, *>, AdapterBundle>? {
+    fun findPort(id: String): Pair<Port<*>, AdapterBundle>? {
         bundles().forEach { bundle ->
             val port = bundle.ports.firstOrNull { it.id == id }
             if (port != null) {
@@ -95,7 +96,7 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
     data class AdapterBundle(
         internal val factoryId: String,
         internal val adapter: HardwareAdapter,
-        internal var ports: MutableList<Port<*, *>>
+        internal var ports: MutableList<Port<*>>
     ) {
         var discoveryJob: Deferred<Unit>? = null
     }

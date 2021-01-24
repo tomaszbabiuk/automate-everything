@@ -5,14 +5,16 @@ import eu.geekhome.services.hardware.PortDto
 import eu.geekhome.services.localization.Resource
 
 class PortDtoMapper {
-    fun map(port: Port<*, *>, factoryId: String, adapterId: String): PortDto {
-        val value: Resource? = if (port.canRead) { port.read().toFormattedString() } else null
+    fun map(port: Port<*>, factoryId: String, adapterId: String): PortDto {
+        val integerValue: Int? = if (port.canRead) { port.read().toInteger() } else null
+        val interfaceValue: Resource? = if (port.canRead) { port.read().toFormattedString() } else null
         return PortDto(
             port.id,
             factoryId,
             adapterId,
             port.isShadowed,
-            value,
+            integerValue,
+            interfaceValue,
             port.valueType.simpleName,
             port.canRead,
             port.canWrite

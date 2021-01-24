@@ -4,18 +4,14 @@ import eu.geekhome.HardwareManager
 import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
 import eu.geekhome.rest.ResourceNotFoundException
-import eu.geekhome.services.hardware.Port
-import eu.geekhome.services.hardware.PortDto
-import eu.geekhome.services.hardware.Relay
+import eu.geekhome.services.hardware.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
 
 @Path("ports")
 class PortsController @Inject constructor(
     hardwareManagerHolderService: HardwareManagerHolderService,
-    portDtoMapper: PortDtoMapper,
-    private val mapper: PortDtoMapper
+    val portDtoMapper: PortDtoMapper
 ) {
     private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
 
@@ -28,26 +24,33 @@ class PortsController @Inject constructor(
                 val factoryId = it.factoryId
                 it.ports.map { port -> Triple(port, factoryId, it.adapter.id) }
             }
-            .map { mapper.map(it.first, it.second, it.third) }
+            .map { portDtoMapper.map(it.first, it.second, it.third) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     @PUT
     @Path("/{id}/value")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateValue(@PathParam("id") id: String, value: Boolean): PortDto {
+    fun updateValue(@PathParam("id") id: String, value: Int) {
         val findings = hardwareManager.findPort(id)
         if (findings != null) {
             val port = findings.first
             val bundle = findings.second
-            if (port.valueType.javaClass == Relay::class.java.javaClass) {
-                val newValue = Relay(value)
-                (port as Port<Boolean, Relay>).write(newValue)
-                bundle.adapter.executePendingChanges()
 
-                return mapper.map(port, bundle.factoryId, bundle.adapter.id)
+
+
+            if (port.valueType.name == Relay::class.java.name) {
+                val newValue = Relay.fromInteger(value)
+                (port as Port<Relay>).write(newValue)
+            } else if (port.valueType.name == PowerLevel::class.java.name) {
+                val newValue = PowerLevel.fromInteger(value)
+                (port as Port<PowerLevel>).write(newValue)
+            } else {
+                //TODO
             }
+            bundle.adapter.executePendingChanges()
+        } else {
+            throw ResourceNotFoundException()
         }
-
-        throw ResourceNotFoundException()
     }
 }

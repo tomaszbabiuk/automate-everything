@@ -26,7 +26,7 @@ interface Connectible {
     }
 }
 
-abstract class Port<T,V: PortValue<T>>(
+abstract class Port<V: PortValue<*>>(
     val id: String,
     val canRead: Boolean,
     val canWrite: Boolean,
@@ -59,6 +59,10 @@ abstract class Port<T,V: PortValue<T>>(
             throw IOException("This port cannot write")
         }
     }
+
+    fun writeGeneral(value: String) {
+
+    }
 }
 
 interface ReadPortOperator<V> {
@@ -70,14 +74,14 @@ interface WritePortOperator<V> {
     fun reset()
 }
 
-class ConnectiblePort<T, V : PortValue<T>>(
+class ConnectiblePort<V : PortValue<*>>(
     id : String,
     canRead: Boolean,
     canWrite: Boolean,
     valueType: Class<V>,
     readPortOperator: ReadPortOperator<V>?,
     writePortOperator: WritePortOperator<V>?)
-    : Port<T, V>(id, canRead, canWrite, valueType, readPortOperator, writePortOperator), Connectible {
+    : Port<V>(id, canRead, canWrite, valueType, readPortOperator, writePortOperator), Connectible {
 
     override var lastSeen: Long = 0L
     override var connected: Boolean = false

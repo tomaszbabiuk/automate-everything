@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store, { ADD_DISCOVERY_EVENT } from './plugins/vuex'
+import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT } from './plugins/vuex'
 import { UPDATE_PLUGIN } from './plugins/vuex'
 
 export const sseClient = {
@@ -35,7 +35,7 @@ export const sseClient = {
     var openInternal = function(server) {
       console.log('reconnecting')
 
-      Vue.SSE('/rest/discoveryevents/live', { format: 'json' })
+      Vue.SSE('/rest/adapterevents/live', { format: 'json' })
       .then(sse => {
         server = sse;
 
@@ -48,6 +48,10 @@ export const sseClient = {
 
         sse.subscribe('discoveryEvent', (payload) => {
           store.commit(ADD_DISCOVERY_EVENT, payload)
+        });
+
+        sse.subscribe('portUpdateEvent', (payload) => {
+          store.commit(UPDATE_PORT, payload)
         });
       })
       .catch(err => {

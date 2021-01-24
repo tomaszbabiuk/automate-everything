@@ -18,6 +18,10 @@ class PowerLevelReadWritePortOperator(
         return readValue
     }
 
+//    override fun <PowerLevel> write(value: PowerLevel) {
+//        requestedValue = value
+//    }
+
     override fun write(value: PowerLevel) {
         requestedValue = value
     }
@@ -45,10 +49,11 @@ class PowerLevelReadWritePortOperator(
         val response: LightSetDto = if (requestedValue!!.value == 0) {
             LightSetDto("off", 0)
         } else {
-            LightSetDto("off", requestedValue!!.value)
+            LightSetDto("on", requestedValue!!.value)
         }
         return gson.toJson(response)
     }
+
 
     override fun reset() {
         requestedValue = null

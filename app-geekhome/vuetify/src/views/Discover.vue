@@ -26,7 +26,7 @@
         </template>
         <template v-slot:[`item.value`]="{ item }" }>
           <div v-if="item.canRead">
-            {{ item.value }}
+            {{ item.interfaceValue }}
           </div>
           <div v-else>
             {{ $vuetify.lang.t("$vuetify.common.nA") }}
@@ -34,7 +34,7 @@
         </template>
         <template v-slot:[`item.control`]="{ item }" }>
           <div v-if="item.canWrite">
-              <portcontrol :valueType="item.valueType"></portcontrol>
+              <portcontrol :valueType="item.valueType" :portId="item.id"></portcontrol>
           </div>
           <div v-else>
             {{ $vuetify.lang.t("$vuetify.common.nA") }}

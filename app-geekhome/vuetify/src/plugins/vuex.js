@@ -43,6 +43,7 @@ export const ADD_HARDWARE_ADAPTER = 'ADD_HARDWARE_ADAPTER'
 
 export const CLEAR_PORTS = 'CLEAR_PORTS'
 export const ADD_PORT = 'ADD_PORT'
+export const UPDATE_PORT = 'UPDATE_PORT'
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -305,8 +306,23 @@ export default new Vuex.Store({
       state.ports = []
     },
 
-    [ADD_PORT](state, payload) {
-      state.ports.push(payload)
+    [ADD_PORT](state, portDto) {
+      state.ports.push(portDto)
+    },
+
+    [UPDATE_PORT](state, portDto) {
+      var portFound = false;
+      state.ports.forEach(element => {
+        if (element.id === portDto.id) {
+          element.integerValue = portDto.integerValue
+          element.interfaceValue = portDto.interfaceValue
+          portFound = true
+        }
+      })
+
+      if (!portFound) {
+        state.ports.push(portDto)
+      }
     },
   }
 })

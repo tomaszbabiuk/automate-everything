@@ -5,10 +5,12 @@ import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
 import eu.geekhome.services.events.NumberedEvent
 import eu.geekhome.services.events.NumberedEventsListener
+import eu.geekhome.services.hardware.HardwareEvent
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
-import eu.geekhome.services.hardware.HardwareEvent
 import eu.geekhome.services.hardware.HardwareEventDto
+import eu.geekhome.services.hardware.PortDto
+import eu.geekhome.services.hardware.PortUpdateEvent
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
@@ -17,28 +19,38 @@ import javax.ws.rs.sse.Sse
 import javax.ws.rs.sse.SseBroadcaster
 import javax.ws.rs.sse.SseEventSink
 
-@Path("discoveryevents")
-class DiscoveryEvents @Inject constructor(
+@Path("adapterevents")
+class AdapterEvents @Inject constructor(
     hardwareManagerHolderService: HardwareManagerHolderService,
-    private val eventMapper: NumberedHardwareEventToEventDtoMapper,
+    private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
+    private val portDtoMapper: PortDtoMapper,
     private val sse: Sse
-) : NumberedEventsListener<HardwareEvent> {
+) {
 
     private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
     private val sseBroadcaster: SseBroadcaster = sse.newBroadcaster()
 
     init {
-        hardwareManager.sink.addAdapterEventListener(this)
+        hardwareManager.discoverySink.addAdapterEventListener(object : NumberedEventsListener<HardwareEvent> {
+            override fun onEvent(event: NumberedEvent<HardwareEvent>) {
+                broadcastHardwareEvent(event)
+            }
+        })
+        hardwareManager.updateSink.addAdapterEventListener(object : NumberedEventsListener<PortUpdateEvent> {
+            override fun onEvent(event: NumberedEvent<PortUpdateEvent>) {
+                broadcastPortUpdateEvent(event)
+            }
+        })
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getEvents(): List<HardwareEventDto> {
-        val eventsCount = hardwareManager.sink.getNumberOfEvents()
+        val eventsCount = hardwareManager.discoverySink.getNumberOfEvents()
         if (eventsCount > 0) {
             return (0 until eventsCount)
-                .map { hardwareManager.sink.getHistoricEvent(it) }
-                .map { eventMapper.map(it) }
+                .map { hardwareManager.discoverySink.getHistoricEvent(it) }
+                .map { hardwareEventMapper.map(it) }
                 .toList()
         }
 
@@ -52,17 +64,22 @@ class DiscoveryEvents @Inject constructor(
         sseBroadcaster.register(sink)
     }
 
-    override fun onEvent(event: NumberedEvent<HardwareEvent>) {
-        broadcastHardwareEvent(event)
-    }
-
     private fun broadcastHardwareEvent(event: NumberedEvent<HardwareEvent>) {
-        val dto = eventMapper.map(event)
+        val dto = hardwareEventMapper.map(event)
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
             .name("discoveryEvent")
-            .id(dto.no.toString())
             .mediaType(MediaType.APPLICATION_JSON_TYPE)
             .data(HardwareEventDto::class.java, dto)
+            .build()
+        sseBroadcaster.broadcast(sseEvent)
+    }
+
+    private fun broadcastPortUpdateEvent(event: NumberedEvent<PortUpdateEvent>) {
+        val dto = portDtoMapper.map(event.payload.port, event.payload.factoryId, event.payload.adapterId)
+        val sseEvent: OutboundSseEvent = sse.newEventBuilder()
+            .name("portUpdateEvent")
+            .mediaType(MediaType.APPLICATION_JSON_TYPE)
+            .data(PortDto::class.java, dto)
             .build()
         sseBroadcaster.broadcast(sseEvent)
     }

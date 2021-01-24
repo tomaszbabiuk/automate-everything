@@ -222,7 +222,7 @@ export const client = {
 
   getDiscoveryEvents: async function () {
     await this.handleRestError(
-      () => axiosInstance.get("rest/discoveryevents"),
+      () => axiosInstance.get("rest/adapterevents"),
       (response) => {
         response.data.forEach(element => {
           store.commit(ADD_DISCOVERY_EVENT, element)
@@ -255,6 +255,16 @@ export const client = {
         response.data.forEach(element => {
           store.commit(ADD_PORT, element)
         })
+      }
+    )
+  },
+
+  controlPort: async function (portId, controlValue) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/ports/" + portId + "/value", JSON.stringify(controlValue)),
+      (response) => {
+        console.log("updating port")
+        console.log(response.data)
       }
     )
   },

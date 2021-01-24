@@ -15,10 +15,11 @@ import java.net.InetAddress
 import java.util.*
 import kotlin.collections.ArrayList
 
-typealias Triplet = Triple<ConnectiblePort<*,*>, ShellyReadPortOperator<*>?, ShellyWritePortOperator<*>?>
+typealias Triplet = Triple<ConnectiblePort<*>, ShellyReadPortOperator<*>?, ShellyWritePortOperator<*>?>
 
 class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
 
+    private var updateSink: EventsSink<PortUpdateEvent>? = null
     private var finder: ShellyFinder
     private val client = createHttpClient()
     private val brokerIP: InetAddress?
@@ -90,7 +91,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     override suspend fun internalDisvovery(
         idBuilder: PortIdBuilder,
         eventsSink: EventsSink<HardwareEvent>
-    ): MutableList<Port<*, *>> = coroutineScope {
+    ): MutableList<Port<*>> = coroutineScope {
         triplets.clear()
 
         val discoveryJob = async { finder.searchForShellies(eventsSink) }
@@ -219,7 +220,8 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    override fun start() {
+    override fun start(updateSink: EventsSink<PortUpdateEvent>) {
+        this.updateSink = updateSink
         mqttBroker.addMqttListener(this)
     }
 
@@ -235,6 +237,9 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
             .forEach {
                 it.second?.setValueFromMqttPayload(payload)
                 it.first.updateLastSeen(now)
+
+                val updateEvent = PortUpdateEvent(ShellyPlugin.PLUGIN_ID_SHELLY, id, it.first)
+                updateSink?.broadcastEvent(updateEvent)
             }
     }
 

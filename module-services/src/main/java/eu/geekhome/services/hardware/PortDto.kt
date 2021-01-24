@@ -16,8 +16,11 @@ data class PortDto(
     @SerializedName("shadowed")
     val shadowed: Boolean,
 
-    @SerializedName("value")
-    val value: Resource?,
+    @SerializedName("integerValue")
+    val integerValue: Int?,
+
+    @SerializedName("interfaceValue")
+    val interfaceValue: Resource?,
 
     @SerializedName("valueType")
     val valueType: String,
