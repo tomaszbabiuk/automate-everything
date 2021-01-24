@@ -92,8 +92,10 @@ export default {
     },
   },
   methods: {
-    restartDiscovery: function () {
-      console.log("restart discovery");
+    restartDiscovery: async function () {
+      var factoryId = this.$route.params.clazz;
+      await client.enablePlugin(factoryId, false)
+      await client.enablePlugin(factoryId, true)
     },
 
     refresh: function () {
