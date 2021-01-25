@@ -28,14 +28,19 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
     }
 
     private suspend fun startAdaptersAndDiscover(factory: HardwareAdapterFactory) = coroutineScope {
+        discoverySink.removeRange { it.payload.factoryId == factory.id }
+
         factories
             .filter { factory.id == it.key.id }
             .flatMap { it.value }
-            .forEach {
-                it.adapter.start(updateSink)
-                val builder = PortIdBuilder(factory.id, it.adapter.id)
-                it.discoveryJob = async {
-                    it.ports = it.adapter.discover(builder, discoverySink)
+            .forEach { bundle ->
+                bundle.adapter.start(updateSink)
+                val builder = PortIdBuilder(factory.id, bundle.adapter.id)
+                bundle.discoveryJob = async {
+                    bundle.ports = bundle.adapter.discover(builder, discoverySink)
+                    bundle.ports.forEach {
+                        updateSink.broadcastEvent(PortUpdateEvent(factory.id, bundle.adapter.id, it))
+                    }
                 }
             }
     }

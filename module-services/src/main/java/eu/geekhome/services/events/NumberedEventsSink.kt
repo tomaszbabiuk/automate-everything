@@ -1,6 +1,7 @@
 package eu.geekhome.services.events
 
 import java.util.*
+import java.util.function.Predicate
 import kotlin.collections.ArrayList
 
 class NumberedEventsSink<T> : EventsSink<T> {
@@ -34,6 +35,10 @@ class NumberedEventsSink<T> : EventsSink<T> {
     override fun reset() {
         eventCounter = 0
         events.clear()
+    }
+
+    override fun removeRange(filter: Predicate<in NumberedEvent<T>>) {
+        events.removeIf(filter)
     }
 
     override fun getNumberOfEvents(): Int {

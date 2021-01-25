@@ -1,5 +1,7 @@
 package eu.geekhome.services.events
 
+import java.util.function.Predicate
+
 data class NumberedEvent<T>(val no: Int, val payload: T)
 
 interface NumberedEventsListener<T> {
@@ -13,4 +15,5 @@ interface EventsSink<T> {
     fun removeListener(listener: NumberedEventsListener<T>)
     fun broadcastEvent(payload: T)
     fun reset()
+    fun removeRange(filter: Predicate<in NumberedEvent<T>>)
 }

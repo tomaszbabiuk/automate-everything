@@ -69,6 +69,10 @@
 <script>
 import { client } from "../rest.js";
 import { sseClient } from "../sse.js";
+import store from "../plugins/vuex";
+import {
+  CLEAR_DISCOVERY_EVENTS,
+} from "../plugins/vuex";
 
 export default {
   data: () => ({
@@ -94,6 +98,7 @@ export default {
   methods: {
     restartDiscovery: async function () {
       var factoryId = this.$route.params.clazz;
+      store.commit(CLEAR_DISCOVERY_EVENTS)
       await client.enablePlugin(factoryId, false)
       await client.enablePlugin(factoryId, true)
     },
