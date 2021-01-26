@@ -108,7 +108,6 @@ export default {
       client.clearDiscoveryEvents();
       client.getDiscoveryEvents();
       client.getPorts();
-      console.log("refreshing: " + this.$route.params.clazz);
       this.filter = this.$route.params.clazz;
     },
   },

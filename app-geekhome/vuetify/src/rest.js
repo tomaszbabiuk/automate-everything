@@ -263,7 +263,6 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.put("rest/ports/" + portId + "/value", JSON.stringify(controlValue)),
       (response) => {
-        console.log("updating port")
         console.log(response.data)
       }
     )

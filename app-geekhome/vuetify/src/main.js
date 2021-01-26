@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
-import VueSSE from 'vue-sse'
 
 import ADCard from './components/admindashboard/Card'
 import ADStarsCard from'./components/admindashboard/StatsCard'
@@ -31,8 +30,6 @@ Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('portcontrol', PortControl)
 
 Vue.config.productionTip = false
-
-Vue.use(VueSSE)
 
 new Vue({
   store,

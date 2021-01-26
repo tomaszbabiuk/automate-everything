@@ -34,6 +34,7 @@ export default {
         cancel: "Cancel",
         ok: "OK",
         nA: "n/A",
+        refresh_page: "Refresh page"
     },
     validation: {
         field_required: "This field is required",

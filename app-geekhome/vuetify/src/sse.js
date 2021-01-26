@@ -1,28 +1,43 @@
-import Vue from 'vue'
-import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT } from './plugins/vuex'
+import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR } from './plugins/vuex'
 import { UPDATE_PLUGIN } from './plugins/vuex'
+import vuetify from './plugins/vuetify'
+
+
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
+export const lang = vuetify.framework.lang
 
 export const sseClient = {
   pluginsMsgServer: null,
   discoveryEventsMsgServer: null,
 
+  handleError: function(innerException) {
+    console.log('EventSource error: ', innerException);
+    var errorData = {
+      message: "$vuetify.rest.error",
+      actionTitle: "$vuetify.common.refresh_page",
+      actionCallback: () => location.href = location.href + "",
+      innerException: innerException
+    }
+
+    store.commit(SET_ERROR, errorData)
+  },
+  
   openPluginEvents: function() {
-    Vue.SSE('/rest/plugins/live', { format: 'json' })
-      .then(sse => {
-        this.pluginsMsgServer = sse;
+    this.pluginsMsgServer = new EventSourcePolyfill('/rest/plugins/live', {
+      headers: {
+          'Accept-Language': lang.current
+      }
+    })
 
-        sse.onError(e => {
-          console.error('lost connection; giving up!', e);
-          sse.close();
-        });
+    this.pluginsMsgServer.addEventListener("pluginChange", function(e) {
+      store.commit(UPDATE_PLUGIN, JSON.parse(e.data))
+    })
 
-        sse.subscribe('pluginChange', (message) => {
-          store.commit(UPDATE_PLUGIN, message)
-        });
-      })
-      .catch(err => {
-        console.error('Failed to connect to server', err);
-      });
+    this.pluginsMsgServer.onerror = innerException => {
+      this.handleError(innerException)
+      this.pluginsMsgServer.close()
+    };
   },
 
   closePluginEvents: function() {
@@ -32,36 +47,24 @@ export const sseClient = {
   },
 
   openDiscoveryEvents: function() {
-    var openInternal = function(server) {
-      console.log('reconnecting')
+    this.discoveryEventsMsgServer = new EventSourcePolyfill('/rest/adapterevents/live', {
+      headers: {
+          'Accept-Language': lang.current
+      }
+    });
 
-      Vue.SSE('/rest/adapterevents/live', { format: 'json' })
-      .then(sse => {
-        server = sse;
+    this.discoveryEventsMsgServer.addEventListener("discoveryEvent", function(e) {
+      store.commit(ADD_DISCOVERY_EVENT, JSON.parse(e.data))
+    })
 
-        sse.onError(e => {
-          sse.close();
-          console.info('lost connection; auto-retrying in 5 secs...', e);
-
-          setTimeout(function() { openInternal(server) }, 5000)
-        });
-
-        sse.subscribe('discoveryEvent', (payload) => {
-          store.commit(ADD_DISCOVERY_EVENT, payload)
-        });
-
-        sse.subscribe('portUpdateEvent', (payload) => {
-          store.commit(UPDATE_PORT, payload)
-        });
-      })
-      .catch(err => {
-        console.info('Failed to connect to server; auto-retrying in 5 secs...', err);
-
-        setTimeout(function() { openInternal(server) }, 5000)
-      });
-    }
-
-    openInternal(this.discoveryEventsMsgServer)
+    this.discoveryEventsMsgServer.addEventListener("portUpdateEvent", function(e) {
+      store.commit(UPDATE_PORT, JSON.parse(e.data))
+    })
+    
+    this.discoveryEventsMsgServer.onerror = innerException => {
+        this.handleError(innerException)
+        this.discoveryEventsMsgServer.close()
+    };
   },
 
   closeDiscoveryEvents: function() {

@@ -11,6 +11,7 @@ import javax.ws.rs.Produces
 import eu.geekhome.services.hardware.HardwareEventDto
 import eu.geekhome.services.hardware.PortDto
 import eu.geekhome.services.hardware.PortUpdateEvent
+import javax.ws.rs.HeaderParam
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
@@ -60,7 +61,7 @@ class AdapterEvents @Inject constructor(
     @GET
     @Path("/live")
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    fun streamPluginChangesLive(@Context sink: SseEventSink) {
+    fun streamChangesLive(@Context sink: SseEventSink) {
         sseBroadcaster.register(sink)
     }
 
