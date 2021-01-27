@@ -1,11 +1,21 @@
 package eu.geekhome.coreplugin;
 
-import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.*;
 import eu.geekhome.services.localization.Resource;
 import org.pf4j.Extension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Extension
 public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
+
+    @Override
+    public List<FieldDefinition<?>> getFieldDefinitions() {
+        ArrayList<FieldDefinition<?>> result = new ArrayList<>(super.getFieldDefinitions());
+        result.add(portField);
+        return result;
+    }
 
     @Override
     public Class<? extends Configurable> getParent() {
@@ -42,4 +52,7 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
                 " </g>\n" +
                 "</svg>";
     }
+
+    private final RelayReadWritePortField portField = new RelayReadWritePortField("portId", R.field_name_port, new RequiredStringValidator());
+
 }

@@ -83,35 +83,45 @@
 
     <div v-if="canAddInstances()">
       <v-card tile v-for="instance in instances" :key="instance.id">
-        <v-list-item two-line>
-          <v-list-item-icon v-if="instance.iconId === null">
-            <v-icon x-large left>$vuetify.icon.empty</v-icon>
-          </v-list-item-icon>
-          <v-list-item-icon v-else>
-            <img
-              left
-              :src="'/rest/icons/' + instance.iconId + '/raw'"
-              width="40"
-              height="40"
-            />
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ instance.fields["name"] }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              instance.fields["description"]
-            }}</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-btn icon>
-            <v-icon @click="showEditInstanceDialog(instance)"
-              >mdi-pencil</v-icon
-            >
-          </v-btn>
-          <v-btn icon>
-            <v-icon @click="showDeleteInstanceDialog(instance.id)"
-              >mdi-delete</v-icon
-            >
-          </v-btn>
-        </v-list-item>
+        <v-list>
+          <v-list-item two-line>
+            <v-list-item-icon v-if="instance.iconId === null">
+              <v-icon x-large left>$vuetify.icon.empty</v-icon>
+            </v-list-item-icon>
+            <v-list-item-icon v-else>
+              <img
+                left
+                :src="'/rest/icons/' + instance.iconId + '/raw'"
+                width="40"
+                height="40"
+              />
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{
+                instance.fields["name"]
+              }}</v-list-item-title>
+              <v-list-item-subtitle class="mb-4"
+                >{{ instance.fields["description"] }}
+              </v-list-item-subtitle>
+               <v-list-item-subtitle v-for="configurable in configurable.fields" :key="configurable.name"
+                ><div v-if="configurable.name !== 'name' && configurable.name !== 'description'">
+                  {{configurable.hint}}: {{instance.fields[configurable.name]}}
+                </div>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-btn icon>
+              <v-icon @click="showEditInstanceDialog(instance)"
+                >mdi-pencil</v-icon
+              >
+            </v-btn>
+            <v-btn icon>
+              <v-icon @click="showDeleteInstanceDialog(instance.id)"
+                >mdi-delete</v-icon
+              >
+            </v-btn>
+          </v-list-item>
+        </v-list>
         <v-card-actions v-if="instance.tagIds.length > 0">
           <v-chip v-for="tagId in instance.tagIds" :key="tagId" class="mr-2">{{
             findTagName(tagId)
@@ -241,6 +251,23 @@ export default {
     },
   },
   methods: {
+    extractOtherFields: function (instance) {
+      var result = {};
+      Object.entries(instance.fields).forEach(([key, value]) => {
+        if (key !== "name" && key != "description") {
+          result[key] = value;
+        }
+      });
+
+      return result;
+    },
+
+    extractFieldDefinition: function(fieldName) {
+      return this.configurable.fields.filter((element) => {
+        return element.name === fieldName
+      })
+    },
+
     canAddInstances: function () {
       return this.configurable !== null && this.configurable.fields !== null;
     },
@@ -389,6 +416,7 @@ export default {
   },
   mounted: function () {
     this.refresh();
+    client.getPorts();
   },
 };
 </script>

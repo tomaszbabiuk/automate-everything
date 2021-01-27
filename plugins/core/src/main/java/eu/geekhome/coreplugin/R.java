@@ -19,6 +19,10 @@ public class R {
             "Description",
             "Opis");
 
+    public static Resource field_name_port = new Resource(
+            "Port",
+            "Port");
+
     public static Resource configurable_device_title = new Resource(
             "Devices",
             "Urządzenia");

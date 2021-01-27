@@ -10,6 +10,7 @@ import ADOffset from'./components/admindashboard/Offset'
 
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
+import ConfigurableRelayReadWritePortField from './components/geekhome/configurable/RelayReadWritePortField'
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 
@@ -23,6 +24,7 @@ Vue.component('helper-offset', ADOffset)
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
+Vue.component('configurable-relayreadwriteportfield', ConfigurableRelayReadWritePortField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 
