@@ -43,6 +43,14 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
+    public List<BlockTarget> getBlockTargets() {
+        BlockTarget blockOnOff = new BlockTarget("onoff", R.block_target_onoff);
+        List<BlockTarget> result = new ArrayList<>();
+        result.add(blockOnOff);
+        return result;
+    }
+
+    @Override
     public String getIconRaw() {
         return "<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
                 " <g>\n" +

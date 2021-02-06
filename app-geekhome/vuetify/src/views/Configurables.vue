@@ -35,6 +35,9 @@
               <v-tab>
                 {{ $vuetify.lang.t("$vuetify.configurables.tags") }}
               </v-tab>
+              <v-tab v-for="blockTarget in configurable.blockTargets" :key="blockTarget.id">
+                {{ blockTarget.label }}
+              </v-tab>
 
               <v-tab-item>
                 <configurable-form></configurable-form>
@@ -44,6 +47,9 @@
               </v-tab-item>
               <v-tab-item>
                 <configurable-tagsselector></configurable-tagsselector>
+              </v-tab-item>
+              <v-tab-item v-for="blockTarget in configurable.blockTargets" :key="blockTarget.id">
+                <configurable-blockconfigurator></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>

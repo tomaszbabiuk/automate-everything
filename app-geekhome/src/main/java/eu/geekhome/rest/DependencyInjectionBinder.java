@@ -1,5 +1,6 @@
 package eu.geekhome.rest;
 
+import eu.geekhome.rest.configurable.BlockTargetDtoMapper;
 import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
 import eu.geekhome.rest.configurable.FieldDefinitionDtoMapper;
 import eu.geekhome.rest.hardware.HardwareAdapterDtoMapper;
@@ -14,6 +15,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
     @Override
     protected void configure() {
+        bind(BlockTargetDtoMapper.class).to(BlockTargetDtoMapper.class).in(Singleton.class);
         bind(FieldDefinitionDtoMapper.class).to(FieldDefinitionDtoMapper.class).in(Singleton.class);
         bind(ConfigurableDtoMapper.class).to(ConfigurableDtoMapper.class).in(Singleton.class);
         bind(PluginDtoMapper.class).to(PluginDtoMapper.class).in(Singleton.class);

@@ -26,9 +26,18 @@ public class R {
     public static Resource configurable_device_title = new Resource(
             "Devices",
             "Urządzenia");
+
     public static Resource configurable_device_description = new Resource(
             "Add/remove devices (sensors, relays, switches, etc.)",
             "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)");
+
+    public static Resource configurable_condition_title = new Resource(
+            "Conditions",
+            "Warunki");
+
+    public static Resource configurable_condition_description = new Resource(
+            "Add/remove conditions",
+            "Dodawaj/usuwaj warunki");
 
     public static Resource configurable_scene_add = new Resource(
             "Add scene",
@@ -79,4 +88,7 @@ public class R {
             "Temperature sensors",
             "Czujniki temperatury");
 
+    public static Resource block_target_onoff = new Resource(
+            "On/Off automation",
+            "Automatyka Wł/Wył");
 }

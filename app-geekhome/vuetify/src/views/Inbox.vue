@@ -1,3 +1,3 @@
 <template>
-  <div>inbox</div>
+  <configurable-blockconfigurator></configurable-blockconfigurator>
 </template>

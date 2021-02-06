@@ -1,8 +1,11 @@
 package eu.geekhome.coreplugin;
 
+import eu.geekhome.services.configurable.BlockTarget;
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.localization.Resource;
 import org.pf4j.Extension;
+
+import java.util.List;
 
 @Extension
 public class SceneConfigurable extends NameDescriptionConfigurable {
@@ -30,6 +33,11 @@ public class SceneConfigurable extends NameDescriptionConfigurable {
     @Override
     public Resource getDescriptionRes() {
         return R.configurable_scene_description;
+    }
+
+    @Override
+    public List<BlockTarget> getBlockTargets() {
+        return null;
     }
 
     @Override

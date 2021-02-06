@@ -12,6 +12,7 @@ public interface Configurable extends ExtensionPoint {
     Resource getEditRes();
     Resource getTitleRes();
     Resource getDescriptionRes();
+    List<BlockTarget> getBlockTargets();
     String getIconRaw();
 }
 

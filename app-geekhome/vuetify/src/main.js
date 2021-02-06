@@ -13,6 +13,7 @@ import ConfigurableStringField from './components/geekhome/configurable/StringFi
 import ConfigurableRelayReadWritePortField from './components/geekhome/configurable/RelayReadWritePortField'
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
+import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
 
 import PortControl from './components/geekhome/PortControl'
 
@@ -27,6 +28,7 @@ Vue.component('configurable-stringfield', ConfigurableStringField)
 Vue.component('configurable-relayreadwriteportfield', ConfigurableRelayReadWritePortField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
+Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
 
 //geekhome
 Vue.component('portcontrol', PortControl)

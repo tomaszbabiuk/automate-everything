@@ -31,13 +31,17 @@ public class ConfigurableDto {
     @SerializedName("iconRaw")
     private final String _iconRaw;
 
+    @SerializedName("blockTargets")
+    private final List<BlockTargetDto> _blockTargets;
+
     public ConfigurableDto(Resource titleRes, Resource descriptionRes, String clazz, String parentClazz,
-                           List<FieldDto> fields, Resource addNewRes, Resource editRes, String iconRaw) {
+                           List<FieldDto> fields, List<BlockTargetDto> blockTargets, Resource addNewRes, Resource editRes, String iconRaw) {
         _titleRes = titleRes;
         _descriptionRes = descriptionRes;
         _clazz = clazz;
         _parentClazz = parentClazz;
         _fields = fields;
+        _blockTargets = blockTargets;
         _addNewRes = addNewRes;
         _editRes = editRes;
         _iconRaw = iconRaw;
