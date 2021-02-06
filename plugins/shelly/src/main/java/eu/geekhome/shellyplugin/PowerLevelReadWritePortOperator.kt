@@ -37,7 +37,7 @@ class PowerLevelReadWritePortOperator(
     }
 
     private fun calculateBrightness(lightResponse: LightResponseDto): Int {
-        val isOn = lightResponse.on
+        val isOn = lightResponse.ison
         return if (isOn) lightResponse.brightness else 0
     }
 

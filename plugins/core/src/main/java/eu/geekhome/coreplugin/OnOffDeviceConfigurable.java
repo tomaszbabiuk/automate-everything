@@ -61,6 +61,11 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
                 "</svg>";
     }
 
-    private final RelayReadWritePortField portField = new RelayReadWritePortField("portId", R.field_name_port, new RequiredStringValidator());
+    @Override
+    public ConfigurableType getType() {
+        return ConfigurableType.Actuator;
+    }
+
+    private final RelayReadWritePortField portField = new RelayReadWritePortField("portId", R.field_port_hint, new RequiredStringValidator());
 
 }

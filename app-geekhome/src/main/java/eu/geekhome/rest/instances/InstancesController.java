@@ -15,25 +15,21 @@ import java.util.*;
 @Path("instances")
 public class InstancesController {
 
-    private Repository _repository;
+    private final Repository _repository;
     private final PluginsCoordinator _pluginsCoordinator;
 
     private Optional<Configurable> findConfigurable(String clazz) {
         return _pluginsCoordinator
                 .getConfigurables()
                 .stream()
-                .filter((x) -> x.getClass().getSimpleName().equals(clazz))
+                .filter((x) -> x.getClass().getName().equals(clazz))
                 .findFirst();
     }
 
     @Inject
     public InstancesController(PluginsCoordinator pluginsCoordinator) {
         _pluginsCoordinator = pluginsCoordinator;
-        try {
-            _repository = pluginsCoordinator.getRepositories().get(0);
-        } catch (Exception ex) {
-            _repository = pluginsCoordinator.getRepositories().get(0);
-        }
+        _repository = pluginsCoordinator.getRepositories().get(0);
     }
 
     @SuppressWarnings("rawtypes")

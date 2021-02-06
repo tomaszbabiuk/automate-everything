@@ -1,8 +1,5 @@
 package eu.geekhome.shellyplugin
 
-import com.google.gson.annotations.SerializedName
-
-
 /*
    "mqtt":{
       "enable":true,
@@ -21,9 +18,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class MqttBriefDto(
 
-    @SerializedName("enable")
     val enable: Boolean,
-
-    @SerializedName("server")
     val server: String?
 )

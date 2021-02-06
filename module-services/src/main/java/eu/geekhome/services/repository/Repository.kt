@@ -7,10 +7,11 @@ interface Repository : ExtensionPoint {
     fun saveInstance(instanceDto: InstanceDto)
     fun updateInstance(instanceDto: InstanceDto)
     fun getAllInstances(): List<InstanceDto>
+    fun getAllInstanceBriefs() : List<InstanceBriefDto>
     fun getInstancesOfClazz(clazz: String): List<InstanceDto>
     fun deleteInstance(id: Long)
-
     fun getInstance(id: Long): InstanceDto
+
     fun getAllTags(): List<TagDto>
     fun saveTag(tag: TagDto): Long
     fun deleteTag(id: Long)

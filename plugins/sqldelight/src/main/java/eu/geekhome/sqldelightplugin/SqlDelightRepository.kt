@@ -29,7 +29,11 @@ class SqlDelightRepository : Repository {
         return result
     }
 
-    fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstanceWithTagIds) : InstanceDto {
+    private fun mapSelectAllShortToConfigurableBriefDto(configurableShort: SelectAllShort) : InstanceBriefDto {
+        return InstanceBriefDto(configurableShort.id, configurableShort.clazz, configurableShort.value)
+    }
+
+    private fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstanceWithTagIds) : InstanceDto {
         val fieldsMap = HashMap<String, String?>()
 
         database
@@ -84,6 +88,14 @@ class SqlDelightRepository : Repository {
                 .selectAll()
                 .executeAsList()
                 .map { mapConfigurableInstanceToInstanceDto(it) }
+    }
+
+    override fun getAllInstanceBriefs(): List<InstanceBriefDto> {
+        return database
+                .configurableInstanceQueries
+                .selectAllShort()
+                .executeAsList()
+                .map(this::mapSelectAllShortToConfigurableBriefDto)
     }
 
     override fun getInstancesOfClazz(clazz: String): List<InstanceDto> {

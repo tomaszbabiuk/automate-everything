@@ -215,11 +215,11 @@ export default {
         breadcrumbs.push({
           text: selectedConfigurable.titleRes,
           disabled: isLast,
-          href: "/configurables/" + selectedConfigurable.class,
+          href: "/configurables/" + selectedConfigurable.clazz,
         });
 
         selectedConfigurable = this.getConfigurableByClazz(
-          selectedConfigurable.parentClass
+          selectedConfigurable.parentClazz
         );
         isLast = false;
       }
@@ -238,10 +238,10 @@ export default {
       var filterFunction =
         clazz === "null"
           ? function (x) {
-              return x.parentClass == null;
+              return x.parentClazz == null;
             }
           : function (x) {
-              return x.parentClass === clazz;
+              return x.parentClazz === clazz;
             };
 
       return this.$store.state.configurables.filter(filterFunction);
@@ -285,7 +285,7 @@ export default {
     getConfigurableByClazz: function (clazz) {
       var result = null;
       this.$store.state.configurables.forEach((element) => {
-        if (element.class == clazz) {
+        if (element.clazz == clazz) {
           result = element;
         }
       });
@@ -296,7 +296,7 @@ export default {
     browse: function (configurable) {
       this.$router.push({
         name: "configurables",
-        params: { clazz: configurable.class },
+        params: { clazz: configurable.clazz },
       });
       this.refresh();
     },

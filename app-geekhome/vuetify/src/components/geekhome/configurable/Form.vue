@@ -9,7 +9,7 @@
         :counter="field.maxSize"
         :required="field.required"
         :id="field.name"
-        v-bind:is="configurableClassToFormComponent(field.class)"
+        v-bind:is="configurableClassToFormComponent(field.clazz)"
       >
       </component>
     </v-form>
@@ -36,7 +36,7 @@ export default {
     getConfigurableByClazz: function (clazz) {
       var result = null;
       this.$store.state.configurables.forEach((element) => {
-        if (element.class == clazz) {
+        if (element.clazz == clazz) {
           result = element;
         }
       });

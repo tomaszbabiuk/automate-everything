@@ -1,8 +1,5 @@
 package eu.geekhome.shellyplugin
 
-import com.google.gson.annotations.SerializedName
-
-
 /*
    "meters":[
       {
@@ -20,6 +17,5 @@ import com.google.gson.annotations.SerializedName
  */
 data class MeterBriefDto(
 
-    @SerializedName("power")
     val power: Double
 )

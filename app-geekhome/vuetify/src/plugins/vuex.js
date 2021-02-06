@@ -116,7 +116,7 @@ export default new Vuex.Store({
 
     [RESET_INSTANCE](state, configurable) {
       state.newInstance.id = null
-      state.newInstance.class = configurable.class
+      state.newInstance.clazz = configurable.clazz
       state.newInstance.iconId = null
       state.newInstance.tagIds = []
 
@@ -127,7 +127,7 @@ export default new Vuex.Store({
 
     [EDIT_INSTANCE](state, instance) {
       state.newInstance.id = instance.id
-      state.newInstance.class = instance.class
+      state.newInstance.clazz = instance.clazz
       state.newInstance.iconId = instance.iconId
       state.newInstance.tagIds = instance.tagIds
 

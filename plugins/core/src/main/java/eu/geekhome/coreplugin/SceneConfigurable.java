@@ -2,6 +2,7 @@ package eu.geekhome.coreplugin;
 
 import eu.geekhome.services.configurable.BlockTarget;
 import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.ConfigurableType;
 import eu.geekhome.services.localization.Resource;
 import org.pf4j.Extension;
 
@@ -50,5 +51,10 @@ public class SceneConfigurable extends NameDescriptionConfigurable {
                 "  </g>\n" +
                 " </g>\n" +
                 "</svg>";
+    }
+
+    @Override
+    public ConfigurableType getType() {
+        return ConfigurableType.NotApplicable;
     }
 }

@@ -15,6 +15,11 @@ selectAll:
 SELECT *
   FROM configurableInstanceWithTagIds;
 
+selectAllShort:
+SELECT configurableInstance.id, configurableInstance.clazz, fieldInstance.value
+  FROM configurableInstance
+ INNER JOIN fieldInstance ON fieldInstance.instance_id = configurableInstance.id WHERE fieldInstance.name = 'name';
+
 selectByClazz:
 SELECT *
   FROM configurableInstanceWithTagIds

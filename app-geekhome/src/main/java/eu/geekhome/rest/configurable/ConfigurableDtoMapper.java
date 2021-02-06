@@ -33,8 +33,9 @@ public class ConfigurableDtoMapper {
 
         return new ConfigurableDto(configurable.getTitleRes(),
                 configurable.getDescriptionRes(),
-                configurable.getClass().getSimpleName(),
-                configurable.getParent() != null ? configurable.getParent().getSimpleName() : null,
+                configurable.getClass().getName(),
+                configurable.getParent() != null ? configurable.getParent().getName() : null,
+                configurable.getType(),
                 fields,
                 blockTargets,
                 configurable.getAddNewRes(),

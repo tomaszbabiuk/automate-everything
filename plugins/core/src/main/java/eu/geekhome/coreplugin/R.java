@@ -19,9 +19,17 @@ public class R {
             "Description",
             "Opis");
 
-    public static Resource field_name_port = new Resource(
+    public static Resource field_port_hint = new Resource(
             "Port",
             "Port");
+
+    public static Resource field_longitude_hint = new Resource(
+            "Longitude",
+            "Długość geograficzna");
+
+    public static Resource field_latitude_hint = new Resource(
+            "Latitude",
+            "Szerekość geograficzna");
 
     public static Resource configurable_device_title = new Resource(
             "Devices",
@@ -71,6 +79,22 @@ public class R {
     public static Resource configurable_onoffdevices_description = new Resource(
             "A very simple to automate on/off devices",
             "Proste w autmatyzowaniu urządzenia typu: włącz/wyłącz");
+
+    public static Resource configurable_twilightcondition_add = new Resource(
+            "Add twilight condition",
+            "Dodaj warunek zmierzchowy");
+
+    public static Resource configurable_twilightcondition_edit = new Resource(
+            "Edit twilight condition",
+            "Edytuj warunek zmierzchowy");
+
+    public static Resource configurable_twilightcondition_title = new Resource(
+            "Twilight conditions",
+            "Warunki zmierzchowe");
+
+    public static Resource configurable_twilightcondition_description = new Resource(
+            "Twilight condition can calculate the time of sunset and sunrise based on location data",
+            "Warunek zmierzchowy potrafi obliczyć godzinę wschodu i zachodu słońca na podstawie podanej lokalizacji");
 
     public static Resource configurable_thermometer_add = new Resource(
             "Add thermometer",

@@ -1,16 +1,9 @@
 package eu.geekhome.services.repository;
 
-import com.google.gson.annotations.SerializedName;
-
 public class IconDto {
 
-    @SerializedName("id")
     private final long _id;
-
-    @SerializedName("iconCategoryId")
     private final Long _iconCategoryId;
-
-    @SerializedName("raw")
     private final String _raw;
 
     public IconDto(long id, long iconCategoryId, String raw) {
