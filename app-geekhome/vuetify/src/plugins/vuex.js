@@ -4,9 +4,14 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 export const SET_ERROR = 'SET_ERROR' 
+
 export const SET_PLUGINS = 'SET_PLUGINS' 
-export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
+
+export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
+export const SET_FILTERS= 'SET_FILTERS'
+export const SET_CONDITIONS= 'SET_CONDITIONS'
+
 export const CLEAR_INSTANCES = 'CLEAR_INSTANCES'
 export const ADD_INSTANCE = 'ADD_INSTANCE' 
 export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
@@ -16,6 +21,7 @@ export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD'
 export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON' 
 export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG' 
 export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG' 
+export const UPDATE_INSTANCE_ADD_BLOCK = 'UPDATE_INSTANCE_ADD_BLOCK'
 export const SET_INSTANCES = 'SET_INSTANCES'
 export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
 export const CLEAR_INSTANCE_VALIDATION = 'CLEAR_INSTANCE_VALIDATION'
@@ -73,11 +79,14 @@ export default new Vuex.Store({
     discoveryEvents: [],
     hardwareAdapters: [],
     ports: [],
+    filters: [],
+    conditions: [],
     newInstance: {
       id: null,
       class: null,
       fields: {},
       iconId: null,
+      automations: [],
       tagIds: [],
     },
     counter: 0,
@@ -92,16 +101,24 @@ export default new Vuex.Store({
       state.plugins = plugins
     },
 
-    [SET_CONFIGURABLES](state, configurables) {
-      state.configurables = configurables
-    },
-
     [UPDATE_PLUGIN](state, plugin) {
       state.plugins.forEach(element => {
         if (element.id === plugin.id) {
           element.enabled = plugin.enabled
         }
       })
+    },
+
+    [SET_CONFIGURABLES](state, configurables) {
+      state.configurables = configurables
+    },
+
+    [SET_FILTERS](state, payload) {
+      state.filters = payload
+    },
+
+    [SET_CONDITIONS](state, payload) {
+      state.conditions = payload
     },
 
     [ADD_INSTANCE](state, instance) {
@@ -119,6 +136,7 @@ export default new Vuex.Store({
       state.newInstance.clazz = configurable.clazz
       state.newInstance.iconId = null
       state.newInstance.tagIds = []
+      state.newInstance.automations = []
 
       configurable.fields.forEach(element => {
         Vue.set(state.newInstance.fields, element.name, '')
@@ -165,6 +183,21 @@ export default new Vuex.Store({
           Vue.delete(state.newInstance.tagIds, index);
         }
       })
+    },
+
+
+    [UPDATE_INSTANCE_ADD_BLOCK](state, payload) {
+      /*
+        payload should be { automation: ..., conditionInstanceId:... }
+      */
+      var newBlock = {
+        automation: payload.automation,
+        class: 'ref',
+        fields: {
+          'instanceId': payload.conditionInstanceId
+        }
+      }
+      state.newInstance.automations.push(newBlock)
     },
 
     [SET_INSTANCES](state, instances) {

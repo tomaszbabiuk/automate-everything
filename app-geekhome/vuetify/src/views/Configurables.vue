@@ -49,7 +49,7 @@
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
               <v-tab-item v-for="blockTarget in configurable.blockTargets" :key="blockTarget.id">
-                <configurable-blockconfigurator></configurable-blockconfigurator>
+                <configurable-blockconfigurator :automation="blockTarget.id"></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>
