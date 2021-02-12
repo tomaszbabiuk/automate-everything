@@ -62,20 +62,19 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
-    <v-main v-if="error">
-      <v-banner single-line sticky>
-        {{$vuetify.lang.t(error.message)}}
-        <template v-slot:actions>
-          <v-btn
-            text
-            color="deep-purple accent-4"
-            @click="error.actionCallback"
-          >{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
-        </template>
-      </v-banner>
-    </v-main>
     <v-main class="mx-4 mb-4">
+      <div v-if="error">
+        <v-banner single-line sticky>
+          {{$vuetify.lang.t(error.message)}}
+          <template v-slot:actions>
+            <v-btn
+              text
+              color="deep-purple accent-4"
+              @click="error.actionCallback"
+            >{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
+          </template>
+        </v-banner>
+      </div>
       <div :class="$route.name">
         <v-container>
           <router-view></router-view>

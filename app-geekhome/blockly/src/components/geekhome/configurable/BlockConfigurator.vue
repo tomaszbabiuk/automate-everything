@@ -1,41 +1,61 @@
 <template>
-  <div class="text-center">
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn color="primary" dark fab class="ma-4" v-bind="attrs" v-on="on" left>
-          <v-icon dark>mdi-plus</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-subheader>Create new:</v-subheader>
-        <v-list-item v-for="item in items" :key="item.id">
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-
-        <v-subheader>Reuse:</v-subheader>
-        <v-list-item v-for="item in items2" :key="item.id">
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </div>
+<v-sheet
+  elevation="1"
+  height="90vh"
+  width="100vw"
+>
+    <BlocklyComponent id="blockly1" :options="options">
+      <block type="controls_ifelse"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="controls_repeat_ext">
+          <value name="TIMES">
+              <shadow type="math_number">
+                  <field name="NUM">10</field>
+              </shadow>
+          </value>
+      </block>
+            <block type="controls_repeat_ext">
+          <value name="TIMES">
+              <shadow type="math_number">
+                  <field name="NUM">10</field>
+              </shadow>
+          </value>
+      </block>
+            <block type="controls_repeat_ext">
+          <value name="TIMES">
+              <shadow type="math_number">
+                  <field name="NUM">10</field>
+              </shadow>
+          </value>
+      </block>
+      <block type="text_charAt">
+          <value name="VALUE">
+              <block type="variables_get">
+                  <field name="VAR">text</field>
+              </block>
+          </value>
+      </block>
+    </BlocklyComponent>
+</v-sheet>
 </template>
-
 <script>
 export default {
-  data: () => ({
-    items: [
-      { id: 0, title: "Click Me 1" },
-      { id: 1, title: "Click Me 2" },
-      { id: 2, title: "Click Me 3" },
-      { id: 3, title: "Click Me 4" },
-    ],
-    items2: [
-      { id: 4, title: "Click Me 5" },
-      { id: 5, title: "Click Me 6" },
-      { id: 6, title: "Click Me 7" },
-      { id: 7, title: "Click Me 8" },
-    ],
-  }),
-};
+  data(){
+    return {
+      code: '',
+      options: {
+        media: '/media/',
+        trashcan: true,
+        grid:
+          {
+            spacing: 25,
+            length: 3,
+            colour: '#fff',
+            snap: true
+          },
+      }
+    }
+  }
+}
 </script>

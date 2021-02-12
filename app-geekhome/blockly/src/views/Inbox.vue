@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <BlocklyComponent id="blockly1">
+  <div id="xxx">
+    <BlocklyComponent id="blockly1" :options="options">
       <block type="controls_ifelse"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
@@ -11,11 +11,6 @@
               </shadow>
           </value>
       </block>
-      <block type="logic_operation"></block>
-      <block type="logic_negate"></block>
-      <block type="logic_boolean"></block>
-      <block type="logic_null" disabled="true"></block>
-      <block type="logic_ternary"></block>
       <block type="text_charAt">
           <value name="VALUE">
               <block type="variables_get">
@@ -28,25 +23,20 @@
 </template>
 
 <script>
-
-import BlocklyComponent from '../components/BlocklyComponent.vue'
-
 export default {
-  name: 'app',
-  components: {
-    BlocklyComponent
-  },
   data(){
     return {
       code: '',
       options: {
         media: 'media/',
+        trashcan: true,
+
         grid:
           {
             spacing: 25,
             length: 3,
             colour: '#fff',
-            snap: false
+            snap: true,
           },
       }
     }
