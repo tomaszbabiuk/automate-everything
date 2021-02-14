@@ -21,7 +21,7 @@ export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD'
 export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON' 
 export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG' 
 export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG' 
-export const UPDATE_INSTANCE_ADD_BLOCK = 'UPDATE_INSTANCE_ADD_BLOCK'
+export const UPDATE_INSTANCE_AUTOMATION = 'UPDATE_INSTANCE_AUTOMATION'
 export const SET_INSTANCES = 'SET_INSTANCES'
 export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
 export const CLEAR_INSTANCE_VALIDATION = 'CLEAR_INSTANCE_VALIDATION'
@@ -86,7 +86,7 @@ export default new Vuex.Store({
       class: null,
       fields: {},
       iconId: null,
-      automations: [],
+      automation: [],
       tagIds: [],
     },
     counter: 0,
@@ -136,7 +136,6 @@ export default new Vuex.Store({
       state.newInstance.clazz = configurable.clazz
       state.newInstance.iconId = null
       state.newInstance.tagIds = []
-      state.newInstance.automations = []
 
       configurable.fields.forEach(element => {
         Vue.set(state.newInstance.fields, element.name, '')
@@ -185,19 +184,8 @@ export default new Vuex.Store({
       })
     },
 
-
-    [UPDATE_INSTANCE_ADD_BLOCK](state, payload) {
-      /*
-        payload should be { automation: ..., conditionInstanceId:... }
-      */
-      var newBlock = {
-        automation: payload.automation,
-        class: 'ref',
-        fields: {
-          'instanceId': payload.conditionInstanceId
-        }
-      }
-      state.newInstance.automations.push(newBlock)
+    [UPDATE_INSTANCE_AUTOMATION](state, xml) {
+      state.newInstance.automation = xml
     },
 
     [SET_INSTANCES](state, instances) {

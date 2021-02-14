@@ -33,6 +33,7 @@
  */
 
 import Blockly from 'blockly';
+import store, { UPDATE_INSTANCE_AUTOMATION } from '../plugins/vuex'
 
 export default {
   name: 'BlocklyComponent',
@@ -48,6 +49,22 @@ export default {
       options.toolbox = this.$refs["blocklyToolbox"];
     }
     this.workspace = Blockly.inject(this.$refs["blocklyDiv"], options);
+
+    function onBlockChange(event) {
+      if ((event.type == Blockly.Events.BLOCK_CHANGE) || (event.type == Blockly.Events.BLOCK_CREATE)) {
+        var workspace = Blockly.Workspace.getById(event.workspaceId)
+        var xml = Blockly.Xml.workspaceToDom(workspace)
+        var xml_text = Blockly.Xml.domToText(xml)
+        var xml_text_pretty = Blockly.Xml.domToPrettyText(xml)
+        console.log(xml_text)
+        console.log(xml_text_pretty)
+        store.commit(UPDATE_INSTANCE_AUTOMATION, xml_text)
+      } else {
+        console.log(event.type)
+      }
+    }
+
+    this.workspace.addChangeListener(onBlockChange);
   }
 }
 </script>
