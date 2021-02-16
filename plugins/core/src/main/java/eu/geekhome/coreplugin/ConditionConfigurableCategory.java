@@ -5,7 +5,7 @@ import eu.geekhome.services.localization.Resource;
 import org.pf4j.Extension;
 
 @Extension
-public class ConditionConfigurable extends CategoryConfigurable {
+public class ConditionConfigurableCategory extends CategoryConfigurable {
 
     @Override
     public Class<? extends Configurable> getParent() {

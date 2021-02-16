@@ -15,3 +15,4 @@ public class Resource {
         return _values.get(language);
     }
 }
+

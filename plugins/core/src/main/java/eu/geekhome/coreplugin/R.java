@@ -115,4 +115,12 @@ public class R {
     public static Resource block_target_onoff = new Resource(
             "On/Off automation",
             "Automatyka Wł/Wył");
+
+    public static Resource state_on = new Resource(
+            "On",
+            "Wł");
+
+    public static Resource state_off = new Resource(
+            "Off",
+            "Wył");
 }

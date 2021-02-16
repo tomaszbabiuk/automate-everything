@@ -1,16 +1,17 @@
 package eu.geekhome.services.automation;
 
+import eu.geekhome.services.localization.Resource;
+
 import java.util.ArrayList;
 
 public class EvaluationResult {
 
     private Object _value;
-    private String _interfaceValue;
+    private Resource _interfaceValue;
     private ArrayList<KeyValue> _descriptions;
     private ControlMode _controlMode;
     private boolean _isSignaled;
     private boolean _isConnected;
-    private boolean _isAlternating;
     private String _colorValue;
 
     public Object getValue() {
@@ -37,15 +38,7 @@ public class EvaluationResult {
         _isConnected = value;
     }
 
-    public boolean isAlternating() {
-        return _isAlternating;
-    }
-
-    public void setIsAlternating(boolean value) {
-        _isAlternating = value;
-    }
-
-    public String getInterfaceValue() {
+    public Resource getInterfaceValue() {
         return _interfaceValue;
     }
 
@@ -57,7 +50,7 @@ public class EvaluationResult {
         _colorValue = colorValue;
     }
 
-    public void setInterfaceValue(String value) {
+    public void setInterfaceValue(Resource value) {
         _interfaceValue = value;
     }
 
@@ -77,23 +70,22 @@ public class EvaluationResult {
         _descriptions = value;
     }
 
-    public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected,
-                            ArrayList<KeyValue> descriptions, ControlMode controlMode, boolean isAlternating) {
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected,
+                            ArrayList<KeyValue> descriptions, ControlMode controlMode) {
         setDescriptions(descriptions);
         setValue(value);
         setInterfaceValue(interfaceValue);
         setControlMode(controlMode);
         setSignaled(isSignaled);
-        setIsAlternating(isAlternating);
         setConnected(isConnected);
     }
 
-    public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected,
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected,
                             ArrayList<KeyValue> descriptions) {
-        this(value, interfaceValue, isSignaled, isConnected, descriptions, ControlMode.Auto, false);
+        this(value, interfaceValue, isSignaled, isConnected, descriptions, ControlMode.Auto);
     }
 
-    public EvaluationResult(Object value, String interfaceValue, boolean isSignaled, boolean isConnected) {
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected) {
         this(value, interfaceValue, isSignaled, isConnected, new ArrayList<>());
     }
 }

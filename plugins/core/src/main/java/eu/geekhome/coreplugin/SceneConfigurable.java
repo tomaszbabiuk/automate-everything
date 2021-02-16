@@ -1,9 +1,9 @@
 package eu.geekhome.coreplugin;
 
-import eu.geekhome.services.configurable.BlockTarget;
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.configurable.ConfigurableType;
 import eu.geekhome.services.localization.Resource;
+import eu.geekhome.services.localization.ResourceWithId;
 import org.pf4j.Extension;
 
 import java.util.List;
@@ -37,11 +37,6 @@ public class SceneConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
-    public List<BlockTarget> getBlockTargets() {
-        return null;
-    }
-
-    @Override
     public String getIconRaw() {
         return "<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n" +
                 " <g class=\"layer\">\n" +
@@ -51,10 +46,5 @@ public class SceneConfigurable extends NameDescriptionConfigurable {
                 "  </g>\n" +
                 " </g>\n" +
                 "</svg>";
-    }
-
-    @Override
-    public ConfigurableType getType() {
-        return ConfigurableType.NotApplicable;
     }
 }

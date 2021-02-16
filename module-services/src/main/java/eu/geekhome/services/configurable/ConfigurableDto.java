@@ -14,16 +14,15 @@ public class ConfigurableDto {
     private final Resource _titleRes;
     private final Resource _descriptionRes;
     private final String _iconRaw;
-    private final List<BlockTargetDto> _blockTargets;
-    private final ConfigurableType _type;
+    private final List<ResourceWithIdDto> _blockTargets;
 
-    public ConfigurableDto(Resource titleRes, Resource descriptionRes, String clazz, String parentClazz, ConfigurableType type,
-                           List<FieldDto> fields, List<BlockTargetDto> blockTargets, Resource addNewRes, Resource editRes, String iconRaw) {
+    public ConfigurableDto(Resource titleRes, Resource descriptionRes, String clazz, String parentClazz,
+                           List<FieldDto> fields, List<ResourceWithIdDto> blockTargets, Resource addNewRes,
+                           Resource editRes, String iconRaw) {
         _titleRes = titleRes;
         _descriptionRes = descriptionRes;
         _clazz = clazz;
         _parentClazz = parentClazz;
-        _type = type;
         _fields = fields;
         _blockTargets = blockTargets;
         _addNewRes = addNewRes;

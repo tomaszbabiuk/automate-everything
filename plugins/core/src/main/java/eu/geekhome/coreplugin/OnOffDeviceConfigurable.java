@@ -1,19 +1,31 @@
 package eu.geekhome.coreplugin;
 
+import eu.geekhome.services.automation.DeviceAutomationUnit;
+import eu.geekhome.services.automation.State;
+import eu.geekhome.services.automation.StateType;
 import eu.geekhome.services.configurable.*;
+import eu.geekhome.services.hardware.IPortFinder;
+import eu.geekhome.services.hardware.Port;
+import eu.geekhome.services.hardware.Relay;
 import eu.geekhome.services.localization.Resource;
+import eu.geekhome.services.localization.ResourceWithId;
+import eu.geekhome.services.repository.InstanceDto;
 import org.pf4j.Extension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Extension
-public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
+public class OnOffDeviceConfigurable extends NameDescriptionConfigurable implements StateDeviceConfigurable {
+
+    public static final String FIELD_PORT = "portId";
 
     @Override
-    public List<FieldDefinition<?>> getFieldDefinitions() {
-        ArrayList<FieldDefinition<?>> result = new ArrayList<>(super.getFieldDefinitions());
-        result.add(portField);
+    public Map<String, FieldDefinition<?>> getFieldDefinitions() {
+        Map<String, FieldDefinition<?>> result = new HashMap<>(super.getFieldDefinitions());
+        result.put(FIELD_PORT, portField);
         return result;
     }
 
@@ -43,9 +55,9 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
-    public List<BlockTarget> getBlockTargets() {
-        BlockTarget blockOnOff = new BlockTarget("onoff", R.block_target_onoff);
-        List<BlockTarget> result = new ArrayList<>();
+    public List<ResourceWithId> getBlockTargets() {
+        ResourceWithId blockOnOff = new ResourceWithId("onoff", R.block_target_onoff);
+        List<ResourceWithId> result = new ArrayList<>();
         result.add(blockOnOff);
         return result;
     }
@@ -61,11 +73,30 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable {
                 "</svg>";
     }
 
+    private final RelayReadWritePortField portField = new RelayReadWritePortField(FIELD_PORT, R.field_port_hint, new RequiredStringValidator());
+
     @Override
-    public ConfigurableType getType() {
-        return ConfigurableType.Actuator;
+    public DeviceAutomationUnit<?> buildEvaluator(InstanceDto instance, IPortFinder portFinder) {
+        String portId = readPortId(instance);
+        Port<Relay> port = portFinder.searchForPort(portId, true, true);
+        return new OnOffDeviceAutomationUnit(getStates(), "on", port);
     }
 
-    private final RelayReadWritePortField portField = new RelayReadWritePortField("portId", R.field_port_hint, new RequiredStringValidator());
+    private String readPortId(InstanceDto instance) {
+        String portFieldValue = instance.getFields().get(FIELD_PORT);
+        return portField.getBuilder().fromPersistableString(portFieldValue);
+    }
 
+    @Override
+    public Map<String, State> getStates() {
+        Map<String, State> states = new HashMap<>();
+        states.put("on", new State(new ResourceWithId("on",R.state_on), StateType.NonSignaledAction, true, false));
+        states.put("off", new State(new ResourceWithId("off",R.state_off), StateType.SignaledAction, false, false));
+        return states;
+    }
+
+    @Override
+    public ConfigurableType getType() {
+        return null;
+    }
 }

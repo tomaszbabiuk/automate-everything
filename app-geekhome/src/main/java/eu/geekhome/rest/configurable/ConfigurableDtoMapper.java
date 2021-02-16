@@ -1,10 +1,7 @@
 package eu.geekhome.rest.configurable;
 
-import eu.geekhome.services.configurable.BlockTargetDto;
-import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.*;
 import eu.geekhome.rest.MappingException;
-import eu.geekhome.services.configurable.ConfigurableDto;
-import eu.geekhome.services.configurable.FieldDto;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -21,21 +18,24 @@ public class ConfigurableDtoMapper {
     public ConfigurableDto map(Configurable configurable) throws MappingException {
         List<FieldDto> fields = configurable.getFieldDefinitions() == null ? null : configurable
                 .getFieldDefinitions()
+                .values()
                 .stream()
                 .map(_fieldDefinitionDtoMapper::map)
                 .collect(Collectors.toList());
 
-        List<BlockTargetDto> blockTargets = configurable.getBlockTargets() == null ? null : configurable
-                .getBlockTargets()
-                .stream()
-                .map(_blockTargetDtoMapper::map)
-                .collect(Collectors.toList());
+        List<ResourceWithIdDto> blockTargets = null;
+        if (configurable instanceof StateDeviceConfigurable) {
+            blockTargets = ((StateDeviceConfigurable)configurable)
+                    .getBlockTargets()
+                    .stream()
+                    .map(_blockTargetDtoMapper::map)
+                    .collect(Collectors.toList());
+        }
 
         return new ConfigurableDto(configurable.getTitleRes(),
                 configurable.getDescriptionRes(),
                 configurable.getClass().getName(),
                 configurable.getParent() != null ? configurable.getParent().getName() : null,
-                configurable.getType(),
                 fields,
                 blockTargets,
                 configurable.getAddNewRes(),

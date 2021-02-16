@@ -41,7 +41,7 @@ public class InstancesController {
             Map<String, FieldValidationResult> validationResult = new HashMap<>();
             boolean isObjectValid = true;
 
-            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions()) {
+            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions().values()) {
                 String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
                 FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
                 validationResult.put(fieldDefinition.getName(), isValid);
@@ -69,7 +69,7 @@ public class InstancesController {
             Map<String, FieldValidationResult> validationResult = new HashMap<>();
             boolean isObjectValid = true;
 
-            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions()) {
+            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions().values()) {
                 String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
                 FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
                 validationResult.put(fieldDefinition.getName(), isValid);

@@ -1,26 +1,31 @@
 package eu.geekhome.coreplugin;
 
+import eu.geekhome.services.automation.EvaluableAutomationUnit;
 import eu.geekhome.services.configurable.*;
 import eu.geekhome.services.localization.Resource;
+import eu.geekhome.services.repository.InstanceDto;
 import org.pf4j.Extension;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Extension
-public class TwilightConditionConfigurable extends NameDescriptionConfigurable {
+public class TwilightConditionConfigurable extends NameDescriptionConfigurable implements ConditionConfigurable {
+
+    public static final String FIELD_LONGITUDE = "longitude";
+    public static final String FIELD_LATITUDE = "latitide";
 
     @Override
-    public List<FieldDefinition<?>> getFieldDefinitions() {
-        ArrayList<FieldDefinition<?>> result = new ArrayList<>(super.getFieldDefinitions());
-        result.add(longitudeField);
-        result.add(latitudeField);
+    public Map<String, FieldDefinition<?>> getFieldDefinitions() {
+        Map<String, FieldDefinition<?>> result = new HashMap<>(super.getFieldDefinitions());
+        result.put(FIELD_LONGITUDE, longitudeField);
+        result.put(FIELD_LATITUDE, latitudeField);
         return result;
     }
 
     @Override
     public Class<? extends Configurable> getParent() {
-        return ConditionConfigurable.class;
+        return ConditionConfigurableCategory.class;
     }
 
     @Override
@@ -44,11 +49,6 @@ public class TwilightConditionConfigurable extends NameDescriptionConfigurable {
     }
 
     @Override
-    public List<BlockTarget> getBlockTargets() {
-        return null;
-    }
-
-    @Override
     public String getIconRaw() {
         return "<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
                 " <g>\n" +
@@ -58,13 +58,30 @@ public class TwilightConditionConfigurable extends NameDescriptionConfigurable {
                 "</svg>";
     }
 
-    @Override
-    public ConfigurableType getType() {
-        return ConfigurableType.Condition;
-    }
-
     private final DoubleField longitudeField = new DoubleField("longitude", R.field_latitude_hint, 0, new RequiredDoubleValidator());
 
     private final DoubleField latitudeField = new DoubleField("latitude", R.field_latitude_hint, 0, new RequiredDoubleValidator());
+
+    @Override
+    public EvaluableAutomationUnit buildEvaluator(InstanceDto instance) {
+        double longitude = extractLongitude(instance);
+        double latitude = extractLatitude(instance);
+        return new TwilightConditionAutomationUnit(longitude, latitude);
+    }
+
+    @SuppressWarnings("unchecked")
+    private double getFieldAsDouble(String fieldName, InstanceDto instance) {
+        FieldDefinition<Double> def =
+                (FieldDefinition<Double>) getFieldDefinitions().get(fieldName);
+        return def.getBuilder().fromPersistableString(instance.getFields().get(fieldName));
+    }
+
+    private double extractLongitude(InstanceDto instance) {
+        return getFieldAsDouble(TwilightConditionConfigurable.FIELD_LONGITUDE, instance);
+    }
+
+    private double extractLatitude(InstanceDto instance) {
+        return getFieldAsDouble(TwilightConditionConfigurable.FIELD_LATITUDE, instance);
+    }
 
 }

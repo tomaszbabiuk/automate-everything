@@ -45,6 +45,10 @@ class Relay(value: Boolean) : PortValue<Boolean>(value) {
             return Relay(from == 1)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return (other is Relay) && other.value == value
+    }
 }
 
 class PowerLevel(value: Int) : PortValue<Int>(value) {

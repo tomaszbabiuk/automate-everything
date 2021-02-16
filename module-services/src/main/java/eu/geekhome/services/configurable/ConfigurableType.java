@@ -1,10 +1,12 @@
 package eu.geekhome.services.configurable;
 
 public enum ConfigurableType {
+    StateDevice,
     Category,
-    Actuator,
     Condition,
-    ValueDevice,
+    Regulator,
+    SensorDevice,
     Filter,
-    NotApplicable
+    AutomationTrigger,
+    Other
 }

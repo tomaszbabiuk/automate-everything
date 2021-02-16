@@ -1,12 +1,12 @@
 package eu.geekhome.coreplugin;
 
-import eu.geekhome.services.configurable.BlockTarget;
-import eu.geekhome.services.configurable.ConfigurableType;
 import eu.geekhome.services.localization.Resource;
 import eu.geekhome.services.configurable.Configurable;
 import eu.geekhome.services.configurable.FieldDefinition;
+import eu.geekhome.services.localization.ResourceWithId;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class CategoryConfigurable implements Configurable {
 
@@ -19,17 +19,7 @@ public abstract class CategoryConfigurable implements Configurable {
     public Resource getEditRes() { return null; }
 
     @Override
-    public List<FieldDefinition<?>> getFieldDefinitions() {
+    public Map<String, FieldDefinition<?>> getFieldDefinitions() {
         return null;
-    }
-
-    @Override
-    public List<BlockTarget> getBlockTargets() {
-        return null;
-    }
-
-    @Override
-    public ConfigurableType getType() {
-        return ConfigurableType.Category;
     }
 }

@@ -1,6 +1,6 @@
 package eu.geekhome.services.automation;
 
-public interface IBlocksTargetAutomationUnit<R> {
+public interface IBlocksTargetAutomationUnit {
     void updateEvaluationsTable(BlockAutomationUnit block, String targetParameter);
 }
 
