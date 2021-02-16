@@ -31,7 +31,7 @@ public class OnOffDeviceConfigurable extends NameDescriptionConfigurable impleme
 
     @Override
     public Class<? extends Configurable> getParent() {
-        return DeviceConfigurable.class;
+        return DeviceConfigurableCategory.class;
     }
 
     @Override

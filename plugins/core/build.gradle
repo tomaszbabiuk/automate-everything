@@ -1,8 +1,23 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+    id 'org.jetbrains.kotlin.kapt' version "$kotlinVersion"
+}
+
 dependencies {
     compileOnly project(':module-services')
-
-    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
-      exclude group: "org.slf4j"
+    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {
+        exclude group: "org.slf4j"
     }
-    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
+
+    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
+
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+}
+
+shadowJar {
+    exclude 'kotlin/**'
+    exclude 'kotlinx/**'
+    exclude 'org/intellij/**'
+    exclude 'org/jetbrains/**'
 }

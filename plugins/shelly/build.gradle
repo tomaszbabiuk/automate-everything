@@ -2,6 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
     id 'org.jetbrains.kotlin.kapt' version "$kotlinVersion"
 }
+
 dependencies {
     compileOnly project(':module-services')
     compileOnly(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {

@@ -10,17 +10,22 @@ import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
+
     val fieldDefinitions: Map<String, FieldDefinition<*>>
-    val parent: Class<out Configurable>
-    val addNewRes: Resource
-    val editRes: Resource
+    val parent: Class<out Configurable>?
+    val addNewRes: Resource?
+    val editRes: Resource?
     val titleRes: Resource
     val descriptionRes: Resource
-    val iconRaw: String?
+    val iconRaw: String
 
     fun getType() : ConfigurableType  {
         if (this is ConditionConfigurable) {
             return ConfigurableType.Condition
+        }
+
+        if (this is StateDeviceConfigurable) {
+            return ConfigurableType.StateDevice
         }
 
         if (this is StateDeviceConfigurable) {

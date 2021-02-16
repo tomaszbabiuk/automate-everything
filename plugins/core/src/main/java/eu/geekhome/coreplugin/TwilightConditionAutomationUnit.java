@@ -1,10 +1,6 @@
 package eu.geekhome.coreplugin;
 
-
 import eu.geekhome.services.automation.EvaluableAutomationUnit;
-import eu.geekhome.services.configurable.Configurable;
-import eu.geekhome.services.configurable.FieldDefinition;
-import eu.geekhome.services.repository.InstanceDto;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -16,8 +12,8 @@ public class TwilightConditionAutomationUnit extends EvaluableAutomationUnit {
     private int _sunsetUTCMinute;
     private int _dayOfLastCalculation;
     private final int _timeZoneOffsetInMinutes;
-    private double _longitude;
-    private double _latitude;
+    private final double _longitude;
+    private final double _latitude;
 
     public TwilightConditionAutomationUnit(double longitude, double latitude) {
         _longitude = longitude;

@@ -18,9 +18,9 @@ public abstract class NameDescriptionConfigurable implements Configurable {
         return result;
     }
 
-    private final StringField nameField = new StringField(FIELD_NAME, R.field_name_hint, 50,
+    protected final StringField nameField = new StringField(FIELD_NAME, R.field_name_hint, 50,
             new RequiredStringValidator(), new MaxStringLengthValidator(50));
 
-    private final StringField descriptionField = new StringField(FIELD_DESCRIPTION, R.field_description_hint, 200,
+    protected final StringField descriptionField = new StringField(FIELD_DESCRIPTION, R.field_description_hint, 200,
             new MaxStringLengthValidator(200));
 }

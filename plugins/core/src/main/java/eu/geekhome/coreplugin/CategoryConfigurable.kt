@@ -1,25 +1,17 @@
-package eu.geekhome.coreplugin;
+package eu.geekhome.coreplugin
 
-import eu.geekhome.services.localization.Resource;
-import eu.geekhome.services.configurable.Configurable;
-import eu.geekhome.services.configurable.FieldDefinition;
-import eu.geekhome.services.localization.ResourceWithId;
+import eu.geekhome.services.configurable.Configurable
+import eu.geekhome.services.configurable.FieldDefinition
+import eu.geekhome.services.localization.Resource
 
-import java.util.List;
-import java.util.Map;
+abstract class CategoryConfigurable : Configurable {
 
-public abstract class CategoryConfigurable implements Configurable {
+    override val addNewRes: Resource?
+        get() = null
 
-    @Override
-    public Resource getAddNewRes() {
-        return null;
-    }
+    override val editRes: Resource?
+        get() = null
 
-    @Override
-    public Resource getEditRes() { return null; }
-
-    @Override
-    public Map<String, FieldDefinition<?>> getFieldDefinitions() {
-        return null;
-    }
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
+        get() = mapOf()
 }
