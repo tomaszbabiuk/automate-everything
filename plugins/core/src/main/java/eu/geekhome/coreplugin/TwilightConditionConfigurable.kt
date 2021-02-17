@@ -8,10 +8,10 @@ import org.pf4j.Extension
 import java.util.*
 
 @Extension
-class TwilightConditionConfigurable : NameDescriptionConfigurable(), ConditionConfigurable {
+class TwilightConditionConfigurable : ConditionConfigurable() {
 
     override val parent: Class<out Configurable?>
-        get() = ConditionConfigurableCategory::class.java
+        get() = ConditionsConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_twilightcondition_add
@@ -42,7 +42,7 @@ class TwilightConditionConfigurable : NameDescriptionConfigurable(), ConditionCo
             return result
         }
 
-    private val longitudeField = DoubleField(FIELD_LONGITUDE, R.field_latitude_hint, 0, RequiredDoubleValidator())
+    private val longitudeField = DoubleField(FIELD_LONGITUDE, R.field_longitude_hint, 0, RequiredDoubleValidator())
 
     private val latitudeField = DoubleField(FIELD_LATITUDE, R.field_latitude_hint, 0, RequiredDoubleValidator())
 

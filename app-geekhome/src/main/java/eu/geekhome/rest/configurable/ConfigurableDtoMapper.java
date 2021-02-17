@@ -2,6 +2,7 @@ package eu.geekhome.rest.configurable;
 
 import eu.geekhome.services.configurable.*;
 import eu.geekhome.rest.MappingException;
+import eu.geekhome.services.localization.Resource;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -12,34 +13,46 @@ public class ConfigurableDtoMapper {
     @Inject
     private FieldDefinitionDtoMapper _fieldDefinitionDtoMapper;
 
-    @Inject
-    private BlockTargetDtoMapper _blockTargetDtoMapper;
-
     public ConfigurableDto map(Configurable configurable) throws MappingException {
-        List<FieldDto> fields = configurable.getFieldDefinitions() == null ? null : configurable
-                .getFieldDefinitions()
-                .values()
-                .stream()
-                .map(_fieldDefinitionDtoMapper::map)
-                .collect(Collectors.toList());
-
-        List<ResourceWithIdDto> blockTargets = null;
-        if (configurable instanceof StateDeviceConfigurable) {
-            blockTargets = ((StateDeviceConfigurable)configurable)
-                    .getBlockTargets()
+        List<FieldDto> fields = null;
+        Resource addNewRes = null;
+        Resource editRes = null;
+        if (configurable instanceof ConfigurableWithFields) {
+            ConfigurableWithFields configurableWithFields = (ConfigurableWithFields)configurable;
+            fields = configurableWithFields
+                    .getFieldDefinitions()
+                    .values()
                     .stream()
-                    .map(_blockTargetDtoMapper::map)
+                    .map(_fieldDefinitionDtoMapper::map)
                     .collect(Collectors.toList());
+
+            addNewRes = configurableWithFields.getAddNewRes();
+            editRes = configurableWithFields.getEditRes();
         }
 
         return new ConfigurableDto(configurable.getTitleRes(),
                 configurable.getDescriptionRes(),
                 configurable.getClass().getName(),
                 configurable.getParent() != null ? configurable.getParent().getName() : null,
+                getConfigurableType(configurable),
                 fields,
-                blockTargets,
-                configurable.getAddNewRes(),
-                configurable.getEditRes(),
-                configurable.getIconRaw());
+                addNewRes,
+                editRes,
+                configurable.getIconRaw(),
+                configurable.getHasAutomation(),
+                configurable.getEditableIcon(),
+                configurable.getTaggable());
+    }
+
+    private ConfigurableType getConfigurableType(Configurable configurable) {
+        if (configurable instanceof ConditionConfigurable) {
+            return ConfigurableType.Condition;
+        }
+
+        if (configurable instanceof StateDeviceConfigurable) {
+            return ConfigurableType.StateDevice;
+        }
+
+        return ConfigurableType.Other;
     }
 }

@@ -29,14 +29,14 @@
               <v-tab>
                 {{ $vuetify.lang.t("$vuetify.configurables.data") }}
               </v-tab>
-              <v-tab>
+              <v-tab v-if="configurable.editableIcon">
                 {{ $vuetify.lang.t("$vuetify.configurables.icon") }}
               </v-tab>
-              <v-tab>
+              <v-tab v-if="configurable.taggable">
                 {{ $vuetify.lang.t("$vuetify.configurables.tags") }}
               </v-tab>
-              <v-tab v-for="blockTarget in configurable.blockTargets" :key="blockTarget.id">
-                {{ blockTarget.label }}
+              <v-tab v-if="configurable.hasAutomation">
+                {{ $vuetify.lang.t("$vuetify.configurables.automation") }}
               </v-tab>
 
               <v-tab-item>
@@ -48,8 +48,8 @@
               <v-tab-item>
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
-              <v-tab-item v-for="blockTarget in configurable.blockTargets" :key="blockTarget.id">
-                <configurable-blockconfigurator :automation="blockTarget.id"></configurable-blockconfigurator>
+              <v-tab-item>
+                <configurable-blockconfigurator></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>

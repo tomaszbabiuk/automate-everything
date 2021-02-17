@@ -1,11 +1,16 @@
 package eu.geekhome.coreplugin
 
 import eu.geekhome.services.configurable.Configurable
+import eu.geekhome.services.configurable.NameDescriptionConfigurable
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
 
 @Extension
-class SceneConfigurable : NameDescriptionConfigurable() {
+class SceneConfigurable(
+    override val hasAutomation: Boolean = true,
+    override val editableIcon: Boolean = true,
+    override val taggable: Boolean = false
+) : NameDescriptionConfigurable() {
 
     override val parent: Class<out Configurable?>?
         get() = null

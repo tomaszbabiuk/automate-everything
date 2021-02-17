@@ -80,6 +80,16 @@ export default {
         data: "Dane",
         tags: "Tagi",
         icon: "Ikona",
+        automation: "Automatyka"
+    },
+    discover: {
+        ports: "Porty",
+        restart_discovery: "Odkryj ponownie",
+        r: "O",
+        w: "Z",
+        id: "Id",
+        value: "Wartość",
+        control: "Kontrola"
     }
 
 }

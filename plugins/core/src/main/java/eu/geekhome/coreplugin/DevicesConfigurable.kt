@@ -1,11 +1,12 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.services.configurable.CategoryConfigurable
 import eu.geekhome.services.configurable.Configurable
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
 
 @Extension
-class DeviceConfigurableCategory : CategoryConfigurable() {
+class DevicesConfigurable : CategoryConfigurable() {
 
     override val parent: Class<out Configurable?>?
         get() = null

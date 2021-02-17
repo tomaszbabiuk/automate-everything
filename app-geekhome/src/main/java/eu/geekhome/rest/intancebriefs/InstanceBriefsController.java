@@ -40,7 +40,7 @@ public class InstanceBriefsController {
         List<String> classesOfConfigurableType = _pluginsCoordinator
                 .getConfigurables()
                 .stream()
-                .filter(configurable -> configurable.getType() == type)
+//TODO              .filter(configurable -> configurable.getType() == type)
                 .map(configurable -> configurable.getClass().getName())
                 .collect(Collectors.toList());
 

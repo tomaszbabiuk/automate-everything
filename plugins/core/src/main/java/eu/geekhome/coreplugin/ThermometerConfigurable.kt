@@ -1,14 +1,15 @@
 package eu.geekhome.coreplugin
 
 import eu.geekhome.services.configurable.Configurable
+import eu.geekhome.services.configurable.SensorConfigurable
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
 
 @Extension
-class ThermometerConfigurable : NameDescriptionConfigurable() {
+class ThermometerConfigurable : SensorConfigurable() {
 
     override val parent: Class<out Configurable?>
-        get() = DeviceConfigurableCategory::class.java
+        get() = DevicesConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_thermometer_add

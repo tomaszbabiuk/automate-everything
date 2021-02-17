@@ -1,6 +1,7 @@
 package eu.geekhome.rest.instances;
 
 import eu.geekhome.services.configurable.Configurable;
+import eu.geekhome.services.configurable.ConfigurableWithFields;
 import eu.geekhome.services.configurable.FieldDefinition;
 import eu.geekhome.services.configurable.FieldValidationResult;
 import eu.geekhome.rest.PluginsCoordinator;
@@ -18,11 +19,13 @@ public class InstancesController {
     private final Repository _repository;
     private final PluginsCoordinator _pluginsCoordinator;
 
-    private Optional<Configurable> findConfigurable(String clazz) {
+    private Optional<ConfigurableWithFields> findConfigurable(String clazz) {
         return _pluginsCoordinator
                 .getConfigurables()
                 .stream()
-                .filter((x) -> x.getClass().getName().equals(clazz))
+                .filter(x -> x.getClass().getName().equals(clazz))
+                .filter(x -> x instanceof ConfigurableWithFields)
+                .map(x -> (ConfigurableWithFields)x)
                 .findFirst();
     }
 
@@ -36,7 +39,7 @@ public class InstancesController {
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Map<String, FieldValidationResult> postInstances(InstanceDto instanceDto) throws Exception {
-        Optional<Configurable> configurable = findConfigurable(instanceDto.getClazz());
+        Optional<ConfigurableWithFields> configurable = findConfigurable(instanceDto.getClazz());
         if (configurable.isPresent()) {
             Map<String, FieldValidationResult> validationResult = new HashMap<>();
             boolean isObjectValid = true;
@@ -64,7 +67,7 @@ public class InstancesController {
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Map<String, FieldValidationResult> putInstances(InstanceDto instanceDto) throws Exception {
-        Optional<Configurable> configurable = findConfigurable(instanceDto.getClazz());
+        Optional<ConfigurableWithFields> configurable = findConfigurable(instanceDto.getClazz());
         if (configurable.isPresent()) {
             Map<String, FieldValidationResult> validationResult = new HashMap<>();
             boolean isObjectValid = true;

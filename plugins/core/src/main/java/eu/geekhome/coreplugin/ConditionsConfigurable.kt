@@ -1,18 +1,22 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.services.configurable.CategoryConfigurable
 import eu.geekhome.services.configurable.Configurable
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
 
 @Extension
-class ConditionConfigurableCategory : CategoryConfigurable() {
+class ConditionsConfigurable : CategoryConfigurable() {
 
     override val parent: Class<out Configurable>?
         get() = null
+
     override val titleRes: Resource
         get() = R.configurable_condition_title
+
     override val descriptionRes: Resource
         get() = R.configurable_condition_description
+
     override val iconRaw: String
         get() = """<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
                      <g class="layer">

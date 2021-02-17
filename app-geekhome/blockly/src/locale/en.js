@@ -80,6 +80,7 @@ export default {
         data: "Data",
         tags: "Tags",
         icon: "Icon",
+        automation: "Automation"
     },
     discover: {
         ports: "Ports",
