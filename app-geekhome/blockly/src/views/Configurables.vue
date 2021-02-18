@@ -42,13 +42,13 @@
               <v-tab-item>
                 <configurable-form></configurable-form>
               </v-tab-item>
-              <v-tab-item>
+              <v-tab-item v-if="configurable.editableIcon">
                 <configurable-iconselector></configurable-iconselector>
               </v-tab-item>
-              <v-tab-item>
+              <v-tab-item v-if="configurable.taggable">
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
-              <v-tab-item>
+              <v-tab-item v-if="configurable.hasAutomation">
                 <configurable-blockconfigurator></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>

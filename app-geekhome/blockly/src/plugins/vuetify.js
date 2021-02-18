@@ -16,6 +16,9 @@ import IconPlugin from '../components/icons/IconPlugin'
 import IconRobot from '../components/icons/IconRobot'
 import IconTimeline from '../components/icons/IconTimeline'
 
+import IconPause from '../components/icons/IconPause'
+import IconPlay from '../components/icons/IconPlay'
+
 import IconPL from '../components/icons/IconPL'
 import IconUK from '../components/icons/IconUK'
 
@@ -69,6 +72,12 @@ export default new Vuetify({
       },
       timeline: {
         component: IconTimeline
+      },
+      pause: {
+        component: IconPause
+      },
+      play: {
+        component: IconPlay
       }
     },
   },
