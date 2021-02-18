@@ -18,9 +18,6 @@ import ConfigurableBlockConfigurator from './components/geekhome/configurable/Bl
 
 import PortControl from './components/geekhome/PortControl'
 
-import BlocklyComponent from './components/BlocklyComponent.vue'
-
-
 //material dashboard
 Vue.component('material-card', ADCard)
 Vue.component('material-stats-card', ADStarsCard)
@@ -37,9 +34,6 @@ Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
 
 //geekhome
 Vue.component('portcontrol', PortControl)
-
-//google
-Vue.component('BlocklyComponent', BlocklyComponent)
 
 Vue.config.productionTip = false
 //Add unimported components to ignore list to prevent warnings.

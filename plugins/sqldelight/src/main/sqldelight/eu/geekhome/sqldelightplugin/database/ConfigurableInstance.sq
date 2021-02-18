@@ -38,7 +38,8 @@ VALUES (?,?,?);
 update:
 UPDATE configurableInstance
 SET clazz = ?,
-    icon_id = ?
+    icon_id = ?,
+    automation = ?
 WHERE
     id= ?;
 

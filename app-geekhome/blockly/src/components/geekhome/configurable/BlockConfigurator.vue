@@ -1,176 +1,181 @@
 <template>
-<v-sheet
-  elevation="1"
-  height="90vh"
-  width="100vw"
->
-    <BlocklyComponent id="blockly1" :options="options" :xml="xml">
-      <category name="Automation">
-        <block type="ae_condition"></block>
-        <block type="ae_repeat"></block>
-        <block type="ae_change_state"></block>
-      </category>
-      <category name="Logic">
-        <block type="logic_compare"></block>
-        <block type="logic_operation"></block>
-        <block type="logic_boolean"></block>
-        <block type="controls_ifelse"></block>
-      </category>
-    </BlocklyComponent>
-</v-sheet>
+  <v-sheet elevation="1" height="90vh" width="100vw">
+    <div class="blocklyDiv" ref="blocklyDiv"></div>
+  </v-sheet>
 </template>
 <script>
-import Blockly from 'blockly';
-
+import Blockly from "blockly";
+import store, { UPDATE_INSTANCE_AUTOMATION } from '../../../plugins/vuex'
 
 export default {
-  data(){
+  data() {
     return {
-      code: '',
       options: {
-        media: '/media/',
+        media: "/media/",
         trashcan: true,
-        grid:
-          {
-            spacing: 25,
-            length: 3,
-            colour: '#fff',
-            snap: true
-          },
+        grid: {
+          spacing: 25,
+          length: 3,
+          colour: "#fff",
+          snap: true,
+        },
+        toolbox: {
+  "kind": "categoryToolbox",
+  "contents": [
+    {
+      "kind": "category",
+      "name": "Control",
+      "contents": [
+        {
+          "kind": "block",
+          "type": "controls_if"
+        },
+        {
+          "kind": "block",
+          "type": "controls_whileUntil"
+        },
+        {
+          "kind": "block",
+          "type": "controls_for"
+        }
+      ]
+    },
+    {
+      "kind": "category",
+      "name": "Logic",
+      "contents": [
+        {
+          "kind": "block",
+          "type": "logic_compare"
+        },
+        {
+          "kind": "block",
+          "type": "logic_operation"
+        },
+        {
+          "kind": "block",
+          "type": "logic_boolean"
+        }
+      ]
+    }
+  ]
+}
       },
-      xml: null
+      blocks: null
+    };
+  },
+  methods: {
+    reloadBlocks(xml) {
+      this.workspace.clear();
+      if (xml != null) {
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), this.workspace);
+      }
     }
   },
-  computed: {
-    storeAutomation() {
-      return this.$store.state.newInstance.automation
-    },  
-  },
-  watch: {
-    storeAutomation(value) {
-      console.log('automation: ' + value)
-      if (this.xml != value) {
-        console.log('loading...' + value)
-        this.xml=this.$store.state.newInstance.automation
+  mounted: function () {
+    console.log("mounted")
+    this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
+    this.reloadBlocks(this.$store.state.newInstance.automation)
+
+    function onBlockChange(event) {
+      if (
+        event.type == Blockly.Events.BLOCK_CREATE || Blockly.Events.BLOCK_CHANGE
+      ) {
+        var workspace = Blockly.Workspace.getById(event.workspaceId);
+        var xml = Blockly.Xml.workspaceToDom(workspace);
+        var xml_text = Blockly.Xml.domToText(xml);
+        store.commit(UPDATE_INSTANCE_AUTOMATION, xml_text);
       }
-    },
+    }
+
+    this.workspace.addChangeListener(onBlockChange);
   },
-  mounted: function() {
-    console.log('mounted ---')
-    this.xml=this.$store.state.newInstance.automation
-  }
-}
+};
 
 var conditionBlock = {
-  "type": "ae_condition",
-  "message0": "Warunek zewnętrzny: %1",
-  "args0": [
+  type: "ae_condition",
+  message0: "Warunek zewnętrzny: %1",
+  args0: [
     {
-      "type": "field_dropdown",
-      "name": "CONDITION_ID",
-      "options": [
-        [
-          "Zmierzch w Krakowie",
-          "cond101"
-        ],
-        [
-          "Obecność w domu",
-          "cond202"
-        ],
-        [
-          "Nieobecność w domu",
-          "cond303"
-        ]
-      ]
-    }
+      type: "field_dropdown",
+      name: "CONDITION_ID",
+      options: [
+        ["Zmierzch w Krakowie", "cond101"],
+        ["Obecność w domu", "cond202"],
+        ["Nieobecność w domu", "cond303"],
+      ],
+    },
   ],
-  "inputsInline": true,
-  "output": "Boolean",
-  "colour": 345,
-  "tooltip": "",
-  "helpUrl": ""
-}
+  inputsInline: true,
+  output: "Boolean",
+  colour: 345,
+  tooltip: "",
+  helpUrl: "",
+};
 
 var repeatBlock = {
-  "type": "ae_repeat",
-  "message0": "Powtarzaj co %1",
-  "args0": [
+  type: "ae_repeat",
+  message0: "Powtarzaj co %1",
+  args0: [
     {
-      "type": "field_dropdown",
-      "name": "NAME",
-      "options": [
-        [
-          "sekundę",
-          "1"
-        ],
-        [
-          "minutę",
-          "60"
-        ],
-        [
-          "godzinę",
-          "3600"
-        ]
-      ]
-    }
+      type: "field_dropdown",
+      name: "NAME",
+      options: [
+        ["sekundę", "1"],
+        ["minutę", "60"],
+        ["godzinę", "3600"],
+      ],
+    },
   ],
-  "nextStatement": "Boolean",
-  "colour": 315,
-  "tooltip": "",
-  "helpUrl": ""
-}
+  nextStatement: "Boolean",
+  colour: 315,
+  tooltip: "",
+  helpUrl: "",
+};
 
 var changeStateBlock = {
-  "type": "ae_change_state",
-  "message0": "%1",
-  "args0": [
+  type: "ae_change_state",
+  message0: "%1",
+  args0: [
     {
-      "type": "field_dropdown",
-      "name": "NAME",
-      "options": [
-        [
-          "Zmień stan tego urządzenia na WŁ",
-          "ON"
-        ],
-        [
-          "Zmień stan tego urządzenia na WYŁ",
-          "OFF"
-        ]
-      ]
-    }
+      type: "field_dropdown",
+      name: "NAME",
+      options: [
+        ["Zmień stan tego urządzenia na WŁ", "ON"],
+        ["Zmień stan tego urządzenia na WYŁ", "OFF"],
+      ],
+    },
   ],
-  "previousStatement": null,
-  "nextStatement": null,
-  "colour": 230,
-  "tooltip": "",
-  "helpUrl": ""
-}
+  previousStatement: null,
+  nextStatement: null,
+  colour: 230,
+  tooltip: "",
+  helpUrl: "",
+};
 
-Blockly.Blocks['ae_condition'] = {
-  init: function() {
+Blockly.Blocks["ae_condition"] = {
+  init: function () {
     this.jsonInit(conditionBlock);
-  }
+  },
 };
 
-Blockly.Blocks['ae_repeat'] = {
-  init: function() {
+Blockly.Blocks["ae_repeat"] = {
+  init: function () {
     this.jsonInit(repeatBlock);
-  }
+  },
 };
 
-Blockly.Blocks['ae_change_state'] = {
-  init: function() {
+Blockly.Blocks["ae_change_state"] = {
+  init: function () {
     this.jsonInit(changeStateBlock);
-  }
+  },
 };
 </script>
 
-<style>
-#blockly1 {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
+<style scoped>
+.blocklyDiv {
   height: 100%;
+  width: 100%;
+  text-align: left;
 }
 </style>

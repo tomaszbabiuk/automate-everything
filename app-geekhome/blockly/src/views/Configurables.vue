@@ -49,7 +49,7 @@
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
               <v-tab-item v-if="configurable.hasAutomation">
-                <configurable-blockconfigurator></configurable-blockconfigurator>
+                <configurable-blockconfigurator ref="blockly"></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>
@@ -375,6 +375,10 @@ export default {
         store.commit(RESET_INSTANCE, this.configurable);
         store.commit(EDIT_INSTANCE, instance);
       }, 200);
+
+      if (this.$refs.blockly != null) {
+        this.$refs.blockly.reloadBlocks(instance.automation)
+      }
     },
 
     handleValidationResult: function (validationResult) {

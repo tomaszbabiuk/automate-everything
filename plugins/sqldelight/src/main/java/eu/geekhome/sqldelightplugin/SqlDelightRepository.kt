@@ -69,7 +69,9 @@ class SqlDelightRepository : Repository {
 
     override fun updateInstance(instanceDto: InstanceDto) {
         database.transaction {
-            database.configurableInstanceQueries.update(instanceDto.clazz, instanceDto.iconId, instanceDto.id)
+            database.configurableInstanceQueries.update(instanceDto.clazz, instanceDto.iconId,
+                instanceDto.automation, instanceDto.id)
+
             instanceDto.fields.forEach {
                 database.fieldInstanceQueries.update(it.value, it.key, instanceDto.id)
             }
