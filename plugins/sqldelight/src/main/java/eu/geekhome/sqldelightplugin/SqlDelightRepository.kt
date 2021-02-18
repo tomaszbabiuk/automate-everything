@@ -18,15 +18,12 @@ class SqlDelightRepository : Repository {
         database = Database(driver)
     }
 
-    private fun convertStringOfIdsToList(input: String) : List<Long> {
-        val result: List<Long>
-        if (input.isNotEmpty()) {
-            result = input.split(',').map { it.toLong() }
+    private fun convertStringOfIdsToList(input: String): List<Long> {
+        return if (input.isNotEmpty()) {
+            input.split(',').map { it.toLong() }
         } else {
-            result = ArrayList()
+            ArrayList()
         }
-
-        return result
     }
 
     private fun mapSelectAllShortToConfigurableBriefDto(configurableShort: SelectAllShort) : InstanceBriefDto {
@@ -47,7 +44,9 @@ class SqlDelightRepository : Repository {
             configurableInstance.icon_id,
             convertStringOfIdsToList(configurableInstance.tagIds),
             configurableInstance.clazz,
-            fieldsMap)
+            fieldsMap,
+            configurableInstance.automation
+        )
     }
 
     private fun mapIconToIconDto(icon: Icon): IconDto {
@@ -56,7 +55,7 @@ class SqlDelightRepository : Repository {
 
     override fun saveInstance(instanceDto: InstanceDto) {
         database.transaction {
-            database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId)
+            database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId, instanceDto.automation)
             val insertedDtoId = database.generalQueries.lastInsertRowId().executeAsOne()
             instanceDto.fields.forEach {
                 database.fieldInstanceQueries.insert(insertedDtoId, it.key, it.value)

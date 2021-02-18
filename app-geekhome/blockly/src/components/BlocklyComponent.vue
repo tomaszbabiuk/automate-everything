@@ -9,38 +9,21 @@
 </template>
 
 <script>
-/**
- * @license
- * 
- * Copyright 2019 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @fileoverview Blockly Vue Component.
- * @author samelh@google.com (Sam El-Husseini)
- */
 
 import Blockly from 'blockly';
 import store, { UPDATE_INSTANCE_AUTOMATION } from '../plugins/vuex'
 
 export default {
   name: 'BlocklyComponent',
-  props: ['options'],
+  props: ['options', 'xml'],
   data(){
     return {
       workspace: null
+    }
+  },
+  watch: {
+    xml(value) {
+      console.log('xml changed: ' + value)
     }
   },
   mounted() {
@@ -50,17 +33,18 @@ export default {
     }
     this.workspace = Blockly.inject(this.$refs["blocklyDiv"], options);
 
+    if (this.xml != null) {
+      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(this.xml), this.workspace);
+    } else {
+      this.workspace.clear();
+    }
+
     function onBlockChange(event) {
       if ((event.type == Blockly.Events.BLOCK_CHANGE) || (event.type == Blockly.Events.BLOCK_CREATE)) {
         var workspace = Blockly.Workspace.getById(event.workspaceId)
         var xml = Blockly.Xml.workspaceToDom(workspace)
         var xml_text = Blockly.Xml.domToText(xml)
-        var xml_text_pretty = Blockly.Xml.domToPrettyText(xml)
-        console.log(xml_text)
-        console.log(xml_text_pretty)
         store.commit(UPDATE_INSTANCE_AUTOMATION, xml_text)
-      } else {
-        console.log(event.type)
       }
     }
 

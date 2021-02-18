@@ -4,7 +4,7 @@
   height="90vh"
   width="100vw"
 >
-    <BlocklyComponent id="blockly1" :options="options">
+    <BlocklyComponent id="blockly1" :options="options" :xml="xml">
       <category name="Automation">
         <block type="ae_condition"></block>
         <block type="ae_repeat"></block>
@@ -37,11 +37,27 @@ export default {
             colour: '#fff',
             snap: true
           },
-      }
+      },
+      xml: null
     }
   },
+  computed: {
+    storeAutomation() {
+      return this.$store.state.newInstance.automation
+    },  
+  },
+  watch: {
+    storeAutomation(value) {
+      console.log('automation: ' + value)
+      if (this.xml != value) {
+        console.log('loading...' + value)
+        this.xml=this.$store.state.newInstance.automation
+      }
+    },
+  },
   mounted: function() {
-    console.log('mounted')
+    console.log('mounted ---')
+    this.xml=this.$store.state.newInstance.automation
   }
 }
 

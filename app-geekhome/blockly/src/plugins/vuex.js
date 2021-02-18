@@ -85,7 +85,7 @@ export default new Vuex.Store({
       class: null,
       fields: {},
       iconId: null,
-      automation: [],
+      automation: null,
       tagIds: [],
     },
     counter: 0,
@@ -135,6 +135,7 @@ export default new Vuex.Store({
       state.newInstance.clazz = configurable.clazz
       state.newInstance.iconId = null
       state.newInstance.tagIds = []
+      state.newInstance.automation = null
 
       configurable.fields.forEach(element => {
         Vue.set(state.newInstance.fields, element.name, '')
@@ -146,6 +147,7 @@ export default new Vuex.Store({
       state.newInstance.clazz = instance.clazz
       state.newInstance.iconId = instance.iconId
       state.newInstance.tagIds = instance.tagIds
+      state.newInstance.automation = instance.automation
 
       Object.keys(instance.fields).forEach(element => {
         Vue.set(state.newInstance.fields, element, instance.fields[element])
