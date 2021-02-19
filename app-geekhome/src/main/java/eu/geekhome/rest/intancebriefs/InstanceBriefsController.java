@@ -23,7 +23,7 @@ public class InstanceBriefsController {
     @Inject
     public InstanceBriefsController(PluginsCoordinator pluginsCoordinator) {
         _pluginsCoordinator = pluginsCoordinator;
-        _repository = pluginsCoordinator.getRepositories().get(0);
+        _repository = pluginsCoordinator.getRepository();
     }
 
     @GET

@@ -49,7 +49,7 @@
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
               <v-tab-item v-if="configurable.hasAutomation">
-                <configurable-blockconfigurator ref="blockly"></configurable-blockconfigurator>
+                <configurable-blockconfigurator ref="blockly" :configurableClazz="configurable.clazz"></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>

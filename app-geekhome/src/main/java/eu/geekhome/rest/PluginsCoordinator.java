@@ -43,9 +43,10 @@ public class PluginsCoordinator extends HolderService<PluginManager> {
                 .getExtensions(Configurable.class);
     }
 
-    public List<Repository> getRepositories() {
+    public Repository getRepository() {
         return getInstance()
-                .getExtensions(Repository.class);
+                .getExtensions(Repository.class)
+                .get(0);
     }
 
     public void registerStateListener(PluginStateListener listener) {

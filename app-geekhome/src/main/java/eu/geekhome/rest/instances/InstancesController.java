@@ -32,7 +32,7 @@ public class InstancesController {
     @Inject
     public InstancesController(PluginsCoordinator pluginsCoordinator) {
         _pluginsCoordinator = pluginsCoordinator;
-        _repository = pluginsCoordinator.getRepositories().get(0);
+        _repository = pluginsCoordinator.getRepository();
     }
 
     @SuppressWarnings("rawtypes")

@@ -5,7 +5,8 @@
 </template>
 <script>
 import Blockly from "blockly";
-import store, { UPDATE_INSTANCE_AUTOMATION } from '../../../plugins/vuex'
+import store, { UPDATE_INSTANCE_AUTOMATION } from "../../../plugins/vuex";
+import { client } from "../../../rest.js";
 
 export default {
   data() {
@@ -19,76 +20,66 @@ export default {
           colour: "#fff",
           snap: true,
         },
-        toolbox: {
-  "kind": "categoryToolbox",
-  "contents": [
-    {
-      "kind": "category",
-      "name": "Control",
-      "contents": [
-        {
-          "kind": "block",
-          "type": "controls_if"
-        },
-        {
-          "kind": "block",
-          "type": "controls_whileUntil"
-        },
-        {
-          "kind": "block",
-          "type": "controls_for"
-        }
-      ]
-    },
-    {
-      "kind": "category",
-      "name": "Logic",
-      "contents": [
-        {
-          "kind": "block",
-          "type": "logic_compare"
-        },
-        {
-          "kind": "block",
-          "type": "logic_operation"
-        },
-        {
-          "kind": "block",
-          "type": "logic_boolean"
-        }
-      ]
-    }
-  ]
-}
+        toolbox: null,
       },
-      blocks: null
+      
+      blocks: null,
     };
   },
+  props: ["configurableClazz"],
   methods: {
+    reloadWorkspace(configurableClazz) {
+      client.getBlocklyToolboxWithCallback(configurableClazz, (data) => {
+        this.setupWorkspace(data.toolbox);
+        this.setupBlocks(data.blocks);
+        this.reloadBlocks(this.$store.state.newInstance.automation);
+      });
+    },
+
     reloadBlocks(xml) {
       this.workspace.clear();
+
       if (xml != null) {
         Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), this.workspace);
+        this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
       }
+    },
+
+    setupWorkspace(toolbox) {
+      console.log(toolbox)
+      this.options.toolbox = toolbox;
+      this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
+
+      function onBlockChange(event) {
+        if (
+          event.type == Blockly.Events.BLOCK_CREATE ||
+          Blockly.Events.BLOCK_CHANGE
+        ) {
+          var workspace = Blockly.Workspace.getById(event.workspaceId);
+          var xml = Blockly.Xml.workspaceToDom(workspace);
+          var xml_text = Blockly.Xml.domToText(xml);
+          store.commit(UPDATE_INSTANCE_AUTOMATION, xml_text);
+        }
+      }
+
+      this.workspace.addChangeListener(onBlockChange);
+    },
+
+    setupBlocks(blocks) {
+      console.log("setting blocks")
+      blocks.forEach(element => {
+        console.log(element)
+        Blockly.Blocks[element.type] = {
+          init: function () {
+            this.jsonInit(element);
+          },
+        };
+      });
     }
   },
   mounted: function () {
-    console.log("mounted")
-    this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
-    this.reloadBlocks(this.$store.state.newInstance.automation)
-
-    function onBlockChange(event) {
-      if (
-        event.type == Blockly.Events.BLOCK_CREATE || Blockly.Events.BLOCK_CHANGE
-      ) {
-        var workspace = Blockly.Workspace.getById(event.workspaceId);
-        var xml = Blockly.Xml.workspaceToDom(workspace);
-        var xml_text = Blockly.Xml.domToText(xml);
-        store.commit(UPDATE_INSTANCE_AUTOMATION, xml_text);
-      }
-    }
-
-    this.workspace.addChangeListener(onBlockChange);
+    console.log("mounted");
+    this.reloadWorkspace(this.configurableClazz);
   },
 };
 

@@ -16,7 +16,7 @@ public class TagsController {
 
     @Inject
     public TagsController(PluginsCoordinator pluginsCoordinator) {
-        _repository = pluginsCoordinator.getRepositories().get(0);
+        _repository = pluginsCoordinator.getRepository();
     }
 
     @POST

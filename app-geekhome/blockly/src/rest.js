@@ -282,4 +282,11 @@ export const client = {
       }
     )
   },
+
+  getBlocklyToolboxWithCallback: async function(configurableClazz, callback) {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/blocks/" + configurableClazz),
+      (response) => callback(response.data)
+    )
+  },
 }

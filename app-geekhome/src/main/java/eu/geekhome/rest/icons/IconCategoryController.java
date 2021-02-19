@@ -16,7 +16,7 @@ public class IconCategoryController {
 
     @Inject
     public IconCategoryController(PluginsCoordinator pluginsCoordinator) {
-        _repository = pluginsCoordinator.getRepositories().get(0);
+        _repository = pluginsCoordinator.getRepository();
     }
 
     @POST
