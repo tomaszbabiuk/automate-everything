@@ -3,7 +3,9 @@ package eu.geekhome.rest.blocks
 import eu.geekhome.rest.PluginsCoordinator
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.services.automation.StateType
+import eu.geekhome.services.configurable.ConditionConfigurable
 import eu.geekhome.services.configurable.StateDeviceConfigurable
+import eu.geekhome.services.localization.Resource
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -25,8 +27,9 @@ class BlocksController @Inject constructor(
                 it.javaClass.name.equals(configurableClazz)
             }
 
-            val blockImplementations = ArrayList<Any>()
+            val blockImplementations = ArrayList<BlockDto>()
             val thisDeviceBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
+            val conditionsBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
 
             //building "this device" blocks
             if (configurable is StateDeviceConfigurable) {
@@ -38,14 +41,40 @@ class BlocksController @Inject constructor(
                         val blockDef = BLocklyToolboxItemBlockDto(type=type)
                         thisDeviceBlockDefinitions.add(blockDef)
 
-                        val blockImpl = ChangeStateBlockDto(type=type, message0 = it.value.name )
+                        val blockImpl = TopBottomConnectionsDummyBlockDto(type=type, message0 = it.value.name )
                         blockImplementations.add(blockImpl)
                      }
             }
 
+            //building "conditions" blocks
+            pluginsCoordinator
+                .repository
+                .getAllInstanceBriefs()
+                .forEach { briefDto ->
+                    val instanceClass = briefDto.clazz
+                    val instanceConfigurable = pluginsCoordinator
+                        .configurables
+                        .firstOrNull {
+                            it.javaClass.name.equals(instanceClass)
+                        }
+
+                    if (instanceConfigurable is ConditionConfigurable) {
+                        val conditionInstances = pluginsCoordinator.repository.getInstancesOfClazz(instanceConfigurable.javaClass.name)
+                        conditionInstances.forEach {
+                            val type = "condition${it.id}"
+                            val blockDef = BLocklyToolboxItemBlockDto(type=type)
+                            conditionsBlockDefinitions.add(blockDef)
+
+                            val blockImpl = LeftConnectionDummyBlockDto(type=type, message0 = Resource.createUniResource(it.fields["name"]!!))
+                            blockImplementations.add(blockImpl)
+                        }
+                    }
+                }
+
             val toolbox = BlocklyToolboxDto(
                 contents = listOf(
-                    BlocklyToolboxItemCategoryDto(name = R.category_name_this_device, contents = thisDeviceBlockDefinitions)
+                    BlocklyToolboxItemCategoryDto(name = R.category_name_this_device, contents = thisDeviceBlockDefinitions),
+                    BlocklyToolboxItemCategoryDto(name = R.category_name_conditions, contents = conditionsBlockDefinitions),
                 )
             )
 

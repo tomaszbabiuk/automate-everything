@@ -14,5 +14,9 @@ public class Resource {
     public String getValue(Language language) {
         return _values.get(language);
     }
+
+    public static Resource createUniResource(String uniValue) {
+        return new Resource(uniValue, uniValue);
+    }
 }
 
