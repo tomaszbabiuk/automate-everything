@@ -6,11 +6,11 @@
       <v-toolbar-title>{{$vuetify.lang.t('$vuetify.application.name')}} - {{ $route.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>$vuetify.icon.play</v-icon>
-      </v-btn>
-      <v-btn icon>
+      <v-btn icon v-if="automation.enabled" @click="enableAutomation(false)">
         <v-icon>$vuetify.icon.pause</v-icon>
+      </v-btn>
+      <v-btn icon v-else @click="enableAutomation(true)">
+        <v-icon>$vuetify.icon.play</v-icon>
       </v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -160,11 +160,17 @@ export default {
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
     },
+    enableAutomation: function(enable) {
+      client.enableAutomation(enable);
+    },
   },
 
   computed: {
     plugins() {
       return this.$store.state.plugins;
+    },
+    automation() {
+      return this.$store.state.automation;
     },
     factories() {
       return this.$store.state.plugins.filter(element => {
@@ -198,6 +204,7 @@ export default {
     }
 
     client.getPlugins();
+    client.getAutomation();
   }
 };
 </script>

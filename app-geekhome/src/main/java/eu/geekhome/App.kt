@@ -1,13 +1,10 @@
 package eu.geekhome
 
+import eu.geekhome.rest.*
 import org.glassfish.jersey.server.ResourceConfig
 import org.pf4j.JarPluginManager
 import org.pf4j.ExtensionFactory
 import org.pf4j.SingletonExtensionFactory
-import eu.geekhome.rest.DependencyInjectionBinder
-import eu.geekhome.rest.GsonMessageBodyHandler
-import eu.geekhome.rest.CORSFilter
-import eu.geekhome.rest.ResourceNotFoundExceptionMapper
 import org.pf4j.PluginManager
 
 class App : ResourceConfig() {
@@ -24,6 +21,8 @@ class App : ResourceConfig() {
         pluginManager.loadPlugins()
 
         val hardwareManager = HardwareManager(pluginManager)
+        val automationConductor = AutomationConductor(hardwareManager)
+
         packages("eu.geekhome.rest")
         register(DependencyInjectionBinder())
         register(GsonMessageBodyHandler())
@@ -31,6 +30,7 @@ class App : ResourceConfig() {
         register(ResourceNotFoundExceptionMapper())
         register(pluginManager)
         register(hardwareManager)
+        register(automationConductor)
 
         pluginManager.startPlugins()
     }

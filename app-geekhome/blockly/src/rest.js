@@ -10,6 +10,7 @@ import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
 import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
 import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
 import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
+import { UPDATE_AUTOMATION } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -287,6 +288,24 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.get("rest/blocks/" + configurableClazz),
       (response) => callback(response.data)
+    )
+  },
+
+  getAutomation: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/automation"),
+      (response) => {
+        store.commit(UPDATE_AUTOMATION, response)
+      }
+    )
+  },
+
+  enableAutomation: async function (enable) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/automation/enabled", JSON.stringify(enable)),
+      (response) => {
+        store.commit(UPDATE_AUTOMATION, response.data)
+      }
     )
   },
 }

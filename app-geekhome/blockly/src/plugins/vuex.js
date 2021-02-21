@@ -45,10 +45,11 @@ export const ADD_DISCOVERY_EVENT = 'ADD_DISCOVERY_EVENT'
 export const CLEAR_HARDWARE_ADAPTERS = 'CLEAR_HARDWARE_ADAPTERS'
 export const ADD_HARDWARE_ADAPTER = 'ADD_HARDWARE_ADAPTER'
 
-
 export const CLEAR_PORTS = 'CLEAR_PORTS'
 export const ADD_PORT = 'ADD_PORT'
 export const UPDATE_PORT = 'UPDATE_PORT'
+
+export const UPDATE_AUTOMATION = 'UPDATE_AUTOMATION'
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -80,6 +81,7 @@ export default new Vuex.Store({
     ports: [],
     filters: [],
     conditions: [],
+    automation: null,
     newInstance: {
       id: null,
       class: null,
@@ -345,6 +347,10 @@ export default new Vuex.Store({
       if (!portFound) {
         state.ports.push(portDto)
       }
+    },
+
+    [UPDATE_AUTOMATION](state, automationDto) {
+      state.automation = automationDto
     },
   }
 })

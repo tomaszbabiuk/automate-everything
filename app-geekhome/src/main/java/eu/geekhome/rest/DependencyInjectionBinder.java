@@ -22,5 +22,6 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
         bind(PluginsCoordinator.class).to(PluginsCoordinator.class).in(Singleton.class);
         bind(HardwareManagerHolderService.class).to(HardwareManagerHolderService.class).in(Singleton.class);
+        bind(AutomationConductorHolderService.class).to(AutomationConductorHolderService.class).in(Singleton.class);
     }
 }
