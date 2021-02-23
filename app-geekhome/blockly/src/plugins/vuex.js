@@ -81,7 +81,9 @@ export default new Vuex.Store({
     ports: [],
     filters: [],
     conditions: [],
-    automation: null,
+    automation: {
+      enabled: false
+    },
     newInstance: {
       id: null,
       class: null,

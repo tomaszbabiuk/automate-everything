@@ -21,7 +21,7 @@ class App : ResourceConfig() {
         pluginManager.loadPlugins()
 
         val hardwareManager = HardwareManager(pluginManager)
-        val automationConductor = AutomationConductor(hardwareManager)
+        val automationConductor = AutomationConductor(hardwareManager, pluginManager)
 
         packages("eu.geekhome.rest")
         register(DependencyInjectionBinder())

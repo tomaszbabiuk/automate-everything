@@ -18,7 +18,7 @@ class AutomationController @Inject constructor(
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): AutomationDto {
-        return AutomationDto(automation.enabled)
+        return AutomationDto(automation.isEnabled())
     }
 
     @PUT
@@ -31,7 +31,7 @@ class AutomationController @Inject constructor(
             automation.disable()
         }
 
-        return AutomationDto(automation.enabled)
+        return AutomationDto(automation.isEnabled())
     }
 }
 
