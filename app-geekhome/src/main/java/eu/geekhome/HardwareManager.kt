@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*
 
-class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
+class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
     val discoverySink: EventsSink<HardwareEvent> = NumberedEventsSink()
@@ -104,5 +104,10 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener {
         internal var ports: MutableList<Port<*>>
     ) {
         var discoveryJob: Deferred<Unit>? = null
+    }
+
+    override fun <T : PortValue<*>> searchForPort(clazz: Class<T>, id: String, canRead: Boolean, canWrite: Boolean): Port<T> {
+        val result = ConnectiblePort(id, canRead = canRead, canWrite = canWrite, clazz, null, null)
+        return result
     }
 }

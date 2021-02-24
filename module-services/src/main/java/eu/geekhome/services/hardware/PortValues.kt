@@ -3,10 +3,14 @@ package eu.geekhome.services.hardware
 import eu.geekhome.services.localization.Resource
 import kotlin.math.roundToInt
 
+enum class PortValueType {
+    Wattage, Binary, Relay
+}
 
 sealed class PortValue<T>(var value: T) {
     abstract fun toFormattedString() : Resource
-    abstract fun toInteger() : Int
+    abstract fun asInteger() : Int
+//    abstract fun asDouble() : Double
 }
 
 class BinaryInput(value: Boolean) : PortValue<Boolean>(value) {
@@ -17,7 +21,7 @@ class BinaryInput(value: Boolean) : PortValue<Boolean>(value) {
         return if (value) on else off
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return if (value) 1 else 0
     }
 
@@ -36,7 +40,7 @@ class Relay(value: Boolean) : PortValue<Boolean>(value) {
         return if (value) on else off
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return if (value) 1 else 0
     }
 
@@ -58,7 +62,7 @@ class PowerLevel(value: Int) : PortValue<Int>(value) {
         return Resource(multilingualValue, multilingualValue)
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return value
     }
 
@@ -76,7 +80,7 @@ class Temperature(value: Double) : PortValue<Double>(value) {
         return Resource(multilingualValue, multilingualValue)
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return ((value * 100).roundToInt())
     }
 
@@ -94,7 +98,7 @@ class Humidity(value: Double) : PortValue<Double>(value) {
         return Resource(multilingualValue, multilingualValue)
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return ((value * 100).roundToInt())
     }
 
@@ -112,7 +116,7 @@ class Wattage(value: Double) : PortValue<Double>(value) {
         return Resource(multilingualValue, multilingualValue)
     }
 
-    override fun toInteger(): Int {
+    override fun asInteger(): Int {
         return ((value * 100).roundToInt())
     }
 

@@ -93,24 +93,3 @@ class BlockFactory {
         }
     }
 }
-
-/*
-var repeatBlock = {
-    type: "ae_repeat",
-    message0: "Powtarzaj co %1",
-    args0: [
-    {
-        type: "field_dropdown",
-        name: "NAME",
-        options: [
-        ["sekundę", "1"],
-        ["minutę", "60"],
-        ["godzinę", "3600"],
-        ],
-    },
-    ],
-    nextStatement: "Boolean",
-    colour: 315,
-    tooltip: "",
-    helpUrl: "",
-};*/

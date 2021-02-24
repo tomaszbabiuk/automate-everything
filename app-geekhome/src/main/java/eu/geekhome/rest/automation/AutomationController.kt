@@ -1,6 +1,6 @@
 package eu.geekhome.rest.automation
 
-import eu.geekhome.rest.AutomationConductor
+import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.rest.AutomationConductorHolderService
 import javax.inject.Inject
 import javax.ws.rs.GET

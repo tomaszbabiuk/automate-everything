@@ -91,7 +91,7 @@ class BlocksController @Inject constructor(
             val conditionInstances =
                 pluginsCoordinator.repository.getInstancesOfClazz(instanceConfigurable.javaClass.name)
             conditionInstances.forEach {
-                val type = "condition${it.id}"
+                val type = "condition_${it.id}"
                 val blockDef = BLocklyToolboxItemBlockDto(type = type)
                 definitions.add(blockDef)
 

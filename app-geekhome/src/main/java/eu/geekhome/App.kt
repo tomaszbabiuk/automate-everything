@@ -6,6 +6,7 @@ import org.pf4j.JarPluginManager
 import org.pf4j.ExtensionFactory
 import org.pf4j.SingletonExtensionFactory
 import org.pf4j.PluginManager
+import eu.geekhome.automation.AutomationConductor
 
 class App : ResourceConfig() {
     private fun buildPluginManager(): PluginManager {
