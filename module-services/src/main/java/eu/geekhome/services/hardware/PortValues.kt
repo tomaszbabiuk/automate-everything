@@ -3,17 +3,15 @@ package eu.geekhome.services.hardware
 import eu.geekhome.services.localization.Resource
 import kotlin.math.roundToInt
 
-enum class PortValueType {
-    Wattage, Binary, Relay
-}
 
-sealed class PortValue<T>(var value: T) {
+
+sealed class PortValue {
     abstract fun toFormattedString() : Resource
     abstract fun asInteger() : Int
-//    abstract fun asDouble() : Double
+    abstract fun asDouble() : Double
 }
 
-class BinaryInput(value: Boolean) : PortValue<Boolean>(value) {
+class BinaryInput(var value: Boolean) : PortValue() {
     private val on = Resource("High", "Wysoki")
     private val off = Resource("Low", "Niski")
 
@@ -25,14 +23,12 @@ class BinaryInput(value: Boolean) : PortValue<Boolean>(value) {
         return if (value) 1 else 0
     }
 
-    companion object {
-        fun fromString(from: String): BinaryInput {
-            return BinaryInput(from == "true")
-        }
+    override fun asDouble(): Double {
+        return if (value) 1.0 else 0.0
     }
 }
 
-class Relay(value: Boolean) : PortValue<Boolean>(value) {
+class Relay(var value: Boolean) : PortValue() {
     private val on = Resource("On", "Wł")
     private val off = Resource("Off", "Wył")
 
@@ -42,6 +38,10 @@ class Relay(value: Boolean) : PortValue<Boolean>(value) {
 
     override fun asInteger(): Int {
         return if (value) 1 else 0
+    }
+
+    override fun asDouble(): Double {
+        return if (value) 1.0 else 0.0
     }
 
     companion object {
@@ -55,7 +55,7 @@ class Relay(value: Boolean) : PortValue<Boolean>(value) {
     }
 }
 
-class PowerLevel(value: Int) : PortValue<Int>(value) {
+class PowerLevel(var value: Int) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "$value %"
@@ -66,6 +66,10 @@ class PowerLevel(value: Int) : PortValue<Int>(value) {
         return value
     }
 
+    override fun asDouble(): Double {
+        return value.toDouble()
+    }
+
     companion object {
         fun fromInteger(from: Int): PowerLevel {
             return PowerLevel(from)
@@ -73,7 +77,7 @@ class PowerLevel(value: Int) : PortValue<Int>(value) {
     }
 }
 
-class Temperature(value: Double) : PortValue<Double>(value) {
+class Temperature(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f °C".format(value)
@@ -84,6 +88,10 @@ class Temperature(value: Double) : PortValue<Double>(value) {
         return ((value * 100).roundToInt())
     }
 
+    override fun asDouble(): Double {
+        return value
+    }
+
     companion object {
         fun fromString(from: String): Temperature {
             return Temperature(from.toDouble())
@@ -91,7 +99,7 @@ class Temperature(value: Double) : PortValue<Double>(value) {
     }
 }
 
-class Humidity(value: Double) : PortValue<Double>(value) {
+class Humidity(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f %".format(value)
@@ -102,14 +110,12 @@ class Humidity(value: Double) : PortValue<Double>(value) {
         return ((value * 100).roundToInt())
     }
 
-    companion object {
-        fun fromString(from: String): Humidity {
-            return Humidity(from.toDouble())
-        }
+    override fun asDouble(): Double {
+        return value
     }
 }
 
-class Wattage(value: Double) : PortValue<Double>(value) {
+class Wattage(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f W".format(value)
@@ -120,10 +126,8 @@ class Wattage(value: Double) : PortValue<Double>(value) {
         return ((value * 100).roundToInt())
     }
 
-    companion object {
-        fun fromString(from: String): Wattage {
-            return Wattage(from.toDouble())
-        }
+    override fun asDouble(): Double {
+        return value
     }
 }
 

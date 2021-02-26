@@ -24,6 +24,11 @@ public class R {
             "If %1 than %2 else %3",
             "Jeżeli %1 to %2 inaczej %3");
 
+    public static final Resource block_label_and = new Resource(
+            "%1 and %2 %3",
+            "%1 i %2 %3"
+    );
+
     public static final Resource block_label_repeat = new Resource(
             "Repeat every %1",
             "Powtarzaj co %1");

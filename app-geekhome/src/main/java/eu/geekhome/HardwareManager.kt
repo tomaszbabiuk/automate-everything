@@ -106,8 +106,25 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
         var discoveryJob: Deferred<Unit>? = null
     }
 
-    override fun <T : PortValue<*>> searchForPort(clazz: Class<T>, id: String, canRead: Boolean, canWrite: Boolean): Port<T> {
-        val result = ConnectiblePort(id, canRead = canRead, canWrite = canWrite, clazz, null, null)
-        return result
+    override fun <T : PortValue> searchForPort(
+        valueType: Class<T>,
+        id: String,
+        canRead: Boolean,
+        canWrite: Boolean
+    ): Port<T> {
+        val port = factories
+            .flatMap { it.value }
+            .flatMap { it.ports }
+            .find { it.id == id }
+
+        if (port != null && port.valueType == valueType) {
+            return port as Port<T>
+        }
+
+        throw PortNotFoundException(id)
     }
+}
+
+class PortNotFoundException(id: String) : Exception("Cannot find port: $id") {
+
 }

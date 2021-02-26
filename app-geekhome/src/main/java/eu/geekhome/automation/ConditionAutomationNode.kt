@@ -1,12 +1,14 @@
 package eu.geekhome.automation
 
 import eu.geekhome.services.automation.EvaluableAutomationUnit
+import java.util.*
 
 class ConditionAutomationNode(
-    val conditionId: Long,
-    evaluator: EvaluableAutomationUnit,
-    override val next: AutomationNode?
-) : AutomationNode {
-    override fun process(timeInMillis: Long) {
+    private val evaluator: EvaluableAutomationUnit
+) : ValueNode {
+
+    override fun evaluate(now: Calendar): Boolean {
+        evaluator.evaluate(now)
+        return evaluator.isPassed
     }
 }

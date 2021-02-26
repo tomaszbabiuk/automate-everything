@@ -19,7 +19,7 @@ class BlockFactory {
             }
         }
 
-        fun buildConditionStateBlock(type: String, label: Resource) : RawJson {
+        fun buildConditionBlock(type: String, label: Resource) : RawJson {
             return RawJson {
                 """
                    { "type":  "$type",
@@ -32,7 +32,38 @@ class BlockFactory {
             }
         }
 
-        fun buildRepeatStateBlock(type: String): RawJson {
+        fun buildLogicAndBlock(type: String): RawJson {
+            return RawJson {
+                """
+                    {
+                      "type": "$type",
+                      "message0": "${R.block_label_and.getValue(it)}",
+                      "args0": [
+                        {
+                          "type": "input_value",
+                          "name": "FIRST",
+                          "check": "Boolean"
+                        },
+                        {
+                          "type": "input_dummy"
+                        },
+                        {
+                          "type": "input_value",
+                          "name": "SECOND",
+                          "check": "Boolean"
+                        }
+                      ],
+                      "inputsInline": true,
+                      "output": null,
+                      "colour": 120,
+                      "tooltip": "",
+                      "helpUrl": "http://www.example.com/"
+                    }
+                """.trimIndent()
+            }
+        }
+
+        fun buildRepeatBlock(type: String): RawJson {
             return RawJson {
                 """
                    {

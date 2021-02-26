@@ -20,7 +20,8 @@ data class Block(
     @XStreamImplicit(itemFieldName="statement")
     val statements: List<Statement>?,
 
-    val value: Value
+    @XStreamImplicit(itemFieldName="value")
+    val values: List<Value>?
 )
 
 @XStreamAlias("next")
@@ -42,6 +43,9 @@ data class Value(
 
     @XStreamAsAttribute
     val value: String,
+
+    @XStreamAsAttribute
+    val name: String,
 
     val block: Block?
 )

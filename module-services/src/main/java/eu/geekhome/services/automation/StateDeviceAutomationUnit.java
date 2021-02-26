@@ -10,7 +10,7 @@ public abstract class StateDeviceAutomationUnit extends DeviceAutomationUnit<Sta
     public State _currentState;
     public ControlMode _controlMode;
 
-    private Map<String, State> _states;
+    private final Map<String, State> _states;
 
     public StateDeviceAutomationUnit(Map<String, State> states, String initialState) {
         _states = states;
