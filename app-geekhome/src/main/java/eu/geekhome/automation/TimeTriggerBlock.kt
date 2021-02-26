@@ -12,7 +12,7 @@ class TimeTriggerBlock(
     override fun process(now: Calendar) {
         val timeInMillis = now.timeInMillis
 
-        if (lastProcessed + seconds * 1000 > timeInMillis) {
+        if (lastProcessed + seconds * 1000 < timeInMillis) {
             lastProcessed = timeInMillis
 
             next?.process(now)

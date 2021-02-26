@@ -7,6 +7,7 @@ import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
 import eu.geekhome.services.configurable.Configurable
+import java.util.*
 
 class AutomationContext(
     val instanceDto: InstanceDto,
@@ -44,13 +45,18 @@ class AutomationConductor(
                     val thisDevice = allConfigurables
                         .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
 
-                    val context = AutomationContext(instanceDto, thisDevice, allInstances, allConfigurables, hardwareManager)
+                    val context =
+                        AutomationContext(instanceDto, thisDevice, allInstances, allConfigurables, hardwareManager)
 
                     val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                     blocklyTransformer.transform(blocklyXml, context)
                 }
 
             println(automations)
+
+            automations
+                .flatMap { it.triggers }
+                .forEach { it.process(Calendar.getInstance()) }
         }
     }
 

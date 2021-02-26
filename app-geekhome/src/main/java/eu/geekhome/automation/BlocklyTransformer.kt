@@ -17,19 +17,17 @@ interface ValueNode: AutomationNode {
     fun evaluate(now: Calendar) : Boolean
 }
 
-class AutomationPack(val masterNodes: List<AutomationNode>)
+class AutomationPack(val triggers: List<StatementNode>)
 
 
 class BlocklyTransformer {
 
     fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : AutomationPack {
-        val masterNodes = ArrayList<AutomationNode>()
+        val masterNodes = ArrayList<StatementNode>()
 
         bLocklyXml.blocks.forEach {
-            val masterNode = transformStatement(it, context)
-            if (masterNode != null) {
-                masterNodes.add(masterNode)
-            }
+            val masterNode = transformTrigger(it, context)
+            masterNodes.add(masterNode)
         }
 
         return AutomationPack(masterNodes)
@@ -44,7 +42,20 @@ class BlocklyTransformer {
             return transformAnd(block, context)
         }
 
-        throw UnknownBlockException(block.type)
+        throw UnknownValueBlockException(block.type)
+    }
+
+    private fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
+        var next: StatementNode? = null
+        if (block.next != null) {
+            next = transformStatement(block.next.block!!, context)
+        }
+
+        if (block.type == "trigger_timeloop") {
+            return transformTimeloopTrigger(block, next)
+        }
+
+        throw UnknownTriggerBlockException(block.type)
     }
 
     private fun transformStatement(block: Block, context: AutomationContext) : StatementNode? {
@@ -65,7 +76,7 @@ class BlocklyTransformer {
             return transformChangeState(block, next, context)
         }
 
-        throw UnknownBlockException(block.type)
+        throw UnknownStatementBlockException(block.type)
     }
 
     private fun transformTimeloopTrigger(
@@ -108,7 +119,6 @@ class BlocklyTransformer {
             }
         }
 
-        var valueNode: ValueNode? = null
         if (block.values == null) {
             throw MalformedBlockException(block.type, "should have at least <VALUE> defined")
         }
@@ -117,7 +127,7 @@ class BlocklyTransformer {
             throw MalformedBlockException(block.type, "should have only one <VALUE>")
         }
 
-        valueNode = transformValue(block.values[0].block!!, context)
+        val valueNode = transformValue(block.values[0].block!!, context)
 
         return IfThanElseAutomationNode(next, valueNode, ifNode, elseNode)
     }
@@ -185,23 +195,7 @@ class BlocklyTransformer {
             secondNode = transformValue(secondValue.block, context)
         }
 
-        //<?xml version="1.0" encoding="UTF-8"?>
-        //<xml xmlns="https://developers.google.com/blockly/xml">
-        //   <block type="logic_and" id="J]$:]=`R)^Q)e5_rqC1R" x="137" y="138">
-        //      <value name="FIRST">
-        //         <block type="condition_3" id="|Sbb21,)TWbBFzgf2Zop" />
-        //      </value>
-        //      <value name="SECOND">
-        //         <block type="condition_3" id="QDdt]O/9`z9BauO_l88-" />
-        //      </value>
-        //   </block>
-        //</xml>
-        if (context.thisDevice is ConditionConfigurable) {
-            val evaluator = context.thisDevice.buildEvaluator(context.instanceDto)
-            return AndAutomationNode(firstNode, secondNode)
-        }
-
-        throw MalformedBlockException(block.type, "it's impossible to connect this block with correct ${ConditionConfigurable::class.java}")
+        return AndAutomationNode(firstNode, secondNode)
     }
 }
 
@@ -209,6 +203,16 @@ class MalformedBlockException(type: String, malfunction: String) : Exception(
     "Malformed block $type: $malfunction"
 )
 
-class UnknownBlockException(type: String) : Exception(
-    "Unknown block: $type"
+open class UnknownBlockException(message:String) : Exception(message)
+
+class UnknownTriggerBlockException(type: String) : UnknownBlockException(
+    "Unknown trigger block: $type"
+)
+
+class UnknownStatementBlockException(type: String) : UnknownBlockException(
+    "Unknown statement block: $type"
+)
+
+class UnknownValueBlockException(type: String) : UnknownBlockException(
+    "Unknown value block: $type"
 )
