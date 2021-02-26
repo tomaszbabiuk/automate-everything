@@ -37,8 +37,6 @@ class PortsController @Inject constructor(
             val port = findings.first
             val bundle = findings.second
 
-
-
             if (port.valueType.name == Relay::class.java.name) {
                 val newValue = Relay.fromInteger(value)
                 (port as Port<Relay>).write(newValue)

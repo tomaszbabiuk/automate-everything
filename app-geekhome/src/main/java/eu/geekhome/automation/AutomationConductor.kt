@@ -7,6 +7,7 @@ import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
 import eu.geekhome.services.configurable.Configurable
+import kotlinx.coroutines.*
 import java.util.*
 
 class AutomationContext(
@@ -18,9 +19,10 @@ class AutomationContext(
 )
 
 class AutomationConductor(
-    val hardwareManager: HardwareManager,
+    private val hardwareManager: HardwareManager,
     val pluginsCoordinator: PluginManager) {
 
+    private var automationJob: Job? = null
     private var enabled: Boolean = false
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
@@ -52,15 +54,34 @@ class AutomationConductor(
                     blocklyTransformer.transform(blocklyXml, context)
                 }
 
-            println(automations)
+            startAutomations(automations)
+        }
+    }
 
-            automations
+    private fun startAutomations(automations: List<AutomationPack>) {
+        if (automations.isNotEmpty()) {
+            val triggers = automations
                 .flatMap { it.triggers }
-                .forEach { it.process(Calendar.getInstance()) }
+
+            automationJob = GlobalScope.launch {
+                while (isActive) {
+                    val now = Calendar.getInstance()
+                    triggers.forEach {
+                        println("Processing automation")
+                        it.process(now)
+                        delay(1000)
+                    }
+
+                    hardwareManager.executePendingChanges()
+                }
+
+                println("Automation stopped")
+            }
         }
     }
 
     fun disable() {
+        automationJob?.cancel("Disabling automation")
         enabled = false
         println("Disabling automation")
     }

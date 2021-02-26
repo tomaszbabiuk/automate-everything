@@ -213,6 +213,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         if (mqttPayload != null) {
             val topic = shellyOutput.writeTopic
             mqttBroker.publish(topic, mqttPayload)
+            shellyOutput.reset()
         }
     }
 

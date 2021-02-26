@@ -111,9 +111,9 @@ class BlocklyTransformer {
                 ifNode = transformStatement(ifStatement.block, context)
             }
 
-            val elseStatement = block.statements.find { it.name == "IF" }
+            val elseStatement = block.statements.find { it.name == "ELSE" }
             if (elseStatement == null) {
-                throw MalformedBlockException(block.type, "should have <IF statement> defined")
+                throw MalformedBlockException(block.type, "should have <ELSE statement> defined")
             } else if (elseStatement.block != null) {
                 elseNode = transformStatement(elseStatement.block, context)
             }

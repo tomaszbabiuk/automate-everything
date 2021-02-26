@@ -18,10 +18,7 @@ interface Connectible {
     }
 
     fun checkIfConnected(now: Long): Boolean {
-        if (connected) {
-            connected = now - lastSeen > connectionLostInterval
-        }
-
+        connected = now - lastSeen > connectionLostInterval
         return connected
     }
 }
@@ -84,12 +81,18 @@ class ConnectiblePort<V : PortValue>(
     override var connectionLostInterval: Long = 0L
 
     constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>, writePortOperator: WritePortOperator<V>)
-            : this(id, true, true, valueType, readPortOperator, writePortOperator)
+            : this(id, true, true, valueType, readPortOperator, writePortOperator) {
+        this.connectionLostInterval = 120000
+    }
 
     constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>)
-            : this(id, true, false, valueType, readPortOperator, null)
+            : this(id, true, false, valueType, readPortOperator, null) {
+        this.connectionLostInterval = 120000
+    }
 
     constructor(id: String, valueType: Class<V>, writePortOperator: WritePortOperator<V>)
-            : this(id, false, true, valueType, null, writePortOperator)
+            : this(id, false, true, valueType, null, writePortOperator) {
+        this.connectionLostInterval = 120000
+    }
 
 }

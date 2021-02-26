@@ -34,12 +34,12 @@ public abstract class DeviceAutomationUnit<R> extends BlocksTargetAutomationUnit
 
     @Override
     public void calculate(Calendar now) throws Exception {
-        if (arePortsConnected(now, getUsedPorts())) {
-            _isConnected = true;
+        //if (arePortsConnected(now, getUsedPorts())) {
+        //    _isConnected = true;
             calculateInternal(now);
-        } else {
-            _isConnected = false;
-        }
+        //} else {
+        //    _isConnected = false;
+        //}
     }
 
     protected abstract void calculateInternal(Calendar now) throws Exception;

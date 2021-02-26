@@ -17,6 +17,12 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
         pluginManager.addPluginStateListener(this)
     }
 
+    fun executePendingChanges() {
+        factories
+            .flatMap { it.value }
+            .forEach { it.adapter.executePendingChanges() }
+    }
+
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
         factories
             .filter { factory.id == it.key.id }
@@ -125,6 +131,4 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
     }
 }
 
-class PortNotFoundException(id: String) : Exception("Cannot find port: $id") {
-
-}
+class PortNotFoundException(id: String) : Exception("Cannot find port: $id")
