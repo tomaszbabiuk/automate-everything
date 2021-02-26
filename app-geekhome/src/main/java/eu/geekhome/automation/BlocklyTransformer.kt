@@ -128,8 +128,8 @@ class BlocklyTransformer {
         context: AutomationContext
     ): ChangeStateAutomationNode {
         val state = block.type.replace("change_state_", "")
-        if (context.configurable is StateDeviceConfigurable) {
-            val evaluator = context.configurable.buildEvaluator(context.instanceDto, context.portFinder)
+        if (context.thisDevice is StateDeviceConfigurable) {
+            val evaluator = context.thisDevice.buildEvaluator(context.instanceDto, context.portFinder)
             if (evaluator is StateDeviceAutomationUnit) {
                 return ChangeStateAutomationNode(state, evaluator, next)
             } else {
@@ -145,13 +145,20 @@ class BlocklyTransformer {
         context: AutomationContext
     ): ConditionAutomationNode {
         val conditionId = block.type.replace("condition_", "").toLong()
+        val conditionInstanceDto = context.allInstances.find { it.id == conditionId}
+            ?: throw MalformedBlockException(block.type,
+                "condition with id $conditionId seems not to exist in the database!")
+        val conditionConfigurable = context.allConfigurables.find { it.javaClass.name == conditionInstanceDto.clazz}
+            ?: throw MalformedBlockException(block.type,
+                "couldn't find configurable ${conditionInstanceDto.clazz} for condition id $conditionId!")
 
-        if (context.configurable is ConditionConfigurable) {
-            val evaluator = context.configurable.buildEvaluator(context.instanceDto)
+        if (conditionConfigurable is ConditionConfigurable) {
+            val evaluator = conditionConfigurable.buildEvaluator(conditionInstanceDto)
             return ConditionAutomationNode(evaluator)
         }
 
-        throw MalformedBlockException(block.type, "it's impossible to connect this block with correct ${ConditionConfigurable::class.java}")
+        throw MalformedBlockException(block.type,
+            "it's impossible to connect this block with correct ${ConditionConfigurable::class.java}")
     }
 
     private fun transformAnd(
@@ -189,8 +196,8 @@ class BlocklyTransformer {
         //      </value>
         //   </block>
         //</xml>
-        if (context.configurable is ConditionConfigurable) {
-            val evaluator = context.configurable.buildEvaluator(context.instanceDto)
+        if (context.thisDevice is ConditionConfigurable) {
+            val evaluator = context.thisDevice.buildEvaluator(context.instanceDto)
             return AndAutomationNode(firstNode, secondNode)
         }
 

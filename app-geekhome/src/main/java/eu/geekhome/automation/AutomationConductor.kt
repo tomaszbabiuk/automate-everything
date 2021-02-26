@@ -10,7 +10,9 @@ import eu.geekhome.services.configurable.Configurable
 
 class AutomationContext(
     val instanceDto: InstanceDto,
-    val configurable: Configurable?,
+    val thisDevice: Configurable?,
+    val allInstances: List<InstanceDto>,
+    val allConfigurables: List<Configurable>,
     val portFinder: IPortFinder
 )
 
@@ -33,15 +35,16 @@ class AutomationConductor(
 
             val repository = pluginsCoordinator.getRepository()
 
-            val automations = repository
-                .getAllInstances()
+            val allInstances = repository.getAllInstances()
+            val allConfigurables = pluginsCoordinator.getConfigurables()
+
+            val automations = allInstances
                 .filter { it.automation != null }
                 .map { instanceDto ->
-                    val configurable = pluginsCoordinator
-                        .getConfigurables()
+                    val thisDevice = allConfigurables
                         .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
 
-                    val context = AutomationContext(instanceDto, configurable, hardwareManager)
+                    val context = AutomationContext(instanceDto, thisDevice, allInstances, allConfigurables, hardwareManager)
 
                     val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                     blocklyTransformer.transform(blocklyXml, context)
