@@ -29,6 +29,11 @@ public class R {
             "%1 i %2 %3"
     );
 
+    public static final Resource block_label_not = new Resource(
+            "not %1 %2",
+            "nie %1 %2"
+    );
+
     public static final Resource block_label_repeat = new Resource(
             "Repeat every %1",
             "Powtarzaj co %1");

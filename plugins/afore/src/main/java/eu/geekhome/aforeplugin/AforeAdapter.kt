@@ -11,7 +11,7 @@ class AforeAdapter : HardwareAdapterBase() {
 //    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
 
-    override suspend fun internalDisvovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>> {
+    override suspend fun internalDiscovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>> {
         val result = ArrayList<Port<*>>()
 //        val portId = idBuilder.buildPortId(INVERTER_PORT_PREFIX)
 //        val inverterPower = readInverterPower()

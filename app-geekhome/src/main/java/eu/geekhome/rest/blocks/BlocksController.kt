@@ -42,6 +42,7 @@ class BlocksController @Inject constructor(
             //building "logic"
             addIfThanElseBlock(logicBlockDefinitions, blockImplementations)
             addLogicAndBlock(logicBlockDefinitions, blockImplementations)
+            addLogicNotBlock(logicBlockDefinitions, blockImplementations)
 
             //building "this device" blocks
             if (configurable is StateDeviceConfigurable) {
@@ -153,7 +154,19 @@ class BlocksController @Inject constructor(
 
         val rawJson = BlockFactory.buildLogicAndBlock(type)
         blocks.add(rawJson)
+    }
 
+    private fun addLogicNotBlock(
+        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
+        blocks: ArrayList<RawJson>
+    ) {
+        val type = "logic_not"
+
+        val blockDef = BLocklyToolboxItemBlockDto(type = type)
+        definitions.add(blockDef)
+
+        val rawJson = BlockFactory.buildLogicNotBlock(type)
+        blocks.add(rawJson)
     }
 }
 

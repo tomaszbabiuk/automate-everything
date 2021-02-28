@@ -88,7 +88,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun internalDisvovery(
+    override suspend fun internalDiscovery(
         idBuilder: PortIdBuilder,
         eventsSink: EventsSink<HardwareEvent>
     ): MutableList<Port<*>> = coroutineScope {
@@ -113,7 +113,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 
                 if (settingsResponse.device.num_meters > 0) {
                     for (i in 0 until settingsResponse.device.num_meters) {
-                        triplets.add(constructRelayWattageInPort(idBuilder, shellyId, i))
+                        triplets.add(constructRelayWattageReadPort(idBuilder, shellyId, i))
                     }
                 }
             }
@@ -121,10 +121,10 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
             if (settingsResponse.lights != null) {
                 for (i in settingsResponse.lights.indices) {
                     val lightResponse = callForLightResponse(shellyIP, i)
-                    triplets.add(constructPowerLevelInOutPort(idBuilder, shellyId, i, lightResponse))
+                    triplets.add(constructPowerLevelReadWritePort(idBuilder, shellyId, i, lightResponse))
 
                     if (settingsResponse.device.num_meters > 0) {
-                        triplets.add(constructLightWattageInPort(idBuilder, shellyId, i))
+                        triplets.add(constructLightWattageReadPort(idBuilder, shellyId, i))
                     }
                 }
             }
@@ -152,7 +152,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         return Triple(port, operator, operator)
     }
 
-    private fun constructRelayWattageInPort(
+    private fun constructRelayWattageReadPort(
         idBuilder: PortIdBuilder,
         shellyId: String,
         channel: Int
@@ -166,7 +166,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         return Triplet(port, operator, null)
     }
 
-    private fun constructPowerLevelInOutPort(
+    private fun constructPowerLevelReadWritePort(
         idBuilder: PortIdBuilder,
         shellyId : String,
         channel: Int,
@@ -182,7 +182,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         return Triplet(port, operator, operator)
     }
 
-    private fun constructLightWattageInPort(
+    private fun constructLightWattageReadPort(
         idBuilder: PortIdBuilder,
         shellyId: String,
         channel: Int

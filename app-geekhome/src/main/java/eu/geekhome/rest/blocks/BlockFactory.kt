@@ -63,6 +63,32 @@ class BlockFactory {
             }
         }
 
+        fun buildLogicNotBlock(type: String) : RawJson {
+            return RawJson {
+                """
+                    {
+                      "type": "$type",
+                      "message0": "${R.block_label_not.getValue(it)}",
+                      "args0": [
+                        {
+                          "type": "input_dummy"
+                        },
+                        {
+                          "type": "input_value",
+                          "name": "NOT",
+                          "check": "Boolean"
+                        }
+                      ],
+                      "inputsInline": true,
+                      "output": "Boolean",
+                      "colour": 120,
+                      "tooltip": "",
+                      "helpUrl": ""
+                    }
+                """.trimIndent()
+            }
+        }
+
         fun buildRepeatBlock(type: String): RawJson {
             return RawJson {
                 """

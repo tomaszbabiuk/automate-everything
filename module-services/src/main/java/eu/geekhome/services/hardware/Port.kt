@@ -1,6 +1,7 @@
 package eu.geekhome.services.hardware
 
 import java.io.IOException
+import java.util.*
 
 interface Connectible {
     var lastSeen : Long
@@ -14,11 +15,11 @@ interface Connectible {
 
     fun updateLastSeen(now : Long) {
         lastSeen = now
-        connected = false
+        connected = true
     }
 
-    fun checkIfConnected(now: Long): Boolean {
-        connected = now - lastSeen > connectionLostInterval
+    fun checkIfConnected(now: Calendar): Boolean {
+        connected = now.timeInMillis - lastSeen > connectionLostInterval
         return connected
     }
 }

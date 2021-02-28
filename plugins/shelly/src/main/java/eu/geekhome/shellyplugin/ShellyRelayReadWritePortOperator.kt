@@ -13,6 +13,9 @@ class ShellyRelayReadWritePortOperator(
     override val writeTopic = "shellies/$shellyId/relay/$channel/command"
 
     override fun read(): Relay {
+        if (requestedValue != null) {
+            return requestedValue!!
+        }
         return readValue
     }
 

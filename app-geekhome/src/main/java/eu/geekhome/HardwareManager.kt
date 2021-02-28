@@ -17,10 +17,17 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
         pluginManager.addPluginStateListener(this)
     }
 
-    fun executePendingChanges() {
-        factories
+    fun afterAutomationLoop(now: Calendar) {
+
+        val bundles = factories
             .flatMap { it.value }
+
+        bundles
             .forEach { it.adapter.executePendingChanges() }
+
+        bundles
+            .flatMap { it.ports }
+            .filter { (it is Connectible && !it.checkIfConnected(now)) }
     }
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {

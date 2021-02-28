@@ -2,7 +2,7 @@ package eu.geekhome.services.automation;
 
 import java.util.Calendar;
 
-public abstract class EvaluableAutomationUnit extends BlocksTargetAutomationUnit implements IEvaluableAutomationUnit {
+public abstract class EvaluableAutomationUnit implements IEvaluableAutomationUnit {
     private boolean _passed;
     private long _lastEvaluationTime;
 

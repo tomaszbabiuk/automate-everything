@@ -42,6 +42,10 @@ class BlocklyTransformer {
             return transformAnd(block, context)
         }
 
+        if (block.type.startsWith("logic_not")) {
+            return transformNot(block, context)
+        }
+
         throw UnknownValueBlockException(block.type)
     }
 
@@ -139,7 +143,7 @@ class BlocklyTransformer {
     ): ChangeStateAutomationNode {
         val state = block.type.replace("change_state_", "")
         if (context.thisDevice is StateDeviceConfigurable) {
-            val evaluator = context.thisDevice.buildEvaluator(context.instanceDto, context.portFinder)
+            val evaluator = context.automationUnitsCache[context.instanceDto.id]
             if (evaluator is StateDeviceAutomationUnit) {
                 return ChangeStateAutomationNode(state, evaluator, next)
             } else {
@@ -155,15 +159,9 @@ class BlocklyTransformer {
         context: AutomationContext
     ): ConditionAutomationNode {
         val conditionId = block.type.replace("condition_", "").toLong()
-        val conditionInstanceDto = context.allInstances.find { it.id == conditionId}
-            ?: throw MalformedBlockException(block.type,
-                "condition with id $conditionId seems not to exist in the database!")
-        val conditionConfigurable = context.allConfigurables.find { it.javaClass.name == conditionInstanceDto.clazz}
-            ?: throw MalformedBlockException(block.type,
-                "couldn't find configurable ${conditionInstanceDto.clazz} for condition id $conditionId!")
+        val evaluator = context.evaluationUnitsCache[conditionId]
 
-        if (conditionConfigurable is ConditionConfigurable) {
-            val evaluator = conditionConfigurable.buildEvaluator(conditionInstanceDto)
+        if (evaluator != null) {
             return ConditionAutomationNode(evaluator)
         }
 
@@ -196,6 +194,25 @@ class BlocklyTransformer {
         }
 
         return AndAutomationNode(firstNode, secondNode)
+    }
+
+    private fun transformNot(
+        block: Block,
+        context: AutomationContext
+    ): NotAutomationNode {
+        if (block.values == null || block.values.size != 1) {
+            throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")
+        }
+
+        var nodeToNegate: ValueNode? = null
+        val firstValue = block.values.find { it.name == "NOT" }
+        if (firstValue == null) {
+            throw MalformedBlockException(block.type, "should have <value name=\"NOT\"> defined")
+        } else if (firstValue.block != null) {
+            nodeToNegate = transformValue(firstValue.block, context)
+        }
+
+        return NotAutomationNode(nodeToNegate)
     }
 }
 

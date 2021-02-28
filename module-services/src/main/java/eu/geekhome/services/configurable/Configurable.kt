@@ -1,7 +1,7 @@
 package eu.geekhome.services.configurable
 
-import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.automation.EvaluableAutomationUnit
+import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.localization.Resource
@@ -32,7 +32,7 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 }
 
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildEvaluator(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<*>
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<*>
     abstract val states: Map<String, State>
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true

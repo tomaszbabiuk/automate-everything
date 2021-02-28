@@ -3,19 +3,21 @@ package eu.geekhome.automation
 import eu.geekhome.HardwareManager
 import eu.geekhome.rest.getConfigurables
 import eu.geekhome.rest.getRepository
-import eu.geekhome.services.hardware.IPortFinder
+import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.IEvaluableAutomationUnit
+import eu.geekhome.services.configurable.ConditionConfigurable
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
 import eu.geekhome.services.configurable.Configurable
+import eu.geekhome.services.configurable.StateDeviceConfigurable
 import kotlinx.coroutines.*
 import java.util.*
 
 class AutomationContext(
     val instanceDto: InstanceDto,
     val thisDevice: Configurable?,
-    val allInstances: List<InstanceDto>,
-    val allConfigurables: List<Configurable>,
-    val portFinder: IPortFinder
+    val automationUnitsCache: Map<Long, IDeviceAutomationUnit<*>>,
+    val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
 )
 
 class AutomationConductor(
@@ -40,6 +42,21 @@ class AutomationConductor(
 
             val allInstances = repository.getAllInstances()
             val allConfigurables = pluginsCoordinator.getConfigurables()
+            val automationUnitsCache = HashMap<Long, IDeviceAutomationUnit<*>>()
+            val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
+
+            allInstances.forEach { instance ->
+                val configurable = allConfigurables.find { instance.clazz == it.javaClass.name}
+                if (configurable is StateDeviceConfigurable) {
+                    val unit = configurable.buildAutomationUnit(instance, hardwareManager)
+                    automationUnitsCache[instance.id] = unit
+                }
+
+                if (configurable is ConditionConfigurable) {
+                    val evaluator = configurable.buildEvaluator(instance)
+                    evaluationUnitsCache[instance.id] = evaluator
+                }
+            }
 
             val automations = allInstances
                 .filter { it.automation != null }
@@ -48,7 +65,8 @@ class AutomationConductor(
                         .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
 
                     val context =
-                        AutomationContext(instanceDto, thisDevice, allInstances, allConfigurables, hardwareManager)
+                        AutomationContext(instanceDto, thisDevice,
+                            automationUnitsCache, evaluationUnitsCache)
 
                     val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                     blocklyTransformer.transform(blocklyXml, context)
@@ -72,7 +90,7 @@ class AutomationConductor(
                         delay(1000)
                     }
 
-                    hardwareManager.executePendingChanges()
+                    hardwareManager.afterAutomationLoop(now)
                 }
 
                 println("Automation stopped")

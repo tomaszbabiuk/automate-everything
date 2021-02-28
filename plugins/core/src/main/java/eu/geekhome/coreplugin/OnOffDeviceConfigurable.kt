@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.DeviceAutomationUnit
+import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.automation.StateType
 import eu.geekhome.services.configurable.*
@@ -48,7 +48,7 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     private val portField = RelayReadWritePortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 
-    override fun buildEvaluator(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<*> {
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<*> {
         val portId = readPortId(instance)
         val port = portFinder.searchForPort(Relay::class.java, portId, canRead = true, canWrite = true)
         return OnOffDeviceAutomationUnit(states, "on", port)

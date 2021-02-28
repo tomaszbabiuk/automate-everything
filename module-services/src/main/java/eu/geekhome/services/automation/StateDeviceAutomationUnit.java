@@ -6,7 +6,7 @@ import eu.geekhome.services.hardware.Relay;
 
 import java.util.Map;
 
-public abstract class StateDeviceAutomationUnit extends DeviceAutomationUnit<State> implements IMultistateDeviceAutomationUnit {
+public abstract class StateDeviceAutomationUnit implements IDeviceAutomationUnit<State>, IMultistateDeviceAutomationUnit {
     public State _currentState;
     public ControlMode _controlMode;
 
@@ -51,7 +51,7 @@ public abstract class StateDeviceAutomationUnit extends DeviceAutomationUnit<Sta
 
     @Override
     public EvaluationResult buildEvaluationResult() {
-        return new EvaluationResult(getValue(), _currentState.getName(), isSignaled(), isConnected(), null, getControlMode());
+        return new EvaluationResult(getValue(), _currentState.getName(), isSignaled(), true, null, getControlMode());
     }
 
     protected boolean isSignaled() {

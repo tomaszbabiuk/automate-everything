@@ -30,23 +30,7 @@ public class OnOffDeviceAutomationUnit extends StateDeviceAutomationUnit {
     }
 
     @Override
-    public Port[] getUsedPorts() {
-        return new Port[] {_controlPort};
-    }
-
-    @Override
-    public void calculateInternal(Calendar now) throws Exception {
-        if (getControlMode() == ControlMode.Auto) {
-            if (checkIfAnyBlockPasses("on")) {
-                if (!_controlPort.read().getValue()) {
-                    setLastSwitchingOnTime(Calendar.getInstance());
-                }
-                changeStateInternal("on", ControlMode.Auto);
-            } else {
-                changeStateInternal("off", ControlMode.Auto);
-            }
-        }
-
+    public void calculate(Calendar now) throws Exception {
         if (getCurrentStateId().equals("on")) {
             changeOutputPortStateIfNeeded(_controlPort, new Relay(true));
         } else if (getCurrentStateId().equals("off")) {

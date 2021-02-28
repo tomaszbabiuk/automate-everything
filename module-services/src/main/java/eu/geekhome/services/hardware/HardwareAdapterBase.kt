@@ -10,13 +10,13 @@ abstract class HardwareAdapterBase : HardwareAdapter {
     override val id = "0"
     override var lastError: Throwable? = null
 
-    abstract suspend fun internalDisvovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>): MutableList<Port<*>>
+    abstract suspend fun internalDiscovery(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>): MutableList<Port<*>>
 
     override suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>): MutableList<Port<*>> {
         lastDiscoveryTime = Calendar.getInstance().timeInMillis
         state = AdapterState.DiscoveryPending
 
-        val ports = internalDisvovery(idBuilder, eventsSink)
+        val ports = internalDiscovery(idBuilder, eventsSink)
 
         state = AdapterState.DiscoverySuccess
         return ports
