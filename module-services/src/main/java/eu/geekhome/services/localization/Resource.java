@@ -1,6 +1,7 @@
 package eu.geekhome.services.localization;
 
 import java.util.Hashtable;
+import java.util.Objects;
 
 public class Resource {
     private final Hashtable<Language, String> _values;
@@ -17,6 +18,19 @@ public class Resource {
 
     public static Resource createUniResource(String uniValue) {
         return new Resource(uniValue, uniValue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Resource resource = (Resource) o;
+        return Objects.equals(_values, resource._values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_values);
     }
 }
 

@@ -1,7 +1,6 @@
-package eu.geekhome.rest.blocks;
+package eu.geekhome.automation;
 
 import eu.geekhome.services.localization.Resource;
-import org.jetbrains.annotations.NotNull;
 
 public class R {
     public static Resource category_name_this_device = new Resource(
@@ -27,6 +26,11 @@ public class R {
     public static final Resource block_label_and = new Resource(
             "%1 and %2 %3",
             "%1 i %2 %3"
+    );
+
+    public static final Resource block_label_or = new Resource(
+            "%1 or %2 %3",
+            "%1 lub %2 %3"
     );
 
     public static final Resource block_label_not = new Resource(

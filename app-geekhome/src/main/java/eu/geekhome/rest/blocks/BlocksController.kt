@@ -1,14 +1,8 @@
 package eu.geekhome.rest.blocks
 
-import eu.geekhome.rest.PluginsCoordinator
-import eu.geekhome.rest.RawJson
-import eu.geekhome.rest.ResourceNotFoundException
-import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.StateType
-import eu.geekhome.services.configurable.ConditionConfigurable
-import eu.geekhome.services.configurable.StateDeviceConfigurable
-import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.repository.InstanceBriefDto
+import eu.geekhome.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.automation.blocks.IBlockFactoriesCollector
+import eu.geekhome.rest.*
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -18,8 +12,11 @@ import javax.ws.rs.core.MediaType
 
 @Path("blocks")
 class BlocksController @Inject constructor(
-    private val pluginsCoordinator: PluginsCoordinator
+    private val pluginsCoordinator: PluginsCoordinator,
+    blockFactoriesCollectorHolder: BlockFactoriesCollectorHolderService,
 ) {
+    val blockFactoriesCollector : IBlockFactoriesCollector = blockFactoriesCollectorHolder.instance
+
     @Throws(ResourceNotFoundException::class)
     @GET
     @Path("/{configurableClazz}")
@@ -30,143 +27,28 @@ class BlocksController @Inject constructor(
                 it.javaClass.name.equals(configurableClazz)
             }
 
+            val blockFactories = blockFactoriesCollector.collect(configurable)
+            val blockCategories = ArrayList<BlocklyToolboxItemCategoryDto>()
             val blockImplementations = ArrayList<RawJson>()
-            val automationTriggersBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
-            val logicBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
-            val thisDeviceBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
-            val conditionsBlockDefinitions = ArrayList<BLocklyToolboxItemBlockDto>()
 
-            //building "triggers" blocks
-            addTimeloopTriggerBlock(automationTriggersBlockDefinitions, blockImplementations)
-
-            //building "logic"
-            addIfThanElseBlock(logicBlockDefinitions, blockImplementations)
-            addLogicAndBlock(logicBlockDefinitions, blockImplementations)
-            addLogicNotBlock(logicBlockDefinitions, blockImplementations)
-
-            //building "this device" blocks
-            if (configurable is StateDeviceConfigurable) {
-                configurable
-                    .states
-                    .filter { it.value.type != StateType.ReadOnly }
-                    .forEach {
-                        addChangeStateBlock(it.value, thisDeviceBlockDefinitions, blockImplementations)
-                    }
+            blockFactories.forEach { blockFactory ->
+                var category = blockCategories.find { it.name == blockFactory.category}
+                if (category == null) {
+                    category = BlocklyToolboxItemCategoryDto(blockFactory.category, ToolboxItemKind.category, ArrayList())
+                    blockCategories.add(category)
+                }
+                category.contents.add(BLocklyToolboxItemBlockDto(ToolboxItemKind.block, blockFactory.type))
+                blockImplementations.add(blockFactory.buildBlock())
             }
 
-            //building "conditions" blocks
-            pluginsCoordinator
-                .repository
-                .getAllInstanceBriefs()
-                .forEach { briefDto ->
-                    addConditionBlock(briefDto, conditionsBlockDefinitions, blockImplementations)
-                }
-
             val toolbox = BlocklyToolboxDto(
-                contents = listOf(
-                    BlocklyToolboxItemCategoryDto(name = R.category_name_triggers, contents = automationTriggersBlockDefinitions),
-                    BlocklyToolboxItemCategoryDto(name = R.category_name_logic, contents = logicBlockDefinitions),
-                    BlocklyToolboxItemCategoryDto(name = R.category_name_conditions, contents = conditionsBlockDefinitions),
-                    BlocklyToolboxItemCategoryDto(name = R.category_name_this_device, contents = thisDeviceBlockDefinitions),
-                )
+                contents = blockCategories
             )
 
             return BlocklyToolboxWithBlocksDto(toolbox, blockImplementations)
         } catch (ex: NoSuchElementException) {
             throw ResourceNotFoundException()
         }
-    }
-
-    private fun addConditionBlock(
-        briefDto: InstanceBriefDto,
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val instanceClass = briefDto.clazz
-        val instanceConfigurable = pluginsCoordinator
-            .configurables
-            .firstOrNull {
-                it.javaClass.name.equals(instanceClass)
-            }
-
-        if (instanceConfigurable is ConditionConfigurable) {
-            val conditionInstances =
-                pluginsCoordinator.repository.getInstancesOfClazz(instanceConfigurable.javaClass.name)
-            conditionInstances.forEach {
-                val type = "condition_${it.id}"
-                val blockDef = BLocklyToolboxItemBlockDto(type = type)
-                definitions.add(blockDef)
-
-                val blockImpl = BlockFactory.buildConditionBlock(
-                    type = type,
-                    label = Resource.createUniResource(it.fields["name"]!!)
-                )
-                blocks.add(blockImpl)
-            }
-        }
-    }
-
-    private fun addChangeStateBlock(
-        state: State,
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val type = "change_state_${state.name.id}"
-        val blockDef = BLocklyToolboxItemBlockDto(type = type)
-        definitions.add(blockDef)
-
-        val rawJson = BlockFactory.buildChangeStateBlock(type, state.name)
-        blocks.add(rawJson)
-    }
-
-    private fun addTimeloopTriggerBlock(
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val type = "trigger_timeloop"
-        val blockDef = BLocklyToolboxItemBlockDto(type = type)
-        definitions.add(blockDef)
-
-        val rawJson = BlockFactory.buildRepeatBlock(type)
-        blocks.add(rawJson)
-    }
-
-    private fun addIfThanElseBlock(
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val type = "logic_if_than_else"
-        val blockDef = BLocklyToolboxItemBlockDto(type = type)
-        definitions.add(blockDef)
-
-        val rawJson = BlockFactory.buildIfThanElseBlock(type)
-        blocks.add(rawJson)
-    }
-
-    private fun addLogicAndBlock(
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val type = "logic_and"
-
-        val blockDef = BLocklyToolboxItemBlockDto(type = type)
-        definitions.add(blockDef)
-
-        val rawJson = BlockFactory.buildLogicAndBlock(type)
-        blocks.add(rawJson)
-    }
-
-    private fun addLogicNotBlock(
-        definitions: ArrayList<BLocklyToolboxItemBlockDto>,
-        blocks: ArrayList<RawJson>
-    ) {
-        val type = "logic_not"
-
-        val blockDef = BLocklyToolboxItemBlockDto(type = type)
-        definitions.add(blockDef)
-
-        val rawJson = BlockFactory.buildLogicNotBlock(type)
-        blocks.add(rawJson)
     }
 }
 

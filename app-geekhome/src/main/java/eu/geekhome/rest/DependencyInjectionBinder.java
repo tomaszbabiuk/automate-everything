@@ -1,6 +1,7 @@
 package eu.geekhome.rest;
 
 import eu.geekhome.automation.BlocklyParser;
+import eu.geekhome.automation.blocks.BlockFactoriesCollector;
 import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
 import eu.geekhome.rest.configurable.FieldDefinitionDtoMapper;
 import eu.geekhome.rest.hardware.HardwareAdapterDtoMapper;
@@ -25,5 +26,6 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(HardwareManagerHolderService.class).to(HardwareManagerHolderService.class).in(Singleton.class);
         bind(AutomationConductorHolderService.class).to(AutomationConductorHolderService.class).in(Singleton.class);
         bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);
+        bind(BlockFactoriesCollectorHolderService.class).to(BlockFactoriesCollectorHolderService.class).in(Singleton.class);
     }
 }

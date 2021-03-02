@@ -1,8 +1,5 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
-import eu.geekhome.services.configurable.ConditionConfigurable
-import eu.geekhome.services.configurable.StateDeviceConfigurable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -19,10 +16,17 @@ interface ValueNode: AutomationNode {
 
 class AutomationPack(val triggers: List<StatementNode>)
 
+interface IBlocklyTransformer {
 
-class BlocklyTransformer {
+    fun transformValue(block: Block, context: AutomationContext) : ValueNode
+    fun transformTrigger(block: Block, context: AutomationContext) : StatementNode
+    fun transformStatement(block: Block, context: AutomationContext) : StatementNode
+}
+
+class BlocklyTransformer() : IBlocklyTransformer {
 
     fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : AutomationPack {
+
         val masterNodes = ArrayList<StatementNode>()
 
         bLocklyXml.blocks.forEach {
@@ -33,187 +37,55 @@ class BlocklyTransformer {
         return AutomationPack(masterNodes)
     }
 
-    private fun transformValue(block: Block, context: AutomationContext) : ValueNode? {
-        if (block.type.startsWith("condition_")) {
-            return transformCondition(block, context)
-        }
+    override fun transformValue(block: Block, context: AutomationContext) : ValueNode {
+        val blockFactory = context
+            .blocksCache
+            .filterIsInstance<ValueBlockFactory>()
+            .find { it.match(block.type) }
 
-        if (block.type.startsWith("logic_and")) {
-            return transformAnd(block, context)
-        }
-
-        if (block.type.startsWith("logic_not")) {
-            return transformNot(block, context)
+        if (blockFactory != null) {
+            return blockFactory.transform(block, null, context, this)
         }
 
         throw UnknownValueBlockException(block.type)
     }
 
-    private fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
+    override fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }
 
-        if (block.type == "trigger_timeloop") {
-            return transformTimeloopTrigger(block, next)
+        val blockFactory = context
+            .blocksCache
+            .filterIsInstance<TriggerBlockFactory>()
+            .find { it.match(block.type) }
+
+        if (blockFactory != null) {
+            return blockFactory.transform(block, next, context, this)
         }
 
         throw UnknownTriggerBlockException(block.type)
     }
 
-    private fun transformStatement(block: Block, context: AutomationContext) : StatementNode? {
+    override fun transformStatement(block: Block, context: AutomationContext) : StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }
 
-        if (block.type == "trigger_timeloop") {
-            return transformTimeloopTrigger(block, next)
-        }
+        val blockFactory = context
+            .blocksCache
+            .filterIsInstance<StatementBlockFactory>()
+            .find { it.match(block.type) }
 
-        if (block.type == "logic_if_than_else") {
-            return transformIfThanElse(block, next, context)
-        }
-
-        if (block.type.startsWith("change_state_")) {
-            return transformChangeState(block, next, context)
+        if (blockFactory != null) {
+            return blockFactory.transform(block, next, context, this)
         }
 
         throw UnknownStatementBlockException(block.type)
     }
 
-    private fun transformTimeloopTrigger(
-        block: Block,
-        next: StatementNode?,
-    ): TimeTriggerBlock {
-        if (block.field == null) {
-            throw MalformedBlockException(block.type, "should have <field> defined")
-        }
-        if (block.field.value == null) {
-            throw MalformedBlockException(block.type, "should have <field/value> defined")
-        }
-
-        val seconds = block.field.value.toInt()
-
-        return TimeTriggerBlock(seconds, next)
-    }
-
-    private fun transformIfThanElse(
-        block: Block,
-        next: StatementNode?,
-        context: AutomationContext
-    ): IfThanElseAutomationNode {
-        var ifNode: StatementNode? = null
-        var elseNode: StatementNode? = null
-
-        if (block.statements != null) {
-            val ifStatement = block.statements.find { it.name == "IF" }
-            if (ifStatement == null) {
-                throw MalformedBlockException(block.type, "should have <IF statement> defined")
-            } else if (ifStatement.block != null) {
-                ifNode = transformStatement(ifStatement.block, context)
-            }
-
-            val elseStatement = block.statements.find { it.name == "ELSE" }
-            if (elseStatement == null) {
-                throw MalformedBlockException(block.type, "should have <ELSE statement> defined")
-            } else if (elseStatement.block != null) {
-                elseNode = transformStatement(elseStatement.block, context)
-            }
-        }
-
-        if (block.values == null) {
-            throw MalformedBlockException(block.type, "should have at least <VALUE> defined")
-        }
-
-        if (block.values.size != 1) {
-            throw MalformedBlockException(block.type, "should have only one <VALUE>")
-        }
-
-        val valueNode = transformValue(block.values[0].block!!, context)
-
-        return IfThanElseAutomationNode(next, valueNode, ifNode, elseNode)
-    }
-
-    private fun transformChangeState(
-        block: Block,
-        next: StatementNode?,
-        context: AutomationContext
-    ): ChangeStateAutomationNode {
-        val state = block.type.replace("change_state_", "")
-        if (context.thisDevice is StateDeviceConfigurable) {
-            val evaluator = context.automationUnitsCache[context.instanceDto.id]
-            if (evaluator is StateDeviceAutomationUnit) {
-                return ChangeStateAutomationNode(state, evaluator, next)
-            } else {
-                throw MalformedBlockException(block.type, "should point only to a state device")
-            }
-        }
-
-        throw MalformedBlockException(block.type, "it's impossible to connect this block with correct ${StateDeviceConfigurable::class.java}")
-    }
-
-    private fun transformCondition(
-        block: Block,
-        context: AutomationContext
-    ): ConditionAutomationNode {
-        val conditionId = block.type.replace("condition_", "").toLong()
-        val evaluator = context.evaluationUnitsCache[conditionId]
-
-        if (evaluator != null) {
-            return ConditionAutomationNode(evaluator)
-        }
-
-        throw MalformedBlockException(block.type,
-            "it's impossible to connect this block with correct ${ConditionConfigurable::class.java}")
-    }
-
-    private fun transformAnd(
-        block: Block,
-        context: AutomationContext
-    ): AndAutomationNode {
-        if (block.values == null || block.values.size != 2) {
-            throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
-        }
-
-        var firstNode: ValueNode? = null
-        val firstValue = block.values.find { it.name == "FIRST" }
-        if (firstValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"FIRST\"> defined")
-        } else if (firstValue.block != null) {
-            firstNode = transformValue(firstValue.block, context)
-        }
-
-        var secondNode: ValueNode? = null
-        val secondValue = block.values.find { it.name == "SECOND" }
-        if (secondValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"SECOND\"> defined")
-        } else if (secondValue.block != null) {
-            secondNode = transformValue(secondValue.block, context)
-        }
-
-        return AndAutomationNode(firstNode, secondNode)
-    }
-
-    private fun transformNot(
-        block: Block,
-        context: AutomationContext
-    ): NotAutomationNode {
-        if (block.values == null || block.values.size != 1) {
-            throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")
-        }
-
-        var nodeToNegate: ValueNode? = null
-        val firstValue = block.values.find { it.name == "NOT" }
-        if (firstValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"NOT\"> defined")
-        } else if (firstValue.block != null) {
-            nodeToNegate = transformValue(firstValue.block, context)
-        }
-
-        return NotAutomationNode(nodeToNegate)
-    }
 }
 
 class MalformedBlockException(type: String, malfunction: String) : Exception(

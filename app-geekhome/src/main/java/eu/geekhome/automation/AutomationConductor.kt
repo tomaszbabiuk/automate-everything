@@ -1,6 +1,7 @@
 package eu.geekhome.automation
 
 import eu.geekhome.HardwareManager
+import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.getConfigurables
 import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.IDeviceAutomationUnit
@@ -18,10 +19,12 @@ class AutomationContext(
     val thisDevice: Configurable?,
     val automationUnitsCache: Map<Long, IDeviceAutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
+    val blocksCache: List<BlockFactory<*>>,
 )
 
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
+    private val blockFactoriesCollector: BlockFactoriesCollector,
     val pluginsCoordinator: PluginManager) {
 
     private var automationJob: Job? = null
@@ -39,8 +42,8 @@ class AutomationConductor(
             println("Enabling automation")
 
             val repository = pluginsCoordinator.getRepository()
-
             val allInstances = repository.getAllInstances()
+            val allInstanceBriefs = repository.getAllInstanceBriefs()
             val allConfigurables = pluginsCoordinator.getConfigurables()
             val automationUnitsCache = HashMap<Long, IDeviceAutomationUnit<*>>()
             val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
@@ -64,9 +67,10 @@ class AutomationConductor(
                     val thisDevice = allConfigurables
                         .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
 
+                    val blocksCache = blockFactoriesCollector.collect(thisDevice)
                     val context =
                         AutomationContext(instanceDto, thisDevice,
-                            automationUnitsCache, evaluationUnitsCache)
+                            automationUnitsCache, evaluationUnitsCache, blocksCache)
 
                     val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                     blocklyTransformer.transform(blocklyXml, context)
