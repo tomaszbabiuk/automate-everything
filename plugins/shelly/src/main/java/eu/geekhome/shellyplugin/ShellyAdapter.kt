@@ -69,17 +69,17 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
 
     @Throws(IOException::class)
     private suspend fun enableMQTT(shellyIP: InetAddress) {
-        client.get<String>("http://" + shellyIP + "/settings/mqtt?mqtt_enable=1&mqtt_server=" + brokerIP!!.hostAddress + "%3A1883")
+        client.get<String>("""http://$shellyIP/settings/mqtt?mqtt_enable=1&mqtt_server=${brokerIP!!.hostAddress}%3A1883""")
+    }
+
+    @Throws(IOException::class)
+    private suspend fun callForStatus(shellyIP: InetAddress): ShellyStatusResponse {
+        return client.get<ShellyStatusResponse>("http://$shellyIP/status")
     }
 
     @Throws(IOException::class)
     private suspend fun disableCloud(shellyIP: InetAddress) {
         client.get<String>("http://$shellyIP/settings/cloud?enabled=0")
-    }
-
-    @Throws(IOException::class)
-    private suspend fun callForLightResponse(possibleShellyIP: InetAddress, channel: Int): LightResponseDto {
-        return client.get("http://$possibleShellyIP/light/$channel")
     }
 
     @Throws(IOException::class)
@@ -101,38 +101,98 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
             val settingsResponse = it.second
             val shellyId = settingsResponse.device.hostname
             hijackShellyIfNeeded(settingsResponse, shellyIP)
+            val statusResponse = callForStatus(shellyIP)
 
             //TODO: check if that's battery powered device to calculate connection interval
-//            val isBatteryPowered = false
-//            val connectionLostInterval = if (isBatteryPowered) 60 * 60 * 1000L else 40 * 60 * 1000L
-            if (settingsResponse.relays != null) {
-                for (i in settingsResponse.relays.indices) {
+            val isBatteryPowered = false
+            val connectionLostInterval = if (isBatteryPowered) 60 * 60 * 1000L else 40 * 60 * 1000L
+            if (statusResponse.relays != null) {
+                for (i in statusResponse.relays.indices) {
                     val relayResponse = callForRelayResponse(shellyIP, i)
                     triplets.add(constructRelayInOutPort(idBuilder, shellyId, i, relayResponse))
                 }
 
-                if (settingsResponse.device.num_meters > 0) {
-                    for (i in 0 until settingsResponse.device.num_meters) {
+                if (statusResponse.meters != null) {
+                    for (i in statusResponse.meters.indices) {
                         triplets.add(constructRelayWattageReadPort(idBuilder, shellyId, i))
                     }
                 }
             }
 
-            if (settingsResponse.lights != null) {
-                for (i in settingsResponse.lights.indices) {
-                    val lightResponse = callForLightResponse(shellyIP, i)
+            if (statusResponse.lights != null) {
+                for (i in statusResponse.lights.indices) {
+                    val lightResponse = statusResponse.lights[i]
                     triplets.add(constructPowerLevelReadWritePort(idBuilder, shellyId, i, lightResponse))
+                }
 
-                    if (settingsResponse.device.num_meters > 0) {
+                if (statusResponse.meters != null) {
+                    for (i in statusResponse.meters.indices) {
                         triplets.add(constructLightWattageReadPort(idBuilder, shellyId, i))
                     }
                 }
+            }
+
+            if (statusResponse.tmp != null) {
+                triplets.add(constructTemperatureReadPort(idBuilder, shellyId, statusResponse.tmp))
+            }
+
+            if (statusResponse.hum != null) {
+                triplets.add(constructHumidityReadPort(idBuilder, shellyId, statusResponse.hum))
+            }
+
+            if (statusResponse.bat != null) {
+                triplets.add(constructBatteryReadPort(idBuilder, shellyId, statusResponse.bat))
             }
         }
 
         triplets
             .map {it.first}
             .toMutableList()
+    }
+
+    private fun constructBatteryReadPort(
+        idBuilder: PortIdBuilder,
+        shellyId: String,
+        batteryBrief: BatteryBriefDto
+    ): Triplet {
+        val id = idBuilder.buildPortId(shellyId, 0, "B")
+        val operator = ShellyBatteryReadPortOperator(shellyId)
+        operator.setValueFromBatteryResponse(batteryBrief)
+        val port = ConnectiblePort(id, BatteryCharge::class.java,
+            readPortOperator = operator,
+        )
+
+        return Triple(port, operator, null)
+    }
+
+    private fun constructHumidityReadPort(
+        idBuilder: PortIdBuilder,
+        shellyId: String,
+        humidityBrief: HumidityBriefDto
+    ): Triplet {
+        val id = idBuilder.buildPortId(shellyId, 0, "H")
+        val operator = ShellyHumidityReadPortOperator(shellyId)
+        operator.setValueFromHumidityResponse(humidityBrief)
+        val port = ConnectiblePort(id, Humidity::class.java,
+            readPortOperator = operator,
+        )
+
+        return Triple(port, operator, null)
+    }
+
+    private fun constructTemperatureReadPort(
+        idBuilder: PortIdBuilder,
+        shellyId: String,
+        temperatureBrief: TemperatureBriefDto
+    ): Triplet {
+        val id = idBuilder.buildPortId(shellyId, 0, "T")
+        val operator = ShellyTemperatureReadPortOperator(shellyId)
+        operator.setValueFromTemperatureResponse(temperatureBrief)
+        val port = ConnectiblePort(id, Temperature::class.java,
+            readPortOperator = operator,
+        )
+
+        return Triple(port, operator, null)
     }
 
     private fun constructRelayInOutPort(
@@ -170,7 +230,7 @@ class ShellyAdapter(private val mqttBroker: MqttBrokerService) : HardwareAdapter
         idBuilder: PortIdBuilder,
         shellyId : String,
         channel: Int,
-        lightResponse: LightResponseDto
+        lightResponse: LightBriefDto
     ): Triplet {
         val operator = PowerLevelReadWritePortOperator(shellyId, channel)
         operator.setValueFromLightResponse(lightResponse)

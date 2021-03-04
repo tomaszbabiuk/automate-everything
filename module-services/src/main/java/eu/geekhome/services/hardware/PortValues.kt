@@ -77,10 +77,32 @@ class PowerLevel(var value: Int) : PortValue() {
     }
 }
 
+class BatteryCharge(var value: Double) : PortValue() {
+
+    override fun toFormattedString(): Resource {
+        val multilingualValue = "%.2f %%".format(value)
+        return Resource.createUniResource(multilingualValue)
+    }
+
+    override fun asInteger(): Int {
+        return ((value * 100).roundToInt())
+    }
+
+    override fun asDouble(): Double {
+        return value
+    }
+
+    companion object {
+        fun fromString(from: String): BatteryCharge {
+            return BatteryCharge(from.toDouble())
+        }
+    }
+}
+
 class Temperature(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
-        val multilingualValue = "%.2f °C".format(value)
+        val multilingualValue = "%.2f °C".format(value + 273.15)
         return Resource(multilingualValue, multilingualValue)
     }
 
@@ -102,7 +124,7 @@ class Temperature(var value: Double) : PortValue() {
 class Humidity(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
-        val multilingualValue = "%.2f %".format(value)
+        val multilingualValue = "%.2f %%".format(value)
         return Resource(multilingualValue, multilingualValue)
     }
 

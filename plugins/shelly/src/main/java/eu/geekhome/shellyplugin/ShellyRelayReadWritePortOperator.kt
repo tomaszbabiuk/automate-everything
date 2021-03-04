@@ -37,7 +37,7 @@ class ShellyRelayReadWritePortOperator(
     }
 
     fun setValueFromRelayResponse(response: RelayResponseDto) {
-        readValue.value = response.on
+        readValue.value = response.ison
     }
 
     override fun reset() {

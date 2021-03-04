@@ -16,8 +16,3 @@ package eu.geekhome.shellyplugin
       "update_period":30
    },
  */
-data class MqttBriefDto(
-
-    val enable: Boolean,
-    val server: String?
-)

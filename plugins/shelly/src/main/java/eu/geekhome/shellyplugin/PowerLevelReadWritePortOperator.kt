@@ -27,16 +27,16 @@ class PowerLevelReadWritePortOperator(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        val response: LightResponseDto = gson.fromJson(payload, LightResponseDto::class.java)
+        val response: LightBriefDto = gson.fromJson(payload, LightBriefDto::class.java)
         setValueFromLightResponse(response)
     }
 
-    fun setValueFromLightResponse(lightResponse: LightResponseDto) {
+    fun setValueFromLightResponse(lightResponse: LightBriefDto) {
         val valueInPercent = calculateBrightness(lightResponse)
         readValue.value = valueInPercent
     }
 
-    private fun calculateBrightness(lightResponse: LightResponseDto): Int {
+    private fun calculateBrightness(lightResponse: LightBriefDto): Int {
         val isOn = lightResponse.ison
         return if (isOn) lightResponse.brightness else 0
     }
