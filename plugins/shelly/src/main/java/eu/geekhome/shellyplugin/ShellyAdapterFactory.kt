@@ -10,7 +10,7 @@ internal class ShellyAdapterFactory(private val mqttBroker: MqttBrokerService) :
 
     override fun createAdapters(): List<HardwareAdapter> {
         val result = ArrayList<HardwareAdapter>()
-        val adapter = ShellyAdapter(mqttBroker)
+        val adapter = ShellyAdapter(id, mqttBroker)
         result.add(adapter)
         return result
     }

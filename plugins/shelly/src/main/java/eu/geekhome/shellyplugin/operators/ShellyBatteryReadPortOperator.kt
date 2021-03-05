@@ -1,6 +1,7 @@
-package eu.geekhome.shellyplugin
+package eu.geekhome.shellyplugin.operators
 
 import eu.geekhome.services.hardware.BatteryCharge
+import eu.geekhome.shellyplugin.BatteryBriefDto
 
 class ShellyBatteryReadPortOperator(shellyId: String) : ShellyReadPortOperator<BatteryCharge> {
 

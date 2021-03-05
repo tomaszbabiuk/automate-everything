@@ -29,8 +29,8 @@ abstract class Port<V: PortValue>(
     val canRead: Boolean,
     val canWrite: Boolean,
     val valueType: Class<V>,
-    private val readPortOperator: ReadPortOperator<V>? = null,
-    private val writePortOperator: WritePortOperator<V>? = null
+    val readPortOperator: ReadPortOperator<V>? = null,
+    val writePortOperator: WritePortOperator<V>? = null
 ) {
     var isShadowed: Boolean = false; protected set
 

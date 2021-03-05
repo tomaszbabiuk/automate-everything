@@ -1,4 +1,4 @@
-package eu.geekhome.shellyplugin
+package eu.geekhome.shellyplugin.operators
 
 import eu.geekhome.services.hardware.ReadPortOperator
 

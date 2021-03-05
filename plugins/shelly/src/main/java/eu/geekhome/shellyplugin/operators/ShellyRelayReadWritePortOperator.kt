@@ -1,6 +1,8 @@
-package eu.geekhome.shellyplugin
+package eu.geekhome.shellyplugin.operators
 
 import eu.geekhome.services.hardware.Relay
+import eu.geekhome.shellyplugin.RelayResponseDto
+import eu.geekhome.shellyplugin.ShellyWritePortOperator
 
 class ShellyRelayReadWritePortOperator(
     shellyId: String,

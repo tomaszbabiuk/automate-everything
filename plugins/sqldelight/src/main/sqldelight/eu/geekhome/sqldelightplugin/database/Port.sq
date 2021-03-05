@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS port (
+  id TEXT PRIMARY KEY,
+  canRead INTEGER NOT NULL,
+  canWrite INTEGER NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM tag;
+
+insert:
+INSERT INTO tag(parent_id, name)
+VALUES (?,?);
+
+delete:
+DELETE FROM tag
+WHERE id == ?;
+
+update:
+UPDATE tag
+SET parent_id = ?,
+    name = ?
+WHERE
+    id= ?;

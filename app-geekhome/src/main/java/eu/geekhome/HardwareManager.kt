@@ -48,9 +48,8 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
             .flatMap { it.value }
             .forEach { bundle ->
                 bundle.adapter.start(updateSink)
-                val builder = PortIdBuilder(factory.id, bundle.adapter.id)
                 bundle.discoveryJob = async {
-                    bundle.ports = bundle.adapter.discover(builder, discoverySink)
+                    bundle.ports = bundle.adapter.discover(discoverySink)
                     bundle.ports.forEach {
                         updateSink.broadcastEvent(PortUpdateEvent(factory.id, bundle.adapter.id, it))
                     }

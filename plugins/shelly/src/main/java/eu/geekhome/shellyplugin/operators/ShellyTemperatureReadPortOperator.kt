@@ -1,6 +1,7 @@
-package eu.geekhome.shellyplugin
+package eu.geekhome.shellyplugin.operators
 
 import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.shellyplugin.TemperatureBriefDto
 
 class ShellyTemperatureReadPortOperator(shellyId: String) : ShellyReadPortOperator<Temperature> {
 

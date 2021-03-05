@@ -8,7 +8,20 @@ data class ShellyStatusResponse(
     val tmp: TemperatureBriefDto?,
     val hum: HumidityBriefDto?,
     val bat: BatteryBriefDto?,
-    val mac: String
+    val inputs: List<InputBriefFDto>?,
+    val adcs: AdcBriefDto?,
+    val mac: String,
+    val ext_temperature: Map<String, ExtraTemperatureBrief>?,
+    val ext_humidity: HumidityBriefDto?,
+)
+
+data class ExtraTemperatureBrief(
+    val hwID: String,
+    val tC: Double
+)
+
+data class AdcBriefDto(
+    val voltage: Double
 )
 
 data class RelayResponseDto(
@@ -36,6 +49,10 @@ data class HumidityBriefDto(
 data class BatteryBriefDto(
     val value: Double,
     val voltage: Double
+)
+
+data class InputBriefFDto(
+    val input:Int
 )
 
 /*
@@ -81,6 +98,34 @@ data class BatteryBriefDto(
   "act_reasons": [
     "poweron"
   ],
+
+
+      "inputs": [
+      {
+        "input": 0
+      },
+      {
+        "input": 0
+      }
+    ],
+    "adcs": [
+      {
+        "voltage": 11.31
+      }
+    ],
+    "ext_sensors": {
+      "temperature_unit": "C"
+    },
+    "ext_temperature": [
+      "0": {
+        "hwID": "287169120c0000d7",
+        "tC": 24.5,
+        "tF": 76.1
+      }
+    ],
+    "ext_humidity": {}
+
+
   "connect_retries": 0,
   "update": {
     "status": "unknown",

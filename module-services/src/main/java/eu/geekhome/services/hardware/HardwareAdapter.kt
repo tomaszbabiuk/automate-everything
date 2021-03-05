@@ -4,8 +4,9 @@ import eu.geekhome.services.events.EventsSink
 import java.util.*
 
 interface HardwareAdapter {
+
     val id: String
-    suspend fun discover(idBuilder: PortIdBuilder, eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>>
+    suspend fun discover(eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>>
 
     @Throws(Exception::class)
     fun refresh(now: Calendar)

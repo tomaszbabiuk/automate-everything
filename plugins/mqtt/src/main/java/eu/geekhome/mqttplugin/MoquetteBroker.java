@@ -3,10 +3,12 @@ package eu.geekhome.mqttplugin;
 import eu.geekhome.services.mqtt.MqttBrokerService;
 import eu.geekhome.services.mqtt.MqttListener;
 import io.moquette.BrokerConstants;
+import io.moquette.broker.ClientDescriptor;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.MemoryConfig;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.InterceptHandler;
+import io.moquette.interception.messages.InterceptConnectMessage;
 import io.moquette.interception.messages.InterceptConnectionLostMessage;
 import io.moquette.interception.messages.InterceptPublishMessage;
 import io.netty.buffer.Unpooled;
@@ -16,6 +18,8 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 import org.pf4j.Extension;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,9 +48,11 @@ public class MoquetteBroker implements MqttBrokerService {
     static class PublisherListener extends AbstractInterceptHandler {
 
         private final List<MqttListener> _listeners;
+        private Server _server;
 
-        PublisherListener(List<MqttListener> listeners) {
+        PublisherListener(List<MqttListener> listeners, Server server) {
             _listeners = listeners;
+            _server = server;
         }
 
         @Override
@@ -79,10 +85,27 @@ public class MoquetteBroker implements MqttBrokerService {
                 listener.onDisconnected(clientID);
             }
         }
+
+        @Override
+        public void onConnect(InterceptConnectMessage msg) {
+            super.onConnect(msg);
+            for (ClientDescriptor client : _server.listConnectedClients()) {
+                if (msg.getClientID().equals(client.getClientID())) {
+                    for (MqttListener listener : _listeners) {
+                        try {
+                            InetAddress address = InetAddress.getByName(client.getAddress());
+                            listener.onConnected(address);
+                        } catch (UnknownHostException ignored) {
+                        }
+                    }
+                }
+            }
+            _server.listConnectedClients();
+        }
     }
 
     public void start() throws IOException {
-        List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener(_listeners));
+        List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener(_listeners, _mqttBroker));
 
         MemoryConfig memoryConfig = new MemoryConfig(new Properties());
         memoryConfig.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, "true");

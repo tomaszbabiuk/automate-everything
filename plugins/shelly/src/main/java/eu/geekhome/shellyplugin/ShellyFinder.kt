@@ -9,10 +9,12 @@ import java.net.InetAddress
 
 class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress) {
 
-    private suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<HardwareEvent>) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
+    suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<HardwareEvent>?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            broadcastEvent(eventsSink,"Shelly found! Ip address: $ipToCheck")
+            if (eventsSink != null) {
+                broadcastEvent(eventsSink, "Shelly found! Ip address: $ipToCheck")
+            }
             Pair(ipToCheck,response)
         } catch (e: Exception) {
             null
@@ -58,7 +60,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
         result
     }
 
-    fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
+    private fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
         val event = HardwareEvent(ShellyPlugin.PLUGIN_ID_SHELLY, message)
         eventsSink.broadcastEvent(event)
     }
