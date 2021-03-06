@@ -18,14 +18,23 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
     }
 
     fun afterAutomationLoop(now: Calendar) {
+        bundles()
+            .forEach { bundle ->
+                bundle.adapter.executePendingChanges()
+                val hasNewPorts = bundle.adapter.newPorts.isNotEmpty()
+                if (hasNewPorts) {
+                    bundle.adapter.newPorts.forEach { newPort ->
+                        val portAlreadyExists = bundle.ports.find { it.id == newPort.id } != null
+                        if (!portAlreadyExists) {
+                            bundle.ports.add(newPort)
+                        }
+                    }
 
-        val bundles = factories
-            .flatMap { it.value }
+                    bundle.adapter.clearNewPorts()
+                }
+            }
 
-        bundles
-            .forEach { it.adapter.executePendingChanges() }
-
-        bundles
+        bundles()
             .flatMap { it.ports }
             .filter { (it is Connectible && !it.checkIfConnected(now)) }
     }

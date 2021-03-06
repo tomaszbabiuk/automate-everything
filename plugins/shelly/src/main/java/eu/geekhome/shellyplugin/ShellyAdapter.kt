@@ -18,6 +18,7 @@ import kotlin.collections.ArrayList
 
 class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
 
+    override val newPorts = ArrayList<ConnectiblePort<*>>()
     private var idBuilder = PortIdBuilder(factoryId, id)
     private var updateSink: EventsSink<PortUpdateEvent>? = null
     private var finder: ShellyFinder
@@ -107,6 +108,10 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
         ports.toMutableList()
     }
 
+    override fun clearNewPorts() {
+        newPorts.clear()
+    }
+
     @Throws(Exception::class)
     override fun refresh(now: Calendar) {
     }
@@ -173,8 +178,15 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
                 val statusResponse = callForStatus(address)
                 val shellyId = finderResponse.second.device.hostname
                 val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse)
-                println(portsFromDevice)
-                //TODO: broadcast it to hardware manager somehow
+                portsFromDevice.forEach { newPort ->
+                    val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
+                    if (!isAlreadyDiscovered) {
+                        val foundAsNewAlready = newPorts.find { it.id == newPort.id} != null
+                        if (!foundAsNewAlready) {
+                            newPorts.add(newPort)
+                        }
+                    }
+                }
             }
         }
     }

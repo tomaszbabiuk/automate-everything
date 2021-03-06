@@ -295,7 +295,7 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.get("rest/automation"),
       (response) => {
-        store.commit(UPDATE_AUTOMATION, response)
+        store.commit(UPDATE_AUTOMATION, response.data)
       }
     )
   },

@@ -5,6 +5,8 @@ import java.util.*
 
 interface HardwareAdapter {
 
+    val newPorts: List<Port<*>>
+    fun clearNewPorts()
     val id: String
     suspend fun discover(eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>>
 

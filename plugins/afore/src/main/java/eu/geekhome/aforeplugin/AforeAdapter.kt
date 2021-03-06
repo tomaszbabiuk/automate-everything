@@ -8,7 +8,13 @@ import kotlin.collections.ArrayList
 
 class AforeAdapter : HardwareAdapterBase() {
 
-//    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
+    override val newPorts = ArrayList<Port<*>>()
+
+    override fun clearNewPorts() {
+        newPorts.clear()
+    }
+
+    //    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
 
     override suspend fun internalDiscovery(eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>> {
