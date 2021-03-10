@@ -1,6 +1,7 @@
 package eu.geekhome.sqldelightplugin
 
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import eu.geekhome.services.hardware.PortDto
 import eu.geekhome.services.repository.*
 import eu.geekhome.sqldelightplugin.database.*
 import org.pf4j.Extension
@@ -51,6 +52,20 @@ class SqlDelightRepository : Repository {
 
     private fun mapIconToIconDto(icon: Icon): IconDto {
         return IconDto(icon.id, icon.icon_category_id, icon.raw)
+    }
+
+    private fun mapPortSnapshotToPortDto(portSnapshot: PortSnapshot): PortDto {
+        return PortDto(
+            portSnapshot.id,
+            portSnapshot.factoryId,
+            portSnapshot.adapterId,
+            null,
+            null,
+            portSnapshot.valueType,
+            portSnapshot.canRead == 1L,
+            portSnapshot.canWrite == 1L,
+            false
+        )
     }
 
     override fun saveInstance(instanceDto: InstanceDto) {
@@ -227,6 +242,33 @@ class SqlDelightRepository : Repository {
     override fun updateIcon(iconDto: IconDto) {
         database.transaction {
             database.iconQueries.update(iconDto.iconCategoryId, iconDto.raw, iconDto.id)
+        }
+    }
+
+    override fun getAllPorts(): List<PortDto> {
+
+        return database
+            .portQueries
+            .selectAll()
+            .executeAsList()
+            .map { mapPortSnapshotToPortDto(it) }
+    }
+
+    override fun savePort(port: PortDto): Long {
+        var id: Long = 0
+        database.transaction {
+            val canRead = if (port.canRead) { 1L } else { 0L }
+            val canWrite = if (port.canWrite) { 1L } else { 0L }
+            database.portQueries.insertOrUpdate(port.id, port.factoryId, port.adapterId, port.valueType, canRead, canWrite)
+            id = database.generalQueries.lastInsertRowId().executeAsOne()
+        }
+
+        return id
+    }
+
+    override fun deletePortSnapshot(id: String) {
+        database.transaction {
+            database.portQueries.delete(id)
         }
     }
 }

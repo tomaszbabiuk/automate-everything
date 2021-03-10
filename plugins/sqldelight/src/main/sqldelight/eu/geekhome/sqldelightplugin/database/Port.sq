@@ -1,24 +1,20 @@
-CREATE TABLE IF NOT EXISTS port (
+CREATE TABLE IF NOT EXISTS portSnapshot (
   id TEXT PRIMARY KEY,
+  factoryId TEXT NOT NULL,
+  adapterId TEXT NOT NULL,
+  valueType TEXT NOT NULL,
   canRead INTEGER NOT NULL,
   canWrite INTEGER NOT NULL
 );
 
 selectAll:
 SELECT *
-FROM tag;
+FROM portSnapshot;
 
-insert:
-INSERT INTO tag(parent_id, name)
-VALUES (?,?);
+insertOrUpdate:
+REPLACE INTO portSnapshot(id, factoryId, adapterId, valueType, canRead, canWrite)
+VALUES (?,?,?,?,?,?);
 
 delete:
-DELETE FROM tag
+DELETE FROM portSnapshot
 WHERE id == ?;
-
-update:
-UPDATE tag
-SET parent_id = ?,
-    name = ?
-WHERE
-    id= ?;

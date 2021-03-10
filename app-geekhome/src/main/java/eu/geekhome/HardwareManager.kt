@@ -1,5 +1,6 @@
 package eu.geekhome
 
+import eu.geekhome.rest.getRepository
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.NumberedEventsSink
 import eu.geekhome.services.hardware.*
@@ -7,7 +8,7 @@ import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*
 
-class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPortFinder {
+class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
     val discoverySink: EventsSink<HardwareEvent> = NumberedEventsSink()
@@ -60,6 +61,9 @@ class HardwareManager(pluginManager: PluginManager) : PluginStateListener, IPort
                 bundle.discoveryJob = async {
                     bundle.ports = bundle.adapter.discover(discoverySink)
                     bundle.ports.forEach {
+                        val portSnapshot = PortDto(it.id, factory.id, bundle.adapter.id,
+                            null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
+                        pluginManager.getRepository().savePort(portSnapshot)
                         updateSink.broadcastEvent(PortUpdateEvent(factory.id, bundle.adapter.id, it))
                     }
                 }

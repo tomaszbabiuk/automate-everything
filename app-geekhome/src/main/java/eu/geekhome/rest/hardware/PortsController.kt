@@ -3,6 +3,7 @@ package eu.geekhome.rest.hardware
 import eu.geekhome.HardwareManager
 import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
+import eu.geekhome.rest.PluginsCoordinator
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.services.hardware.*
 import javax.ws.rs.*
@@ -10,6 +11,7 @@ import javax.ws.rs.core.MediaType
 
 @Path("ports")
 class PortsController @Inject constructor(
+    val pluginsCoordinator: PluginsCoordinator,
     hardwareManagerHolderService: HardwareManagerHolderService,
     val portDtoMapper: PortDtoMapper
 ) {
@@ -17,14 +19,25 @@ class PortsController @Inject constructor(
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET
-    fun getAdapters() : List<PortDto> {
-        return hardwareManager
+    fun getPorts() : List<PortDto> {
+        val portsInRepo = pluginsCoordinator.repository.getAllPorts().toMutableList()
+
+        val portsInHardware = hardwareManager
             .bundles()
             .flatMap {
                 val factoryId = it.factoryId
-                it.ports.map { port -> Triple(port, factoryId, it.adapter.id) }
+                it
+                    .ports
+                    .map { port -> Triple(port, factoryId, it.adapter.id) }
             }
             .map { portDtoMapper.map(it.first, it.second, it.third) }
+
+        portsInHardware
+            .forEach { hardwarePort -> portsInRepo.removeIf { it.id == hardwarePort.id} }
+
+        portsInRepo.addAll(portsInHardware)
+
+        return portsInRepo;
     }
 
     @Suppress("UNCHECKED_CAST")
