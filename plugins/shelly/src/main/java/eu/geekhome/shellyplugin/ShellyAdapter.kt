@@ -147,14 +147,17 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
         mqttBroker.removeMqttListener(this)
     }
 
-    override fun onPublish(topicName: String, payload: String) {
+    override fun onPublish(clientID: String, topicName: String, payload: String) {
         val now = Calendar.getInstance().timeInMillis
+
+        ports
+            .filter { it.id.contains(clientID) }
+            .forEach { it.updateValidUntil(now + 60000) }
 
         ports
             .filter { (it.readPortOperator as ShellyReadPortOperator<*>?)?.readTopic == topicName }
             .forEach {
-                (it.writePortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(payload)
-                it.updateLastSeen(now)
+                (it.readPortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(payload)
 
                 val updateEvent = PortUpdateEvent(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
                 updateSink?.broadcastEvent(updateEvent)

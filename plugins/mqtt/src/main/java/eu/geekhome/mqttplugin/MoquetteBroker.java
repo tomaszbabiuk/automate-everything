@@ -74,7 +74,7 @@ public class MoquetteBroker implements MqttBrokerService {
             System.out.println("Received on topic: " + msg.getTopicName() + ", content: " + msgAsString);
 
             for (MqttListener listener : _listeners) {
-                listener.onPublish(msg.getTopicName(), msgAsString);
+                listener.onPublish(msg.getClientID(), msg.getTopicName(), msgAsString);
             }
         }
 

@@ -37,7 +37,7 @@ class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, I
 
         bundles()
             .flatMap { it.ports }
-            .filter { (it is Connectible && !it.checkIfConnected(now)) }
+            .filter { (it is IConnectible && !it.checkIfConnected(now)) }
     }
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
