@@ -63,7 +63,7 @@ interface WritePortOperator<V> {
     fun reset()
 }
 
-class ConnectiblePort<V : PortValue>(
+open class ConnectiblePort<V : PortValue>(
     id : String,
     canRead: Boolean,
     canWrite: Boolean,

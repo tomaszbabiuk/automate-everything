@@ -43,7 +43,6 @@ class AutomationConductor(
 
             val repository = pluginsCoordinator.getRepository()
             val allInstances = repository.getAllInstances()
-            val allInstanceBriefs = repository.getAllInstanceBriefs()
             val allConfigurables = pluginsCoordinator.getConfigurables()
             val automationUnitsCache = HashMap<Long, IDeviceAutomationUnit<*>>()
             val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
@@ -81,6 +80,8 @@ class AutomationConductor(
     }
 
     private fun startAutomations(automations: List<AutomationPack>) {
+        hardwareManager.checkNewPorts()
+
         if (automations.isNotEmpty()) {
             val triggers = automations
                 .flatMap { it.triggers }

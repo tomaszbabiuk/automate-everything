@@ -102,7 +102,7 @@ class BatteryCharge(var value: Double) : PortValue() {
 class Temperature(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
-        val multilingualValue = "%.2f °C".format(value + 273.15)
+        val multilingualValue = "%.2f °C".format(value - 273.15)
         return Resource(multilingualValue, multilingualValue)
     }
 

@@ -22,6 +22,8 @@ class PortsController @Inject constructor(
     fun getPorts() : List<PortDto> {
         val portsInRepo = pluginsCoordinator.repository.getAllPorts().toMutableList()
 
+        hardwareManager.checkNewPorts()
+
         val portsInHardware = hardwareManager
             .bundles()
             .flatMap {

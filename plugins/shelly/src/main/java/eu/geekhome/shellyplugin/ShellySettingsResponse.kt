@@ -4,6 +4,16 @@ data class ShellySettingsResponse(
     var device: DeviceBriefDto,
     val mqtt: MqttBriefDto,
     val cloud: CloudBriefDto,
+    val sleep_mode: SleepModeDto?
+)
+
+enum class SleepModeUnit(val minutes: Int) {
+    h(60),m(1);
+}
+
+data class SleepModeDto(
+    val period: Int,
+    val unit: SleepModeUnit,
 )
 
 data class CloudBriefDto(

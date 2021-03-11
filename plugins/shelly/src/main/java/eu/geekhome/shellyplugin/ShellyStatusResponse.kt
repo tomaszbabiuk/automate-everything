@@ -12,7 +12,7 @@ data class ShellyStatusResponse(
     val adcs: AdcBriefDto?,
     val mac: String,
     val ext_temperature: Map<String, ExtraTemperatureBrief>?,
-    val ext_humidity: HumidityBriefDto?,
+    val ext_humidity: HumidityBriefDto?
 )
 
 data class ExtraTemperatureBrief(

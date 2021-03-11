@@ -22,22 +22,7 @@ class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, I
         bundles()
             .forEach { bundle ->
                 bundle.adapter.executePendingChanges()
-                val hasNewPorts = bundle.adapter.newPorts.isNotEmpty()
-                if (hasNewPorts) {
-                    bundle.adapter.newPorts.forEach { newPort ->
-                        val portAlreadyExists = bundle.ports.find { it.id == newPort.id } != null
-                        if (!portAlreadyExists) {
-                            bundle.ports.add(newPort)
-                        }
-                    }
-
-                    bundle.adapter.clearNewPorts()
-                }
             }
-
-        bundles()
-            .flatMap { it.ports }
-            .filter { (it is IConnectible && !it.checkIfConnected(now)) }
     }
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
@@ -147,6 +132,23 @@ class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, I
         }
 
         throw PortNotFoundException(id)
+    }
+
+    override fun checkNewPorts() {
+        bundles()
+            .forEach { bundle ->
+                val hasNewPorts = bundle.adapter.newPorts.isNotEmpty()
+                if (hasNewPorts) {
+                    bundle.adapter.newPorts.forEach { newPort ->
+                        val portAlreadyExists = bundle.ports.find { it.id == newPort.id } != null
+                        if (!portAlreadyExists) {
+                            bundle.ports.add(newPort)
+                        }
+                    }
+
+                    bundle.adapter.clearNewPorts()
+                }
+            }
     }
 }
 

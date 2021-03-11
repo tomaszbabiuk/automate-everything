@@ -25,12 +25,13 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     private val client = createHttpClient()
     private val brokerIP: InetAddress?
     private val gson: Gson
-    private val ports = ArrayList<ConnectiblePort<*>>()
+    private val ports = ArrayList<ShellyPort<*>>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
             serializer = GsonSerializer()
         }
+
 
         engine {
             maxConnectionsCount = 1000
@@ -79,6 +80,11 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     }
 
     @Throws(IOException::class)
+    private suspend fun callForSettings(shellyIP: InetAddress): ShellySettingsResponse {
+        return client.get("http://$shellyIP/settings")
+    }
+
+    @Throws(IOException::class)
     private suspend fun disableCloud(shellyIP: InetAddress) {
         client.get<String>("http://$shellyIP/settings/cloud?enabled=0")
     }
@@ -98,10 +104,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
             hijackShellyIfNeeded(settingsResponse, shellyIP)
             val statusResponse = callForStatus(shellyIP)
 
-            //TODO: check if that's battery powered device to calculate connection interval
-//            val isBatteryPowered = false
-//            val connectionLostInterval = if (isBatteryPowered) 60 * 60 * 1000L else 40 * 60 * 1000L
-            val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse)
+            val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse)
             ports.addAll(portsFromDevice)
         }
 
@@ -152,7 +155,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
 
         ports
             .filter { it.id.contains(clientID) }
-            .forEach { it.updateValidUntil(now + 60000) }
+            .forEach { it.updateValidUntil(now + it.sleepInterval) }
 
         ports
             .filter { (it.readPortOperator as ShellyReadPortOperator<*>?)?.readTopic == topicName }
@@ -179,8 +182,14 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
             val finderResponse = finder.checkIfShelly(address, null)
             if (finderResponse != null) {
                 val statusResponse = callForStatus(address)
+                val settingsResponse = callForSettings(address)
                 val shellyId = finderResponse.second.device.hostname
-                val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse)
+                val portsFromDevice = ShellyPortFactory().constructPorts(
+                    shellyId,
+                    idBuilder,
+                    statusResponse,
+                    settingsResponse
+                )
                 portsFromDevice.forEach { newPort ->
                     val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
                     if (!isAlreadyDiscovered) {

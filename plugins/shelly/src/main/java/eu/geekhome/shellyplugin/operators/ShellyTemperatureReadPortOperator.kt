@@ -13,11 +13,11 @@ class ShellyTemperatureReadPortOperator(shellyId: String) : ShellyReadPortOperat
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        val valueParsed = payload.toDouble()-273.15
+        val valueParsed = payload.toDouble() + 273.15
         value.value = valueParsed
     }
 
     fun setValueFromTemperatureResponse(temperatureBrief: TemperatureBriefDto) {
-        value.value = temperatureBrief.tC - 273.15
+        value.value = temperatureBrief.tC + 273.15
     }
 }
