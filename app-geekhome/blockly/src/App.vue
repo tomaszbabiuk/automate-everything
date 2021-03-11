@@ -196,13 +196,15 @@ export default {
       }
     }
   },
-  mounted: function() {
+  beforeMount: function() {
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;
     } else {
       this.$vuetify.lang.current = localStorage.selectedLanguage;
     }
+  },
 
+  mounted: function() {
     client.getPlugins();
     client.getAutomation();
   }

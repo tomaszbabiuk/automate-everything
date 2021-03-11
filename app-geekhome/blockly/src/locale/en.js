@@ -89,6 +89,7 @@ export default {
         w: "W",
         id: "Id",
         value: "Value",
-        control: "Control"
+        control: "Control",
+        connected: "Connected"
     }
 }

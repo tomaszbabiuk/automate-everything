@@ -89,7 +89,8 @@ export default {
         w: "Z",
         id: "Id",
         value: "Wartość",
-        control: "Kontrola"
+        control: "Kontrola",
+        connected: "Połączenie"
     }
 
 }

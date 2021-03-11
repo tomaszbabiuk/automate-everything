@@ -128,6 +128,11 @@ export default {
         sortable: false,
       },
       {
+        text: this.$vuetify.lang.t("$vuetify.discover.connected"),
+        value: "connected",
+        sortable: false,
+      },
+      {
         text: this.$vuetify.lang.t("$vuetify.discover.control"),
         value: "control",
         sortable: false,
