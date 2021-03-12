@@ -11,7 +11,10 @@ import ADOffset from'./components/admindashboard/Offset'
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
 import ConfigurableDoubleField from './components/geekhome/configurable/DoubleField'
+import ConfigurableGenericPortField from './components/geekhome/configurable/GenericPortField'
 import ConfigurableRelayReadWritePortField from './components/geekhome/configurable/RelayReadWritePortField'
+import ConfigurableTemperatureReadPortField from './components/geekhome/configurable/TemperatureReadPortField'
+import ConfigurableHumidityReadPortField from './components/geekhome/configurable/HumidityReadPortField'
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
@@ -27,7 +30,10 @@ Vue.component('helper-offset', ADOffset)
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)
+Vue.component('configurable-genericportfield', ConfigurableGenericPortField)
 Vue.component('configurable-relayreadwriteportfield', ConfigurableRelayReadWritePortField)
+Vue.component('configurable-temperaturereadportfield', ConfigurableTemperatureReadPortField)
+Vue.component('configurable-humidityreadportfield', ConfigurableHumidityReadPortField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)

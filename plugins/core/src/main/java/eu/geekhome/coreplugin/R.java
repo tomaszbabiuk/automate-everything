@@ -11,14 +11,6 @@ public class R {
             "Core",
             "Core");
 
-    public static Resource field_name_hint = new Resource(
-            "Name",
-            "Nazwa");
-
-    public static Resource field_description_hint = new Resource(
-            "Description",
-            "Opis");
-
     public static Resource field_port_hint = new Resource(
             "Port",
             "Port");
@@ -39,13 +31,21 @@ public class R {
             "Add/remove devices (sensors, relays, switches, etc.)",
             "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)");
 
-    public static Resource configurable_condition_title = new Resource(
+    public static Resource configurable_conditions_title = new Resource(
             "Conditions",
             "Warunki");
 
-    public static Resource configurable_condition_description = new Resource(
+    public static Resource configurable_conditions_description = new Resource(
             "Add/remove conditions",
             "Dodawaj/usuwaj warunki");
+
+    public static Resource configurable_meters_title = new Resource(
+            "Meters",
+            "Urządzenia pomiarowe");
+
+    public static Resource configurable_meters_description = new Resource(
+            "Add/remove any type of meters (thermometers, wattmeters, etc.)",
+            "Dodawaj/usuwaj urządzenia pomiarowe (termometry, watomierze, itp.)");
 
     public static Resource configurable_scene_add = new Resource(
             "Add scene",
@@ -62,7 +62,6 @@ public class R {
     public static Resource configurable_scene_description = new Resource(
             "Scene is a set of conditions that define specyfic behavior",
             "Sceny to zbiór warunków, które definiują określone zachowanie");
-
 
     public static Resource configurable_onoffdevice_add = new Resource(
             "Add on/off device",
@@ -112,9 +111,37 @@ public class R {
             "Temperature sensors",
             "Czujniki temperatury");
 
-    public static Resource block_target_onoff = new Resource(
-            "On/Off automation",
-            "Automatyka Wł/Wył");
+    public static Resource configurable_hygrometer_add = new Resource(
+            "Add hygrometer",
+            "Dodaj higrometr");
+
+    public static Resource configurable_hygrometer_edit = new Resource(
+            "Edit hygrometer",
+            "Edytuj higrometr");
+
+    public static Resource configurable_hygrometer_title = new Resource(
+            "Hygrometers",
+            "Higrometry");
+
+    public static Resource configurable_hygrometer_description = new Resource(
+            "Humidity sensors",
+            "Czujniki wilgotności");
+
+    public static Resource configurable_wattmeter_add = new Resource(
+            "Add wattmeter",
+            "Dodaj watomierz");
+
+    public static Resource configurable_wattmeter_edit = new Resource(
+            "Edit wattmeter",
+            "Edytuj watomierz");
+
+    public static Resource configurable_wattmeter_title = new Resource(
+            "Wattmeters",
+            "Watomierze");
+
+    public static Resource configurable_wattmeter_description = new Resource(
+            "Wattmeter sensors",
+            "Mierniki poboru prądu");
 
     public static Resource state_on = new Resource(
             "On",

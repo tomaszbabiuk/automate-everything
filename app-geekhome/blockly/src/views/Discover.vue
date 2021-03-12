@@ -40,6 +40,13 @@
             {{ $vuetify.lang.t("$vuetify.common.nA") }}
           </div>
         </template>
+        <template v-slot:[`item.connected`]="{ item }" }>
+        <v-checkbox
+          :input-value="item.connected"
+          value
+          disabled
+        ></v-checkbox>
+        </template>
         <template v-slot:no-data>
           {{ $vuetify.lang.t("$vuetify.noDataText") }}
         </template>

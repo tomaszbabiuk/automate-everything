@@ -12,10 +12,10 @@ class ConditionsConfigurable : CategoryConfigurable() {
         get() = null
 
     override val titleRes: Resource
-        get() = R.configurable_condition_title
+        get() = R.configurable_conditions_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_condition_description
+        get() = R.configurable_conditions_description
 
     override val iconRaw: String
         get() = """<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">

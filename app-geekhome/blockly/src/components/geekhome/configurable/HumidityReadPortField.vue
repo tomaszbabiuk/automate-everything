@@ -16,7 +16,7 @@ data: function() {
       portFilter: {
         canRead: true,
         canWrite: false,
-        valueType: "Temperature"
+        valueType: "Humidity"
       }
     };
   },
