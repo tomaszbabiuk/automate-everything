@@ -46,3 +46,9 @@ dependencies {
 shadowJar {
     mainClassName = 'eu.geekhome.Main'
 }
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = "UTF-8"
+}

@@ -15,8 +15,8 @@ data: function() {
     return {
       portFilter: {
         canRead: true,
-        canWrite: false,
-        valueType: "Temperature"
+        canWrite: true,
+        valueType: "Relay"
       }
     };
   },
