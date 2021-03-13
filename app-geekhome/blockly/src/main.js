@@ -4,10 +4,6 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import store from './plugins/vuex'
 
-import ADCard from './components/admindashboard/Card'
-import ADStarsCard from'./components/admindashboard/StatsCard'
-import ADOffset from'./components/admindashboard/Offset'
-
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
 import ConfigurableDoubleField from './components/geekhome/configurable/DoubleField'
@@ -20,11 +16,6 @@ import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSel
 import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
 
 import PortControl from './components/geekhome/PortControl'
-
-//material dashboard
-Vue.component('material-card', ADCard)
-Vue.component('material-stats-card', ADStarsCard)
-Vue.component('helper-offset', ADOffset)
 
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
