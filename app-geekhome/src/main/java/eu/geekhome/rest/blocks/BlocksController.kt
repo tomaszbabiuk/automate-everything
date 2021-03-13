@@ -1,6 +1,5 @@
 package eu.geekhome.rest.blocks
 
-import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.automation.blocks.IBlockFactoriesCollector
 import eu.geekhome.rest.*
 import javax.inject.Inject

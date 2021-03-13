@@ -2,13 +2,14 @@ package eu.geekhome.services.automation;
 
 import eu.geekhome.services.localization.Resource;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EvaluationResult {
 
     private Object _value;
     private Resource _interfaceValue;
-    private ArrayList<KeyValue> _descriptions;
+    private Map<String, Resource> _descriptions;
     private ControlMode _controlMode;
     private boolean _isSignaled;
     private String _colorValue;
@@ -45,7 +46,7 @@ public class EvaluationResult {
         _interfaceValue = value;
     }
 
-    public ArrayList<KeyValue> getDescriptions() {
+    public Map<String, Resource> getDescriptions() {
         return _descriptions;
     }
 
@@ -57,12 +58,12 @@ public class EvaluationResult {
         return _controlMode;
     }
 
-    public void setDescriptions(ArrayList<KeyValue> value) {
+    public void setDescriptions(Map<String, Resource> value) {
         _descriptions = value;
     }
 
     public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled,
-                            ArrayList<KeyValue> descriptions, ControlMode controlMode) {
+                            Map<String, Resource> descriptions, ControlMode controlMode) {
         setDescriptions(descriptions);
         setValue(value);
         setInterfaceValue(interfaceValue);
@@ -71,11 +72,11 @@ public class EvaluationResult {
     }
 
     public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled,
-                            ArrayList<KeyValue> descriptions) {
+                            Map<String, Resource> descriptions) {
         this(value, interfaceValue, isSignaled, descriptions, ControlMode.Auto);
     }
 
     public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled) {
-        this(value, interfaceValue, isSignaled, new ArrayList<>());
+        this(value, interfaceValue, isSignaled, new HashMap<>());
     }
 }

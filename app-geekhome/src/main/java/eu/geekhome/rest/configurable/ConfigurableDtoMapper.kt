@@ -1,58 +1,51 @@
-package eu.geekhome.rest.configurable;
+package eu.geekhome.rest.configurable
 
-import eu.geekhome.services.configurable.*;
-import eu.geekhome.rest.MappingException;
-import eu.geekhome.services.localization.Resource;
+import eu.geekhome.rest.MappingException
+import eu.geekhome.services.configurable.*
+import eu.geekhome.services.localization.Resource
+import java.util.stream.Collectors
+import javax.inject.Inject
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class ConfigurableDtoMapper {
-
-    @Inject
-    private FieldDefinitionDtoMapper _fieldDefinitionDtoMapper;
-
-    public ConfigurableDto map(Configurable configurable) throws MappingException {
-        List<FieldDto> fields = null;
-        Resource addNewRes = null;
-        Resource editRes = null;
-        if (configurable instanceof ConfigurableWithFields) {
-            ConfigurableWithFields configurableWithFields = (ConfigurableWithFields)configurable;
-            fields = configurableWithFields
-                    .getFieldDefinitions()
-                    .values()
-                    .stream()
-                    .map(_fieldDefinitionDtoMapper::map)
-                    .collect(Collectors.toList());
-
-            addNewRes = configurableWithFields.getAddNewRes();
-            editRes = configurableWithFields.getEditRes();
+class ConfigurableDtoMapper @Inject constructor(
+    private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper
+) {
+    @Throws(MappingException::class)
+    fun map(configurable: Configurable): ConfigurableDto {
+        var fields: List<FieldDto>? = null
+        var addNewRes: Resource? = null
+        var editRes: Resource? = null
+        if (configurable is ConfigurableWithFields) {
+            fields = configurable
+                .fieldDefinitions
+                .values
+                .stream()
+                .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }
+                .collect(Collectors.toList())
+            addNewRes = configurable.addNewRes
+            editRes = configurable.editRes
         }
-
-        return new ConfigurableDto(configurable.getTitleRes(),
-                configurable.getDescriptionRes(),
-                configurable.getClass().getName(),
-                configurable.getParent() != null ? configurable.getParent().getName() : null,
-                getConfigurableType(configurable),
-                fields,
-                addNewRes,
-                editRes,
-                configurable.getIconRaw(),
-                configurable.getHasAutomation(),
-                configurable.getEditableIcon(),
-                configurable.getTaggable());
+        return ConfigurableDto(
+            configurable.titleRes,
+            configurable.descriptionRes,
+            configurable.javaClass.name,
+            if (configurable.parent != null) configurable.parent!!.name else null,
+            getConfigurableType(configurable),
+            fields,
+            addNewRes,
+            editRes,
+            configurable.iconRaw,
+            configurable.hasAutomation,
+            configurable.editableIcon,
+            configurable.taggable
+        )
     }
 
-    private ConfigurableType getConfigurableType(Configurable configurable) {
-        if (configurable instanceof ConditionConfigurable) {
-            return ConfigurableType.Condition;
+    private fun getConfigurableType(configurable: Configurable): ConfigurableType {
+        if (configurable is ConditionConfigurable) {
+            return ConfigurableType.Condition
         }
-
-        if (configurable instanceof StateDeviceConfigurable) {
-            return ConfigurableType.StateDevice;
-        }
-
-        return ConfigurableType.Other;
+        return if (configurable is StateDeviceConfigurable) {
+            ConfigurableType.StateDevice
+        } else ConfigurableType.Other
     }
 }

@@ -1,12 +1,13 @@
-package eu.geekhome.rest.configurable;
+package eu.geekhome.rest.configurable
 
-import eu.geekhome.services.configurable.FieldDefinition;
-import eu.geekhome.services.configurable.FieldDto;
+import eu.geekhome.services.configurable.FieldDefinition
+import eu.geekhome.services.configurable.FieldDto
 
-public class FieldDefinitionDtoMapper {
-
-    public FieldDto map(FieldDefinition<?> field) {
-        return new FieldDto(field.getClass().getSimpleName() , field.getName(), field.getHint(),
-                field.getMaxSize());
+class FieldDefinitionDtoMapper {
+    fun map(field: FieldDefinition<*>): FieldDto {
+        return FieldDto(
+            field.javaClass.simpleName, field.name, field.hint,
+            field.maxSize
+        )
     }
 }

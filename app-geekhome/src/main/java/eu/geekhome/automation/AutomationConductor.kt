@@ -32,6 +32,8 @@ class AutomationConductor(
     private var enabled: Boolean = false
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
+    val automationUnitsCache = HashMap<Long, AutomationUnitWrapper<*>>()
+    private val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
 
     fun isEnabled(): Boolean {
         return enabled
@@ -40,13 +42,14 @@ class AutomationConductor(
     fun enable() {
         if (!enabled) {
             enabled = true
+            automationUnitsCache.clear()
+            evaluationUnitsCache.clear()
+
             println("Enabling automation")
 
             val repository = pluginsCoordinator.getRepository()
             val allInstances = repository.getAllInstances()
             val allConfigurables = pluginsCoordinator.getConfigurables()
-            val automationUnitsCache = HashMap<Long, IDeviceAutomationUnit<*>>()
-            val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
 
             allInstances.forEach { instance ->
                 val configurable = allConfigurables.find { instance.clazz == it.javaClass.name}

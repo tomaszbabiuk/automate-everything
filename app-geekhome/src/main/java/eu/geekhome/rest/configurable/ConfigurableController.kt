@@ -1,35 +1,33 @@
-package eu.geekhome.rest.configurable;
+package eu.geekhome.rest.configurable
 
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.configurable.ConfigurableDto;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.inject.Inject
+import eu.geekhome.rest.PluginsCoordinator
+import eu.geekhome.services.configurable.Configurable
+import javax.ws.rs.GET
+import javax.ws.rs.Produces
+import javax.servlet.http.HttpServletRequest
+import eu.geekhome.services.configurable.ConfigurableDto
+import java.util.stream.Collectors
+import javax.ws.rs.Path
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.MediaType
 
 @Path("configurables")
-public class ConfigurableController {
-
-    private final PluginsCoordinator _pluginsCoordinator;
-    private final ConfigurableDtoMapper _configurableDtoMapper;
-
-    @Inject
-    public ConfigurableController(PluginsCoordinator pluginsCoordinator, ConfigurableDtoMapper configurableDtoMapper) {
-        _pluginsCoordinator = pluginsCoordinator;
-        _configurableDtoMapper = configurableDtoMapper;
-    }
-
+class ConfigurableController @Inject constructor(
+    private val _pluginsCoordinator: PluginsCoordinator,
+    private val _configurableDtoMapper: ConfigurableDtoMapper
+) {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<ConfigurableDto> getConfigurables(@Context HttpServletRequest request) {
+    fun getConfigurables(@Context request: HttpServletRequest?): List<ConfigurableDto> {
         return _pluginsCoordinator
-                .getConfigurables()
-                .stream()
-                .map(_configurableDtoMapper::map)
-                .collect(Collectors.toList());
+            .configurables
+            .stream()
+            .map { configurable: Configurable? ->
+                _configurableDtoMapper.map(
+                    configurable!!
+                )
+            }
+            .collect(Collectors.toList())
     }
 }
