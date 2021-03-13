@@ -7,11 +7,12 @@ import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
-import eu.geekhome.services.configurable.ConditionConfigurable
+import eu.geekhome.services.configurable.*
+import eu.geekhome.services.hardware.Humidity
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
-import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.configurable.StateDeviceConfigurable
+import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.services.hardware.Wattage
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -53,13 +54,13 @@ class AutomationConductor(
 
             allInstances.forEach { instance ->
                 val configurable = allConfigurables.find { instance.clazz == it.javaClass.name}
-                if (configurable is StateDeviceConfigurable) {
+                if (configurable != null) {
                     try {
-                        val physicalUnit = configurable.buildAutomationUnit(instance, hardwareManager)
+                        val physicalUnit = buildPhysicalUnit(configurable, instance)
                         val wrapper = AutomationUnitWrapper(instance, wrapped = physicalUnit)
                         automationUnitsCache[instance.id] = wrapper
                     } catch (ex: Exception) {
-                        val wrapper = AutomationUnitWrapper<State>(instance)
+                        val wrapper = buildWrappedUnit(configurable, instance)
                         wrapper.error = ex
                         wrapper.state = UnitState.InitError
                         automationUnitsCache[instance.id] = wrapper
@@ -88,6 +89,50 @@ class AutomationConductor(
                 }
 
             startAutomations(automations)
+        }
+    }
+
+    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): IDeviceAutomationUnit<*> {
+        return when (configurable) {
+            is StateDeviceConfigurable -> {
+                configurable.buildAutomationUnit(instance, hardwareManager)
+            }
+
+            is TemperatureSensorConfigurable -> {
+                configurable.buildAutomationUnit(instance, hardwareManager)
+            }
+
+            is HumiditySensorConfigurable -> {
+                configurable.buildAutomationUnit(instance, hardwareManager)
+            }
+
+            is WattageSensorConfigurable -> {
+                configurable.buildAutomationUnit(instance, hardwareManager)
+            }
+
+            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
+        }
+    }
+
+    private fun buildWrappedUnit(configurable: Configurable, instance: InstanceDto): AutomationUnitWrapper<*> {
+        return when (configurable) {
+            is StateDeviceConfigurable -> {
+                AutomationUnitWrapper<State>(instance)
+            }
+
+            is TemperatureSensorConfigurable -> {
+                AutomationUnitWrapper<Temperature>(instance)
+            }
+
+            is HumiditySensorConfigurable -> {
+                AutomationUnitWrapper<Humidity>(instance)
+            }
+
+            is WattageSensorConfigurable -> {
+                AutomationUnitWrapper<Wattage>(instance)
+            }
+
+            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
         }
     }
 
