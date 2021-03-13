@@ -6,6 +6,7 @@ import eu.geekhome.rest.getConfigurables
 import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
+import eu.geekhome.services.automation.State
 import eu.geekhome.services.configurable.ConditionConfigurable
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
@@ -50,8 +51,16 @@ class AutomationConductor(
             allInstances.forEach { instance ->
                 val configurable = allConfigurables.find { instance.clazz == it.javaClass.name}
                 if (configurable is StateDeviceConfigurable) {
-                    val unit = configurable.buildAutomationUnit(instance, hardwareManager)
-                    automationUnitsCache[instance.id] = unit
+                    try {
+                        val physicalUnit = configurable.buildAutomationUnit(instance, hardwareManager)
+                        val wrapper = AutomationUnitWrapper(instance, wrapped = physicalUnit)
+                        automationUnitsCache[instance.id] = wrapper
+                    } catch (ex: Exception) {
+                        val wrapper = AutomationUnitWrapper<State>(instance)
+                        wrapper.error = ex
+                        wrapper.state = UnitState.InitError
+                        automationUnitsCache[instance.id] = wrapper
+                    }
                 }
 
                 if (configurable is ConditionConfigurable) {
@@ -79,12 +88,12 @@ class AutomationConductor(
         }
     }
 
-    private fun startAutomations(automations: List<AutomationPack>) {
+    private fun startAutomations(automations: List<List<StatementNode>>) {
         hardwareManager.checkNewPorts()
 
         if (automations.isNotEmpty()) {
             val triggers = automations
-                .flatMap { it.triggers }
+                .flatMap { it }
 
             automationJob = GlobalScope.launch {
                 while (isActive) {

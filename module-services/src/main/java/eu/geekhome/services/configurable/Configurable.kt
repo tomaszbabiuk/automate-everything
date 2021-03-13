@@ -3,7 +3,7 @@ package eu.geekhome.services.configurable
 import eu.geekhome.services.automation.EvaluableAutomationUnit
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.State
-import eu.geekhome.services.hardware.IPortFinder
+import eu.geekhome.services.hardware.*
 import eu.geekhome.services.localization.Resource
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.ExtensionPoint
@@ -32,12 +32,25 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 }
 
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<*>
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<State>
     abstract val states: Map<String, State>
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
 }
+
+abstract class SensorConfigurable<V: PortValue> : NameDescriptionConfigurable(), ConfigurableWithFields {
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<V>
+    override val hasAutomation: Boolean = false
+    override val taggable: Boolean = true
+    override val editableIcon: Boolean = true
+}
+
+abstract class TemperatureSensorConfigurable : SensorConfigurable<Temperature>()
+
+abstract class HumiditySensorConfigurable : SensorConfigurable<Humidity>()
+
+abstract class WattageSensorConfigurable : SensorConfigurable<Wattage>()
 
 abstract class CategoryConfigurable : Configurable {
     override val hasAutomation: Boolean = false
@@ -45,8 +58,3 @@ abstract class CategoryConfigurable : Configurable {
     override val editableIcon: Boolean = false
 }
 
-abstract class SensorConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    override val hasAutomation: Boolean = false
-    override val taggable: Boolean = true
-    override val editableIcon: Boolean = true
-}

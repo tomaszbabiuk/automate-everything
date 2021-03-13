@@ -10,4 +10,13 @@ public class R {
     public static Resource field_description_hint = new Resource(
             "Description",
             "Opis");
+
+    public static Resource error_automation = new Resource(
+            "Automation error",
+            "Błąd automatyki");
+
+    public static Resource error_initialization = new Resource(
+            "Initialization error",
+            "Błąd inicjalizacji");
+
 }

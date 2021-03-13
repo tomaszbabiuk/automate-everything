@@ -14,8 +14,6 @@ interface ValueNode: AutomationNode {
     fun evaluate(now: Calendar) : Boolean
 }
 
-class AutomationPack(val triggers: List<StatementNode>)
-
 interface IBlocklyTransformer {
 
     fun transformValue(block: Block, context: AutomationContext) : ValueNode
@@ -23,9 +21,9 @@ interface IBlocklyTransformer {
     fun transformStatement(block: Block, context: AutomationContext) : StatementNode
 }
 
-class BlocklyTransformer() : IBlocklyTransformer {
+class BlocklyTransformer : IBlocklyTransformer {
 
-    fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : AutomationPack {
+    fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : List<StatementNode> {
 
         val masterNodes = ArrayList<StatementNode>()
 
@@ -34,7 +32,7 @@ class BlocklyTransformer() : IBlocklyTransformer {
             masterNodes.add(masterNode)
         }
 
-        return AutomationPack(masterNodes)
+        return masterNodes
     }
 
     override fun transformValue(block: Block, context: AutomationContext) : ValueNode {

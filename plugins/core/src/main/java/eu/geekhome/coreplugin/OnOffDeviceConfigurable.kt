@@ -48,10 +48,10 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     private val portField = RelayReadWritePortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<*> {
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForPort(Relay::class.java, portId, canRead = true, canWrite = true)
-        return OnOffDeviceAutomationUnit(states, "on", port)
+        return OnOffDeviceAutomationUnit(states, STATE_ON, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {
@@ -62,14 +62,14 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states["on"] = State(
-                ResourceWithId("on", R.state_on),
+            states[STATE_ON] = State(
+                ResourceWithId(STATE_ON, R.state_on),
                 StateType.NonSignaledAction,
                 true,
                 false
             )
-            states["off"] = State(
-                ResourceWithId("off", R.state_off),
+            states[STATE_OFF] = State(
+                ResourceWithId(STATE_OFF, R.state_off),
                 StateType.SignaledAction,
                 false,
                 false
@@ -79,5 +79,7 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     companion object {
         const val FIELD_PORT = "portId"
+        const val STATE_ON = "on"
+        const val STATE_OFF = "off"
     }
 }

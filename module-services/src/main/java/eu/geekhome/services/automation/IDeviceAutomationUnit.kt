@@ -1,7 +1,6 @@
-package eu.geekhome.services.automation;
+package eu.geekhome.services.automation
 
-public interface IDeviceAutomationUnit<R> extends ICalculableAutomationUnit {
-    R getValue();
-    EvaluationResult buildEvaluationResult();
+interface IDeviceAutomationUnit<T> : ICalculableAutomationUnit {
+    val value: T?
+    fun buildEvaluationResult(): EvaluationResult
 }
-

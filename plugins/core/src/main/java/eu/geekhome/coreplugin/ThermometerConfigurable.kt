@@ -1,20 +1,35 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.configurable.*
+import eu.geekhome.services.hardware.IPortFinder
+import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.localization.Resource
+import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
-import java.util.HashMap
+import java.util.*
 
 @Extension
-class ThermometerConfigurable : SensorConfigurable() {
+class ThermometerConfigurable : TemperatureSensorConfigurable() {
 
     override val parent: Class<out Configurable?>
         get() = MetersConfigurable::class.java
 
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<Temperature> {
+        val portId = readPortId(instance)
+        val port = portFinder.searchForPort(Temperature::class.java, portId, canRead = true, canWrite = false)
+        return ThermometerAutomationUnit(port)
+    }
+
+    private fun readPortId(instance: InstanceDto): String {
+        val portFieldValue = instance.fields[FIELD_PORT]
+        return portField.builder.fromPersistableString(portFieldValue)
+    }
+
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
             val result: MutableMap<String, FieldDefinition<*>> = HashMap(super.fieldDefinitions)
-            result[OnOffDeviceConfigurable.FIELD_PORT] = portField
+            result[FIELD_PORT] = portField
             return result
         }
 

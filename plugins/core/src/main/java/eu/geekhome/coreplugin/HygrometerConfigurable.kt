@@ -1,15 +1,23 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.configurable.*
+import eu.geekhome.services.hardware.Humidity
+import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.localization.Resource
+import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
 import java.util.HashMap
 
 @Extension
-class HygrometerConfigurable : SensorConfigurable() {
+class HygrometerConfigurable : HumiditySensorConfigurable() {
 
     override val parent: Class<out Configurable?>
         get() = MetersConfigurable::class.java
+
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<Humidity> {
+        TODO("Not yet implemented")
+    }
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {

@@ -11,7 +11,6 @@ public class EvaluationResult {
     private ArrayList<KeyValue> _descriptions;
     private ControlMode _controlMode;
     private boolean _isSignaled;
-    private boolean _isConnected;
     private String _colorValue;
 
     public Object getValue() {
@@ -28,14 +27,6 @@ public class EvaluationResult {
 
     public void setSignaled(boolean value) {
         _isSignaled = value;
-    }
-
-    public boolean isConnected() {
-        return _isConnected;
-    }
-
-    public void setConnected(boolean value) {
-        _isConnected = value;
     }
 
     public Resource getInterfaceValue() {
@@ -70,22 +61,21 @@ public class EvaluationResult {
         _descriptions = value;
     }
 
-    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected,
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled,
                             ArrayList<KeyValue> descriptions, ControlMode controlMode) {
         setDescriptions(descriptions);
         setValue(value);
         setInterfaceValue(interfaceValue);
         setControlMode(controlMode);
         setSignaled(isSignaled);
-        setConnected(isConnected);
     }
 
-    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected,
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled,
                             ArrayList<KeyValue> descriptions) {
-        this(value, interfaceValue, isSignaled, isConnected, descriptions, ControlMode.Auto);
+        this(value, interfaceValue, isSignaled, descriptions, ControlMode.Auto);
     }
 
-    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled, boolean isConnected) {
-        this(value, interfaceValue, isSignaled, isConnected, new ArrayList<>());
+    public EvaluationResult(Object value, Resource interfaceValue, boolean isSignaled) {
+        this(value, interfaceValue, isSignaled, new ArrayList<>());
     }
 }

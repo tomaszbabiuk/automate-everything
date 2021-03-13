@@ -51,7 +51,7 @@ public abstract class StateDeviceAutomationUnit implements IDeviceAutomationUnit
 
     @Override
     public EvaluationResult buildEvaluationResult() {
-        return new EvaluationResult(getValue(), _currentState.getName(), isSignaled(), true, null, getControlMode());
+        return new EvaluationResult(getValue(), _currentState.getName(), isSignaled(), null, getControlMode());
     }
 
     protected boolean isSignaled() {
