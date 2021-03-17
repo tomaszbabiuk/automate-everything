@@ -4,7 +4,7 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class LogicNotBlockFactory : ValueBlockFactory {
+class LogicNotBlockFactory : EvaluatorBlockFactory {
 
     override val category: Resource = R.category_name_logic
 
@@ -40,17 +40,17 @@ class LogicNotBlockFactory : ValueBlockFactory {
         return type == this.type
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): ValueNode {
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")
         }
 
-        var nodeToNegate: ValueNode? = null
+        var nodeToNegate: IEvaluatorNode? = null
         val firstValue = block.values.find { it.name == "NOT" }
         if (firstValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"NOT\"> defined")
         } else if (firstValue.block != null) {
-            nodeToNegate = transformer.transformValue(firstValue.block, context)
+            nodeToNegate = transformer.transformEvaluator(firstValue.block, context)
         }
 
         return NotAutomationNode(nodeToNegate)

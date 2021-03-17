@@ -4,11 +4,11 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class LogicOrBlockFactory : EvaluatorBlockFactory {
+class TemperatureEquationBlockFactory : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_name_logic
+    override val category: Resource = R.category_temperature
 
-    override val type: String = "logic_or"
+    override val type: String = "temperature_equation"
 
     override fun match(type: String) : Boolean {
         return type == this.type
@@ -19,25 +19,47 @@ class LogicOrBlockFactory : EvaluatorBlockFactory {
             """
                 {
                   "type": "$type",
-                  "message0": "${R.block_label_or.getValue(it)}",
+                  "message0": "%1 %2 %3 %4",
                   "args0": [
                     {
                       "type": "input_value",
-                      "name": "FIRST",
-                      "check": "Boolean"
+                      "name": "LEFT",
+                      "check": "Temperature"
+                    },
+                    {
+                      "type": "field_dropdown",
+                      "name": "OPERATOR",
+                      "options": [
+                        [
+                          "+",
+                          "PLUS"
+                        ],
+                        [
+                          "-",
+                          "MINUS"
+                        ],
+                        [
+                          "*",
+                          "TIMES"
+                        ],
+                        [
+                          "/",
+                          "DIVIDE"
+                        ]
+                      ]
                     },
                     {
                       "type": "input_dummy"
                     },
                     {
                       "type": "input_value",
-                      "name": "SECOND",
-                      "check": "Boolean"
+                      "name": "RIGHT",
+                      "check": "Temperature"
                     }
                   ],
-                  "inputsInline": false,
-                  "output": "Boolean",
-                  "colour": 120,
+                  "inputsInline": true,
+                  "output": "Temperature",
+                  "colour": 0,
                   "tooltip": "",
                   "helpUrl": ""
                 }

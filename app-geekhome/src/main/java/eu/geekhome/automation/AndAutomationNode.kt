@@ -3,9 +3,9 @@ package eu.geekhome.automation
 import java.util.*
 
 class AndAutomationNode(
-    private val firstEvaluator: ValueNode?,
-    private val secondEvaluator: ValueNode?
-) : ValueNode {
+    private val firstEvaluator: IEvaluatorNode?,
+    private val secondEvaluator: IEvaluatorNode?
+) : IEvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
 

@@ -42,20 +42,24 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
 
     override fun transform(
         block: Block,
-        next: StatementNode?,
+        next: IStatementNode?,
         context: AutomationContext,
         transformer: IBlocklyTransformer
-    ): StatementNode {
+    ): IStatementNode {
 
-        if (block.field == null) {
+        if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")
         }
 
-        if (block.field.value == null) {
-            throw MalformedBlockException(block.type, "should have <field/value> defined")
+        if (block.fields.size != 1) {
+            throw MalformedBlockException(block.type, "should have only one field")
         }
 
-        val seconds = block.field.value.toInt()
+        if (block.fields[0].value == null) {
+            throw MalformedBlockException(block.type, "should have <field/value> with content")
+        }
+
+        val seconds = block.fields[0].value!!.toInt()
 
         return TimeTriggerBlock(seconds, next)
     }

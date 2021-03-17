@@ -48,9 +48,9 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
         return type == this.type
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): StatementNode {
-        var ifNode: StatementNode? = null
-        var elseNode: StatementNode? = null
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IStatementNode {
+        var ifNode: IStatementNode? = null
+        var elseNode: IStatementNode? = null
 
         if (block.statements != null) {
             val ifStatement = block.statements.find { it.name == "IF" }
@@ -76,7 +76,7 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
             throw MalformedBlockException(block.type, "should have only one <VALUE>")
         }
 
-        val valueNode = transformer.transformValue(block.values[0].block!!, context)
+        val valueNode = transformer.transformEvaluator(block.values[0].block!!, context)
 
         return IfThanElseAutomationNode(next, valueNode, ifNode, elseNode)
     }

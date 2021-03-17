@@ -1,3 +1,3 @@
 <template>
-  <div>inbox</div>
+  <div></div>
 </template>

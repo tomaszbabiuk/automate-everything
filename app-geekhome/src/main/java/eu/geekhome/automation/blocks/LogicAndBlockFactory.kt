@@ -4,7 +4,7 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class LogicAndBlockFactory : ValueBlockFactory {
+class LogicAndBlockFactory : EvaluatorBlockFactory {
 
     override val category: Resource = R.category_name_logic
 
@@ -45,25 +45,25 @@ class LogicAndBlockFactory : ValueBlockFactory {
         return type == this.type
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): ValueNode {
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
         if (block.values == null || block.values.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
         }
 
-        var firstNode: ValueNode? = null
+        var firstNode: IEvaluatorNode? = null
         val firstValue = block.values.find { it.name == "FIRST" }
         if (firstValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"FIRST\"> defined")
         } else if (firstValue.block != null) {
-            firstNode = transformer.transformValue(firstValue.block, context)
+            firstNode = transformer.transformEvaluator(firstValue.block, context)
         }
 
-        var secondNode: ValueNode? = null
+        var secondNode: IEvaluatorNode? = null
         val secondValue = block.values.find { it.name == "SECOND" }
         if (secondValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"SECOND\"> defined")
         } else if (secondValue.block != null) {
-            secondNode = transformer.transformValue(secondValue.block, context)
+            secondNode = transformer.transformEvaluator(secondValue.block, context)
         }
 
         return AndAutomationNode(firstNode, secondNode)

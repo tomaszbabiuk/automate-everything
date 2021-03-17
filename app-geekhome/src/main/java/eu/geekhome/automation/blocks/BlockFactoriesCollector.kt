@@ -35,7 +35,10 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
             LogicOrBlockFactory(),
             LogicNotBlockFactory(),
             LogicIfElseBlockFactory(),
-            TimeloopTriggerBlockFactory()
+            TimeloopTriggerBlockFactory(),
+            TemperatureComparisonBlockFactory(),
+            TemperatureEquationBlockFactory(),
+            TemperatureValueInCBlockFactory(),
         )
     }
 

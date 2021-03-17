@@ -3,14 +3,14 @@ package eu.geekhome.automation
 import java.util.*
 
 class IfThanElseAutomationNode(
-    override val next: StatementNode?,
-    private val valueNode: ValueNode?,
-    private val ifNode: StatementNode?,
-    private val elseNode: StatementNode?
-    ) : StatementNode {
+    override val next: IStatementNode?,
+    private val evaluatorNode: IEvaluatorNode?,
+    private val ifNode: IStatementNode?,
+    private val elseNode: IStatementNode?
+    ) : IStatementNode {
 
     override fun process(now: Calendar) {
-        if (valueNode!= null && valueNode.evaluate(now)) {
+        if (evaluatorNode!= null && evaluatorNode.evaluate(now)) {
             ifNode?.process(now)
         } else {
             elseNode?.process(now)

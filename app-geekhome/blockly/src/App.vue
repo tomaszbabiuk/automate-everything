@@ -3,7 +3,10 @@
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>{{$vuetify.lang.t('$vuetify.application.name')}} - {{ $route.name }}</v-toolbar-title>
+      <v-toolbar-title
+        >{{ $vuetify.lang.t("$vuetify.application.name") }} -
+        {{ $route.name }}</v-toolbar-title
+      >
       <v-spacer></v-spacer>
 
       <v-btn icon v-if="automation.enabled" @click="enableAutomation(false)">
@@ -30,10 +33,7 @@
         </v-list>
       </v-menu>
       <template v-slot:extension v-if="showTabs">
-        <v-tabs
-          v-model="tab"
-          align-with-title
-        >
+        <v-tabs v-model="tab" align-with-title>
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
           <v-tab
@@ -50,20 +50,31 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title">{{$vuetify.lang.t('$vuetify.application.name')}}</v-list-item-title>
-          <v-list-item-subtitle>{{$vuetify.lang.t('$vuetify.application.subtitle')}}</v-list-item-subtitle>
+          <v-list-item-title class="title">{{
+            $vuetify.lang.t("$vuetify.application.name")
+          }}</v-list-item-title>
+          <v-list-item-subtitle>{{
+            $vuetify.lang.t("$vuetify.application.subtitle")
+          }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
       <v-divider></v-divider>
 
       <v-list dense>
-        <v-list-item link v-for="item in navigationItems" :key="item.title" :to="item.route">
+        <v-list-item
+          link
+          v-for="item in navigationItems"
+          :key="item.title"
+          :to="item.route"
+        >
           <v-list-item-action>
-            <v-icon style="fill:#9e9e9e">$vuetify.icon.{{item.icon}}</v-icon>
+            <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title class="grey--text">{{$vuetify.lang.t(item.title)}}</v-list-item-title>
+            <v-list-item-title class="grey--text">{{
+              $vuetify.lang.t(item.title)
+            }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -71,18 +82,29 @@
     <v-main class="mx-4 mb-4">
       <div v-if="error">
         <v-banner single-line sticky>
-          {{$vuetify.lang.t(error.message)}}
+          {{ $vuetify.lang.t(error.message) }}
           <template v-slot:actions>
             <v-btn
               text
               color="deep-purple accent-4"
               @click="error.actionCallback"
-            >{{$vuetify.lang.t(error.actionTitle)}}</v-btn>
+              >{{ $vuetify.lang.t(error.actionTitle) }}</v-btn
+            >
           </template>
         </v-banner>
       </div>
       <div :class="$route.name">
         <v-container>
+          <v-alert prominent type="error" v-if="!automation.enabled">
+            <v-row align="center">
+              <v-col class="grow">
+                {{ $vuetify.lang.t("$vuetify.app.automationDisabledInfo") }}
+              </v-col>
+              <v-col class="shrink">
+                <v-btn @click="enableAutomation(true)">{{ $vuetify.lang.t("$vuetify.app.enable") }}</v-btn>
+              </v-col>
+            </v-row>
+          </v-alert>
           <router-view></router-view>
         </v-container>
       </div>
@@ -96,7 +118,7 @@ import { client } from "./rest.js";
 export default {
   name: "App",
 
-  data: function() {
+  data: function () {
     return {
       tab: null,
       drawer: false,
@@ -105,62 +127,63 @@ export default {
         {
           title: "$vuetify.navigation.timeline",
           route: "/timeline",
-          icon: "timeline"
+          icon: "timeline",
         },
-        { 
+        {
           title: "$vuetify.navigation.alerts",
-          route: "/alerts", 
-          icon: "bell" },
+          route: "/alerts",
+          icon: "bell",
+        },
         {
           title: "$vuetify.navigation.control",
           route: "/control",
-          icon: "button"
+          icon: "button",
         },
-        { 
-          title: "$vuetify.navigation.objects", 
-          route: "/configurables/null", 
-          icon: "objects" 
+        {
+          title: "$vuetify.navigation.objects",
+          route: "/configurables/null",
+          icon: "objects",
         },
-        { 
-          title: "$vuetify.navigation.tags", 
-          route: "/tags", 
-          icon: "tag" 
+        {
+          title: "$vuetify.navigation.tags",
+          route: "/tags",
+          icon: "tag",
         },
-        { 
-          title: "$vuetify.navigation.icons", 
-          route: "/icons", 
-          icon: "icons" 
+        {
+          title: "$vuetify.navigation.icons",
+          route: "/icons",
+          icon: "icons",
         },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover/null",
-          icon: "crosshair"
+          icon: "crosshair",
         },
         {
           title: "$vuetify.navigation.settings",
           route: "/settings",
-          icon: "equalizer"
+          icon: "equalizer",
         },
         {
           title: "$vuetify.navigation.plugins",
           route: "/plugins",
-          icon: "plugin"
-        }
+          icon: "plugin",
+        },
       ],
       languageSelectorItems: [
         { title: "English", code: "en" },
-        { title: "Polski", code: "pl" }
-      ]
+        { title: "Polski", code: "pl" },
+      ],
     };
   },
 
   methods: {
-    selected: function(item) {
+    selected: function (item) {
       this.$vuetify.lang.current = item.code;
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
     },
-    enableAutomation: function(enable) {
+    enableAutomation: function (enable) {
       client.enableAutomation(enable);
     },
   },
@@ -173,30 +196,30 @@ export default {
       return this.$store.state.automation;
     },
     factories() {
-      return this.$store.state.plugins.filter(element => {
-        return element.enabled && element.isHardwareFactory
-      })
+      return this.$store.state.plugins.filter((element) => {
+        return element.enabled && element.isHardwareFactory;
+      });
     },
-    isPolishLocale: function() {
+    isPolishLocale: function () {
       return this.$vuetify.lang.current === "pl";
     },
     error() {
       return this.$store.state.error;
     },
-    showTabs: function() {
-      return this.$route.name === 'discover' && this.factories.length > 0
-    }
+    showTabs: function () {
+      return this.$route.name === "discover" && this.factories.length > 0;
+    },
   },
-   watch: {
-    factories (factories) {
+  watch: {
+    factories(factories) {
       if (factories.length > 0) {
-        this.navigationItems[7].route='/discover/' + factories[0].id
+        this.navigationItems[7].route = "/discover/" + factories[0].id;
       } else {
-        this.navigationItems[7].route='/discover/null'
+        this.navigationItems[7].route = "/discover/null";
       }
-    }
+    },
   },
-  beforeMount: function() {
+  beforeMount: function () {
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;
     } else {
@@ -204,9 +227,9 @@ export default {
     }
   },
 
-  mounted: function() {
+  mounted: function () {
     client.getPlugins();
     client.getAutomation();
-  }
+  },
 };
 </script>

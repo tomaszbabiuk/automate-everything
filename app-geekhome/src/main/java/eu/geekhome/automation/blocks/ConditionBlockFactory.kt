@@ -5,7 +5,7 @@ import eu.geekhome.rest.RawJson
 import eu.geekhome.services.configurable.ConditionConfigurable
 import eu.geekhome.services.localization.Resource
 
-class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : ValueBlockFactory {
+class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : EvaluatorBlockFactory {
 
     override val category: Resource = R.category_name_conditions
 
@@ -30,10 +30,10 @@ class ConditionBlockFactory(private val conditionId: Long, private val label: Re
 
     override fun transform(
         block: Block,
-        next: StatementNode?,
+        next: IStatementNode?,
         context: AutomationContext,
         transformer: IBlocklyTransformer
-    ): ValueNode {
+    ): IEvaluatorNode {
         val evaluator = context.evaluationUnitsCache[this.conditionId]
 
         if (evaluator != null) {

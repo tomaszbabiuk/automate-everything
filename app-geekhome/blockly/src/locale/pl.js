@@ -36,6 +36,11 @@ export default {
         nA: "n/d",
         refresh_page: "Odśwież stronę"
     },
+    app: {
+        enable: "Włącz",
+        automationDisabledInfo: "Automatyka jest wyłączona. Nie zapomniej jej włączyć, gdy konfiguracja zostanie zakończona."
+    },
+
     validation: {
         field_required: "To pole jest wymagane",
         field_lessThan50: "To pole musi zawierać mniej niż 50 znaków",

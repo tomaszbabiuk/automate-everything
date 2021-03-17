@@ -110,7 +110,7 @@ class AutomationConductor(
                 configurable.buildAutomationUnit(instance, hardwareManager)
             }
 
-            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
+            else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
         }
     }
 
@@ -136,7 +136,7 @@ class AutomationConductor(
         }
     }
 
-    private fun startAutomations(automations: List<List<StatementNode>>) {
+    private fun startAutomations(automations: List<List<IStatementNode>>) {
         hardwareManager.checkNewPorts()
 
         if (automations.isNotEmpty()) {
@@ -163,6 +163,8 @@ class AutomationConductor(
     fun disable() {
         automationJob?.cancel("Disabling automation")
         enabled = false
+        automationUnitsCache.clear()
+        evaluationUnitsCache.clear()
         println("Disabling automation")
     }
 }

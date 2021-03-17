@@ -5,7 +5,7 @@ import java.util.*
 
 class ConditionAutomationNode(
     private val evaluator: IEvaluableAutomationUnit
-) : ValueNode {
+) : IEvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
         evaluator.evaluate(now)

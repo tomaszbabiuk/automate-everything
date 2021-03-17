@@ -19,6 +19,10 @@ public class R {
             "Logic",
             "Logika");
 
+    public static final Resource category_temperature = new Resource(
+            "Temperature",
+            "Temperatura");
+
     public static final Resource block_label_if_than_else = new Resource(
             "If %1 than %2 else %3",
             "Jeżeli %1 to %2 inaczej %3");

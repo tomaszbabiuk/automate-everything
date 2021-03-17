@@ -49,6 +49,7 @@ export default {
       this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
 
       function onBlockChange(event) {
+        console.log(event)
         if (
           event.type == Blockly.Events.BLOCK_CREATE ||
           Blockly.Events.BLOCK_CHANGE

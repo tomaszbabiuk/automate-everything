@@ -36,6 +36,10 @@ export default {
         nA: "n/A",
         refresh_page: "Refresh page"
     },
+    app: {
+        enable: "Enable",
+        automationDisabledInfo: "Automation is disabled. Don't forget to enable it after configuration is finished."
+    },
     validation: {
         field_required: "This field is required",
         field_lessThan50: "This field must be less than 50 characters",

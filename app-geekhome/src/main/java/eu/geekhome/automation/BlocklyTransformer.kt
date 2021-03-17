@@ -1,31 +1,44 @@
 package eu.geekhome.automation
 
+import eu.geekhome.services.hardware.PortValue
+import eu.geekhome.services.hardware.Temperature
 import java.util.*
 import kotlin.collections.ArrayList
 
-interface AutomationNode
+interface IAutomationNode
 
-interface StatementNode : AutomationNode {
-    val next: StatementNode?
+interface IStatementNode : IAutomationNode {
+    val next: IStatementNode?
     fun process(now: Calendar)
 }
 
-interface ValueNode: AutomationNode {
+interface IEvaluatorNode: IAutomationNode {
     fun evaluate(now: Calendar) : Boolean
+}
+
+interface IValueNode<T: PortValue>: IAutomationNode {
+    fun calculate(now: Calendar) : T
+}
+
+class ValueNode<T: PortValue>(val value: T) : IValueNode<T> {
+    override fun calculate(now: Calendar): T {
+        return value
+    }
 }
 
 interface IBlocklyTransformer {
 
-    fun transformValue(block: Block, context: AutomationContext) : ValueNode
-    fun transformTrigger(block: Block, context: AutomationContext) : StatementNode
-    fun transformStatement(block: Block, context: AutomationContext) : StatementNode
+    fun transformEvaluator(block: Block, context: AutomationContext) : IEvaluatorNode
+    fun <T: PortValue> transformValue(block: Block, context: AutomationContext) : IValueNode<T>
+    fun transformTrigger(block: Block, context: AutomationContext) : IStatementNode
+    fun transformStatement(block: Block, context: AutomationContext) : IStatementNode
 }
 
 class BlocklyTransformer : IBlocklyTransformer {
 
-    fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : List<StatementNode> {
+    fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : List<IStatementNode> {
 
-        val masterNodes = ArrayList<StatementNode>()
+        val masterNodes = ArrayList<IStatementNode>()
 
         bLocklyXml.blocks.forEach {
             val masterNode = transformTrigger(it, context)
@@ -35,10 +48,23 @@ class BlocklyTransformer : IBlocklyTransformer {
         return masterNodes
     }
 
-    override fun transformValue(block: Block, context: AutomationContext) : ValueNode {
+    override fun transformEvaluator(block: Block, context: AutomationContext) : IEvaluatorNode {
         val blockFactory = context
             .blocksCache
-            .filterIsInstance<ValueBlockFactory>()
+            .filterIsInstance<EvaluatorBlockFactory>()
+            .find { it.match(block.type) }
+
+        if (blockFactory != null) {
+            return blockFactory.transform(block, null, context, this)
+        }
+
+        throw UnknownEvaluatorBlockException(block.type)
+    }
+
+    override fun <T: PortValue> transformValue(block: Block, context: AutomationContext): IValueNode<T> {
+        val blockFactory = context
+            .blocksCache
+            .filterIsInstance<ValueBlockFactory<T>>()
             .find { it.match(block.type) }
 
         if (blockFactory != null) {
@@ -48,8 +74,8 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownValueBlockException(block.type)
     }
 
-    override fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
-        var next: StatementNode? = null
+    override fun transformTrigger(block: Block, context: AutomationContext) : IStatementNode {
+        var next: IStatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }
@@ -66,8 +92,8 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownTriggerBlockException(block.type)
     }
 
-    override fun transformStatement(block: Block, context: AutomationContext) : StatementNode {
-        var next: StatementNode? = null
+    override fun transformStatement(block: Block, context: AutomationContext) : IStatementNode {
+        var next: IStatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }
@@ -98,6 +124,10 @@ class UnknownTriggerBlockException(type: String) : UnknownBlockException(
 
 class UnknownStatementBlockException(type: String) : UnknownBlockException(
     "Unknown statement block: $type"
+)
+
+class UnknownEvaluatorBlockException(type: String) : UnknownBlockException(
+    "Unknown evaluatorV block: $type"
 )
 
 class UnknownValueBlockException(type: String) : UnknownBlockException(

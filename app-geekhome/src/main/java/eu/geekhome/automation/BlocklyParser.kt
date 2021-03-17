@@ -13,7 +13,8 @@ data class Block(
     @XStreamAsAttribute
     val type: String,
 
-    val field: Field?,
+    @XStreamImplicit(itemFieldName="field")
+    val fields: List<Field>?,
 
     val next: Next?,
 

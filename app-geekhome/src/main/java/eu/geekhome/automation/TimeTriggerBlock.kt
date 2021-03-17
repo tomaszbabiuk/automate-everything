@@ -4,8 +4,8 @@ import java.util.*
 
 class TimeTriggerBlock(
     private val seconds: Int,
-    override val next: StatementNode?
-    ) : StatementNode {
+    override val next: IStatementNode?
+    ) : IStatementNode {
 
     private var lastProcessed: Long = 0
 

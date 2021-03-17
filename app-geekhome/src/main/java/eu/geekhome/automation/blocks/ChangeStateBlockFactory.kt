@@ -33,12 +33,15 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
 
     override fun transform(
         block: Block,
-        next: StatementNode?,
+        next: IStatementNode?,
         context: AutomationContext,
         transformer: IBlocklyTransformer
-    ): StatementNode {
+    ): IStatementNode {
         if (context.thisDevice is StateDeviceConfigurable) {
-            val evaluator = context.automationUnitsCache[context.instanceDto.id]
+            var evaluator = context.automationUnitsCache[context.instanceDto.id]
+            if (evaluator is AutomationUnitWrapper) {
+                evaluator = evaluator.wrapped
+            }
             if (evaluator is StateDeviceAutomationUnit) {
                 return ChangeStateAutomationNode(state.name.id, evaluator, next)
             } else {

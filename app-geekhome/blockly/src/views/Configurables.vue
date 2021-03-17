@@ -11,6 +11,7 @@
       persistent
       fullscreen
       transition="dialog-bottom-transition"
+      :retain-focus="false"
     >
       <v-card>
         <v-toolbar dark color="primary">
@@ -49,7 +50,7 @@
                 <configurable-tagsselector></configurable-tagsselector>
               </v-tab-item>
               <v-tab-item v-if="configurable.hasAutomation">
-                <configurable-blockconfigurator ref="blockly" :configurableClazz="configurable.clazz"></configurable-blockconfigurator>
+                <configurable-blockconfigurator ref="blockly" :configurableClazz="configurable.clazz" @focus.native="console.log('focus in')"></configurable-blockconfigurator>
               </v-tab-item>
             </v-tabs>
           </template>

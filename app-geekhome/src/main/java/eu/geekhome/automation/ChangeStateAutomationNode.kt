@@ -7,8 +7,8 @@ import java.util.*
 class ChangeStateAutomationNode(
     private val state: String,
     private val deviceUnit: StateDeviceAutomationUnit,
-    override val next: StatementNode?,
-) : StatementNode {
+    override val next: IStatementNode?,
+) : IStatementNode {
 
     override fun process(now: Calendar) {
         deviceUnit.changeState(state, ControlMode.Manual, null, "Blockly")
