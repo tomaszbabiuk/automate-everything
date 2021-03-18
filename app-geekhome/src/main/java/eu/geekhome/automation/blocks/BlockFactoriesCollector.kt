@@ -48,14 +48,23 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
             LogicNotBlockFactory(COLOR_LOGIC),
             LogicIfElseBlockFactory(COLOR_LOGIC),
             TimeloopTriggerBlockFactory(COLOR_TRIGGER),
+
+            //temperature
             ComparisonBlockFactory(Temperature::class.java, R.category_temperature,COLOR_TEMPERATURE),
-            ComparisonBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
-            ComparisonBlockFactory(Wattage::class.java, R.category_wattage,COLOR_WATTAGE),
             EquationBlockFactory(Temperature::class.java, R.category_temperature, COLOR_TEMPERATURE),
-            EquationBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
-            EquationBlockFactory(Wattage::class.java, R.category_wattage, COLOR_WATTAGE),
             TemperatureValueInCBlockFactory(COLOR_TEMPERATURE),
             TemperatureValueInKBlockFactory(COLOR_TEMPERATURE),
+            TemperatureValueInFBlockFactory(COLOR_TEMPERATURE),
+
+            //humidity
+            ComparisonBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
+            EquationBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
+            HumidityValueBlockFactory(COLOR_HUMIDITY),
+
+            //wattage
+            ComparisonBlockFactory(Wattage::class.java, R.category_wattage,COLOR_WATTAGE),
+            EquationBlockFactory(Wattage::class.java, R.category_wattage, COLOR_WATTAGE),
+            WattageValueBlockFactory(COLOR_WATTAGE)
         )
     }
 

@@ -1,25 +1,12 @@
 package eu.geekhome.services.hardware
 
 import eu.geekhome.services.localization.Resource
-import java.io.InvalidClassException
 import kotlin.math.roundToInt
-
-
 
 sealed class PortValue {
     abstract fun toFormattedString() : Resource
     abstract fun asInteger() : Int
     abstract fun asDouble() : Double
-}
-
-class PortValueBuilder {
-    fun <T: PortValue> buildFromDouble(valueType: Class<T>, x: Double) : PortValue {
-        if (valueType == Temperature::class.java) {
-            return Temperature.fromDouble(x)
-        }
-
-        throw InvalidClassException("ValueType $valueType is not supported")
-    }
 }
 
 class BinaryInput(var value: Boolean) : PortValue() {
@@ -150,6 +137,12 @@ class Humidity(var value: Double) : PortValue() {
     override fun asDouble(): Double {
         return value
     }
+
+    companion object {
+        fun fromDouble(from: Double): Humidity {
+            return Humidity(from)
+        }
+    }
 }
 
 class Wattage(var value: Double) : PortValue() {
@@ -165,6 +158,12 @@ class Wattage(var value: Double) : PortValue() {
 
     override fun asDouble(): Double {
         return value
+    }
+
+    companion object {
+        fun fromDouble(from: Double): Wattage {
+            return Wattage(from)
+        }
     }
 }
 

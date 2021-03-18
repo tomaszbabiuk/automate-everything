@@ -3,14 +3,14 @@ package eu.geekhome.automation.blocks
 import eu.geekhome.automation.*
 import eu.geekhome.services.hardware.Temperature
 
-class TemperatureValueInKBlockFactory(val color: Int) : SimpleValueBlockFactory<Temperature>(
+class TemperatureValueInFBlockFactory(val color: Int) : SimpleValueBlockFactory<Temperature>(
     Temperature::class.java,
-    0.0,
+    -273.15,
     10000.0,
-    273.15,
-    "K",
-    "_k",
-    null,
+    0.0,
+    "°F",
+    "_f",
+    FahrenheitToKelvinValueConverter(),
     R.category_temperature,
     color
 )

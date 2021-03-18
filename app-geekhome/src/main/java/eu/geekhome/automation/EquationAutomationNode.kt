@@ -32,6 +32,6 @@ class EquationAutomationNode(
     }
 
     private fun buildValue(value: Double) : PortValue {
-        return PortValueBuilder().buildFromDouble(valueType, value)
+        return PortValueBuilder.buildFromDouble(valueType, value)
     }
 }
