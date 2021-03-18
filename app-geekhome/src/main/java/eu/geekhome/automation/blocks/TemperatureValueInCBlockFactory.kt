@@ -5,7 +5,7 @@ import eu.geekhome.rest.RawJson
 import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.localization.Resource
 
-class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
+class TemperatureValueInCBlockFactory(private val color: Int) : ValueBlockFactory {
 
     override val category: Resource = R.category_temperature
 
@@ -38,7 +38,7 @@ class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
                   ],
                   "inputsInline": true,
                   "output": "Temperature",
-                  "colour": 0,
+                  "colour": $color,
                   "tooltip": "",
                   "helpUrl": ""
                 }
@@ -46,7 +46,7 @@ class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IValueNode<Temperature> {
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IValueNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: VALUE and UNIT")
         }

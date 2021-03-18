@@ -4,7 +4,7 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class LogicIfElseBlockFactory : StatementBlockFactory {
+class LogicIfElseBlockFactory(private val color: Int) : StatementBlockFactory {
 
     override val category: Resource = R.category_name_logic
 
@@ -36,7 +36,7 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
                   ],
                   "previousStatement": null,
                   "nextStatement": null,
-                  "colour": 120,
+                  "colour": $color,
                   "tooltip": null,
                   "helpUrl": null
                 }

@@ -2,14 +2,15 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.services.hardware.PortValue
 import eu.geekhome.services.localization.Resource
 
-class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
+class EquationBlockFactory<T: PortValue>(
+    private val valueType: Class<T>,
+    override val category: Resource,
+    private val color: Int) : ValueBlockFactory {
 
-    override val category: Resource = R.category_temperature
-
-    override val type: String = "temperature_equation"
+    override val type: String = "${valueType.simpleName.toLowerCase()}_equation"
 
     override fun match(type: String) : Boolean {
         return type == this.type
@@ -25,7 +26,7 @@ class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
                     {
                       "type": "input_value",
                       "name": "LEFT",
-                      "check": "Temperature"
+                      "check": "${valueType.simpleName}"
                     },
                     {
                       "type": "field_dropdown",
@@ -53,8 +54,8 @@ class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
                     }
                   ],
                   "inputsInline": true,
-                  "output": "Temperature",
-                  "colour": 0,
+                  "output": "${valueType.simpleName}",
+                  "colour": $color,
                   "tooltip": "",
                   "helpUrl": ""
                 }
@@ -62,7 +63,7 @@ class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): TemperatureEquationAutomationNode {
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): EquationAutomationNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two FIELDS defined")
         }
@@ -78,11 +79,11 @@ class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
 
         val leftValue = block.values?.find { it.name == "LEFT" }
 
-        var leftNode: IValueNode<Temperature>? = null
+        var leftNode: IValueNode? = null
         if (leftValue?.block != null) {
             leftNode = transformer.transformValue(leftValue.block, context)
         }
 
-        return TemperatureEquationAutomationNode(leftNode, operator, right)
+        return EquationAutomationNode(valueType, leftNode, operator, right)
     }
 }

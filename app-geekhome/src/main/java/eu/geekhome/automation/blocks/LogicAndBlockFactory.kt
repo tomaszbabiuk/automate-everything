@@ -4,7 +4,7 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class LogicAndBlockFactory : EvaluatorBlockFactory {
+class LogicAndBlockFactory(private val color: Int) : EvaluatorBlockFactory {
 
     override val category: Resource = R.category_name_logic
 
@@ -33,7 +33,7 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
                       ],
                       "inputsInline": true,
                       "output": null,
-                      "colour": 120,
+                      "colour": $color,
                       "tooltip": "",
                       "helpUrl": "http://www.example.com/"
                     }

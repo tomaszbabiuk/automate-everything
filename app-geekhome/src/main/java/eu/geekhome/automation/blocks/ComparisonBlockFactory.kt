@@ -2,14 +2,15 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.services.hardware.PortValue
 import eu.geekhome.services.localization.Resource
 
-class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
+class ComparisonBlockFactory<T: PortValue>(
+    private val valueType: Class<T>,
+    override val category: Resource,
+    private val color: Int) : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_temperature
-
-    override val type: String = "temperature_comparison"
+    override val type: String = "${valueType.simpleName.toLowerCase()}_comparison"
 
     override fun match(type: String) : Boolean {
         return type == this.type
@@ -25,7 +26,7 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
                     {
                       "type": "input_value",
                       "name": "LEFT",
-                      "check": "Temperature"
+                      "check": "${valueType.simpleName}"
                     },
                     {
                       "type": "field_dropdown",
@@ -63,12 +64,12 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
                     {
                       "type": "input_value",
                       "name": "RIGHT",
-                      "check": "Temperature"
+                      "check": "${valueType.simpleName}"
                     }
                   ],
                   "inputsInline": true,
                   "output": "Boolean",
-                  "colour": 0,
+                  "colour": $color,
                   "tooltip": "",
                   "helpUrl": ""
                 }
@@ -77,10 +78,6 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
     }
 
     override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
-//        if (block.values == null || block.values.size != 2) {
-//            throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
-//        }
-
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have one field defined")
         }
@@ -91,13 +88,13 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
 
         val operator = ComparisonOperator.fromString(block.fields[0].value!!)
 
-        var leftNode: IValueNode<Temperature>? = null
+        var leftNode: IValueNode? = null
         val leftValue = block.values?.find { it.name == "LEFT" }
         if (leftValue?.block != null) {
             leftNode = transformer.transformValue(leftValue.block, context)
         }
 
-        var rightNode: IValueNode<Temperature>? = null
+        var rightNode: IValueNode? = null
         val rightValue = block.values?.find { it.name == "RIGHT" }
         if (rightValue?.block != null) {
             rightNode = transformer.transformValue(rightValue.block, context)

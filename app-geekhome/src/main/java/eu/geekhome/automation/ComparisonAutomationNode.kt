@@ -4,16 +4,16 @@ import eu.geekhome.automation.blocks.ComparisonOperator
 import eu.geekhome.services.hardware.PortValue
 import java.util.*
 
-class ComparisonAutomationNode<T: PortValue>(
-    private val leftValue: IValueNode<T>?,
+class ComparisonAutomationNode(
+    private val leftValue: IValueNode?,
     private val operator: ComparisonOperator,
-    private val rightValue: IValueNode<T>?
+    private val rightValue: IValueNode?
 ) : IEvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
 
-        var leftValue: T? = null
-        var rightValue: T? = null
+        var leftValue: PortValue? = null
+        var rightValue: PortValue? = null
         if (this.leftValue != null) {
             leftValue = this.leftValue.calculate(now)
         }

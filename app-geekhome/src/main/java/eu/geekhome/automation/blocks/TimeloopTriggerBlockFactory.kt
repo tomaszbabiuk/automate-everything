@@ -4,7 +4,7 @@ import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
 import eu.geekhome.services.localization.Resource
 
-class TimeloopTriggerBlockFactory : TriggerBlockFactory {
+class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory {
 
     override val category: Resource = R.category_name_triggers
 
@@ -28,7 +28,7 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
                      }
                    ],
                    "nextStatement": "Boolean",
-                   "colour": 315,
+                   "colour": $color,
                    "tooltip": null,
                    "helpUrl": null
                 }

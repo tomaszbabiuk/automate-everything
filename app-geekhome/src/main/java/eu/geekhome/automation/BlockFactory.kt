@@ -1,7 +1,6 @@
 package eu.geekhome.automation
 
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.hardware.PortValue
 import eu.geekhome.services.localization.Resource
 
 interface BlockFactory<N: IAutomationNode> {
@@ -16,7 +15,7 @@ interface BlockFactory<N: IAutomationNode> {
 interface EvaluatorBlockFactory: BlockFactory<IEvaluatorNode>
 
 //preventing type erasure
-interface ValueBlockFactory<T: PortValue>: BlockFactory<IValueNode<T>>
+interface ValueBlockFactory: BlockFactory<IValueNode>
 
 //preventing type erasure
 interface StatementBlockFactory: BlockFactory<IStatementNode>

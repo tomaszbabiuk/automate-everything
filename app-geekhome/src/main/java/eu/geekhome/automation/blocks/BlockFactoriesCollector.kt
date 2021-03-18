@@ -1,12 +1,16 @@
 package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.BlockFactory
+import eu.geekhome.automation.R
 import eu.geekhome.rest.getConfigurables
 import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.StateType
 import eu.geekhome.services.configurable.ConditionConfigurable
 import eu.geekhome.services.configurable.Configurable
 import eu.geekhome.services.configurable.StateDeviceConfigurable
+import eu.geekhome.services.hardware.Humidity
+import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.services.hardware.Wattage
 import eu.geekhome.services.localization.Resource
 import org.pf4j.PluginManager
 
@@ -15,6 +19,14 @@ interface IBlockFactoriesCollector {
 }
 
 class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlockFactoriesCollector {
+
+    companion object {
+        const val COLOR_TRIGGER = 315
+        const val COLOR_LOGIC = 120
+        const val COLOR_TEMPERATURE = 160
+        const val COLOR_HUMIDITY = 210
+        const val COLOR_WATTAGE = 65
+    }
 
    override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
@@ -31,15 +43,19 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
 
     private fun collectStaticBlocks(): List<BlockFactory<*>> {
         return listOf(
-            LogicAndBlockFactory(),
-            LogicOrBlockFactory(),
-            LogicNotBlockFactory(),
-            LogicIfElseBlockFactory(),
-            TimeloopTriggerBlockFactory(),
-            TemperatureComparisonBlockFactory(),
-            TemperatureEquationBlockFactory(),
-            TemperatureValueInCBlockFactory(),
-            TemperatureValueInKBlockFactory(),
+            LogicAndBlockFactory(COLOR_LOGIC),
+            LogicOrBlockFactory(COLOR_LOGIC),
+            LogicNotBlockFactory(COLOR_LOGIC),
+            LogicIfElseBlockFactory(COLOR_LOGIC),
+            TimeloopTriggerBlockFactory(COLOR_TRIGGER),
+            ComparisonBlockFactory(Temperature::class.java, R.category_temperature,COLOR_TEMPERATURE),
+            ComparisonBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
+            ComparisonBlockFactory(Wattage::class.java, R.category_wattage,COLOR_WATTAGE),
+            EquationBlockFactory(Temperature::class.java, R.category_temperature, COLOR_TEMPERATURE),
+            EquationBlockFactory(Humidity::class.java, R.category_humidity, COLOR_HUMIDITY),
+            EquationBlockFactory(Wattage::class.java, R.category_wattage, COLOR_WATTAGE),
+            TemperatureValueInCBlockFactory(COLOR_TEMPERATURE),
+            TemperatureValueInKBlockFactory(COLOR_TEMPERATURE),
         )
     }
 

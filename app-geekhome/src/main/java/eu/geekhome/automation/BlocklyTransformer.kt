@@ -1,7 +1,6 @@
 package eu.geekhome.automation
 
 import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.hardware.Temperature
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -16,11 +15,11 @@ interface IEvaluatorNode: IAutomationNode {
     fun evaluate(now: Calendar) : Boolean
 }
 
-interface IValueNode<T: PortValue>: IAutomationNode {
-    fun calculate(now: Calendar) : T?
+interface IValueNode: IAutomationNode {
+    fun calculate(now: Calendar) : PortValue?
 }
 
-class ValueNode<T: PortValue>(val value: T) : IValueNode<T> {
+class ValueNode<T: PortValue>(val value: T) : IValueNode {
     override fun calculate(now: Calendar): T {
         return value
     }
@@ -29,7 +28,7 @@ class ValueNode<T: PortValue>(val value: T) : IValueNode<T> {
 interface IBlocklyTransformer {
 
     fun transformEvaluator(block: Block, context: AutomationContext) : IEvaluatorNode
-    fun <T: PortValue> transformValue(block: Block, context: AutomationContext) : IValueNode<T>
+    fun transformValue(block: Block, context: AutomationContext) : IValueNode
     fun transformTrigger(block: Block, context: AutomationContext) : IStatementNode
     fun transformStatement(block: Block, context: AutomationContext) : IStatementNode
 }
@@ -61,10 +60,10 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownEvaluatorBlockException(block.type)
     }
 
-    override fun <T: PortValue> transformValue(block: Block, context: AutomationContext): IValueNode<T> {
+    override fun transformValue(block: Block, context: AutomationContext): IValueNode {
         val blockFactory = context
             .blocksCache
-            .filterIsInstance<ValueBlockFactory<T>>()
+            .filterIsInstance<ValueBlockFactory>()
             .find { it.match(block.type) }
 
         if (blockFactory != null) {
@@ -127,7 +126,7 @@ class UnknownStatementBlockException(type: String) : UnknownBlockException(
 )
 
 class UnknownEvaluatorBlockException(type: String) : UnknownBlockException(
-    "Unknown evaluatorV block: $type"
+    "Unknown evaluator block: $type"
 )
 
 class UnknownValueBlockException(type: String) : UnknownBlockException(

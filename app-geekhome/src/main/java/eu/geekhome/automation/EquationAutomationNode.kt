@@ -2,18 +2,19 @@ package eu.geekhome.automation
 
 import eu.geekhome.automation.blocks.MathOperator
 import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.services.hardware.PortValueBuilder
 import java.util.*
 
-abstract class EquationAutomationNode<T: PortValue>(
-    private val leftValue: IValueNode<T>?,
+class EquationAutomationNode(
+    private val valueType: Class<out PortValue>,
+    private val leftValue: IValueNode?,
     private val operator: MathOperator,
     private val rightValue: Double
-) : IValueNode<T> {
+) : IValueNode {
 
-    override fun calculate(now: Calendar): T? {
+    override fun calculate(now: Calendar): PortValue? {
 
-        var leftValue: T? = null
+        var leftValue: PortValue? = null
         if (this.leftValue != null) {
             leftValue = this.leftValue.calculate(now)
         }
@@ -30,16 +31,7 @@ abstract class EquationAutomationNode<T: PortValue>(
         return null
     }
 
-    abstract fun buildValue(value: Double) : T
-}
-
-class TemperatureEquationAutomationNode(
-    leftValue: IValueNode<Temperature>?,
-    operator: MathOperator,
-    rightValue: Double
-) : EquationAutomationNode<Temperature>(leftValue, operator, rightValue) {
-
-    override fun buildValue(value: Double): Temperature {
-        return Temperature(value)
+    private fun buildValue(value: Double) : PortValue {
+        return PortValueBuilder().buildFromDouble(valueType, value)
     }
 }

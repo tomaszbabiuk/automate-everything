@@ -23,6 +23,14 @@ public class R {
             "Temperature",
             "Temperatura");
 
+    public static final Resource category_wattage = new Resource(
+            "Wattage",
+            "Moc");
+
+    public static final Resource category_humidity = new Resource(
+            "Humidity",
+            "Wilgotność");
+
     public static final Resource block_label_if_than_else = new Resource(
             "If %1 than %2 else %3",
             "Jeżeli %1 to %2 inaczej %3");
