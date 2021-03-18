@@ -5,11 +5,11 @@ import eu.geekhome.rest.RawJson
 import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.localization.Resource
 
-class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
+class TemperatureValueInKBlockFactory : ValueBlockFactory<Temperature> {
 
     override val category: Resource = R.category_temperature
 
-    override val type: String = "temperature_value_c"
+    override val type: String = "temperature_value_K"
 
     override fun match(type: String) : Boolean {
         return type == this.type
@@ -25,15 +25,15 @@ class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
                     {
                       "type": "field_number",
                       "name": "VALUE",
-                      "value": 0,
-                      "min": -273.15,
+                      "value": 273.15,
+                      "min": 0,
                       "max": 10000,
                       "precision": 0.01
                     },
                     {
                       "type": "field_label_serializable",
                       "name": "UNIT",
-                      "text": "°C"
+                      "text": "K"
                     }
                   ],
                   "inputsInline": true,
@@ -56,7 +56,7 @@ class TemperatureValueInCBlockFactory : ValueBlockFactory<Temperature> {
             throw MalformedBlockException(block.type, "should have <field name=\"VALUE\"> defined")
         } else if (valueField.value != null) {
             val value = valueField.value.toDouble()
-            val valueAsTemp = Temperature(value - 273.15)
+            val valueAsTemp = Temperature(value)
             return ValueNode(valueAsTemp)
         }
 

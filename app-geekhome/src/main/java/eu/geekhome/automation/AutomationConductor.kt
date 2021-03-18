@@ -16,6 +16,8 @@ import eu.geekhome.services.hardware.Wattage
 import kotlinx.coroutines.*
 import java.util.*
 
+class AutomationException(message: String) : Exception(message)
+
 class AutomationContext(
     val instanceDto: InstanceDto,
     val thisDevice: Configurable?,

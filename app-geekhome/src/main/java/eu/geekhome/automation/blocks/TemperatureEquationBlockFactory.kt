@@ -2,9 +2,10 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
+import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.localization.Resource
 
-class TemperatureEquationBlockFactory : EvaluatorBlockFactory {
+class TemperatureEquationBlockFactory : ValueBlockFactory<Temperature> {
 
     override val category: Resource = R.category_temperature
 
@@ -37,14 +38,6 @@ class TemperatureEquationBlockFactory : EvaluatorBlockFactory {
                         [
                           "-",
                           "MINUS"
-                        ],
-                        [
-                          "*",
-                          "TIMES"
-                        ],
-                        [
-                          "/",
-                          "DIVIDE"
                         ]
                       ]
                     },
@@ -52,9 +45,11 @@ class TemperatureEquationBlockFactory : EvaluatorBlockFactory {
                       "type": "input_dummy"
                     },
                     {
-                      "type": "input_value",
+                      "type": "field_number",
                       "name": "RIGHT",
-                      "check": "Temperature"
+                      "value": 0,
+                      "min": 0,
+                      "precision": 0.01
                     }
                   ],
                   "inputsInline": true,
@@ -67,27 +62,27 @@ class TemperatureEquationBlockFactory : EvaluatorBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
-        if (block.values == null || block.values.size != 2) {
-            throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): TemperatureEquationAutomationNode {
+        if (block.fields == null || block.fields.size != 2) {
+            throw MalformedBlockException(block.type, "should have exactly two FIELDS defined")
         }
 
-        var firstNode: IEvaluatorNode? = null
-        val firstValue = block.values.find { it.name == "FIRST" }
-        if (firstValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"FIRST\"> defined")
-        } else if (firstValue.block != null) {
-            firstNode = transformer.transformEvaluator(firstValue.block, context)
+        val operatorValue = block.fields.find { it.name == "OPERATOR" }
+            ?: throw MalformedBlockException(block.type, "OPERATOR field not found")
+
+        val operator = MathOperator.fromString(operatorValue.value!!)
+
+        val rightValue = block.fields.find { it.name == "RIGHT" }
+            ?: throw MalformedBlockException(block.type, "RIGHT value not found")
+        val right = rightValue.value!!.toDouble()
+
+        val leftValue = block.values?.find { it.name == "LEFT" }
+
+        var leftNode: IValueNode<Temperature>? = null
+        if (leftValue?.block != null) {
+            leftNode = transformer.transformValue(leftValue.block, context)
         }
 
-        var secondNode: IEvaluatorNode? = null
-        val secondValue = block.values.find { it.name == "SECOND" }
-        if (secondValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"SECOND\"> defined")
-        } else if (secondValue.block != null) {
-            secondNode = transformer.transformEvaluator(secondValue.block, context)
-        }
-
-        return AndAutomationNode(firstNode, secondNode)
+        return TemperatureEquationAutomationNode(leftNode, operator, right)
     }
 }

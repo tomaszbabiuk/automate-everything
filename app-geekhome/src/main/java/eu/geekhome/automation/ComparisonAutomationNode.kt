@@ -22,14 +22,14 @@ class ComparisonAutomationNode<T: PortValue>(
             rightValue = this.rightValue.calculate(now)
         }
 
-        if (leftValue != null || rightValue != null) {
-            when (operator) {
-                ComparisonOperator.Greater -> return leftValue!!.asInteger() > rightValue!!.asInteger()
-                ComparisonOperator.Lesser -> return leftValue!!.asInteger() < rightValue!!.asInteger()
-                ComparisonOperator.Equals -> return leftValue!!.asInteger() == rightValue!!.asInteger()
-                ComparisonOperator.NotEquals -> return leftValue!!.asInteger() != rightValue!!.asInteger()
-                ComparisonOperator.GreaterOrEqual -> return leftValue!!.asInteger() >= rightValue!!.asInteger()
-                ComparisonOperator.LesserOrEqual -> return leftValue!!.asInteger() <= rightValue!!.asInteger()
+        if (leftValue != null && rightValue != null) {
+            return when (operator) {
+                ComparisonOperator.Greater -> leftValue.asDouble() > rightValue.asDouble()
+                ComparisonOperator.Lesser -> leftValue.asDouble() < rightValue.asDouble()
+                ComparisonOperator.Equals -> leftValue.asDouble() == rightValue.asDouble()
+                ComparisonOperator.NotEquals -> leftValue.asDouble() != rightValue.asDouble()
+                ComparisonOperator.GreaterOrEqual -> leftValue.asDouble() >= rightValue.asDouble()
+                ComparisonOperator.LesserOrEqual -> leftValue.asDouble() <= rightValue.asDouble()
             }
         }
 

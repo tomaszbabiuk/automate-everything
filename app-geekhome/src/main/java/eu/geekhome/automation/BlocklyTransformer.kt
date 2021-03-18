@@ -17,7 +17,7 @@ interface IEvaluatorNode: IAutomationNode {
 }
 
 interface IValueNode<T: PortValue>: IAutomationNode {
-    fun calculate(now: Calendar) : T
+    fun calculate(now: Calendar) : T?
 }
 
 class ValueNode<T: PortValue>(val value: T) : IValueNode<T> {

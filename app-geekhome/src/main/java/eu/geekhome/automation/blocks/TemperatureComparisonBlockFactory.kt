@@ -77,9 +77,9 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
     }
 
     override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
-        if (block.values == null || block.values.size != 2) {
-            throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
-        }
+//        if (block.values == null || block.values.size != 2) {
+//            throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
+//        }
 
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have one field defined")
@@ -92,21 +92,17 @@ class TemperatureComparisonBlockFactory : EvaluatorBlockFactory {
         val operator = ComparisonOperator.fromString(block.fields[0].value!!)
 
         var leftNode: IValueNode<Temperature>? = null
-        val leftValue = block.values.find { it.name == "LEFT" }
-        if (leftValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"LEFT\"> defined")
-        } else if (leftValue.block != null) {
+        val leftValue = block.values?.find { it.name == "LEFT" }
+        if (leftValue?.block != null) {
             leftNode = transformer.transformValue(leftValue.block, context)
         }
 
         var rightNode: IValueNode<Temperature>? = null
-        val rightValue = block.values.find { it.name == "RIGHT" }
-        if (rightValue == null) {
-            throw MalformedBlockException(block.type, "should have <value name=\"RIGHT\"> defined")
-        } else if (rightValue.block != null) {
+        val rightValue = block.values?.find { it.name == "RIGHT" }
+        if (rightValue?.block != null) {
             rightNode = transformer.transformValue(rightValue.block, context)
         }
 
-        return ComparisonAutomationNode<Temperature>(leftNode, operator, rightNode)
+        return ComparisonAutomationNode(leftNode, operator, rightNode)
     }
 }

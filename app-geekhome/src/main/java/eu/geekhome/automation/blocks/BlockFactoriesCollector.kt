@@ -39,6 +39,7 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
             TemperatureComparisonBlockFactory(),
             TemperatureEquationBlockFactory(),
             TemperatureValueInCBlockFactory(),
+            TemperatureValueInKBlockFactory(),
         )
     }
 
