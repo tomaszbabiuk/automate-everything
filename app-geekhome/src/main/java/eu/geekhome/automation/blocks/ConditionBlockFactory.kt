@@ -7,7 +7,7 @@ import eu.geekhome.services.localization.Resource
 
 class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_name_conditions
+    override val category: Resource = R.category_triggers_conditions
 
     override val type: String = "condition_$conditionId"
 

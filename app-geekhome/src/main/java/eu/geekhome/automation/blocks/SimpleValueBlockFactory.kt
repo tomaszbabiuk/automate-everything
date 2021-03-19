@@ -47,7 +47,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
                     }
                   ],
                   "inputsInline": true,
-                  "output": "${valueType.simpleName.toLowerCase()}",
+                  "output": "${valueType.simpleName}",
                   "colour": $color,
                   "tooltip": "",
                   "helpUrl": ""

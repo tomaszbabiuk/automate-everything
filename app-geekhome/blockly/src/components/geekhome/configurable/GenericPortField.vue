@@ -37,9 +37,6 @@ data: function() {
     ports() {
       var portFilter = this.portFilter
       return this.$store.state.ports.filter((port) => {
-        console.log(port)
-        console.log(this.canWrite)
-        console.log(this.canWrite)
         return port.canRead === portFilter.canRead 
               && port.canWrite === portFilter.canWrite  
               && port.valueType === portFilter.valueType

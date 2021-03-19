@@ -9,7 +9,7 @@ import eu.geekhome.services.localization.Resource
 
 class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory {
 
-    override val category: Resource = R.category_name_this_device
+    override val category: Resource = R.category_this_device
 
     override val type: String = "change_state_${state.name.id}"
 

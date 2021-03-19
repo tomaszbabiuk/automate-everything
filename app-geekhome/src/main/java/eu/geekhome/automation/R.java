@@ -3,19 +3,19 @@ package eu.geekhome.automation;
 import eu.geekhome.services.localization.Resource;
 
 public class R {
-    public static Resource category_name_this_device = new Resource(
+    public static Resource category_this_device = new Resource(
                 "This device",
                 "To urządzenie");
 
-    public static final Resource category_name_conditions = new Resource(
+    public static final Resource category_triggers_conditions = new Resource(
             "Conditions",
             "Warunki");
 
-    public static final Resource category_name_triggers = new Resource(
+    public static final Resource category_triggers = new Resource(
             "Triggers",
             "Wyzwalacze");
 
-    public static final Resource category_name_logic = new Resource(
+    public static final Resource category_logic = new Resource(
             "Logic",
             "Logika");
 

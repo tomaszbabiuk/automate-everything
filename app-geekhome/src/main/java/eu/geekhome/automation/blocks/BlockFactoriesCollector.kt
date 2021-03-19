@@ -5,9 +5,7 @@ import eu.geekhome.automation.R
 import eu.geekhome.rest.getConfigurables
 import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.StateType
-import eu.geekhome.services.configurable.ConditionConfigurable
-import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.configurable.StateDeviceConfigurable
+import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.Humidity
 import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.hardware.Wattage
@@ -28,11 +26,12 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
         const val COLOR_WATTAGE = 65
     }
 
-   override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
+    override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
 
         result.addAll(collectStaticBlocks())
         result.addAll(collectConditionBlocks())
+        result.addAll(collectSensorBlocks())
 
         if (thisDevice != null) {
             result.addAll(collectChangeStateBlocks(thisDevice))
@@ -43,14 +42,17 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
 
     private fun collectStaticBlocks(): List<BlockFactory<*>> {
         return listOf(
+            //logic
             LogicAndBlockFactory(COLOR_LOGIC),
             LogicOrBlockFactory(COLOR_LOGIC),
             LogicNotBlockFactory(COLOR_LOGIC),
             LogicIfElseBlockFactory(COLOR_LOGIC),
+
+            //triggers
             TimeloopTriggerBlockFactory(COLOR_TRIGGER),
 
             //temperature
-            ComparisonBlockFactory(Temperature::class.java, R.category_temperature,COLOR_TEMPERATURE),
+            ComparisonBlockFactory(Temperature::class.java, R.category_temperature, COLOR_TEMPERATURE),
             EquationBlockFactory(Temperature::class.java, R.category_temperature, COLOR_TEMPERATURE),
             TemperatureValueInCBlockFactory(COLOR_TEMPERATURE),
             TemperatureValueInKBlockFactory(COLOR_TEMPERATURE),
@@ -62,7 +64,7 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
             HumidityValueBlockFactory(COLOR_HUMIDITY),
 
             //wattage
-            ComparisonBlockFactory(Wattage::class.java, R.category_wattage,COLOR_WATTAGE),
+            ComparisonBlockFactory(Wattage::class.java, R.category_wattage, COLOR_WATTAGE),
             EquationBlockFactory(Wattage::class.java, R.category_wattage, COLOR_WATTAGE),
             WattageValueBlockFactory(COLOR_WATTAGE)
         )
@@ -78,9 +80,26 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
                 configurable is ConditionConfigurable
             }
             .map { briefDto ->
-                val conditionId = briefDto.id
+                val id = briefDto.id
                 val label = Resource.createUniResource(briefDto.name)
-                ConditionBlockFactory(conditionId, label)
+                ConditionBlockFactory(id, label)
+            }
+            .toList()
+    }
+
+    private fun collectSensorBlocks(): List<BlockFactory<*>> {
+        val instanceBriefs = pluginManager.getRepository().getAllInstanceBriefs()
+        val allConfigurables = pluginManager.getConfigurables()
+
+        return instanceBriefs
+            .filter { briefDto ->
+                val configurable = allConfigurables.find { it.javaClass.name == briefDto.clazz }
+                configurable is TemperatureSensorConfigurable
+            }
+            .map { briefDto ->
+                val id = briefDto.id
+                val label = Resource.createUniResource(briefDto.name)
+                SensorBlockFactory(Temperature::class.java, R.category_temperature, COLOR_TEMPERATURE, id, label)
             }
             .toList()
     }

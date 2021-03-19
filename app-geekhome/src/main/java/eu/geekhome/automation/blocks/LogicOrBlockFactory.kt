@@ -6,7 +6,7 @@ import eu.geekhome.services.localization.Resource
 
 class LogicOrBlockFactory(private val color: Int) : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_name_logic
+    override val category: Resource = R.category_logic
 
     override val type: String = "logic_or"
 

@@ -6,7 +6,7 @@ interface IValueConverter {
 
 class CelsiusToKelvinValueConverter : IValueConverter {
     override fun convert(x: Double): Double {
-        return x - 273.15
+        return x + 273.15
     }
 }
 

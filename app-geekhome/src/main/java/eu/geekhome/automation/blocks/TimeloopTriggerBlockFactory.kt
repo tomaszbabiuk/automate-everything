@@ -6,7 +6,7 @@ import eu.geekhome.services.localization.Resource
 
 class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory {
 
-    override val category: Resource = R.category_name_triggers
+    override val category: Resource = R.category_triggers
 
     override val type: String = "trigger_timeloop"
 

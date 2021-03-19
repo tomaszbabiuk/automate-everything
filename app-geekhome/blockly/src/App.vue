@@ -95,7 +95,7 @@
       </div>
       <div :class="$route.name">
         <v-container>
-          <v-alert prominent type="error" v-if="!automation.enabled">
+          <v-alert v-cloak prominent type="error" v-if="!automation.enabled">
             <v-row align="center">
               <v-col class="grow">
                 {{ $vuetify.lang.t("$vuetify.app.automationDisabledInfo") }}

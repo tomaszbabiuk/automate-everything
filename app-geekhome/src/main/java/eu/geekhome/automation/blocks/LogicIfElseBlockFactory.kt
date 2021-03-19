@@ -6,7 +6,7 @@ import eu.geekhome.services.localization.Resource
 
 class LogicIfElseBlockFactory(private val color: Int) : StatementBlockFactory {
 
-    override val category: Resource = R.category_name_logic
+    override val category: Resource = R.category_logic
 
     override val type: String = "logic_if_than_else"
 
