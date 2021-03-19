@@ -17,13 +17,13 @@ class AutomationUnitsController @Inject constructor(
 ) {
     private var automation: AutomationConductor = automationHolder.instance
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getAutomation(): List<AutomationUnitDto> {
-        return automation
-            .automationUnitsCache
-            .values
-            .map { mapper.map(it) }
-    }
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+//    fun getAutomation(): List<AutomationUnitDto> {
+//        return automation
+//            .automationUnitsCache
+//            .values
+//            .map { mapper.map(it) }
+//    }
 }
 

@@ -1,10 +1,10 @@
 package eu.geekhome.coreplugin;
 
-import eu.geekhome.services.automation.ControlMode;
 import eu.geekhome.services.automation.State;
 import eu.geekhome.services.automation.StateDeviceAutomationUnit;
 import eu.geekhome.services.hardware.Port;
 import eu.geekhome.services.hardware.Relay;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -36,5 +36,11 @@ public class OnOffDeviceAutomationUnit extends StateDeviceAutomationUnit {
         } else if (getCurrentStateId().equals("off")) {
             changeOutputPortStateIfNeeded(_controlPort, new Relay(false));
         }
+    }
+
+    @NotNull
+    @Override
+    public Class<State> getValueType() {
+        return State.class;
     }
 }

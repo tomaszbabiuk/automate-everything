@@ -1,38 +1,16 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.IDeviceAutomationUnit
-import eu.geekhome.services.configurable.*
-import eu.geekhome.services.hardware.IPortFinder
+import eu.geekhome.services.configurable.RequiredStringValidator
+import eu.geekhome.services.configurable.TemperatureReadPortField
 import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
-import java.util.*
 
 @Extension
-class ThermometerConfigurable : TemperatureSensorConfigurable() {
-
-    override val parent: Class<out Configurable?>
-        get() = MetersConfigurable::class.java
-
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<Temperature> {
-        val portId = readPortId(instance)
-        val port = portFinder.searchForPort(Temperature::class.java, portId, canRead = true, canWrite = false)
-        return ThermometerAutomationUnit(port)
-    }
-
-    private fun readPortId(instance: InstanceDto): String {
-        val portFieldValue = instance.fields[FIELD_PORT]
-        return portField.builder.fromPersistableString(portFieldValue)
-    }
-
-    override val fieldDefinitions: Map<String, FieldDefinition<*>>
-        get() {
-            val result: MutableMap<String, FieldDefinition<*>> = HashMap(super.fieldDefinitions)
-            result[FIELD_PORT] = portField
-            return result
-        }
-
+class ThermometerConfigurable : SinglePortSensorConfigurable<Temperature>(
+    Temperature::class.java,
+    TemperatureReadPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+) {
     override val addNewRes: Resource
         get() = R.configurable_thermometer_add
 
@@ -54,10 +32,4 @@ class ThermometerConfigurable : TemperatureSensorConfigurable() {
               </g>
             </svg>
         """.trimIndent()
-
-    private val portField = TemperatureReadPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-
-    companion object {
-        const val FIELD_PORT = "portId"
-    }
 }

@@ -1,23 +1,16 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.IDeviceAutomationUnit
-import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.configurable.WattageSensorConfigurable
-import eu.geekhome.services.hardware.IPortFinder
+import eu.geekhome.services.configurable.RequiredStringValidator
+import eu.geekhome.services.configurable.WattageReadPortField
 import eu.geekhome.services.hardware.Wattage
 import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
 
 @Extension
-class WattmeterConfigurable : WattageSensorConfigurable() {
-
-    override val parent: Class<out Configurable?>
-        get() = MetersConfigurable::class.java
-
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<Wattage> {
-        TODO("Not yet implemented")
-    }
+class WattmeterConfigurable : SinglePortSensorConfigurable<Wattage>(
+    Wattage::class.java,
+    WattageReadPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+) {
 
     override val addNewRes: Resource
         get() = R.configurable_wattmeter_add

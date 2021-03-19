@@ -39,18 +39,18 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
     override val editableIcon: Boolean = true
 }
 
-abstract class SensorConfigurable<V: PortValue> : NameDescriptionConfigurable(), ConfigurableWithFields {
+abstract class SensorConfigurable<V: PortValue>(val valueType: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<V>
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
 }
 
-abstract class TemperatureSensorConfigurable : SensorConfigurable<Temperature>()
-
-abstract class HumiditySensorConfigurable : SensorConfigurable<Humidity>()
-
-abstract class WattageSensorConfigurable : SensorConfigurable<Wattage>()
+//abstract class TemperatureSensorConfigurable : SensorConfigurable<Temperature>()
+//
+//abstract class HumiditySensorConfigurable : SensorConfigurable<Humidity>()
+//
+//abstract class WattageSensorConfigurable : SensorConfigurable<Wattage>()
 
 abstract class CategoryConfigurable : Configurable {
     override val hasAutomation: Boolean = false

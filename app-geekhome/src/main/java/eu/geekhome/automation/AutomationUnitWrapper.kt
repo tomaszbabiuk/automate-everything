@@ -7,34 +7,31 @@ import eu.geekhome.services.repository.InstanceDto
 import java.util.*
 
 class AutomationUnitWrapper<T>(
+    override val valueType: Class<T>,
     val instance: InstanceDto,
     var state: UnitState = UnitState.Operational,
     var error: Exception? = null,
-    val wrapped: IDeviceAutomationUnit<T>? = null,
+    val wrapped: IDeviceAutomationUnit<T>,
 ) : IDeviceAutomationUnit<T> {
 
     override fun calculate(now: Calendar?) {
-        wrapped?.calculate(now)
+        wrapped.calculate(now)
     }
 
     override val value: T?
-        get() = wrapped?.value
+        get() = wrapped.value
 
     override fun buildEvaluationResult() : EvaluationResult {
         return when (state) {
             UnitState.InitError -> buildInitErrorEvaluationResult()
             UnitState.AutomationError -> buildAutomationErrorEvaluationResult()
             UnitState.Operational -> {
-                if (wrapped != null) {
-                    try {
-                        wrapped.buildEvaluationResult()
-                    } catch (ex: Exception) {
-                        state = UnitState.AutomationError
-                        error = ex
-                        return buildEvaluationResult()
-                    }
-                } else {
-                    throw IllegalStateException()
+                try {
+                    wrapped.buildEvaluationResult()
+                } catch (ex: Exception) {
+                    state = UnitState.AutomationError
+                    error = ex
+                    return buildEvaluationResult()
                 }
             }
         }

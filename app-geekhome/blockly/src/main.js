@@ -11,6 +11,7 @@ import ConfigurableGenericPortField from './components/geekhome/configurable/Gen
 import ConfigurableRelayReadWritePortField from './components/geekhome/configurable/RelayReadWritePortField'
 import ConfigurableTemperatureReadPortField from './components/geekhome/configurable/TemperatureReadPortField'
 import ConfigurableHumidityReadPortField from './components/geekhome/configurable/HumidityReadPortField'
+import ConfigurableWattageReadPortField from './components/geekhome/configurable/WattageReadPortField'
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
@@ -25,6 +26,7 @@ Vue.component('configurable-genericportfield', ConfigurableGenericPortField)
 Vue.component('configurable-relayreadwriteportfield', ConfigurableRelayReadWritePortField)
 Vue.component('configurable-temperaturereadportfield', ConfigurableTemperatureReadPortField)
 Vue.component('configurable-humidityreadportfield', ConfigurableHumidityReadPortField)
+Vue.component('configurable-wattagereadportfield', ConfigurableWattageReadPortField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
