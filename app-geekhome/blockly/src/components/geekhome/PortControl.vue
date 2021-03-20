@@ -11,6 +11,7 @@ export default {
   data: function () {
     return {
       powerLevel: 0,
+      powerLevelThrottlingTimeout: null,
     };
   },
   props: ["valueType", "portId"],
@@ -19,6 +20,12 @@ export default {
       return this.$store.state.ports.filter(element => {
         return element.id === this.portId
       })
+    }
+  },
+  watch: {
+    powerLevel() {
+      clearTimeout(this.powerLevelThrottlingTimeout)
+      this.powerLevelThrottlingTimeout = setTimeout(this.controlPowerLevel, 200)
     }
   },
   methods: {
