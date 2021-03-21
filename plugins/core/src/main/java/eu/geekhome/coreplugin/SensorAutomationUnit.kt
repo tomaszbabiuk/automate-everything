@@ -7,14 +7,14 @@ import eu.geekhome.services.hardware.PortValue
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
-    override val valueType: Class<T>,
+    valueType: Class<T>,
     private val port: Port<T>, ) :
-    IDeviceAutomationUnit<T> {
+    IDeviceAutomationUnit<T>(valueType) {
 
     override fun calculate(now: Calendar) {
     }
 
-    override fun buildEvaluationResult(): EvaluationResult {
+    override fun buildEvaluationResultInternally(): EvaluationResult {
         return EvaluationResult(value, value.toFormattedString(), false, null)
     }
 

@@ -38,10 +38,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         transformer: IBlocklyTransformer
     ): IStatementNode {
         if (context.thisDevice is StateDeviceConfigurable) {
-            var evaluator = context.automationUnitsCache[context.instanceDto.id]
-            if (evaluator is AutomationUnitWrapper) {
-                evaluator = evaluator.wrapped
-            }
+            val evaluator = context.automationUnitsCache[context.instanceDto.id]
             if (evaluator is StateDeviceAutomationUnit) {
                 return ChangeStateAutomationNode(state.name.id, evaluator, next)
             } else {

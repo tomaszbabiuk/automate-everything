@@ -8,7 +8,6 @@ import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
 import java.util.*
 
-@Extension
 abstract class SinglePortSensorConfigurable<T: PortValue>(
     valueType: Class<T>,
     private val portField: FieldDefinition<String>

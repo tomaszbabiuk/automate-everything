@@ -7,13 +7,12 @@ import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
+import eu.geekhome.services.automation.UnitCondition
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
 import kotlinx.coroutines.*
 import java.util.*
-
-class AutomationException(message: String) : Exception(message)
 
 class AutomationContext(
     val instanceDto: InstanceDto,
@@ -32,7 +31,7 @@ class AutomationConductor(
     private var enabled: Boolean = false
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
-    val automationUnitsCache = HashMap<Long, IDeviceAutomationUnit<*>>()
+    val automationUnitsCache = HashMap<Long, Pair<InstanceDto, IDeviceAutomationUnit<*>>>()
     private val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
 
     fun isEnabled(): Boolean {
@@ -56,14 +55,12 @@ class AutomationConductor(
                 if (configurable != null) {
                     try {
                         val physicalUnit = buildPhysicalUnit(configurable, instance)
-//                        val wrapper = AutomationUnitWrapper(physicalUnit.valueType, instance, wrapped = physicalUnit)
-//                        automationUnitsCache[instance.id] = wrapper
-                        automationUnitsCache[instance.id] = physicalUnit
+                        automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                     } catch (ex: Exception) {
-//                        val wrapper = buildWrappedUnit(configurable, instance)
-//                        wrapper.error = ex
-//                        wrapper.state = UnitState.InitError
-//                        automationUnitsCache[instance.id] = wrapper
+                        val wrapper = buildWrappedUnit(configurable)
+                        wrapper.error = ex
+                        wrapper.condition = UnitCondition.InitError
+                        automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     }
                 }
 
@@ -82,7 +79,8 @@ class AutomationConductor(
                     val blocksCache = blockFactoriesCollector.collect(thisDevice)
                     val context =
                         AutomationContext(instanceDto, thisDevice,
-                            automationUnitsCache, evaluationUnitsCache, blocksCache)
+                            automationUnitsCache.mapValues { it.value.second },
+                            evaluationUnitsCache, blocksCache)
 
                     val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                     blocklyTransformer.transform(blocklyXml, context)
@@ -102,31 +100,23 @@ class AutomationConductor(
                 configurable.buildAutomationUnit(instance, hardwareManager)
             }
 
-//            is HumiditySensorConfigurable -> {
-//                configurable.buildAutomationUnit(instance, hardwareManager)
-//            }
-//
-//            is WattageSensorConfigurable -> {
-//                configurable.buildAutomationUnit(instance, hardwareManager)
-//            }
-
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
         }
     }
 
-//    private fun buildWrappedUnit(configurable: Configurable, instance: InstanceDto): AutomationUnitWrapper<*> {
-//        return when (configurable) {
-//            is StateDeviceConfigurable -> {
-//                AutomationUnitWrapper(State::class.java, instance)
-//            }
-//
-//            is SensorConfigurable<*> -> {
-//                AutomationUnitWrapper(configurable.valueType, instance)
-//            }
-//
-//            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
-//        }
-//    }
+    private fun buildWrappedUnit(configurable: Configurable): AutomationUnitWrapper<*> {
+        return when (configurable) {
+            is StateDeviceConfigurable -> {
+                AutomationUnitWrapper(State::class.java)
+            }
+
+            is SensorConfigurable<*> -> {
+                AutomationUnitWrapper(configurable.valueType)
+            }
+
+            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
+        }
+    }
 
     private fun startAutomations(automations: List<List<IStatementNode>>) {
         hardwareManager.checkNewPorts()

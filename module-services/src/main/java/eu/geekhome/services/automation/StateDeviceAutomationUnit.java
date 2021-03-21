@@ -3,16 +3,18 @@ package eu.geekhome.services.automation;
 
 import eu.geekhome.services.hardware.Port;
 import eu.geekhome.services.hardware.Relay;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public abstract class StateDeviceAutomationUnit implements IDeviceAutomationUnit<State>, IMultistateDeviceAutomationUnit {
+public abstract class StateDeviceAutomationUnit extends IDeviceAutomationUnit<State> implements IMultistateDeviceAutomationUnit {
     public State _currentState;
     public ControlMode _controlMode;
 
     private final Map<String, State> _states;
 
     public StateDeviceAutomationUnit(Map<String, State> states, String initialState) {
+        super(State.class, UnitCondition.Operational, null);
         _states = states;
         _currentState = _states.get(initialState);
         _controlMode = ControlMode.Auto;
@@ -49,8 +51,9 @@ public abstract class StateDeviceAutomationUnit implements IDeviceAutomationUnit
         changeState(state, controlMode, null, "SYSTEM");
     }
 
+    @NotNull
     @Override
-    public EvaluationResult buildEvaluationResult() {
+    public EvaluationResult buildEvaluationResultInternally() {
         return new EvaluationResult(getValue(), _currentState.getName(), isSignaled(), null, getControlMode());
     }
 

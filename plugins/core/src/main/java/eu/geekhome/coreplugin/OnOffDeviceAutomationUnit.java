@@ -38,9 +38,9 @@ public class OnOffDeviceAutomationUnit extends StateDeviceAutomationUnit {
         }
     }
 
-    @NotNull
-    @Override
-    public Class<State> getValueType() {
-        return State.class;
-    }
+//    @NotNull
+//    @Override
+//    public Class<State> getValueType() {
+//        return State.class;
+//    }
 }

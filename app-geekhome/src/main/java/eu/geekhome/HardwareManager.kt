@@ -134,7 +134,8 @@ class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, I
         throw PortNotFoundException(id)
     }
 
-    override fun checkNewPorts() {
+    override fun checkNewPorts(): Boolean {
+        var result = false
         bundles()
             .forEach { bundle ->
                 val hasNewPorts = bundle.adapter.newPorts.isNotEmpty()
@@ -147,8 +148,12 @@ class HardwareManager(val pluginManager: PluginManager) : PluginStateListener, I
                     }
 
                     bundle.adapter.clearNewPorts()
+                    result = true
                 }
             }
+
+        return result
+
     }
 }
 
