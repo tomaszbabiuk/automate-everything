@@ -53,11 +53,11 @@ export const sseClient = {
       }
     });
 
-    this.discoveryEventsMsgServer.addEventListener("discoveryEvent", function(e) {
+    this.discoveryEventsMsgServer.addEventListener("DiscoveryEvent", function(e) {
       store.commit(ADD_DISCOVERY_EVENT, JSON.parse(e.data))
     })
 
-    this.discoveryEventsMsgServer.addEventListener("portUpdateEvent", function(e) {
+    this.discoveryEventsMsgServer.addEventListener("PortUpdateEvent", function(e) {
       store.commit(UPDATE_PORT, JSON.parse(e.data))
     })
     

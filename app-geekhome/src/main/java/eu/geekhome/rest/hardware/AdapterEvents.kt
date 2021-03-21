@@ -11,7 +11,6 @@ import javax.ws.rs.Produces
 import eu.geekhome.services.hardware.HardwareEventDto
 import eu.geekhome.services.hardware.PortDto
 import eu.geekhome.services.hardware.PortUpdateEvent
-import javax.ws.rs.HeaderParam
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
@@ -68,7 +67,7 @@ class AdapterEvents @Inject constructor(
     private fun broadcastHardwareEvent(event: NumberedEvent<HardwareEvent>) {
         val dto = hardwareEventMapper.map(event)
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
-            .name("discoveryEvent")
+            .name(event.payload.javaClass.simpleName)
             .mediaType(MediaType.APPLICATION_JSON_TYPE)
             .data(HardwareEventDto::class.java, dto)
             .build()
@@ -78,10 +77,11 @@ class AdapterEvents @Inject constructor(
     private fun broadcastPortUpdateEvent(event: NumberedEvent<PortUpdateEvent>) {
         val dto = portDtoMapper.map(event.payload.port, event.payload.factoryId, event.payload.adapterId)
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
-            .name("portUpdateEvent")
+            .name(event.payload.javaClass.simpleName)
             .mediaType(MediaType.APPLICATION_JSON_TYPE)
             .data(PortDto::class.java, dto)
             .build()
+
         sseBroadcaster.broadcast(sseEvent)
     }
 }
