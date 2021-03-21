@@ -4,6 +4,7 @@ import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.rest.AutomationConductorHolderService
 import eu.geekhome.rest.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
+import java.util.*
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -20,10 +21,14 @@ class AutomationUnitsController @Inject constructor(
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): List<AutomationUnitDto> {
+        val now = Calendar.getInstance()
         return automation
             .automationUnitsCache
             .values
-            .map { mapper.map(it.second, it.first) }
+            .map {
+                it.second.calculate(now)
+                mapper.map(it.second, it.first)
+            }
     }
 }
 

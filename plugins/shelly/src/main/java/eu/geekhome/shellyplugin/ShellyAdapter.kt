@@ -32,7 +32,6 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
             serializer = GsonSerializer()
         }
 
-
         engine {
             maxConnectionsCount = 1000
 
@@ -196,6 +195,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
                         val foundAsNewAlready = newPorts.find { it.id == newPort.id} != null
                         if (!foundAsNewAlready) {
                             newPorts.add(newPort)
+                            ports.add(newPort)
                         }
                     }
                 }
