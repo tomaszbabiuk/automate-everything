@@ -2,32 +2,65 @@
   <div>
     <v-row v-for="n in Math.ceil(automationUnits.length / 3)" :key="n">
       <v-col v-for="i in [0, 1, 2]" :key="i" sm="12" md="6" lg="4" xl="2">
-        <v-card :color="matchColor(automationUnits[(n - 1) * 3 + i])" v-if="(n - 1) * 3 + i < automationUnits.length">
-          <v-card-title class="headline">
-            {{ automationUnits[(n - 1) * 3 + i].instance.fields["name"] }}
-            <v-spacer />
-            <v-list-item-icon v-if="automationUnits[(n - 1) * 3 + i].instance.iconId === null">
+        <v-card
+          :color="matchColor(automationUnits[(n - 1) * 3 + i])"
+          v-if="(n - 1) * 3 + i < automationUnits.length"
+        >
+          <v-list-item three-line>
+            <v-list-item-content>
+              <v-list-item-title class="headline mb-1">
+                {{
+                  automationUnits[(n - 1) * 3 + i].evaluationResult
+                    .interfaceValue
+                }}
+              </v-list-item-title>
+              <v-list-item-subtitle>{{
+                automationUnits[(n - 1) * 3 + i].instance.fields["name"]
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-list-item-avatar
+              v-if="automationUnits[(n - 1) * 3 + i].instance.iconId === null"
+              tile
+              size="80"
+            >
               <v-icon x-large right>$vuetify.icon.empty</v-icon>
-            </v-list-item-icon>
-            <v-list-item-icon v-else>
+            </v-list-item-avatar>
+            <v-list-item-avatar tile size="80" v-else>
               <img
                 left
-                :src="'/rest/icons/' + automationUnits[(n - 1) * 3 + i].instance.iconId + '/raw'"
+                :src="
+                  '/rest/icons/' +
+                  automationUnits[(n - 1) * 3 + i].instance.iconId +
+                  '/raw'
+                "
                 width="50"
                 height="50"
               />
-            </v-list-item-icon>
-          </v-card-title>
-
-          <v-card-subtitle>{{
-            automationUnits[(n - 1) * 3 + i].evaluationResult.interfaceValue
-          }}</v-card-subtitle>
-
+            </v-list-item-avatar>
+          </v-list-item>
           <v-card-actions>
-            <v-btn text @click="browse(automationUnits[(n - 1) * 3 + i])">
-              Browse
+            <v-btn text>Share</v-btn>
+
+            <v-btn color="purple" text> Explore </v-btn>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="automationUnits[(n - 1) * 3 + i].show = !automationUnits[(n - 1) * 3 + i].show">
+              <v-icon>{{
+                automationUnits[(n - 1) * 3 + i].show ? "mdi-chevron-up" : "mdi-chevron-down"
+              }}</v-icon>
             </v-btn>
           </v-card-actions>
+          <v-expand-transition>
+      <div v-show="automationUnits[(n - 1) * 3 + i].show">
+        <v-divider></v-divider>
+
+        <v-card-text>
+          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+        </v-card-text>
+      </div>
+    </v-expand-transition>
         </v-card>
       </v-col>
     </v-row>
@@ -39,8 +72,7 @@ import { client } from "../rest.js";
 
 export default {
   data: function () {
-    return {
-    };
+    return {};
   },
   computed: {
     automationUnits() {
@@ -48,23 +80,23 @@ export default {
     },
   },
   methods: {
-    extractFieldDefinition: function(fieldName) {
+    extractFieldDefinition: function (fieldName) {
       return this.configurable.fields.filter((element) => {
-        return element.name === fieldName
-      })
+        return element.name === fieldName;
+      });
     },
 
     matchColor(automationUnit) {
-      if (automationUnit.state === "InitError") {
-        return "orange"
+      if (automationUnit.condition === "InitError") {
+        return "orange";
       }
 
-      if (automationUnit.state === "AutomationError") {
-        return "orange"
+      if (automationUnit.condition === "AutomationError") {
+        return "orange";
       }
 
-      return "white"
-    }
+      return "white";
+    },
   },
   mounted: function () {
     client.getAutomationUnits();

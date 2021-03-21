@@ -6,7 +6,7 @@ import eu.geekhome.shellyplugin.TemperatureBriefDto
 class ShellyTemperatureReadPortOperator(shellyId: String) : ShellyReadPortOperator<Temperature> {
 
     private val value = Temperature(0.0)
-    override val readTopic = "shellies/$shellyId/sensor/temperature"
+    override val readTopic = "shellies/$shellyId/temperature"
 
     override fun read(): Temperature {
         return value

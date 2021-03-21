@@ -10,7 +10,7 @@ import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
 import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
 import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
 import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
-import { UPDATE_AUTOMATION, UPDATE_AUTOMATION_UNITS } from './plugins/vuex'
+import { UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -304,7 +304,10 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.get("rest/automationunits"),
       (response) => {
-        store.commit(UPDATE_AUTOMATION_UNITS, response.data)
+        store.commit(CLEAR_AUTOMATION_UNITS)
+        response.data.forEach(element => {
+          store.commit(ADD_AUTOMATION_UNIT, element)
+        })
       }
     )
   },
