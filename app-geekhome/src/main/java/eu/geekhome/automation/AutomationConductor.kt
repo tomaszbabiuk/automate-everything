@@ -25,10 +25,12 @@ class AutomationContext(
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
-    val pluginsCoordinator: PluginManager) {
+    val pluginsCoordinator: PluginManager
+) {
 
     private var automationJob: Job? = null
     private var enabled: Boolean = false
+    private var checkingNewPortsTime = 0L
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
     val automationUnitsCache = HashMap<Long, Pair<InstanceDto, IDeviceAutomationUnit<*>>>()
@@ -45,49 +47,53 @@ class AutomationConductor(
             evaluationUnitsCache.clear()
 
             println("Enabling automation")
+            startAutomations()
+        }
+    }
 
-            val repository = pluginsCoordinator.getRepository()
-            val allInstances = repository.getAllInstances()
-            val allConfigurables = pluginsCoordinator.getConfigurables()
+    fun rebuildAutomations(): List<List<IStatementNode>> {
 
-            allInstances.forEach { instance ->
-                val configurable = allConfigurables.find { instance.clazz == it.javaClass.name}
-                if (configurable != null) {
-                    try {
-                        val physicalUnit = buildPhysicalUnit(configurable, instance)
-                        automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
-                    } catch (ex: Exception) {
-                        val wrapper = buildWrappedUnit(configurable)
-                        wrapper.error = ex
-                        wrapper.condition = UnitCondition.InitError
-                        automationUnitsCache[instance.id] = Pair(instance, wrapper)
-                    }
-                }
+        val repository = pluginsCoordinator.getRepository()
+        val allInstances = repository.getAllInstances()
+        val allConfigurables = pluginsCoordinator.getConfigurables()
 
-                if (configurable is ConditionConfigurable) {
-                    val evaluator = configurable.buildEvaluator(instance)
-                    evaluationUnitsCache[instance.id] = evaluator
+        allInstances.forEach { instance ->
+            val configurable = allConfigurables.find { instance.clazz == it.javaClass.name }
+            if (configurable != null) {
+                try {
+                    val physicalUnit = buildPhysicalUnit(configurable, instance)
+                    automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
+                } catch (ex: Exception) {
+                    val wrapper = buildWrappedUnit(configurable)
+                    wrapper.error = ex
+                    wrapper.condition = UnitCondition.InitError
+                    automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 }
             }
 
-            val automations = allInstances
-                .filter { it.automation != null }
-                .map { instanceDto ->
-                    val thisDevice = allConfigurables
-                        .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
-
-                    val blocksCache = blockFactoriesCollector.collect(thisDevice)
-                    val context =
-                        AutomationContext(instanceDto, thisDevice,
-                            automationUnitsCache.mapValues { it.value.second },
-                            evaluationUnitsCache, blocksCache)
-
-                    val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
-                    blocklyTransformer.transform(blocklyXml, context)
-                }
-
-            startAutomations(automations)
+            if (configurable is ConditionConfigurable) {
+                val evaluator = configurable.buildEvaluator(instance)
+                evaluationUnitsCache[instance.id] = evaluator
+            }
         }
+
+        return allInstances
+            .filter { it.automation != null }
+            .map { instanceDto ->
+                val thisDevice = allConfigurables
+                    .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
+
+                val blocksCache = blockFactoriesCollector.collect(thisDevice)
+                val context =
+                    AutomationContext(
+                        instanceDto, thisDevice,
+                        automationUnitsCache.mapValues { it.value.second },
+                        evaluationUnitsCache, blocksCache
+                    )
+
+                val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
+                blocklyTransformer.transform(blocklyXml, context)
+            }
     }
 
     private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): IDeviceAutomationUnit<*> {
@@ -118,26 +124,41 @@ class AutomationConductor(
         }
     }
 
-    private fun startAutomations(automations: List<List<IStatementNode>>) {
+    private fun startAutomations() {
+        val automations = rebuildAutomations()
+
         hardwareManager.checkNewPorts()
+        checkingNewPortsTime = Calendar.getInstance().timeInMillis
 
-        if (automations.isNotEmpty()) {
-            val triggers = automations
-                .flatMap { it }
+        val triggers = automations.flatten()
 
+        var hasNewPorts = false
             automationJob = GlobalScope.launch {
-                while (isActive) {
-                    val now = Calendar.getInstance()
+            while (isActive && !hasNewPorts) {
+                val now = Calendar.getInstance()
+                if (automations.isNotEmpty()) {
+                    println("Processing automation loop")
                     triggers.forEach {
-                        println("Processing automation")
                         it.process(now)
-                        delay(1000)
                     }
-
-                    hardwareManager.afterAutomationLoop(now)
                 }
 
-                println("Automation stopped")
+                println("Processing maintenance loop")
+                if (now.timeInMillis > checkingNewPortsTime + CHECKING_NEW_PORTS_INTERVAL) {
+                    hasNewPorts = hardwareManager.checkNewPorts()
+                    if (hasNewPorts) {
+                        println("Has new ports, automation has to be restarted")
+                    }
+                }
+
+                hardwareManager.afterAutomationLoop(now)
+                delay(1000)
+            }
+
+            println("Automation stopped")
+            if (hasNewPorts) {
+                println("Restarting, reason = HAS NEW PORTS")
+                startAutomations()
             }
         }
     }
@@ -148,5 +169,9 @@ class AutomationConductor(
         automationUnitsCache.clear()
         evaluationUnitsCache.clear()
         println("Disabling automation")
+    }
+
+    companion object {
+        const val CHECKING_NEW_PORTS_INTERVAL = 15000L
     }
 }
