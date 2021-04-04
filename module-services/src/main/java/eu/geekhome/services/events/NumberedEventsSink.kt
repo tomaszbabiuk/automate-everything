@@ -4,22 +4,22 @@ import java.util.*
 import java.util.function.Predicate
 import kotlin.collections.ArrayList
 
-class NumberedEventsSink<T> : EventsSink<T> {
+class NumberedEventsSink : EventsSink {
 
     var eventCounter = 0
-    private val listeners = Collections.synchronizedList(ArrayList<NumberedEventsListener<T>>())
+    private val listeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
 
-    val events = ArrayList<NumberedEvent<T>>()
+    val events = ArrayList<LiveEvent<*>>()
 
-    override fun addAdapterEventListener(listener: NumberedEventsListener<T>) {
+    override fun addAdapterEventListener(listener: LiveEventsListener) {
         listeners.add(listener)
     }
 
-    override fun removeListener(listener: NumberedEventsListener<T>) {
+    override fun removeListener(listener: LiveEventsListener) {
         listeners.remove(listener)
     }
 
-    override fun broadcastEvent(payload: T) {
+    override fun  broadcastEvent(payload: LiveEventData) {
         if (events.size > MAX_SIZE) {
             events.removeAt(0)
         }
@@ -27,7 +27,7 @@ class NumberedEventsSink<T> : EventsSink<T> {
         println("broadcasting event: $payload")
 
         eventCounter++
-        val event = NumberedEvent(eventCounter, payload)
+        val event = LiveEvent(eventCounter, payload.javaClass.simpleName, payload)
         events.add(event)
         listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
@@ -37,16 +37,12 @@ class NumberedEventsSink<T> : EventsSink<T> {
         events.clear()
     }
 
-    override fun removeRange(filter: Predicate<in NumberedEvent<T>>) {
+    override fun removeRange(filter: Predicate<in LiveEvent<*>>) {
         events.removeIf(filter)
     }
 
-    override fun getNumberOfEvents(): Int {
-        return events.size
-    }
-
-    override fun getHistoricEvent(id: Int): NumberedEvent<T> {
-        return events[id]
+    override fun all(): List<LiveEvent<*>> {
+        return events
     }
 
     companion object {

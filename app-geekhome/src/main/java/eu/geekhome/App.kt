@@ -8,6 +8,8 @@ import org.pf4j.SingletonExtensionFactory
 import org.pf4j.PluginManager
 import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.services.events.LiveEvent
+import eu.geekhome.services.events.NumberedEventsSink
 
 class App : ResourceConfig() {
     private fun buildPluginManager(): PluginManager {
@@ -22,9 +24,10 @@ class App : ResourceConfig() {
         val pluginManager = buildPluginManager()
         pluginManager.loadPlugins()
 
-        val hardwareManager = HardwareManager(pluginManager)
+        val liveEvents = NumberedEventsSink()
+        val hardwareManager = HardwareManager(pluginManager, liveEvents)
         val blockFactoriesCoordinator = BlockFactoriesCollector(pluginManager)
-        val automationConductor = AutomationConductor(hardwareManager,blockFactoriesCoordinator, pluginManager)
+        val automationConductor = AutomationConductor(hardwareManager,blockFactoriesCoordinator, pluginManager, liveEvents)
 
         packages("eu.geekhome.rest")
         register(DependencyInjectionBinder())

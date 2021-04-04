@@ -2,18 +2,15 @@ package eu.geekhome.services.events
 
 import java.util.function.Predicate
 
-data class NumberedEvent<T>(val no: Int, val payload: T)
-
-interface NumberedEventsListener<T> {
-    fun onEvent(event: NumberedEvent<T>)
+interface LiveEventsListener {
+    fun onEvent(event: LiveEvent<*>)
 }
 
-interface EventsSink<T> {
-    fun getNumberOfEvents(): Int
-    fun getHistoricEvent(id: Int) : NumberedEvent<T>
-    fun addAdapterEventListener(listener: NumberedEventsListener<T>)
-    fun removeListener(listener: NumberedEventsListener<T>)
-    fun broadcastEvent(payload: T)
+interface EventsSink {
+    fun addAdapterEventListener(listener: LiveEventsListener)
+    fun removeListener(listener: LiveEventsListener)
+    fun broadcastEvent(payload: LiveEventData)
     fun reset()
-    fun removeRange(filter: Predicate<in NumberedEvent<T>>)
+    fun removeRange(filter: Predicate<in LiveEvent<*>>)
+    fun all() : List<LiveEvent<*>>
 }

@@ -1,7 +1,7 @@
 package eu.geekhome.shellyplugin
 
 import com.google.gson.Gson
-import eu.geekhome.services.events.EventsSink
+import eu.geekhome.services.events.*
 import eu.geekhome.services.hardware.*
 import eu.geekhome.services.mqtt.MqttBrokerService
 import eu.geekhome.services.mqtt.MqttListener
@@ -20,7 +20,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
 
     override val newPorts = ArrayList<ConnectiblePort<*>>()
     private var idBuilder = PortIdBuilder(factoryId, id)
-    private var updateSink: EventsSink<PortUpdateEvent>? = null
+    private var updateSink: EventsSink? = null
     private var finder: ShellyFinder
     private val client = createHttpClient()
     private val brokerIP: InetAddress?
@@ -90,7 +90,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
 
     @ExperimentalCoroutinesApi
     override suspend fun internalDiscovery(
-        eventsSink: EventsSink<HardwareEvent>
+        eventsSink: EventsSink
     ): MutableList<Port<*>> = coroutineScope {
         ports.clear()
 
@@ -140,10 +140,11 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    override fun start(updateSink: EventsSink<PortUpdateEvent>) {
-        this.updateSink = updateSink
+    override fun start(operationSink: EventsSink) {
+        this.updateSink = operationSink
         mqttBroker.addMqttListener(this)
     }
+
 
     override fun stop() {
         mqttBroker.removeMqttListener(this)

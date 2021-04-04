@@ -9,6 +9,9 @@ import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.automation.UnitCondition
 import eu.geekhome.services.configurable.*
+import eu.geekhome.services.events.AutomationUpdateEvent
+import eu.geekhome.services.events.LiveEvent
+import eu.geekhome.services.events.NumberedEventsSink
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginManager
 import kotlinx.coroutines.*
@@ -25,7 +28,8 @@ class AutomationContext(
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
-    val pluginsCoordinator: PluginManager
+    val pluginsCoordinator: PluginManager,
+    val liveEvents: NumberedEventsSink
 ) {
 
     private var automationJob: Job? = null
@@ -40,9 +44,14 @@ class AutomationConductor(
         return enabled
     }
 
+    private fun broadcastAutomationUpdate() {
+        liveEvents.broadcastEvent(AutomationUpdateEvent(enabled))
+    }
+
     fun enable() {
         if (!enabled) {
             enabled = true
+            broadcastAutomationUpdate()
             automationUnitsCache.clear()
             evaluationUnitsCache.clear()
 
@@ -169,6 +178,8 @@ class AutomationConductor(
         automationUnitsCache.clear()
         evaluationUnitsCache.clear()
         println("Disabling automation")
+
+        broadcastAutomationUpdate()
     }
 
     companion object {

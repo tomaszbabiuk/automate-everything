@@ -75,7 +75,6 @@
 </template>
 <script>
 import { client } from "../rest.js";
-import { sseClient } from "../sse.js";
 import store from "../plugins/vuex";
 import {
   CLEAR_DISCOVERY_EVENTS,
@@ -120,7 +119,6 @@ export default {
   },
   mounted: function () {
     this.refresh();
-    sseClient.openDiscoveryEvents();
 
     this.headers = [
       {
@@ -146,9 +144,6 @@ export default {
         align: "end",
       },
     ];
-  },
-  beforeDestroy() {
-    sseClient.closeDiscoveryEvents();
-  },
+  }
 };
 </script>

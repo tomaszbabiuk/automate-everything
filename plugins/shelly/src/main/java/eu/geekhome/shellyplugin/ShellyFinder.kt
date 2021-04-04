@@ -1,7 +1,7 @@
 package eu.geekhome.shellyplugin
 
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.hardware.HardwareEvent
+import eu.geekhome.services.events.HardwareEvent
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -9,7 +9,7 @@ import java.net.InetAddress
 
 class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress) {
 
-    suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink<HardwareEvent>?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
+    suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
             if (eventsSink != null) {
@@ -23,7 +23,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
 
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
-    suspend fun searchForShellies(eventsSink: EventsSink<HardwareEvent>): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
+    suspend fun searchForShellies(eventsSink: EventsSink): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
         val lookupAddressBegin = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
             0.toByte()))
         val lookupAddressEnd = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
@@ -60,7 +60,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
         result
     }
 
-    private fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
+    private fun broadcastEvent(eventsSink: EventsSink, message: String) {
         val event = HardwareEvent(ShellyPlugin.PLUGIN_ID_SHELLY, message)
         eventsSink.broadcastEvent(event)
     }

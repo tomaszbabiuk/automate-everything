@@ -35,7 +35,6 @@
 
 <script>
 import { client } from "../rest.js";
-import { sseClient } from "../sse.js";
 
 export default {
   methods: {
@@ -53,11 +52,6 @@ export default {
   },
   mounted: function() {
     client.getPlugins();
-
-    sseClient.openPluginEvents()
-  },
-  beforeDestroy() {
-    sseClient.closePluginEvents()
   },
 };
 </script>

@@ -1,7 +1,11 @@
 package eu.geekhome.aforeplugin
 
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.hardware.*
+import eu.geekhome.services.events.HardwareEvent
+import eu.geekhome.services.events.LiveEvent
+import eu.geekhome.services.hardware.HardwareAdapterBase
+import eu.geekhome.services.hardware.OperationMode
+import eu.geekhome.services.hardware.Port
 import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.collections.ArrayList
@@ -17,7 +21,7 @@ class AforeAdapter : HardwareAdapterBase() {
     //    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>> {
+    override suspend fun internalDiscovery(eventsSink: EventsSink) : MutableList<Port<*>> {
         val result = ArrayList<Port<*>>()
 //        val portId = idBuilder.buildPortId(INVERTER_PORT_PREFIX)
 //        val inverterPower = readInverterPower()
@@ -35,7 +39,7 @@ class AforeAdapter : HardwareAdapterBase() {
         return result
     }
 
-    fun broadcastEvent(eventsSink: EventsSink<HardwareEvent>, message: String) {
+    fun broadcastEvent(eventsSink: EventsSink, message: String) {
         val event = HardwareEvent(AforeAdapterFactory.ID, message)
         eventsSink.broadcastEvent(event)
     }
@@ -78,7 +82,7 @@ class AforeAdapter : HardwareAdapterBase() {
     override fun stop() {
     }
 
-    override fun start(updateSink: EventsSink<PortUpdateEvent>) {
+    override fun start(operationSink: EventsSink) {
     }
 
 //    companion object {

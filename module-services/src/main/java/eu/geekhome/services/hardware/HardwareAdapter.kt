@@ -8,7 +8,7 @@ interface HardwareAdapter {
     val newPorts: List<Port<*>>
     fun clearNewPorts()
     val id: String
-    suspend fun discover(eventsSink: EventsSink<HardwareEvent>) : MutableList<Port<*>>
+    suspend fun discover(discoverySink: EventsSink) : MutableList<Port<*>>
 
     @Throws(Exception::class)
     fun refresh(now: Calendar)
@@ -18,7 +18,7 @@ interface HardwareAdapter {
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)
     fun stop()
-    fun start(updateSink: EventsSink<PortUpdateEvent>)
+    fun start(operationSink: EventsSink)
 
     var lastDiscoveryTime: Long
     var lastError: Throwable?

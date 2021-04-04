@@ -31,4 +31,3 @@ class AutomationUnitsController @Inject constructor(
             }
     }
 }
-

@@ -8,8 +8,7 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 export const lang = vuetify.framework.lang
 
 export const sseClient = {
-  pluginsMsgServer: null,
-  discoveryEventsMsgServer: null,
+  liveMsgServer: null,
 
   handleError: function(innerException) {
     console.log('EventSource error: ', innerException);
@@ -23,53 +22,41 @@ export const sseClient = {
     store.commit(SET_ERROR, errorData)
   },
   
-  openPluginEvents: function() {
-    this.pluginsMsgServer = new EventSourcePolyfill('/rest/plugins/live', {
+  openLiveEvents: function() {
+    this.liveMsgServer = new EventSourcePolyfill('/rest/live', {
       headers: {
           'Accept-Language': lang.current
       }
     })
 
-    this.pluginsMsgServer.addEventListener("pluginChange", function(e) {
-      store.commit(UPDATE_PLUGIN, JSON.parse(e.data))
+    this.liveMsgServer.addEventListener("DiscoveryEventDto", function(e) {
+      console.log(e)
+      var discoveryEventDto = JSON.parse(e.data)
+      store.commit(ADD_DISCOVERY_EVENT, discoveryEventDto)
     })
 
-    this.pluginsMsgServer.onerror = innerException => {
+    this.liveMsgServer.addEventListener("PortDto", function(e) {
+      console.log(e)
+      var portDto = JSON.parse(e.data)
+      store.commit(UPDATE_PORT, portDto)
+    })
+
+    this.liveMsgServer.addEventListener("PluginDto", function(e) {
+      console.log(e)
+      var pluginDto = JSON.parse(e.data)
+      store.commit(UPDATE_PLUGIN, pluginDto)
+    })
+
+
+    this.liveMsgServer.onerror = innerException => {
       this.handleError(innerException)
-      this.pluginsMsgServer.close()
+      this.liveMsgServer.close()
     };
   },
 
-  closePluginEvents: function() {
-    if (this.pluginsMsgServer != null) {
-      this.pluginsMsgServer.close();
+  closeLiveEvents: function() {
+    if (this.liveMsgServer != null) {
+      this.liveMsgServer.close();
     }
   },
-
-  openDiscoveryEvents: function() {
-    this.discoveryEventsMsgServer = new EventSourcePolyfill('/rest/adapterevents/live', {
-      headers: {
-          'Accept-Language': lang.current
-      }
-    });
-
-    this.discoveryEventsMsgServer.addEventListener("DiscoveryEvent", function(e) {
-      store.commit(ADD_DISCOVERY_EVENT, JSON.parse(e.data))
-    })
-
-    this.discoveryEventsMsgServer.addEventListener("PortUpdateEvent", function(e) {
-      store.commit(UPDATE_PORT, JSON.parse(e.data))
-    })
-    
-    this.discoveryEventsMsgServer.onerror = innerException => {
-        this.handleError(innerException)
-        this.discoveryEventsMsgServer.close()
-    };
-  },
-
-  closeDiscoveryEvents: function() {
-    if (this.discoveryEventsMsgServer != null) {
-      this.discoveryEventsMsgServer.close();
-    }
-  }
 }

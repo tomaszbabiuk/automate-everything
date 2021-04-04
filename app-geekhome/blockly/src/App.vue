@@ -114,6 +114,7 @@
 
 <script>
 import { client } from "./rest.js";
+import { sseClient } from "./sse.js";
 
 export default {
   name: "App",
@@ -230,6 +231,11 @@ export default {
   mounted: function () {
     client.getPlugins();
     client.getAutomation();
+    sseClient.openLiveEvents();
+  },
+
+  beforeDestroy() {
+    sseClient.closeLiveEvents();
   },
 };
 </script>
