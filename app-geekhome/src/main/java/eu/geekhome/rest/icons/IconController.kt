@@ -1,53 +1,54 @@
-package eu.geekhome.rest.icons;
+package eu.geekhome.rest.icons
 
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.repository.IconDto;
-import eu.geekhome.services.repository.Repository;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import eu.geekhome.PluginsCoordinator
+import javax.inject.Inject
+import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.services.repository.IconDto
+import javax.ws.rs.*
+import javax.ws.rs.core.MediaType
 
 @Path("icons")
-public class IconController {
-
-    private final Repository _repository;
-
-    @Inject
-    public IconController(PluginsCoordinator pluginsCoordinator) {
-        _repository = pluginsCoordinator.getRepository();
-    }
+class IconController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public long postIcon(IconDto iconDto) {
-        return _repository.saveIcon(iconDto);
+    fun postIcon(iconDto: IconDto?): Long {
+        return pluginsCoordinator
+                    .repository
+                    .saveIcon(iconDto!!)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void putIcon(IconDto iconDto) {
-        _repository.updateIcon(iconDto);
+    fun putIcon(iconDto: IconDto?) {
+        pluginsCoordinator
+            .repository
+            .updateIcon(iconDto!!)
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<IconDto> getAllIconCategories() {
-        return _repository.getAllIcons();
-    }
+    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @get:GET
+    val allIconCategories: List<IconDto>
+        get() = pluginsCoordinator
+                    .repository
+                    .getAllIcons()
 
     @GET
     @Path("/{id}/raw")
     @Produces("image/svg+xml;charset=utf-8")
-    public String getRaw(@PathParam("id") long id) {
-        return _repository.getIcon(id).getRaw();
+    fun getRaw(@PathParam("id") id: Long): String {
+        return pluginsCoordinator
+                    .repository
+                    .getIcon(id).raw
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void deleteIcon(@PathParam("id") long id) {
-        _repository.deleteIcon(id);
+    fun deleteIcon(@PathParam("id") id: Long) {
+        pluginsCoordinator
+            .repository
+            .deleteIcon(id)
     }
 }

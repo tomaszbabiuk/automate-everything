@@ -11,8 +11,8 @@ class LiveEvent<T: LiveEventData>(
 
 sealed class LiveEventData
 
-class HardwareEvent(val factoryId: String,
-                    val message: String) : LiveEventData()
+class DiscoveryEvent(val factoryId: String,
+                     val message: String) : LiveEventData()
 
 class PortUpdateEvent(val factoryId: String,
                       val adapterId: String,

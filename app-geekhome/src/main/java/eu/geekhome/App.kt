@@ -1,44 +1,36 @@
 package eu.geekhome
 
-import eu.geekhome.rest.*
-import org.glassfish.jersey.server.ResourceConfig
-import org.pf4j.JarPluginManager
-import org.pf4j.ExtensionFactory
-import org.pf4j.SingletonExtensionFactory
-import org.pf4j.PluginManager
 import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.services.events.LiveEvent
+import eu.geekhome.rest.CORSFilter
+import eu.geekhome.rest.DependencyInjectionBinder
+import eu.geekhome.rest.GsonMessageBodyHandler
+import eu.geekhome.rest.ResourceNotFoundExceptionMapper
 import eu.geekhome.services.events.NumberedEventsSink
+import org.glassfish.jersey.server.ResourceConfig
 
 class App : ResourceConfig() {
-    private fun buildPluginManager(): PluginManager {
-        return object : JarPluginManager() {
-            override fun createExtensionFactory(): ExtensionFactory {
-                return SingletonExtensionFactory()
-            }
-        }
-    }
-
     init {
-        val pluginManager = buildPluginManager()
-        pluginManager.loadPlugins()
-
         val liveEvents = NumberedEventsSink()
-        val hardwareManager = HardwareManager(pluginManager, liveEvents)
-        val blockFactoriesCoordinator = BlockFactoriesCollector(pluginManager)
-        val automationConductor = AutomationConductor(hardwareManager,blockFactoriesCoordinator, pluginManager, liveEvents)
+
+        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginManager(liveEvents)
+        pluginsCoordinator.loadPlugins()
+
+        val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents)
+        val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator)
+        val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator, liveEvents)
 
         packages("eu.geekhome.rest")
+        register(liveEvents)
         register(DependencyInjectionBinder())
         register(GsonMessageBodyHandler())
         register(CORSFilter())
         register(ResourceNotFoundExceptionMapper())
-        register(pluginManager)
+        register(pluginsCoordinator)
         register(hardwareManager)
         register(automationConductor)
         register(blockFactoriesCoordinator)
 
-        pluginManager.startPlugins()
+        pluginsCoordinator.startPlugins()
     }
 }

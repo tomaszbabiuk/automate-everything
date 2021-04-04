@@ -1,9 +1,7 @@
 package eu.geekhome.rest;
 
 import eu.geekhome.automation.BlocklyParser;
-import eu.geekhome.automation.blocks.BlockFactoriesCollector;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
-import eu.geekhome.rest.automation.EvaluationResultDto;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
 import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
 import eu.geekhome.rest.configurable.FieldDefinitionDtoMapper;
@@ -19,6 +17,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
 
     @Override
     protected void configure() {
+        //mappers
         bind(FieldDefinitionDtoMapper.class).to(FieldDefinitionDtoMapper.class).in(Singleton.class);
         bind(ConfigurableDtoMapper.class).to(ConfigurableDtoMapper.class).in(Singleton.class);
         bind(PluginDtoMapper.class).to(PluginDtoMapper.class).in(Singleton.class);
@@ -27,9 +26,14 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(EvaluationResultDtoMapper.class).to(EvaluationResultDtoMapper.class).in(Singleton.class);
         bind(PortDtoMapper.class).to(PortDtoMapper.class).in(Singleton.class);
         bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
-        bind(PluginsCoordinator.class).to(PluginsCoordinator.class).in(Singleton.class);
+
+        //holders
+        bind(PluginsCoordinatorHolderService.class).to(PluginsCoordinatorHolderService.class).in(Singleton.class);
         bind(HardwareManagerHolderService.class).to(HardwareManagerHolderService.class).in(Singleton.class);
+        bind(EventsSinkHolderService.class).to(EventsSinkHolderService.class).in(Singleton.class);
         bind(AutomationConductorHolderService.class).to(AutomationConductorHolderService.class).in(Singleton.class);
+
+        //blocks
         bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);
         bind(BlockFactoriesCollectorHolderService.class).to(BlockFactoriesCollectorHolderService.class).in(Singleton.class);
     }

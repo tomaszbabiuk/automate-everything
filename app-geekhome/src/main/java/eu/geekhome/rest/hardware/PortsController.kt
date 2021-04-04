@@ -1,9 +1,10 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.HardwareManager
+import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
-import eu.geekhome.rest.PluginsCoordinator
+import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.services.hardware.*
 import javax.ws.rs.*
@@ -11,11 +12,12 @@ import javax.ws.rs.core.MediaType
 
 @Path("ports")
 class PortsController @Inject constructor(
-    val pluginsCoordinator: PluginsCoordinator,
+    val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
     hardwareManagerHolderService: HardwareManagerHolderService,
-    val portDtoMapper: PortDtoMapper
+    private val portDtoMapper: PortDtoMapper
 ) {
     private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET

@@ -1,117 +1,98 @@
-package eu.geekhome.rest.instances;
+package eu.geekhome.rest.instances
 
-import eu.geekhome.services.configurable.Configurable;
-import eu.geekhome.services.configurable.ConfigurableWithFields;
-import eu.geekhome.services.configurable.FieldDefinition;
-import eu.geekhome.services.configurable.FieldValidationResult;
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.repository.InstanceDto;
-import eu.geekhome.services.repository.Repository;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.*;
+import eu.geekhome.PluginsCoordinator
+import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.services.configurable.ConfigurableWithFields
+import eu.geekhome.services.configurable.FieldValidationResult
+import eu.geekhome.services.repository.InstanceDto
+import java.util.*
+import javax.inject.Inject
+import javax.ws.rs.*
+import javax.ws.rs.core.MediaType
 
 @Path("instances")
-public class InstancesController {
+class InstancesController @Inject constructor(private val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
 
-    private final Repository _repository;
-    private final PluginsCoordinator _pluginsCoordinator;
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
-    private Optional<ConfigurableWithFields> findConfigurable(String clazz) {
-        return _pluginsCoordinator
-                .getConfigurables()
-                .stream()
-                .filter(x -> x.getClass().getName().equals(clazz))
-                .filter(x -> x instanceof ConfigurableWithFields)
-                .map(x -> (ConfigurableWithFields)x)
-                .findFirst();
+    private fun findConfigurable(clazz: String): ConfigurableWithFields? {
+        return pluginsCoordinator
+            .configurables
+            .filter { x -> x.javaClass.name.equals(clazz) }
+            .filterIsInstance<ConfigurableWithFields>()
+            .map { x -> x }
+            .firstOrNull()
     }
 
-    @Inject
-    public InstancesController(PluginsCoordinator pluginsCoordinator) {
-        _pluginsCoordinator = pluginsCoordinator;
-        _repository = pluginsCoordinator.getRepository();
-    }
-
-    @SuppressWarnings("rawtypes")
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Map<String, FieldValidationResult> postInstances(InstanceDto instanceDto) throws Exception {
-        Optional<ConfigurableWithFields> configurable = findConfigurable(instanceDto.getClazz());
-        if (configurable.isPresent()) {
-            Map<String, FieldValidationResult> validationResult = new HashMap<>();
-            boolean isObjectValid = true;
-
-            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions().values()) {
-                String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
-                FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
-                validationResult.put(fieldDefinition.getName(), isValid);
-                if (!isValid.isValid()) {
-                    isObjectValid = false;
+    @Throws(Exception::class)
+    fun postInstances(instanceDto: InstanceDto): Map<String, FieldValidationResult> {
+        val configurable = findConfigurable(instanceDto.clazz)
+        return if (configurable != null) {
+            val validationResult: MutableMap<String, FieldValidationResult> = HashMap()
+            var isObjectValid = true
+            for (fieldDefinition in configurable.fieldDefinitions.values) {
+                val fieldValue = instanceDto.fields[fieldDefinition.name]
+                val isValid = fieldDefinition.validate(fieldValue)
+                validationResult[fieldDefinition.name] = isValid
+                if (!isValid.isValid) {
+                    isObjectValid = false
                 }
             }
-
             if (isObjectValid) {
-                _repository.saveInstance(instanceDto);
+                pluginsCoordinator.repository.saveInstance(instanceDto)
             }
-
-            return validationResult;
+            validationResult
         } else {
-            throw new Exception("Unsupported configurable class");
+            throw Exception("Unsupported configurable class")
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Map<String, FieldValidationResult> putInstances(InstanceDto instanceDto) throws Exception {
-        Optional<ConfigurableWithFields> configurable = findConfigurable(instanceDto.getClazz());
-        if (configurable.isPresent()) {
-            Map<String, FieldValidationResult> validationResult = new HashMap<>();
-            boolean isObjectValid = true;
-
-            for (FieldDefinition fieldDefinition : configurable.get().getFieldDefinitions().values()) {
-                String fieldValue = instanceDto.getFields().get(fieldDefinition.getName());
-                FieldValidationResult isValid = fieldDefinition.validate(fieldValue);
-                validationResult.put(fieldDefinition.getName(), isValid);
-                if (!isValid.isValid()) {
-                    isObjectValid = false;
+    @Throws(Exception::class)
+    fun putInstances(instanceDto: InstanceDto): Map<String, FieldValidationResult> {
+        val configurable = findConfigurable(instanceDto.clazz)
+        return if (configurable != null) {
+            val validationResult: MutableMap<String, FieldValidationResult> = HashMap()
+            var isObjectValid = true
+            for (fieldDefinition in configurable.fieldDefinitions.values) {
+                val fieldValue = instanceDto.fields[fieldDefinition.name]
+                val isValid = fieldDefinition.validate(fieldValue)
+                validationResult[fieldDefinition.name] = isValid
+                if (!isValid.isValid) {
+                    isObjectValid = false
                 }
             }
-
             if (isObjectValid) {
-                _repository.updateInstance(instanceDto);
+                pluginsCoordinator.repository.updateInstance(instanceDto)
             }
-
-            return validationResult;
+            validationResult
         } else {
-            throw new Exception("Unsupported configurable class");
+            throw Exception("Unsupported configurable class")
         }
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public InstanceDto getInstancesById(@PathParam("id") long id) {
-        return _repository.getInstance(id);
+    fun getInstancesById(@PathParam("id") id: Long): InstanceDto {
+        return pluginsCoordinator.repository.getInstance(id)
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<InstanceDto> getInstancesOfClass(@QueryParam("class") String clazz) {
-        if (clazz != null) {
-            return _repository.getInstancesOfClazz(clazz);
-        }
-
-        return new ArrayList<>();
+    fun getInstancesOfClass(@QueryParam("class") clazz: String?): List<InstanceDto> {
+        return if (clazz != null) {
+            pluginsCoordinator.repository.getInstancesOfClazz(clazz)
+        } else ArrayList()
     }
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void deleteInstance(@PathParam("id") long id) {
-        _repository.deleteInstance(id);
+    fun deleteInstance(@PathParam("id") id: Long) {
+        pluginsCoordinator.repository.deleteInstance(id)
     }
 }

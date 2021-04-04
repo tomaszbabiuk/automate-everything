@@ -1,46 +1,47 @@
-package eu.geekhome.rest.icons;
+package eu.geekhome.rest.icons
 
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.repository.IconCategoryDto;
-import eu.geekhome.services.repository.Repository;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import eu.geekhome.PluginsCoordinator
+import javax.inject.Inject
+import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.services.repository.IconCategoryDto
+import javax.ws.rs.*
+import javax.ws.rs.core.MediaType
 
 @Path("iconcategories")
-public class IconCategoryController {
+class IconCategoryController @Inject constructor(
+    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
 
-    private final Repository _repository;
-
-    @Inject
-    public IconCategoryController(PluginsCoordinator pluginsCoordinator) {
-        _repository = pluginsCoordinator.getRepository();
-    }
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public long postIconCategory(IconCategoryDto iconCategoryDto) {
-        return _repository.saveIconCategory(iconCategoryDto);
+    fun postIconCategory(iconCategoryDto: IconCategoryDto?): Long {
+        return pluginsCoordinator
+                    .repository
+                    .saveIconCategory(iconCategoryDto!!)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void putIconCategory(IconCategoryDto iconCategoryDto) {
-        _repository.updateIconCategory(iconCategoryDto);
+    fun putIconCategory(iconCategoryDto: IconCategoryDto?) {
+        pluginsCoordinator
+            .repository
+            .updateIconCategory(iconCategoryDto!!)
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<IconCategoryDto> getAllIConCategories() {
-        return _repository.getAllIconCategories();
-    }
+    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @get:GET
+    val allIConCategories: List<IconCategoryDto>
+        get() = pluginsCoordinator
+                    .repository
+                    .getAllIconCategories()
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void deleteIconCategory(@PathParam("id") long id) {
-        _repository.deleteIconCategory(id);
+    fun deleteIconCategory(@PathParam("id") id: Long) {
+        pluginsCoordinator
+            .repository
+            .deleteIconCategory(id)
     }
 }

@@ -1,8 +1,8 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.HardwareManager
-import eu.geekhome.rest.HardwareManagerHolderService
-import eu.geekhome.services.events.HardwareEvent
+import eu.geekhome.rest.EventsSinkHolderService
+import eu.geekhome.services.events.DiscoveryEvent
+import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.hardware.DiscoveryEventDto
 import javax.inject.Inject
 import javax.ws.rs.GET
@@ -12,20 +12,19 @@ import javax.ws.rs.core.MediaType
 
 @Path("adapterevents")
 class AdapterEvents @Inject constructor(
-    hardwareManagerHolderService: HardwareManagerHolderService,
+    eventsSinkHolderService: EventsSinkHolderService,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
 ) {
 
-    private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
+    private val eventsSink: EventsSink = eventsSinkHolderService.instance
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getEvents(): List<DiscoveryEventDto> {
-        return hardwareManager
-            .discoverySink
+        return eventsSink
             .all()
-            .filter { it.data is HardwareEvent }
-            .map { hardwareEventMapper.map(it.number, it.data as HardwareEvent) }
+            .filter { it.data is DiscoveryEvent }
+            .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEvent) }
             .toList()
     }
 }

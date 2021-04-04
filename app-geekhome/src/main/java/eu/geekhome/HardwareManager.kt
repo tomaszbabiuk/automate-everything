@@ -1,6 +1,5 @@
 package eu.geekhome
 
-import eu.geekhome.rest.getRepository
 import eu.geekhome.services.events.*
 import eu.geekhome.services.hardware.*
 import kotlinx.coroutines.*
@@ -8,15 +7,14 @@ import org.pf4j.*
 import java.util.*
 
 class HardwareManager(
-    private val pluginManager: PluginManager,
+    private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: NumberedEventsSink
 ) : PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
-    val discoverySink: EventsSink = NumberedEventsSink()
 
     init {
-        pluginManager.addPluginStateListener(this)
+        pluginsCoordinator.addPluginStateListener(this)
     }
 
     fun afterAutomationLoop(now: Calendar) {
@@ -37,21 +35,17 @@ class HardwareManager(
     }
 
     private suspend fun startAdaptersAndDiscover(factory: HardwareAdapterFactory) = coroutineScope {
-        discoverySink.removeRange {
-            (it.data as? HardwareEvent)?.factoryId == factory.id
-        }
-
         factories
             .filter { factory.id == it.key.id }
             .flatMap { it.value }
             .forEach { bundle ->
                 bundle.adapter.start(liveEvents)
                 bundle.discoveryJob = async {
-                    bundle.ports = bundle.adapter.discover(discoverySink)
+                    bundle.ports = bundle.adapter.discover(liveEvents)
                     bundle.ports.forEach {
                         val portSnapshot = PortDto(it.id, factory.id, bundle.adapter.id,
                             null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
-                        pluginManager.getRepository().savePort(portSnapshot)
+                        pluginsCoordinator.repository.savePort(portSnapshot)
                         val event = PortUpdateEvent(factory.id, bundle.adapter.id, it)
                         liveEvents.broadcastEvent(event)
                     }

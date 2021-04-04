@@ -1,9 +1,8 @@
 package eu.geekhome.automation.blocks
 
+import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.BlockFactory
 import eu.geekhome.automation.R
-import eu.geekhome.rest.getConfigurables
-import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.StateType
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.Humidity
@@ -11,7 +10,6 @@ import eu.geekhome.services.hardware.PortValue
 import eu.geekhome.services.hardware.Temperature
 import eu.geekhome.services.hardware.Wattage
 import eu.geekhome.services.localization.Resource
-import org.pf4j.PluginManager
 
 interface IBlockFactoriesCollector {
     fun collect(thisDevice: Configurable?): List<BlockFactory<*>>
@@ -35,7 +33,7 @@ enum class CategoryConstants(
     }
 }
 
-class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlockFactoriesCollector {
+class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator) : IBlockFactoriesCollector {
 
     override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
@@ -93,8 +91,8 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
     }
 
     private fun collectConditionBlocks(): List<BlockFactory<*>> {
-        val instanceBriefs = pluginManager.getRepository().getAllInstanceBriefs()
-        val allConfigurables = pluginManager.getConfigurables()
+        val instanceBriefs = pluginsCoordinator.repository.getAllInstanceBriefs()
+        val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
             .filter { briefDto ->
@@ -110,8 +108,8 @@ class BlockFactoriesCollector(private val pluginManager: PluginManager) : IBlock
     }
 
     private fun collectSensorBlocks(): List<BlockFactory<*>> {
-        val instanceBriefs = pluginManager.getRepository().getAllInstanceBriefs()
-        val allConfigurables = pluginManager.getConfigurables()
+        val instanceBriefs = pluginsCoordinator.repository.getAllInstanceBriefs()
+        val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
             .map {  briefDto ->

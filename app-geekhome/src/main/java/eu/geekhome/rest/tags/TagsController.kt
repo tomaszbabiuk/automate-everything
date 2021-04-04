@@ -1,46 +1,46 @@
-package eu.geekhome.rest.tags;
+package eu.geekhome.rest.tags
 
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.repository.Repository;
-import eu.geekhome.services.repository.TagDto;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import eu.geekhome.PluginsCoordinator
+import javax.inject.Inject
+import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.services.repository.TagDto
+import javax.ws.rs.*
+import javax.ws.rs.core.MediaType
 
 @Path("tags")
-public class TagsController {
+class TagsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
 
-    private final Repository _repository;
-
-    @Inject
-    public TagsController(PluginsCoordinator pluginsCoordinator) {
-        _repository = pluginsCoordinator.getRepository();
-    }
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public long postTag(TagDto tagDto) {
-        return _repository.saveTag(tagDto);
+    fun postTag(tagDto: TagDto?): Long {
+        return pluginsCoordinator
+            .repository
+            .saveTag(tagDto!!)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void putTag(TagDto tagDto) {
-        _repository.updateTag(tagDto);
+    fun putTag(tagDto: TagDto?) {
+        pluginsCoordinator
+            .repository
+            .updateTag(tagDto!!)
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<TagDto> getAllTags() {
-        return _repository.getAllTags();
-    }
+    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @get:GET
+    val allTags: List<TagDto>
+        get() = pluginsCoordinator
+                    .repository
+                    .getAllTags()
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void deleteTag(@PathParam("id") long id) {
-        _repository.deleteTag(id);
+    fun deleteTag(@PathParam("id") id: Long) {
+        pluginsCoordinator
+            .repository
+            .deleteTag(id)
     }
 }

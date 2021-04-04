@@ -1,53 +1,42 @@
-package eu.geekhome.rest.intancebriefs;
+package eu.geekhome.rest.intancebriefs
 
-import eu.geekhome.rest.PluginsCoordinator;
-import eu.geekhome.services.configurable.ConfigurableType;
-import eu.geekhome.services.repository.InstanceBriefDto;
-import eu.geekhome.services.repository.Repository;
-
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
+import eu.geekhome.PluginsCoordinator
+import javax.inject.Inject
+import eu.geekhome.rest.PluginsCoordinatorHolderService
+import javax.ws.rs.GET
+import javax.ws.rs.Produces
+import eu.geekhome.services.repository.InstanceBriefDto
+import javax.ws.rs.PathParam
+import eu.geekhome.services.configurable.ConfigurableType
+import javax.ws.rs.Path
+import javax.ws.rs.core.MediaType
 
 @Path("instancebriefs")
-public class InstanceBriefsController {
+class InstanceBriefsController @Inject constructor(
+    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
 
-    private final Repository _repository;
-    private final PluginsCoordinator _pluginsCoordinator;
+    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
-    @Inject
-    public InstanceBriefsController(PluginsCoordinator pluginsCoordinator) {
-        _pluginsCoordinator = pluginsCoordinator;
-        _repository = pluginsCoordinator.getRepository();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<InstanceBriefDto> getAllInstancesBriefs() {
-        return _repository
-                .getAllInstanceBriefs();
-    }
+    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @get:GET
+    val allInstancesBriefs: List<InstanceBriefDto>
+        get() = pluginsCoordinator
+            .repository
+            .getAllInstanceBriefs()
 
     @GET
     @Path("/{configurableType}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<InstanceBriefDto> getAllInstancesBriefsOfConfigurableType(@PathParam("configurableType") ConfigurableType type) {
-        List<String> classesOfConfigurableType = _pluginsCoordinator
-                .getConfigurables()
-                .stream()
-//TODO              .filter(configurable -> configurable.getType() == type)
-                .map(configurable -> configurable.getClass().getName())
-                .collect(Collectors.toList());
+    fun getAllInstancesBriefsOfConfigurableType(@PathParam("configurableType") type: ConfigurableType?): List<InstanceBriefDto> {
+        val classesOfConfigurableType: List<String> = pluginsCoordinator
+            .configurables
+            .map { configurable -> configurable.javaClass.name }
+            .toList()
 
-        return _repository
-                .getAllInstanceBriefs()
-                .stream()
-                .filter(instanceBriefDto -> classesOfConfigurableType.contains(instanceBriefDto.getClazz()))
-                .collect(Collectors.toList());
+        return pluginsCoordinator
+            .repository
+            .getAllInstanceBriefs()
+            .filter { instanceBriefDto: InstanceBriefDto -> classesOfConfigurableType.contains(instanceBriefDto.clazz) }
+            .toList()
     }
 }

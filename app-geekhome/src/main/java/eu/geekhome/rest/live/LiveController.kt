@@ -1,16 +1,10 @@
 package eu.geekhome.rest.live
 
-import eu.geekhome.HardwareManager
-import eu.geekhome.automation.AutomationConductor
-import eu.geekhome.rest.AutomationConductorHolderService
-import eu.geekhome.rest.HardwareManagerHolderService
-import eu.geekhome.rest.PluginsCoordinator
+import eu.geekhome.rest.*
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.services.events.*
-import org.pf4j.PluginStateEvent
-import org.pf4j.PluginStateListener
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -23,28 +17,17 @@ import javax.ws.rs.sse.SseEventSink
 
 @Path("live")
 class LiveController @Inject constructor(
-    automationHolder: AutomationConductorHolderService,
-    pluginsCoordinator: PluginsCoordinator,
-    hardwareManagerHolderService: HardwareManagerHolderService,
+    eventsSinkHolder: EventsSinkHolderService,
     private val portDtoMapper: PortDtoMapper,
     private val pluginDtoMapper: PluginDtoMapper,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
     private val sse: Sse
-) : PluginStateListener {
-    private var automation: AutomationConductor = automationHolder.instance
+) {
     private val sseBroadcaster = sse.newBroadcaster()
-    private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
+    private val eventsSink = eventsSinkHolder.instance
 
     init {
-        automation.liveEvents.addAdapterEventListener(object : LiveEventsListener {
-            override fun onEvent(event: LiveEvent<*>) {
-                broadcastLiveEvent(event)
-            }
-        })
-
-        pluginsCoordinator.registerStateListener(this)
-
-        hardwareManager.discoverySink.addAdapterEventListener(object : LiveEventsListener {
+        eventsSink.addAdapterEventListener(object : LiveEventsListener {
             override fun onEvent(event: LiveEvent<*>) {
                 broadcastLiveEvent(event)
             }
@@ -56,6 +39,31 @@ class LiveController @Inject constructor(
     fun streamPluginChangesLive(@Context sink: SseEventSink?) {
         sseBroadcaster.register(sink)
     }
+
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+//    fun getEvents(@QueryParam("type") type: String): List<*> {
+//        if (type.toLowerCase() == "discovery") {
+//            return hardwareManager
+//                .discoverySink
+//                .all()
+//                .filter { it.data is DiscoveryEvent }
+//                .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEvent) }
+//                .toList()
+//        }
+//
+//        if (type.toLowerCase() == "plugin") {
+//            return automation
+//                .liveEvents
+//                .all()
+//                .filter { it.data is PortUpdateEvent }
+//                .map { it.data as PortUpdateEvent}
+//                .map { portDtoMapper.map(it.port, it.factoryId, it.adapterId) }
+//                .toList()
+//        }
+//
+//        throw ResourceNotFoundException()
+//    }
 
     private fun broadcast(clazz: Class<*>, obj: Any) {
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
@@ -76,8 +84,8 @@ class LiveController @Inject constructor(
                 val payload = event.data as PluginEvent
                 pluginDtoMapper.map(payload.plugin)
             }
-            is HardwareEvent -> {
-                val payload = event.data as HardwareEvent
+            is DiscoveryEvent -> {
+                val payload = event.data as DiscoveryEvent
                 hardwareEventMapper.map(event.number, payload)
             }
             else -> null
@@ -86,11 +94,5 @@ class LiveController @Inject constructor(
         if (mapped != null) {
             broadcast(mapped.javaClass, mapped)
         }
-    }
-
-    override fun pluginStateChanged(event: PluginStateEvent?) {
-        val plugin = event!!.plugin
-        val payload = PluginEvent(plugin)
-        broadcastLiveEvent(LiveEvent(0, PluginEvent::class.java.simpleName, payload))
     }
 }

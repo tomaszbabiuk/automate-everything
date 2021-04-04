@@ -1,19 +1,16 @@
 package eu.geekhome.automation
 
 import eu.geekhome.HardwareManager
+import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.rest.getConfigurables
-import eu.geekhome.rest.getRepository
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.automation.UnitCondition
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.events.AutomationUpdateEvent
-import eu.geekhome.services.events.LiveEvent
 import eu.geekhome.services.events.NumberedEventsSink
 import eu.geekhome.services.repository.InstanceDto
-import org.pf4j.PluginManager
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -28,8 +25,8 @@ class AutomationContext(
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
-    val pluginsCoordinator: PluginManager,
-    val liveEvents: NumberedEventsSink
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val liveEvents: NumberedEventsSink
 ) {
 
     private var automationJob: Job? = null
@@ -62,9 +59,9 @@ class AutomationConductor(
 
     fun rebuildAutomations(): List<List<IStatementNode>> {
 
-        val repository = pluginsCoordinator.getRepository()
+        val repository = pluginsCoordinator.repository
         val allInstances = repository.getAllInstances()
-        val allConfigurables = pluginsCoordinator.getConfigurables()
+        val allConfigurables = pluginsCoordinator.configurables
 
         allInstances.forEach { instance ->
             val configurable = allConfigurables.find { instance.clazz == it.javaClass.name }
