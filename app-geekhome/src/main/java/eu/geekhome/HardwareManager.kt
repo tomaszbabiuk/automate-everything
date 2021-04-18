@@ -46,7 +46,7 @@ class HardwareManager(
                         val portSnapshot = PortDto(it.id, factory.id, bundle.adapter.id,
                             null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                         pluginsCoordinator.repository.savePort(portSnapshot)
-                        val event = PortUpdateEvent(factory.id, bundle.adapter.id, it)
+                        val event = PortUpdateEventData(factory.id, bundle.adapter.id, it)
                         liveEvents.broadcastEvent(event)
                     }
                 }

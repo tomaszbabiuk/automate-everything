@@ -1,6 +1,8 @@
 package eu.geekhome.services.events
 
+import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.hardware.Port
+import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginWrapper
 
 class LiveEvent<T: LiveEventData>(
@@ -11,13 +13,18 @@ class LiveEvent<T: LiveEventData>(
 
 sealed class LiveEventData
 
-class DiscoveryEvent(val factoryId: String,
-                     val message: String) : LiveEventData()
+class DiscoveryEventData(val factoryId: String,
+                         val message: String) : LiveEventData()
 
-class PortUpdateEvent(val factoryId: String,
-                      val adapterId: String,
-                      val port: Port<*>) : LiveEventData()
+class PortUpdateEventData(val factoryId: String,
+                          val adapterId: String,
+                          val port: Port<*>) : LiveEventData()
 
-class AutomationUpdateEvent(val enabled: Boolean) : LiveEventData()
+class AutomationStateEventData(val enabled: Boolean) : LiveEventData()
 
-class PluginEvent(val plugin: PluginWrapper) : LiveEventData()
+class AutomationUpdateEventData(
+    val unit: IDeviceAutomationUnit<*>,
+    val instance: InstanceDto
+) : LiveEventData()
+
+class PluginEventData(val plugin: PluginWrapper) : LiveEventData()

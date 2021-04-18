@@ -8,7 +8,7 @@ import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
     valueType: Class<T>,
-    private val port: Port<T>, ) :
+    private val port: Port<T>) :
     IDeviceAutomationUnit<T>(valueType) {
 
     override fun calculate(now: Calendar) {
@@ -21,4 +21,6 @@ class SensorAutomationUnit<T: PortValue>(
     override val value: T
         get() = port.read()
 
+    override val usedPortsIds: Array<String>
+        get() = arrayOf(port.id)
 }

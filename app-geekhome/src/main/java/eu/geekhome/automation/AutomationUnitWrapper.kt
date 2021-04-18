@@ -17,4 +17,7 @@ class AutomationUnitWrapper<T>(
 
     override val value: T?
         get() = null
+
+    override val usedPortsIds: Array<String>
+        get() = arrayOf()
 }

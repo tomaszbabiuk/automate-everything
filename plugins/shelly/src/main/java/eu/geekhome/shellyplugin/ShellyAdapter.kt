@@ -162,7 +162,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
             .forEach {
                 (it.readPortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(payload)
 
-                val updateEvent = PortUpdateEvent(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
+                val updateEvent = PortUpdateEventData(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
                 updateSink?.broadcastEvent(updateEvent)
             }
     }

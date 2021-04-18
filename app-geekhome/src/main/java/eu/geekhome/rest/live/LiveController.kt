@@ -1,12 +1,14 @@
 package eu.geekhome.rest.live
 
 import eu.geekhome.rest.*
+import eu.geekhome.rest.automation.AutomationUnitDtoMapper
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.services.events.*
 import javax.inject.Inject
 import javax.ws.rs.GET
+import javax.ws.rs.NotSupportedException
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
@@ -21,6 +23,7 @@ class LiveController @Inject constructor(
     private val portDtoMapper: PortDtoMapper,
     private val pluginDtoMapper: PluginDtoMapper,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
+    private val automationUnitMapper: AutomationUnitDtoMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
@@ -40,31 +43,6 @@ class LiveController @Inject constructor(
         sseBroadcaster.register(sink)
     }
 
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-//    fun getEvents(@QueryParam("type") type: String): List<*> {
-//        if (type.toLowerCase() == "discovery") {
-//            return hardwareManager
-//                .discoverySink
-//                .all()
-//                .filter { it.data is DiscoveryEvent }
-//                .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEvent) }
-//                .toList()
-//        }
-//
-//        if (type.toLowerCase() == "plugin") {
-//            return automation
-//                .liveEvents
-//                .all()
-//                .filter { it.data is PortUpdateEvent }
-//                .map { it.data as PortUpdateEvent}
-//                .map { portDtoMapper.map(it.port, it.factoryId, it.adapterId) }
-//                .toList()
-//        }
-//
-//        throw ResourceNotFoundException()
-//    }
-
     private fun broadcast(clazz: Class<*>, obj: Any) {
         val sseEvent: OutboundSseEvent = sse.newEventBuilder()
             .name(obj.javaClass.simpleName)
@@ -75,24 +53,29 @@ class LiveController @Inject constructor(
     }
 
     private fun broadcastLiveEvent(event: LiveEvent<*>) {
-        val mapped: Any? = when (event.data) {
-            is PortUpdateEvent -> {
-                val payload = event.data as PortUpdateEvent
+        val mapped: Any = when (event.data) {
+            is PortUpdateEventData -> {
+                val payload = event.data as PortUpdateEventData
                 portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId)
             }
-            is PluginEvent -> {
-                val payload = event.data as PluginEvent
+            is PluginEventData -> {
+                val payload = event.data as PluginEventData
                 pluginDtoMapper.map(payload.plugin)
             }
-            is DiscoveryEvent -> {
-                val payload = event.data as DiscoveryEvent
+            is DiscoveryEventData -> {
+                val payload = event.data as DiscoveryEventData
                 hardwareEventMapper.map(event.number, payload)
             }
-            else -> null
+            is AutomationUpdateEventData -> {
+                val payload = event.data as AutomationUpdateEventData
+                automationUnitMapper.map(payload.unit, payload.instance)
+            }
+            is AutomationStateEventData -> {
+                val payload = event.data as AutomationStateEventData
+                payload.enabled
+            }
         }
 
-        if (mapped != null) {
-            broadcast(mapped.javaClass, mapped)
-        }
+        broadcast(mapped.javaClass, mapped)
     }
 }

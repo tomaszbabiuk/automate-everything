@@ -1,7 +1,7 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.rest.EventsSinkHolderService
-import eu.geekhome.services.events.DiscoveryEvent
+import eu.geekhome.services.events.DiscoveryEventData
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.hardware.DiscoveryEventDto
 import javax.inject.Inject
@@ -23,8 +23,8 @@ class AdapterEvents @Inject constructor(
     fun getEvents(): List<DiscoveryEventDto> {
         return eventsSink
             .all()
-            .filter { it.data is DiscoveryEvent }
-            .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEvent) }
+            .filter { it.data is DiscoveryEventData }
+            .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEventData) }
             .toList()
     }
 }

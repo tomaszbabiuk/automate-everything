@@ -1,7 +1,7 @@
 package eu.geekhome.aforeplugin
 
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.DiscoveryEvent
+import eu.geekhome.services.events.DiscoveryEventData
 import eu.geekhome.services.hardware.HardwareAdapterBase
 import eu.geekhome.services.hardware.OperationMode
 import eu.geekhome.services.hardware.Port
@@ -39,7 +39,7 @@ class AforeAdapter : HardwareAdapterBase() {
     }
 
     fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        val event = DiscoveryEvent(AforeAdapterFactory.ID, message)
+        val event = DiscoveryEventData(AforeAdapterFactory.ID, message)
         eventsSink.broadcastEvent(event)
     }
 

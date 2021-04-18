@@ -18,6 +18,8 @@ abstract class IDeviceAutomationUnit<T>(
 
     abstract val value: T?
 
+    abstract val usedPortsIds: Array<String>
+
     fun buildEvaluationResult(): EvaluationResult {
         return when (condition) {
             UnitCondition.InitError -> buildInitErrorEvaluationResult()

@@ -2,7 +2,7 @@ package eu.geekhome
 
 import eu.geekhome.services.configurable.Configurable
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.PluginEvent
+import eu.geekhome.services.events.PluginEventData
 import eu.geekhome.services.repository.Repository
 import org.pf4j.*
 
@@ -32,7 +32,7 @@ class SingletonExtensionsPluginManager(private val liveEvents: EventsSink) : Plu
 
         override fun pluginStateChanged(event: PluginStateEvent) {
             val plugin = event.plugin
-            val payload = PluginEvent(plugin)
+            val payload = PluginEventData(plugin)
             liveEvents.broadcastEvent(payload)
         }
     }

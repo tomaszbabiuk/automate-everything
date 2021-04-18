@@ -1,7 +1,7 @@
 package eu.geekhome.shellyplugin
 
 import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.DiscoveryEvent
+import eu.geekhome.services.events.DiscoveryEventData
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -61,7 +61,7 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
     }
 
     private fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        val event = DiscoveryEvent(ShellyPlugin.PLUGIN_ID_SHELLY, message)
+        val event = DiscoveryEventData(ShellyPlugin.PLUGIN_ID_SHELLY, message)
         eventsSink.broadcastEvent(event)
     }
 }

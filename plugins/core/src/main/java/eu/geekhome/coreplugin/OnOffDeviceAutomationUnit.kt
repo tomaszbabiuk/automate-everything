@@ -11,16 +11,19 @@ import java.util.Calendar
 class OnOffDeviceAutomationUnit(
     states: Map<String, State>,
     initialState: String,
-    private val _controlPort: Port<Relay>
+    private val controlPort: Port<Relay>
 ) : StateDeviceAutomationUnit(states, initialState) {
     @Throws(Exception::class)
     override fun calculate(now: Calendar) {
         if (currentStateId == "on") {
-            changeOutputPortStateIfNeeded<Any>(_controlPort, Relay(true))
+            changeOutputPortStateIfNeeded<Any>(controlPort, Relay(true))
         } else if (currentStateId == "off") {
-            changeOutputPortStateIfNeeded<Any>(_controlPort, Relay(false))
+            changeOutputPortStateIfNeeded<Any>(controlPort, Relay(false))
         }
     }
+
+    override val usedPortsIds: Array<String>
+        get() = arrayOf(controlPort.id)
 
     init {
         setCurrentState("off")

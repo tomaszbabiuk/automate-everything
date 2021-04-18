@@ -8,8 +8,7 @@ import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.automation.UnitCondition
 import eu.geekhome.services.configurable.*
-import eu.geekhome.services.events.AutomationUpdateEvent
-import eu.geekhome.services.events.NumberedEventsSink
+import eu.geekhome.services.events.*
 import eu.geekhome.services.repository.InstanceDto
 import kotlinx.coroutines.*
 import java.util.*
@@ -27,7 +26,11 @@ class AutomationConductor(
     private val blockFactoriesCollector: BlockFactoriesCollector,
     private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: NumberedEventsSink
-) {
+) : LiveEventsListener {
+
+    init {
+        liveEvents.addAdapterEventListener(this)
+    }
 
     private var automationJob: Job? = null
     private var enabled: Boolean = false
@@ -42,7 +45,7 @@ class AutomationConductor(
     }
 
     private fun broadcastAutomationUpdate() {
-        liveEvents.broadcastEvent(AutomationUpdateEvent(enabled))
+        liveEvents.broadcastEvent(AutomationStateEventData(enabled))
     }
 
     fun enable() {
@@ -177,6 +180,27 @@ class AutomationConductor(
         println("Disabling automation")
 
         broadcastAutomationUpdate()
+    }
+
+    override fun onEvent(event: LiveEvent<*>) {
+        val now = Calendar.getInstance()
+        if (event.data is PortUpdateEventData) {
+            val port = (event.data as PortUpdateEventData).port
+            automationUnitsCache
+                .filter {
+                    val unit = it.value.second
+                    unit.usedPortsIds.contains(port.id)
+                }
+                .forEach {
+                    val unit = it.value.second
+                    unit.calculate(now)
+
+                    val instance = it.value.first
+                    val eventData = AutomationUpdateEventData(unit, instance)
+                    liveEvents.broadcastEvent(eventData)
+                }
+
+        }
     }
 
     companion object {
