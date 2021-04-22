@@ -12,7 +12,6 @@ class ChangeStateAutomationNode(
 
     override fun process(now: Calendar) {
         deviceUnit.changeState(state, ControlMode.Manual, null, "Blockly")
-        deviceUnit.calculate(now)
 
         next?.process(now)
     }

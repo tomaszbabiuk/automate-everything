@@ -5,7 +5,6 @@ import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.hardware.PortValue
 import eu.geekhome.services.repository.InstanceDto
-import org.pf4j.Extension
 import java.util.*
 
 abstract class SinglePortSensorConfigurable<T: PortValue>(
@@ -19,7 +18,7 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForPort(valueType, portId, canRead = true, canWrite = false)
-        return SensorAutomationUnit(valueType, port)
+        return SensorAutomationUnit(port)
     }
 
     private fun readPortId(instance: InstanceDto): String {

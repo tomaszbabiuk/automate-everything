@@ -1,46 +1,28 @@
 package eu.geekhome.services.automation
 
 import eu.geekhome.services.R
-
-enum class UnitCondition {
-    InitError,
-    AutomationError,
-    Operational
-}
+import java.util.*
 
 abstract class IDeviceAutomationUnit<T>(
-    val valueType: Class<T>,
-    var condition: UnitCondition = UnitCondition.Operational,
-    var error: Exception? = null,
-) : ICalculableAutomationUnit {
-
-    abstract fun buildEvaluationResultInternally(): EvaluationResult
-
-    abstract val value: T?
-
+    var lastEvaluation: EvaluationResult<T>? = null
+) {
     abstract val usedPortsIds: Array<String>
+    abstract val recalculateOnTimeChange: Boolean
+    abstract val recalculateOnPortUpdate: Boolean
 
-    fun buildEvaluationResult(): EvaluationResult {
-        return when (condition) {
-            UnitCondition.InitError -> buildInitErrorEvaluationResult()
-            UnitCondition.AutomationError -> buildAutomationErrorEvaluationResult()
-            UnitCondition.Operational -> {
-                return try {
-                    buildEvaluationResultInternally()
-                } catch (ex: Exception) {
-                    condition = UnitCondition.AutomationError
-                    error = ex
-                    buildEvaluationResult()
-                }
-            }
+    abstract fun calculateInternal(now: Calendar)
+
+    fun calculate(now: Calendar) {
+        return try {
+            calculateInternal(now)
+        } catch (ex: Exception) {
+            lastEvaluation = evaluateAsAutomationError(ex)
         }
     }
 
-    private fun buildAutomationErrorEvaluationResult(): EvaluationResult {
-        return EvaluationResult("automationError", R.error_automation, false, null)
-    }
-
-    private fun buildInitErrorEvaluationResult(): EvaluationResult {
-        return EvaluationResult("initializationError", R.error_initialization, false, null)
+    private fun evaluateAsAutomationError(ex: java.lang.Exception): EvaluationResult<T> {
+        return EvaluationResult(
+            interfaceValue = R.error_automation,
+            error =  ex)
     }
 }

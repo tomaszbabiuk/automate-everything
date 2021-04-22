@@ -8,8 +8,7 @@ class SensorAutomationNode(
     private val deviceUnit: IDeviceAutomationUnit<*>
 ) : IValueNode {
 
-    override fun calculate(now: Calendar): PortValue? {
-        deviceUnit.calculate(now)
-        return deviceUnit.value as PortValue?
+    override fun getValue(now: Calendar): PortValue? {
+        return deviceUnit.lastEvaluation?.value as PortValue?
     }
 }

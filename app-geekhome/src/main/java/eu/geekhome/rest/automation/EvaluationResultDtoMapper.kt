@@ -7,12 +7,17 @@ import eu.geekhome.services.automation.EvaluationResult
 class EvaluationResultDtoMapper {
 
     @Throws(MappingException::class)
-    fun map(source: EvaluationResult): EvaluationResultDto {
+    fun map(source: EvaluationResult<*>): EvaluationResultDto {
         return EvaluationResultDto(
             source.interfaceValue,
             source.controlMode,
             source.isSignaled,
-            source.descriptions
+            source.descriptions,
+            if (source.error != null) {
+                source.error!!.toString()
+            } else {
+                null
+            }
         )
     }
 }

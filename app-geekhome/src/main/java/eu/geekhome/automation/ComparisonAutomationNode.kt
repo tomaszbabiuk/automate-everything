@@ -15,11 +15,11 @@ class ComparisonAutomationNode(
         var leftValue: PortValue? = null
         var rightValue: PortValue? = null
         if (this.leftValue != null) {
-            leftValue = this.leftValue.calculate(now)
+            leftValue = this.leftValue.getValue(now)
         }
 
         if (this.rightValue != null) {
-            rightValue = this.rightValue.calculate(now)
+            rightValue = this.rightValue.getValue(now)
         }
 
         if (leftValue != null && rightValue != null) {

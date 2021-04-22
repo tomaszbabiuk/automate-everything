@@ -12,11 +12,11 @@ class EquationAutomationNode(
     private val rightValue: Double
 ) : IValueNode {
 
-    override fun calculate(now: Calendar): PortValue? {
+    override fun getValue(now: Calendar): PortValue? {
 
         var leftValue: PortValue? = null
         if (this.leftValue != null) {
-            leftValue = this.leftValue.calculate(now)
+            leftValue = this.leftValue.getValue(now)
         }
 
         if (leftValue != null) {

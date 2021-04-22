@@ -26,7 +26,6 @@ class AutomationUnitsController @Inject constructor(
             .automationUnitsCache
             .values
             .map {
-                it.second.calculate(now)
                 mapper.map(it.second, it.first)
             }
     }

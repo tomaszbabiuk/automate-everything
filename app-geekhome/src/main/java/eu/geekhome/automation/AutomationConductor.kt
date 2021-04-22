@@ -6,7 +6,6 @@ import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.services.automation.IDeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.UnitCondition
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.events.*
 import eu.geekhome.services.repository.InstanceDto
@@ -74,8 +73,7 @@ class AutomationConductor(
                     automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                 } catch (ex: Exception) {
                     val wrapper = buildWrappedUnit(configurable)
-                    wrapper.error = ex
-                    wrapper.condition = UnitCondition.InitError
+                    wrapper.setupForInitError(ex)
                     automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 }
             }
@@ -189,17 +187,19 @@ class AutomationConductor(
             automationUnitsCache
                 .filter {
                     val unit = it.value.second
-                    unit.usedPortsIds.contains(port.id)
+                    unit.recalculateOnPortUpdate && unit.usedPortsIds.contains(port.id)
                 }
                 .forEach {
                     val unit = it.value.second
+                    val lastEvaluation = unit.lastEvaluation
                     unit.calculate(now)
-
-                    val instance = it.value.first
-                    val eventData = AutomationUpdateEventData(unit, instance)
-                    liveEvents.broadcastEvent(eventData)
+                    val newEvaluation = unit.lastEvaluation
+                    if (newEvaluation != lastEvaluation) {
+                        val instance = it.value.first
+                        val eventData = AutomationUpdateEventData(unit, instance)
+                        liveEvents.broadcastEvent(eventData)
+                    }
                 }
-
         }
     }
 

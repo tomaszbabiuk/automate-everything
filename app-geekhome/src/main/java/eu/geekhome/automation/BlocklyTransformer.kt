@@ -16,11 +16,11 @@ interface IEvaluatorNode: IAutomationNode {
 }
 
 interface IValueNode: IAutomationNode {
-    fun calculate(now: Calendar) : PortValue?
+    fun getValue(now: Calendar) : PortValue?
 }
 
 class ValueNode<T: PortValue>(val value: T) : IValueNode {
-    override fun calculate(now: Calendar): T {
+    override fun getValue(now: Calendar): T {
         return value
     }
 }
