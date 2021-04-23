@@ -15,11 +15,7 @@ class SensorAutomationUnit<T: PortValue>(
 
     override fun calculateInternal(now: Calendar) {
         val value = port.read()
-
-        lastEvaluation = EvaluationResult(
-            value = value,
-            interfaceValue = value.toFormattedString()
-        )
+        lastEvaluation = buildEvaluationResult(value)
     }
 
     override val recalculateOnTimeChange = false
