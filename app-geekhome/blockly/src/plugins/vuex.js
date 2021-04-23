@@ -52,6 +52,7 @@ export const UPDATE_PORT = 'UPDATE_PORT'
 export const UPDATE_AUTOMATION = 'UPDATE_AUTOMATION'
 export const CLEAR_AUTOMATION_UNITS = 'CLEAR_AUTOMATION_UNITS'
 export const ADD_AUTOMATION_UNIT = 'ADD_AUTOMATION_UNIT'
+export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -365,6 +366,15 @@ export default new Vuex.Store({
     [ADD_AUTOMATION_UNIT](state, automationUnitDto) {
       automationUnitDto.show = false
       state.automationUnits.push(automationUnitDto)
+    },
+
+    [UPDATE_AUTOMATION_UNIT](state, automationUnitDto) {
+      state.automationUnits.forEach( element => {
+        if (element.instance.id === automationUnitDto.instance.id) {
+          element.instance = automationUnitDto.instance
+          element.evaluationResult = automationUnitDto.evaluationResult
+        }
+      })
     },
 
   }

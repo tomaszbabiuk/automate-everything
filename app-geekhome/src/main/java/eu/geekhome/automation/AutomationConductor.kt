@@ -3,9 +3,10 @@ package eu.geekhome.automation
 import eu.geekhome.HardwareManager
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.automation.IEvaluableAutomationUnit
 import eu.geekhome.services.automation.State
+import eu.geekhome.services.automation.StateDeviceAutomationUnit
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.events.*
 import eu.geekhome.services.repository.InstanceDto
@@ -15,10 +16,19 @@ import java.util.*
 class AutomationContext(
     val instanceDto: InstanceDto,
     val thisDevice: Configurable?,
-    val automationUnitsCache: Map<Long, IDeviceAutomationUnit<*>>,
+    val automationUnitsCache: Map<Long, DeviceAutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
     val blocksCache: List<BlockFactory<*>>,
-)
+    private val liveEvents: NumberedEventsSink
+) {
+    fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit) {
+        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto)
+        liveEvents.broadcastEvent(eventData)
+
+        //TODO:
+        //send this change to other change state triggers
+    }
+}
 
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
@@ -36,7 +46,7 @@ class AutomationConductor(
     private var checkingNewPortsTime = 0L
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
-    val automationUnitsCache = HashMap<Long, Pair<InstanceDto, IDeviceAutomationUnit<*>>>()
+    val automationUnitsCache = HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>()
     private val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
 
     fun isEnabled(): Boolean {
@@ -72,8 +82,7 @@ class AutomationConductor(
                     val physicalUnit = buildPhysicalUnit(configurable, instance)
                     automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                 } catch (ex: Exception) {
-                    val wrapper = buildWrappedUnit(configurable)
-                    wrapper.setupForInitError(ex)
+                    val wrapper = buildWrappedUnit(configurable, ex)
                     automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 }
             }
@@ -95,7 +104,9 @@ class AutomationConductor(
                     AutomationContext(
                         instanceDto, thisDevice,
                         automationUnitsCache.mapValues { it.value.second },
-                        evaluationUnitsCache, blocksCache
+                        evaluationUnitsCache,
+                        blocksCache,
+                        liveEvents
                     )
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
@@ -103,7 +114,7 @@ class AutomationConductor(
             }
     }
 
-    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): IDeviceAutomationUnit<*> {
+    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): DeviceAutomationUnit<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
                 configurable.buildAutomationUnit(instance, hardwareManager)
@@ -117,14 +128,14 @@ class AutomationConductor(
         }
     }
 
-    private fun buildWrappedUnit(configurable: Configurable): AutomationUnitWrapper<*> {
+    private fun buildWrappedUnit(configurable: Configurable, ex: Exception): AutomationUnitWrapper<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                AutomationUnitWrapper(State::class.java)
+                AutomationUnitWrapper(State::class.java, ex)
             }
 
             is SensorConfigurable<*> -> {
-                AutomationUnitWrapper(configurable.valueType)
+                AutomationUnitWrapper(configurable.valueType, ex)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated")

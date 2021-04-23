@@ -40,7 +40,8 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         if (context.thisDevice is StateDeviceConfigurable) {
             val evaluator = context.automationUnitsCache[context.instanceDto.id]
             if (evaluator is StateDeviceAutomationUnit) {
-                return ChangeStateAutomationNode(state.name.id, evaluator, next)
+
+                return ChangeStateAutomationNode(state.name.id, evaluator, next, context)
             } else {
                 throw MalformedBlockException(block.type, "should point only to a state device")
             }

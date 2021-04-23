@@ -1,5 +1,5 @@
 import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR } from './plugins/vuex'
-import { UPDATE_PLUGIN } from './plugins/vuex'
+import { UPDATE_PLUGIN, UPDATE_AUTOMATION_UNIT } from './plugins/vuex'
 import vuetify from './plugins/vuetify'
 
 
@@ -45,6 +45,12 @@ export const sseClient = {
       console.log(e)
       var pluginDto = JSON.parse(e.data)
       store.commit(UPDATE_PLUGIN, pluginDto)
+    })
+
+    this.liveMsgServer.addEventListener("AutomationUnitDto", function(e) {
+      console.log(e)
+      var automationUnitDto = JSON.parse(e.data)
+      store.commit(UPDATE_AUTOMATION_UNIT, automationUnitDto)
     })
 
 

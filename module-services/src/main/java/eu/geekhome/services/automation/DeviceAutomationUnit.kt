@@ -3,8 +3,8 @@ package eu.geekhome.services.automation
 import eu.geekhome.services.R
 import java.util.*
 
-abstract class IDeviceAutomationUnit<T>(
-    var lastEvaluation: EvaluationResult<T>? = null
+abstract class DeviceAutomationUnit<T>(
+    var lastEvaluation: EvaluationResult<T>
 ) {
     abstract val usedPortsIds: Array<String>
     abstract val recalculateOnTimeChange: Boolean

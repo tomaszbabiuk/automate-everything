@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.hardware.PortValue
@@ -15,7 +15,7 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
     override val parent: Class<out Configurable?>
         get() = MetersConfigurable::class.java
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<T> {
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForPort(valueType, portId, canRead = true, canWrite = false)
         return SensorAutomationUnit(port)

@@ -2,34 +2,30 @@ package eu.geekhome.services.automation
 
 import eu.geekhome.services.hardware.Port
 import eu.geekhome.services.hardware.Relay
-import java.util.*
 
 abstract class StateDeviceAutomationUnit(
     private val states: Map<String, State>,
     initialState: String) :
-
-    IDeviceAutomationUnit<State>(null), IStateDeviceAutomationUnit {
+    DeviceAutomationUnit<State>(buildEvaluationResult(states[initialState]!!, ControlMode.Auto)), IStateDeviceAutomationUnit {
 
     var currentState: State
     override var controlMode: ControlMode = ControlMode.Auto
 
-    protected fun setCurrentState(currentState: String) {
-        this.currentState = states[currentState]!!
+    protected fun setCurrentState(stateId: String) {
+        this.currentState = states[stateId]!!
     }
 
     override fun changeState(state: String, controlMode: ControlMode, code: String?, actor: String?) {
         if (currentState.name.id != state || controlMode != controlMode) {
             setCurrentState(state)
             this.controlMode = controlMode
+            configureNewState(state)
+
+            lastEvaluation = buildEvaluationResult(currentState, controlMode)
         }
     }
 
-    @Throws(Exception::class)
-    fun changeStateInternal(state: String, controlMode: ControlMode) {
-        changeState(state, controlMode, null, "SYSTEM")
-    }
-
-    protected abstract fun calculateNewState(now: Calendar)
+    abstract fun configureNewState(state: String)
 
     companion object {
         @Throws(Exception::class)
@@ -42,6 +38,15 @@ abstract class StateDeviceAutomationUnit(
             if (port != null && state != null && (invalidate || !state.equals(port.read()))) {
                 port.write(state)
             }
+        }
+
+        fun buildEvaluationResult(state: State, controlMode: ControlMode) : EvaluationResult<State> {
+            return EvaluationResult(
+                interfaceValue = state.name,
+                value = state,
+                isSignaled = state.isSignaled,
+                controlMode = controlMode
+            )
         }
     }
 

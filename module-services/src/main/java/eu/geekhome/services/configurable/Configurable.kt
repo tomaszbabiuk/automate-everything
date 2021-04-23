@@ -1,7 +1,7 @@
 package eu.geekhome.services.configurable
 
 import eu.geekhome.services.automation.EvaluableAutomationUnit
-import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.hardware.*
 import eu.geekhome.services.localization.Resource
@@ -32,7 +32,7 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 }
 
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<State>
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<State>
     abstract val states: Map<String, State>
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true
@@ -40,7 +40,7 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
 }
 
 abstract class SensorConfigurable<V: PortValue>(val valueType: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): IDeviceAutomationUnit<V>
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<V>
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true

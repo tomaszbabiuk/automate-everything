@@ -1,5 +1,6 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.services.automation.ControlMode
 import eu.geekhome.services.automation.State
 import eu.geekhome.services.automation.StateDeviceAutomationUnit
 import eu.geekhome.services.hardware.Port
@@ -14,13 +15,8 @@ class OnOffDeviceAutomationUnit(
     private val controlPort: Port<Relay>,
 ) : StateDeviceAutomationUnit(states, initialState) {
 
-    override fun calculateInternal(now: Calendar): Boolean {
-        TODO("Not yet implemented")
-    }
-
     @Throws(Exception::class)
-
-    override fun calculateNewState(now: Calendar) {
+    override fun configureNewState(state: String) {
         if (currentState.name.id == "on") {
             changeOutputPortStateIfNeeded<Any>(controlPort, Relay(true))
         } else if (currentState.name.id == "off") {
@@ -35,6 +31,14 @@ class OnOffDeviceAutomationUnit(
         setCurrentState("off")
     }
 
+    override fun calculateInternal(now: Calendar) {
+        if (controlPort.read().value) {
+            changeState("on", ControlMode.Manual, null, null)
+        } else {
+            changeState("off", ControlMode.Manual, null, null)
+        }
+    }
+
     override val recalculateOnTimeChange = false
-    override val recalculateOnPortUpdate = false
+    override val recalculateOnPortUpdate = true
 }

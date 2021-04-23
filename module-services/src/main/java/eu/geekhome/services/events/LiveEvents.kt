@@ -1,6 +1,6 @@
 package eu.geekhome.services.events
 
-import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.hardware.Port
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginWrapper
@@ -23,7 +23,7 @@ class PortUpdateEventData(val factoryId: String,
 class AutomationStateEventData(val enabled: Boolean) : LiveEventData()
 
 class AutomationUpdateEventData(
-    val unit: IDeviceAutomationUnit<*>,
+    val unit: DeviceAutomationUnit<*>,
     val instance: InstanceDto
 ) : LiveEventData()
 

@@ -1,11 +1,11 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.automation.IDeviceAutomationUnit
+import eu.geekhome.services.automation.DeviceAutomationUnit
 import eu.geekhome.services.hardware.PortValue
 import java.util.*
 
 class SensorAutomationNode(
-    private val deviceUnit: IDeviceAutomationUnit<*>
+    private val deviceUnit: DeviceAutomationUnit<*>
 ) : IValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
