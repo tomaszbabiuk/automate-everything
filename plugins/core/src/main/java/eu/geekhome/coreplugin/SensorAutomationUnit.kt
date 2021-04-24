@@ -8,7 +8,7 @@ import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
     private val port: Port<T>) :
-    DeviceAutomationUnit<T>(buildEvaluationResult(port.read())) {
+    DeviceAutomationUnit<T>() {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(port.id)
@@ -29,4 +29,6 @@ class SensorAutomationUnit<T: PortValue>(
             )
         }
     }
+
+    override var lastEvaluation = buildEvaluationResult(port.read())
 }

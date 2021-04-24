@@ -15,8 +15,20 @@ class OnOffDeviceAutomationUnit(
     private val controlPort: Port<Relay>,
 ) : StateDeviceAutomationUnit(states, initialState) {
 
+    init {
+        setCurrentState("off")
+    }
+
+    override fun buildNextStates(state: State): List<State> {
+        if (state.id == "on") {
+            return listOf(states["off"]!!)
+        }
+
+        return listOf(states["on"]!!)
+    }
+
     @Throws(Exception::class)
-    override fun configureNewState(state: String) {
+    override fun applyNewState(state: String) {
         if (currentState.id == "on") {
             changeOutputPortStateIfNeeded<Any>(controlPort, Relay(true))
         } else if (currentState.id == "off") {
@@ -26,10 +38,6 @@ class OnOffDeviceAutomationUnit(
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)
-
-    init {
-        setCurrentState("off")
-    }
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {

@@ -4,9 +4,9 @@ import eu.geekhome.services.hardware.Port
 import eu.geekhome.services.hardware.Relay
 
 abstract class StateDeviceAutomationUnit(
-    private val states: Map<String, State>,
-    initialState: String) :
-    DeviceAutomationUnit<State>(buildEvaluationResult(states[initialState]!!, ControlMode.Auto)), IStateDeviceAutomationUnit {
+    protected val states: Map<String, State>,
+    initialStateId: String) :
+    DeviceAutomationUnit<State>(), IStateDeviceAutomationUnit {
 
     var currentState: State
     override var controlMode: ControlMode = ControlMode.Auto
@@ -19,13 +19,26 @@ abstract class StateDeviceAutomationUnit(
         if (currentState.id != state || controlMode != controlMode) {
             setCurrentState(state)
             this.controlMode = controlMode
-            configureNewState(state)
+            applyNewState(state)
 
-            lastEvaluation = buildEvaluationResult(currentState, controlMode)
+            lastEvaluation = buildEvaluationResult(currentState.id, states, controlMode)
         }
     }
 
-    abstract fun configureNewState(state: String)
+    fun buildEvaluationResult(initialStateId: String, states: Map<String, State>, controlMode: ControlMode) : EvaluationResult<State> {
+        val state = states[initialStateId]!!
+        return EvaluationResult(
+            interfaceValue = state.name,
+            value = state,
+            isSignaled = state.isSignaled,
+            controlMode = controlMode,
+            nextStates = buildNextStates(state)
+        )
+    }
+
+    abstract fun buildNextStates(state: State): List<State>
+
+    abstract fun applyNewState(state: String)
 
     companion object {
         @Throws(Exception::class)
@@ -35,22 +48,15 @@ abstract class StateDeviceAutomationUnit(
             state: Relay?,
             invalidate: Boolean = false
         ) {
-            if (port != null && state != null && (invalidate || !state.equals(port.read()))) {
+            if (port != null && state != null && (invalidate || state != port.read())) {
                 port.write(state)
             }
         }
-
-        fun buildEvaluationResult(state: State, controlMode: ControlMode) : EvaluationResult<State> {
-            return EvaluationResult(
-                interfaceValue = state.name,
-                value = state,
-                isSignaled = state.isSignaled,
-                controlMode = controlMode
-            )
-        }
     }
 
+    override var lastEvaluation = buildEvaluationResult(initialStateId, states, ControlMode.Auto)
+
     init {
-        currentState = states[initialState]!!
+        currentState = states[initialStateId]!!
     }
 }

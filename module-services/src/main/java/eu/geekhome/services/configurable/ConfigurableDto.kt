@@ -1,6 +1,5 @@
 package eu.geekhome.services.configurable
 
-import eu.geekhome.services.automation.State
 import eu.geekhome.services.localization.Resource
 
 data class ConfigurableDto(
@@ -16,5 +15,4 @@ data class ConfigurableDto(
     val hasAutomation: Boolean,
     val editableIcon: Boolean,
     val taggable: Boolean,
-    val states: List<State>?
 )

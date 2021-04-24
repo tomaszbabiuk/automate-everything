@@ -9,6 +9,7 @@ class EvaluationResult<T> (
     val descriptions: Map<String, Resource> = HashMap(),
     val controlMode: ControlMode = ControlMode.Auto,
     val error: Exception? = null,
+    val nextStates: List<State>? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

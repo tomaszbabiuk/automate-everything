@@ -8,7 +8,7 @@ import java.util.*
 class AutomationUnitWrapper<T>(
     valueType: Class<T>,
     initError: Exception
-) : DeviceAutomationUnit<T>(buildErrorEvaluation(initError)) {
+) : DeviceAutomationUnit<T>() {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf()
@@ -19,12 +19,8 @@ class AutomationUnitWrapper<T>(
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = false
 
-    companion object {
-        fun <T> buildErrorEvaluation(ex: Exception) : EvaluationResult<T> {
-            return EvaluationResult(
-                interfaceValue = R.error_initialization,
-                error = ex
-            )
-        }
-    }
+    override var lastEvaluation = EvaluationResult<T>(
+        interfaceValue = R.error_initialization,
+        error = initError
+    )
 }

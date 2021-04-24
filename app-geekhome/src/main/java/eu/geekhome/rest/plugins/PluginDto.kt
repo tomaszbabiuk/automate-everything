@@ -9,5 +9,5 @@ data class PluginDto(
     val provider: String,
     val version: String,
     val isHardwareFactory: Boolean,
-    val isEnabled: Boolean
+    val enabled: Boolean
 )
