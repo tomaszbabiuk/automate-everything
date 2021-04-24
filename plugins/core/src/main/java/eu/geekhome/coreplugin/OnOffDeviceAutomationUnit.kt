@@ -17,9 +17,9 @@ class OnOffDeviceAutomationUnit(
 
     @Throws(Exception::class)
     override fun configureNewState(state: String) {
-        if (currentState.name.id == "on") {
+        if (currentState.id == "on") {
             changeOutputPortStateIfNeeded<Any>(controlPort, Relay(true))
-        } else if (currentState.name.id == "off") {
+        } else if (currentState.id == "off") {
             changeOutputPortStateIfNeeded<Any>(controlPort, Relay(false))
         }
     }

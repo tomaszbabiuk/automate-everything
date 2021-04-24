@@ -16,7 +16,7 @@ abstract class StateDeviceAutomationUnit(
     }
 
     override fun changeState(state: String, controlMode: ControlMode, code: String?, actor: String?) {
-        if (currentState.name.id != state || controlMode != controlMode) {
+        if (currentState.id != state || controlMode != controlMode) {
             setCurrentState(state)
             this.controlMode = controlMode
             configureNewState(state)

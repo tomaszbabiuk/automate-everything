@@ -46,12 +46,6 @@ abstract class SensorConfigurable<V: PortValue>(val valueType: Class<V>) : NameD
     override val editableIcon: Boolean = true
 }
 
-//abstract class TemperatureSensorConfigurable : SensorConfigurable<Temperature>()
-//
-//abstract class HumiditySensorConfigurable : SensorConfigurable<Humidity>()
-//
-//abstract class WattageSensorConfigurable : SensorConfigurable<Wattage>()
-
 abstract class CategoryConfigurable : Configurable {
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = false

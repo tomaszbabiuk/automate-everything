@@ -12,7 +12,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
 
     override val category: Resource = R.category_this_device
 
-    override val type: String = "change_state_${state.name.id}"
+    override val type: String = "change_state_${state.id}"
 
     override fun buildBlock(): RawJson {
         return RawJson {
@@ -42,7 +42,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
             val evaluator = context.automationUnitsCache[context.instanceDto.id]
             if (evaluator is StateDeviceAutomationUnit) {
 
-                return ChangeStateAutomationNode(state.name.id, evaluator, next, context)
+                return ChangeStateAutomationNode(state.id, evaluator, next, context)
             } else {
                 throw MalformedBlockException(block.type, "should point only to a state device")
             }

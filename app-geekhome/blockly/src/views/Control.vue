@@ -78,6 +78,9 @@ export default {
     automationUnits() {
       return this.$store.state.automationUnits;
     },
+    configurables() {
+      return this.$store.state.configurables;
+    },
   },
   methods: {
     extractFieldDefinition: function (fieldName) {
@@ -100,6 +103,7 @@ export default {
   },
   mounted: function () {
     client.getAutomationUnits();
+    client.getConfigurables();
   },
 };
 </script>

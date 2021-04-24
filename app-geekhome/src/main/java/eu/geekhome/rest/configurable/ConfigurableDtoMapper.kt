@@ -1,6 +1,7 @@
 package eu.geekhome.rest.configurable
 
 import eu.geekhome.rest.MappingException
+import eu.geekhome.services.automation.State
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.localization.Resource
 import java.util.stream.Collectors
@@ -14,6 +15,7 @@ class ConfigurableDtoMapper @Inject constructor(
         var fields: List<FieldDto>? = null
         var addNewRes: Resource? = null
         var editRes: Resource? = null
+        var states: List<State>? = null
         if (configurable is ConfigurableWithFields) {
             fields = configurable
                 .fieldDefinitions
@@ -24,6 +26,11 @@ class ConfigurableDtoMapper @Inject constructor(
             addNewRes = configurable.addNewRes
             editRes = configurable.editRes
         }
+
+        if (configurable is StateDeviceConfigurable) {
+            states = configurable.states.values.toList()
+        }
+
         return ConfigurableDto(
             configurable.titleRes,
             configurable.descriptionRes,
@@ -36,7 +43,8 @@ class ConfigurableDtoMapper @Inject constructor(
             configurable.iconRaw,
             configurable.hasAutomation,
             configurable.editableIcon,
-            configurable.taggable
+            configurable.taggable,
+            states
         )
     }
 

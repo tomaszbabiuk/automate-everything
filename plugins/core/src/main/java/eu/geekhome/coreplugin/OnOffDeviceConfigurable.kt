@@ -7,7 +7,6 @@ import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.IPortFinder
 import eu.geekhome.services.hardware.Relay
 import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.localization.ResourceWithId
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.Extension
 import java.util.*
@@ -63,13 +62,15 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
         get() {
             val states: MutableMap<String, State> = HashMap()
             states[STATE_ON] = State(
-                ResourceWithId(STATE_ON, R.state_on),
+                STATE_ON,
+                R.state_on,
                 StateType.NonSignaledAction,
                 true,
                 false
             )
             states[STATE_OFF] = State(
-                ResourceWithId(STATE_OFF, R.state_off),
+                STATE_OFF,
+                R.state_off,
                 StateType.SignaledAction,
                 false,
                 false
