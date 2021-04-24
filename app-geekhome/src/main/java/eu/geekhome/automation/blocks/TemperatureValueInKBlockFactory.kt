@@ -1,6 +1,6 @@
 package eu.geekhome.automation.blocks
 
-import eu.geekhome.automation.*
+import eu.geekhome.R
 import eu.geekhome.services.hardware.Temperature
 
 class TemperatureValueInKBlockFactory(val color: Int) : SimpleValueBlockFactory<Temperature>(

@@ -13,11 +13,7 @@ class AutomationUnitDtoMapper @Inject constructor(
     fun map(unit: DeviceAutomationUnit<*>, instance: InstanceDto): AutomationUnitDto {
         return AutomationUnitDto(
             instance,
-            if (unit.lastEvaluation != null) {
-                evaluationResultDtoMapper.map(unit.lastEvaluation!!)
-            } else {
-                null
-            }
+            evaluationResultDtoMapper.map(unit.lastEvaluation!!)
         )
     }
 }

@@ -2,7 +2,7 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.BlockFactory
-import eu.geekhome.automation.R
+import eu.geekhome.R
 import eu.geekhome.services.automation.StateType
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.hardware.Humidity

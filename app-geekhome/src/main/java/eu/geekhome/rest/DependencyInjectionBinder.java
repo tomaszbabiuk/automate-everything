@@ -3,6 +3,7 @@ package eu.geekhome.rest;
 import eu.geekhome.automation.BlocklyParser;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
+import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper;
 import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
 import eu.geekhome.rest.configurable.FieldDefinitionDtoMapper;
 import eu.geekhome.rest.hardware.HardwareAdapterDtoMapper;
@@ -26,6 +27,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(EvaluationResultDtoMapper.class).to(EvaluationResultDtoMapper.class).in(Singleton.class);
         bind(PortDtoMapper.class).to(PortDtoMapper.class).in(Singleton.class);
         bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
+        bind(AutomationHistoryDtoMapper.class).to(AutomationHistoryDtoMapper.class).in(Singleton.class);
 
         //holders
         bind(PluginsCoordinatorHolderService.class).to(PluginsCoordinatorHolderService.class).in(Singleton.class);

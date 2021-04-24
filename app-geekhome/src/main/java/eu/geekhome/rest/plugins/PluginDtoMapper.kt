@@ -1,5 +1,6 @@
 package eu.geekhome.rest.plugins
 
+import eu.geekhome.R
 import org.pf4j.PluginWrapper
 import org.pf4j.PluginState
 import eu.geekhome.services.hardware.HardwarePlugin
@@ -17,7 +18,7 @@ class PluginDtoMapper {
             val metadata = plugin as PluginMetadata
             PluginDto(id, metadata.name, metadata.description, provider, version, isHardwareFactory, enabled)
         } else {
-            PluginDto(id, null, null, provider, version, isHardwareFactory, enabled)
+            PluginDto(id, R.plugin_no_name, R.plugin_no_description, provider, version, isHardwareFactory, enabled)
         }
     }
 }

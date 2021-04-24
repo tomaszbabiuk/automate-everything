@@ -6,6 +6,7 @@ import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginWrapper
 
 class LiveEvent<T: LiveEventData>(
+    val timestamp: Long,
     val number: Int,
     val type: String,
     val data: T

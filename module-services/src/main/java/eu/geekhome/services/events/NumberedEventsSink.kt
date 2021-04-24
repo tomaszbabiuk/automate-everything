@@ -7,6 +7,7 @@ import kotlin.collections.ArrayList
 class NumberedEventsSink : EventsSink {
 
     var eventCounter = 0
+
     private val listeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
 
     val events = ArrayList<LiveEvent<*>>()
@@ -27,7 +28,8 @@ class NumberedEventsSink : EventsSink {
         println("broadcasting event: $payload")
 
         eventCounter++
-        val event = LiveEvent(eventCounter, payload.javaClass.simpleName, payload)
+        val now = Calendar.getInstance().timeInMillis
+        val event = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
         events.add(event)
         listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
