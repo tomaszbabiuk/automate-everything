@@ -17,7 +17,8 @@ class EvaluationResultDtoMapper {
                 source.error!!.toString()
             } else {
                 null
-            }
+            },
+            source.nextStates
         )
     }
 }

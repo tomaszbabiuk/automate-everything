@@ -1,6 +1,7 @@
 package eu.geekhome.rest.automation
 
 import eu.geekhome.services.automation.ControlMode
+import eu.geekhome.services.automation.State
 import eu.geekhome.services.localization.Resource
 
 data class EvaluationResultDto(
@@ -8,5 +9,6 @@ data class EvaluationResultDto(
     val controlMode: ControlMode,
     val isSignaled: Boolean,
     val descriptions: Map<String, Resource>?,
-    val error: String?
+    val error: String?,
+    val nextStates: List<State>?
 )

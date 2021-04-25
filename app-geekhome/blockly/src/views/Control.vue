@@ -39,11 +39,10 @@
               />
             </v-list-item-avatar>
           </v-list-item>
-          <v-card-actions>
-            <v-btn text>Share</v-btn>
-
-            <v-btn color="purple" text> Explore </v-btn>
-
+          <v-card-actions >
+            <div v-if="automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates != null">
+              <v-btn v-for="state in automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates" :key="state.id">{{state.name}}</v-btn>
+            </div>
             <v-spacer></v-spacer>
 
             <v-btn icon @click="automationUnits[(n - 1) * 3 + i].show = !automationUnits[(n - 1) * 3 + i].show">
@@ -57,7 +56,7 @@
         <v-divider></v-divider>
 
         <v-card-text>
-          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+          (no descriptions)
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -77,9 +76,6 @@ export default {
   computed: {
     automationUnits() {
       return this.$store.state.automationUnits;
-    },
-    configurables() {
-      return this.$store.state.configurables;
     },
   },
   methods: {
@@ -103,7 +99,6 @@ export default {
   },
   mounted: function () {
     client.getAutomationUnits();
-    client.getConfigurables();
   },
 };
 </script>
