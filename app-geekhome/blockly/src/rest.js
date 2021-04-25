@@ -1,6 +1,6 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
-import store from './plugins/vuex'
+import store, { UPDATE_AUTOMATION_UNIT } from './plugins/vuex'
 import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN } from './plugins/vuex'
 import { SET_CONFIGURABLES, SET_CONDITIONS, SET_FILTERS } from './plugins/vuex'
 import { SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE } from './plugins/vuex'
@@ -317,6 +317,15 @@ export const client = {
       () => axiosInstance.put("rest/automation/enabled", JSON.stringify(enable)),
       (response) => {
         store.commit(UPDATE_AUTOMATION, response.data)
+      }
+    )
+  },
+
+  changeState: async function (instanceId, state) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", JSON.stringify(state)),
+      (response) => {
+        store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }
     )
   },

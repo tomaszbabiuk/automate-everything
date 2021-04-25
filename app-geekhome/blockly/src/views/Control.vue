@@ -41,7 +41,8 @@
           </v-list-item>
           <v-card-actions >
             <div v-if="automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates != null">
-              <v-btn v-for="state in automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates" :key="state.id">{{state.name}}</v-btn>
+              <v-btn v-for="state in automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates" :key="state.id"
+                @click="changeState(automationUnits[(n - 1) * 3 + i].instance, state)">{{state.name}}</v-btn>
             </div>
             <v-spacer></v-spacer>
 
@@ -96,6 +97,11 @@ export default {
 
       return "white";
     },
+
+    changeState(instance, state) {
+      console.log("Changing state " + instance.id + " " + state.id)
+      client.changeState(instance.id, state.id)
+    }
   },
   mounted: function () {
     client.getAutomationUnits();
