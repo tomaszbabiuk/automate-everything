@@ -11,6 +11,7 @@ import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
 import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
 import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
 import { UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT } from './plugins/vuex'
+import { ADD_AUTOMATION_HISTORY } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -249,6 +250,17 @@ export const client = {
 
   clearDiscoveryEvents: function() {
     store.commit(CLEAR_DISCOVERY_EVENTS)
+  },
+
+  getAutomationHistory: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/automationhistory"),
+      (response) => {
+        response.data.forEach(element => {
+          store.commit(ADD_AUTOMATION_HISTORY, element)
+        })
+      }
+    )
   },
 
   getHardwareAdapters: async function () {

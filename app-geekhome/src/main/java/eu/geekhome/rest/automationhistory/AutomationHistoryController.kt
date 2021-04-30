@@ -1,6 +1,7 @@
 package eu.geekhome.rest.automationhistory
 
 import eu.geekhome.rest.EventsSinkHolderService
+import eu.geekhome.services.events.AutomationStateEventData
 import eu.geekhome.services.events.AutomationUpdateEventData
 import javax.inject.Inject
 import javax.ws.rs.GET
@@ -19,10 +20,21 @@ class AutomationHistoryController @Inject constructor(
         return eventsSinkHolder
             .instance
             .all()
-            .filter { it.data is AutomationUpdateEventData}
-            .map {
-                val data = it.data as AutomationUpdateEventData
-                automationHistoryMapper.map(it.timestamp, data.unit, data.instance)
+            .filter { it.data is AutomationUpdateEventData || it.data is AutomationStateEventData }
+            .mapNotNull {
+                when (it.data) {
+                    is AutomationUpdateEventData -> {
+                        val data = it.data as AutomationUpdateEventData
+                        automationHistoryMapper.map(it.timestamp, data, it.number)
+                    }
+                    is AutomationStateEventData -> {
+                        val data = it.data as AutomationStateEventData
+                        automationHistoryMapper.map(it.timestamp, data, it.number)
+                    }
+                    else -> {
+                        null
+                    }
+                }
             }
     }
 }

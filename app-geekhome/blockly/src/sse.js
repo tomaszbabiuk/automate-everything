@@ -1,5 +1,6 @@
 import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR } from './plugins/vuex'
 import { UPDATE_PLUGIN, UPDATE_AUTOMATION_UNIT } from './plugins/vuex'
+import { ADD_AUTOMATION_HISTORY } from './plugins/vuex'
 import vuetify from './plugins/vuetify'
 
 
@@ -51,6 +52,12 @@ export const sseClient = {
       console.log(e)
       var automationUnitDto = JSON.parse(e.data)
       store.commit(UPDATE_AUTOMATION_UNIT, automationUnitDto)
+    })
+
+    this.liveMsgServer.addEventListener("AutomationHistoryDto", function(e) {
+      console.log(e)
+      var automationHistoryDto = JSON.parse(e.data)
+      store.commit(ADD_AUTOMATION_HISTORY, automationHistoryDto)
     })
 
 

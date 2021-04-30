@@ -22,7 +22,7 @@ class AutomationContext(
     private val liveEvents: NumberedEventsSink
 ) {
     fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto)
+        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto, deviceUnit.lastEvaluation)
         liveEvents.broadcastEvent(eventData)
 
         //TODO:
@@ -207,7 +207,7 @@ class AutomationConductor(
                     val newEvaluation = unit.lastEvaluation
                     if (newEvaluation != lastEvaluation) {
                         val instance = it.value.first
-                        val eventData = AutomationUpdateEventData(unit, instance)
+                        val eventData = AutomationUpdateEventData(unit, instance, newEvaluation)
                         liveEvents.broadcastEvent(eventData)
                     }
                 }

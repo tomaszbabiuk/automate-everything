@@ -71,4 +71,16 @@ object R {
         "(no description)",
         "(brak opisu)"
     )
+    val automation_history_automation = Resource(
+        "Automation",
+        "Automatyka"
+    )
+    val automation_history_enabled = Resource(
+        "Enabled",
+        "Włączona"
+    )
+    val automation_history_disabled = Resource(
+        "Disabled",
+        "Wyłączona"
+    )
 }

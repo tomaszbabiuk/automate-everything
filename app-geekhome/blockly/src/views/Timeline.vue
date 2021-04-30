@@ -1,21 +1,23 @@
 <template>
   <v-timeline>
-    <v-timeline-item v-for="(event, i) in events" :key="i" :color="event.color" small>
+    <v-timeline-item v-for="(item, i) in automationHistory" :key="i" small>
       <template v-slot:opposite>
-        <span :class="`headline font-weight-bold ${event.color}--text`" v-text="event.event"></span>
+        <span :class="`headline font-weight-bold silver--text`" v-text="item.change"></span>
       </template>
       <v-card class="elevation-2">
         <v-card-title class="headline">
-          <v-icon large left>$vuetify.icons.{{event.icon}}</v-icon>
-          {{ event.actor }}
+          <v-icon large left>$vuetify.icons.robot</v-icon>
+          {{ item.subject }}
         </v-card-title>
-        <v-card-text>{{ event.when }}</v-card-text>
+        <v-card-text>{{ item.timestamp }}</v-card-text>
       </v-card>
     </v-timeline-item>
   </v-timeline>
 </template>
 
 <script>
+import { client } from "../rest.js";
+
 export default {
   data: () => ({
     events: [
@@ -54,6 +56,14 @@ export default {
         icon: 'robot'
       }
     ]
-  })
+  }),
+  computed: {
+    automationHistory() {
+      return this.$store.state.automationHistory;
+    }
+  },
+  mounted: function() {
+    client.getAutomationHistory();
+  },
 };
 </script>

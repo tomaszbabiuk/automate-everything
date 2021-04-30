@@ -54,6 +54,9 @@ export const CLEAR_AUTOMATION_UNITS = 'CLEAR_AUTOMATION_UNITS'
 export const ADD_AUTOMATION_UNIT = 'ADD_AUTOMATION_UNIT'
 export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
 
+export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
+export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
@@ -80,6 +83,7 @@ export default new Vuex.Store({
     tags: [],
     iconCategories: [],
     discoveryEvents: [],
+    automationHistory: [],
     hardwareAdapters: [],
     ports: [],
     filters: [],
@@ -311,16 +315,34 @@ export default new Vuex.Store({
     },
 
     [ADD_DISCOVERY_EVENT](state, payload) {
-      var eventAlreadyAdded = false;
+      var alreadyAdded = false;
 
       state.discoveryEvents.forEach ( element => {
         if (element.no === payload.no) {
-          eventAlreadyAdded = true
+          alreadyAdded = true
         }
       })
 
-      if (!eventAlreadyAdded) {
+      if (!alreadyAdded) {
         state.discoveryEvents.push(payload)
+      }
+    },
+
+    [CLEAR_AUTOMATION_HISTORY](state) {
+      state.automationHistory = []
+    },
+
+    [ADD_AUTOMATION_HISTORY](state, payload) {
+      var alreadyAdded = false;
+
+      state.automationHistory.forEach ( element => {
+        if (element.no === payload.no) {
+          alreadyAdded = true
+        }
+      })
+
+      if (!alreadyAdded) {
+        state.automationHistory.splice(0, 0, payload)
       }
     },
 

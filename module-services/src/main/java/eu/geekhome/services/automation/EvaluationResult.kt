@@ -3,7 +3,7 @@ package eu.geekhome.services.automation
 import eu.geekhome.services.localization.Resource
 
 class EvaluationResult<T> (
-    val interfaceValue: Resource?,
+    val interfaceValue: Resource,
     val value: T? = null,
     val isSignaled: Boolean = false,
     val descriptions: Map<String, Resource> = HashMap(),

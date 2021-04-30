@@ -1,9 +1,11 @@
 package eu.geekhome.rest.automationhistory
 
-import eu.geekhome.rest.automation.AutomationUnitDto
+import eu.geekhome.services.localization.Resource
 
 data class AutomationHistoryDto(
     val timestamp: Long,
-    val automationUnit: AutomationUnitDto
+    val subject: Resource,
+    val change: Resource,
+    val no: Int
 )
 

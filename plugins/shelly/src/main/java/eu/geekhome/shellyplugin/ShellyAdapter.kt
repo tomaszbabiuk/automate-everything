@@ -49,7 +49,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     private fun resolveIpInLan(): InetAddress? {
         try {
             val addresses = LanInetAddressHelper.ipsInLan
-            return addresses[addresses.size - 1]
+            return addresses[addresses.size - 2]
         } catch (ex: Exception) {
             //TODO: add possibility to change broker IP address in settings
         }
@@ -144,7 +144,6 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
         this.updateSink = operationSink
         mqttBroker.addMqttListener(this)
     }
-
 
     override fun stop() {
         mqttBroker.removeMqttListener(this)

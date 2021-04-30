@@ -2,13 +2,13 @@ package eu.geekhome.rest.live
 
 import eu.geekhome.rest.*
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
+import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.services.events.*
 import javax.inject.Inject
 import javax.ws.rs.GET
-import javax.ws.rs.NotSupportedException
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
@@ -24,6 +24,7 @@ class LiveController @Inject constructor(
     private val pluginDtoMapper: PluginDtoMapper,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
     private val automationUnitMapper: AutomationUnitDtoMapper,
+    private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
@@ -53,29 +54,42 @@ class LiveController @Inject constructor(
     }
 
     private fun broadcastLiveEvent(event: LiveEvent<*>) {
-        val mapped: Any = when (event.data) {
+        when (event.data) {
             is PortUpdateEventData -> {
                 val payload = event.data as PortUpdateEventData
-                portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId)
+                val mapped = portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId)
+                broadcast(mapped.javaClass, mapped)
             }
             is PluginEventData -> {
                 val payload = event.data as PluginEventData
-                pluginDtoMapper.map(payload.plugin)
+                val mapped = pluginDtoMapper.map(payload.plugin)
+                broadcast(mapped.javaClass, mapped)
             }
             is DiscoveryEventData -> {
                 val payload = event.data as DiscoveryEventData
-                hardwareEventMapper.map(event.number, payload)
+                val mapped = hardwareEventMapper.map(event.number, payload)
+                broadcast(mapped.javaClass, mapped)
             }
             is AutomationUpdateEventData -> {
                 val payload = event.data as AutomationUpdateEventData
-                automationUnitMapper.map(payload.unit, payload.instance)
+                val mapped = automationUnitMapper.map(payload.unit, payload.instance)
+                broadcast(mapped.javaClass, mapped)
+
+                val payloadHistory = event.data as AutomationUpdateEventData
+                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
+                broadcast(mappedHistory.javaClass, mappedHistory)
             }
             is AutomationStateEventData -> {
                 val payload = event.data as AutomationStateEventData
-                payload.enabled
+                val mapped = payload.enabled
+                broadcast(mapped.javaClass, mapped)
+
+                val payloadHistory = event.data as AutomationStateEventData
+                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
+                broadcast(mappedHistory.javaClass, mappedHistory)
             }
         }
 
-        broadcast(mapped.javaClass, mapped)
+
     }
 }

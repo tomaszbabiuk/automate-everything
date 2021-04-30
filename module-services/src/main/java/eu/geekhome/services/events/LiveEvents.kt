@@ -1,6 +1,7 @@
 package eu.geekhome.services.events
 
 import eu.geekhome.services.automation.DeviceAutomationUnit
+import eu.geekhome.services.automation.EvaluationResult
 import eu.geekhome.services.hardware.Port
 import eu.geekhome.services.repository.InstanceDto
 import org.pf4j.PluginWrapper
@@ -25,7 +26,8 @@ class AutomationStateEventData(val enabled: Boolean) : LiveEventData()
 
 class AutomationUpdateEventData(
     val unit: DeviceAutomationUnit<*>,
-    val instance: InstanceDto
+    val instance: InstanceDto,
+    val evaluation: EvaluationResult<*>,
 ) : LiveEventData()
 
 class PluginEventData(val plugin: PluginWrapper) : LiveEventData()
