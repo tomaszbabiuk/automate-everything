@@ -6,10 +6,20 @@
       </template>
       <v-card class="elevation-2">
         <v-card-title class="headline">
-          <v-icon large left>$vuetify.icons.robot</v-icon>
+            <v-list-item-icon v-if="item.iconId === null">
+              <v-icon x-large left>$vuetify.icon.robot</v-icon>
+            </v-list-item-icon>
+            <v-list-item-icon v-else>
+              <img
+                left
+                :src="'/rest/icons/' + item.iconId + '/raw'"
+                width="40"
+                height="40"
+              />
+            </v-list-item-icon>
           {{ item.subject }}
         </v-card-title>
-        <v-card-text>{{ item.timestamp }}</v-card-text>
+        <v-card-text :key="now">{{ formatTimeAgo(item.timestamp) }}</v-card-text>
       </v-card>
     </v-timeline-item>
   </v-timeline>
@@ -20,42 +30,7 @@ import { client } from "../rest.js";
 
 export default {
   data: () => ({
-    events: [
-      {
-        actor: "Pump 1",
-        color: "cyan",
-        event: "ON",
-        when: "now",
-        icon: 'robot'
-      },
-      {
-        actor: "Furnace",
-        color: "green",
-        event: "OFF",
-        when: "2 mins ago",
-        icon: 'robot'
-      },
-      {
-        actor: "Pump 2",
-        color: "pink",
-        event: "ON",
-        when: "25 mins ago",
-        icon: 'robot'
-      },
-      {
-        actor: "Light 3",
-        color: "amber",
-        event: "Heating",
-        when: "1h ago",
-        icon: 'robot'
-      },
-      {
-        actor: "Light 2",
-        color: "orange",
-        event: "Cooling",
-        icon: 'robot'
-      }
-    ]
+    now: 0
   }),
   computed: {
     automationHistory() {
@@ -65,5 +40,47 @@ export default {
   mounted: function() {
     client.getAutomationHistory();
   },
+  methods: {
+    formatTimeAgo: function(timestamp) {
+
+      var totalSeconds =  Math.round((this.now - timestamp)/1000);
+      if (totalSeconds < 0) {
+        return "---"
+      } 
+
+      if (totalSeconds < 60) {
+       return this.$vuetify.lang.t("$vuetify.ago.s", totalSeconds);
+      } 
+      
+      var totalMinutes = Math.round(totalSeconds / 60);
+      
+      if (totalMinutes < 60) {
+        return this.$vuetify.lang.t("$vuetify.ago.m", totalMinutes);  
+      }
+
+      var totalHours = Math.round(totalSeconds / 3600);
+      var minutesModulo = totalMinutes % 60;
+      if (totalHours < 24) {
+        return this.$vuetify.lang.t("$vuetify.ago.h", totalHours, minutesModulo);
+      }
+
+      var totalDays = Math.round(totalSeconds / 86400)
+      var hoursModulo = totalHours % 24;
+
+      return this.$vuetify.lang.t("$vuetify.ago.d", totalDays, hoursModulo)
+    }
+  },
+  watch: {
+    now: {
+        handler() {
+          setTimeout(() => {
+              var now = (new Date).getTime()
+              this.now = now;
+              this.$forceUpdate();
+          }, 1000);
+        },
+        immediate: true
+    }
+  }
 };
 </script>

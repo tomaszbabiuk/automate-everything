@@ -96,6 +96,11 @@ export default {
         value: "Wartość",
         control: "Kontrola",
         connected: "Połączenie"
+    },
+    ago: {
+        s: "{0}s temu",
+        m: "{0}m temu",
+        h: "{0}g {1}m temu",
+        d: "{0}d {1}g temu"
     }
-
 }

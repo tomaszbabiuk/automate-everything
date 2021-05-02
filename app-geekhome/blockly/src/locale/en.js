@@ -95,5 +95,11 @@ export default {
         value: "Value",
         control: "Control",
         connected: "Connected"
+    },
+    ago: {
+        s: "{0}s ago",
+        m: "{0}m ago",
+        h: "{0}h {1}m ago",
+        d: "{0}d {1}h ago"
     }
 }
