@@ -1,4 +1,4 @@
-package eu.geekhome.rest.configurable
+package eu.geekhome.rest.settingsgroup
 
 import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
@@ -6,26 +6,26 @@ import eu.geekhome.rest.PluginsCoordinatorHolderService
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
 import javax.servlet.http.HttpServletRequest
-import eu.geekhome.services.configurable.ConfigurableDto
+import eu.geekhome.services.configurable.SettingCategoryDto
 import java.util.stream.Collectors
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 
-@Path("configurables")
-class ConfigurableController @Inject constructor(
+@Path("settingcategories")
+class SettingCategoryController @Inject constructor(
     pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
-    private val configurableDtoMapper: ConfigurableDtoMapper
+    private val settingGroupCategoryDtoMapper: SettingCategoryDtoMapper
 ) {
     private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getConfigurables(@Context request: HttpServletRequest?): List<ConfigurableDto> {
+    fun getSettingsGroups(@Context request: HttpServletRequest?): List<SettingCategoryDto> {
         return pluginsCoordinator
-            .configurables
+            .settingCategories
             .stream()
-            .map { configurableDtoMapper.map(it) }
+            .map { settingGroupCategoryDtoMapper.map(it) }
             .collect(Collectors.toList())
     }
 }

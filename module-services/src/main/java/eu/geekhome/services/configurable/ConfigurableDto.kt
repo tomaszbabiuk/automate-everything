@@ -8,7 +8,7 @@ data class ConfigurableDto(
     val clazz: String,
     val parentClazz: String?,
     val type: ConfigurableType,
-    val fields: List<FieldDto>?,
+    val fields: List<FieldDefinitionDto>?,
     val addNewRes: Resource?,
     val editRes: Resource?,
     val iconRaw: String,

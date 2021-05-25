@@ -1,26 +1,23 @@
 <template>
   <div>
-    <v-row v-for="n in Math.ceil(automationUnits.length / 3)" :key="n">
-      <v-col v-for="i in [0, 1, 2]" :key="i" sm="12" md="6" lg="4" xl="2">
-        <v-card
-          :color="matchColor(automationUnits[(n - 1) * 3 + i])"
-          v-if="(n - 1) * 3 + i < automationUnits.length"
+        <v-card class="mx-auto float-left ml-5 mt-5" max-width="344" v-for="automationUnit in automationUnits" :key="automationUnit.id"
+          :color="matchColor(automationUnit)"
         >
           <v-list-item three-line>
             <v-list-item-content>
               <v-list-item-title class="headline mb-1">
                 {{
-                  automationUnits[(n - 1) * 3 + i].evaluationResult
+                  automationUnit.evaluationResult
                     .interfaceValue
                 }}
               </v-list-item-title>
               <v-list-item-subtitle>{{
-                automationUnits[(n - 1) * 3 + i].instance.fields["name"]
+                automationUnit.instance.fields["name"]
               }}</v-list-item-subtitle>
             </v-list-item-content>
 
             <v-list-item-avatar
-              v-if="automationUnits[(n - 1) * 3 + i].instance.iconId === null"
+              v-if="automationUnit.instance.iconId === null"
               tile
               size="80"
             >
@@ -31,7 +28,7 @@
                 left
                 :src="
                   '/rest/icons/' +
-                  automationUnits[(n - 1) * 3 + i].instance.iconId +
+                  automationUnit.instance.iconId +
                   '/raw'
                 "
                 width="50"
@@ -40,20 +37,20 @@
             </v-list-item-avatar>
           </v-list-item>
           <v-card-actions >
-            <div v-if="automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates != null">
-              <v-btn v-for="state in automationUnits[(n - 1) * 3 + i].evaluationResult.nextStates" :key="state.id"
-                @click="changeState(automationUnits[(n - 1) * 3 + i].instance, state)">{{state.name}}</v-btn>
+            <div v-if="automationUnit.evaluationResult.nextStates != null">
+              <v-btn v-for="state in automationUnit.evaluationResult.nextStates" :key="state.id"
+                @click="changeState(automationUnit.instance, state)">{{state.name}}</v-btn>
             </div>
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="automationUnits[(n - 1) * 3 + i].show = !automationUnits[(n - 1) * 3 + i].show">
+            <v-btn icon @click="automationUnit.show = !automationUnit.show">
               <v-icon>{{
-                automationUnits[(n - 1) * 3 + i].show ? "mdi-chevron-up" : "mdi-chevron-down"
+                automationUnit.show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
             </v-btn>
           </v-card-actions>
           <v-expand-transition>
-      <div v-show="automationUnits[(n - 1) * 3 + i].show">
+      <div v-show="automationUnit.show">
         <v-divider></v-divider>
 
         <v-card-text>
@@ -62,8 +59,6 @@
       </div>
     </v-expand-transition>
         </v-card>
-      </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -87,12 +82,12 @@ export default {
     },
 
     matchColor(automationUnit) {
-      if (automationUnit.condition === "InitError") {
+      if (automationUnit.evaluationResult.error != null) {
         return "orange";
       }
 
-      if (automationUnit.condition === "AutomationError") {
-        return "orange";
+      if (automationUnit.evaluationResult.isSignaled) {
+        return "blue";
       }
 
       return "white";

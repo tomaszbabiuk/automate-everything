@@ -57,6 +57,8 @@ export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
 export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
 
+export const SET_SETTING_CATEGORIES= 'SET_SETTING_CATEGORIES' 
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
@@ -101,6 +103,7 @@ export default new Vuex.Store({
       tagIds: [],
     },
     counter: 0,
+    settingCategories: []
   },
 
   mutations: {
@@ -399,5 +402,8 @@ export default new Vuex.Store({
       })
     },
 
+    [SET_SETTING_CATEGORIES](state, settingCategories) {
+      state.settingCategories = settingCategories
+    },
   }
 })

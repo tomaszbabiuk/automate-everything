@@ -64,29 +64,27 @@
       </v-card>
     </v-dialog>
 
-    <v-row v-for="n in Math.ceil(configurables.length / 3)" :key="n">
-      <v-col v-for="i in [0, 1, 2]" :key="i" sm="12" md="6" lg="4" xl="2">
-        <v-card v-if="(n - 1) * 3 + i < configurables.length">
+    <div>
+        <v-card class="mx-auto float-left ml-5 mt-5" max-width="344" v-for="configurable in configurables" :key="configurable.clazz">
           <v-card-title class="headline">
             <div
               style="transform: scale(0.5)"
-              v-html="configurables[(n - 1) * 3 + i].iconRaw"
+              v-html="configurable.iconRaw"
             ></div>
-            {{ configurables[(n - 1) * 3 + i].titleRes }}
+            {{ configurable.titleRes }}
           </v-card-title>
 
           <v-card-subtitle>{{
-            configurables[(n - 1) * 3 + i].descriptionRes
+            configurable.descriptionRes
           }}</v-card-subtitle>
 
           <v-card-actions>
-            <v-btn text @click="browse(configurables[(n - 1) * 3 + i])">
+            <v-btn text @click="browse(configurable)">
               Browse
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-col>
-    </v-row>
+    </div>
 
     <div v-if="canAddInstances()">
       <v-card tile v-for="instance in instances" :key="instance.id">

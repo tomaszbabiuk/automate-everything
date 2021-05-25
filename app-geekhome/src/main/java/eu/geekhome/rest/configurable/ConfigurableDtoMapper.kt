@@ -1,6 +1,7 @@
 package eu.geekhome.rest.configurable
 
 import eu.geekhome.rest.MappingException
+import eu.geekhome.rest.field.FieldDefinitionDtoMapper
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.localization.Resource
 import java.util.stream.Collectors
@@ -11,7 +12,7 @@ class ConfigurableDtoMapper @Inject constructor(
 ) {
     @Throws(MappingException::class)
     fun map(configurable: Configurable): ConfigurableDto {
-        var fields: List<FieldDto>? = null
+        var fields: List<FieldDefinitionDto>? = null
         var addNewRes: Resource? = null
         var editRes: Resource? = null
         if (configurable is ConfigurableWithFields) {

@@ -13,7 +13,7 @@ class App : ResourceConfig() {
     init {
         val liveEvents = NumberedEventsSink()
 
-        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginManager(liveEvents)
+        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents)
         pluginsCoordinator.loadPlugins()
 
         val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents)

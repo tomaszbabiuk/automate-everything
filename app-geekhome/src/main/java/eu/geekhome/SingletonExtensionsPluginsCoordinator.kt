@@ -1,6 +1,7 @@
 package eu.geekhome
 
 import eu.geekhome.services.configurable.Configurable
+import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.PluginEventData
 import eu.geekhome.services.repository.Repository
@@ -17,9 +18,10 @@ interface PluginsCoordinator {
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val repository: Repository
+    val settingCategories: List<SettingsCategory>
 }
 
-class SingletonExtensionsPluginManager(private val liveEvents: EventsSink) : PluginsCoordinator {
+class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) : PluginsCoordinator {
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
@@ -68,9 +70,13 @@ class SingletonExtensionsPluginManager(private val liveEvents: EventsSink) : Plu
     override val configurables: List<Configurable>
         get() = wrapped.getExtensions(Configurable::class.java)
 
+    override val settingCategories: List<SettingsCategory>
+        get() = wrapped.getExtensions(SettingsCategory::class.java)
+
     override val repository: Repository
         get() = wrapped.getExtensions(Repository::class.java).first()
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins
+
 }

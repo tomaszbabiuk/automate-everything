@@ -5,11 +5,12 @@ import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
 import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper;
 import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
-import eu.geekhome.rest.configurable.FieldDefinitionDtoMapper;
+import eu.geekhome.rest.field.FieldDefinitionDtoMapper;
 import eu.geekhome.rest.hardware.HardwareAdapterDtoMapper;
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper;
 import eu.geekhome.rest.hardware.PortDtoMapper;
 import eu.geekhome.rest.plugins.PluginDtoMapper;
+import eu.geekhome.rest.settingsgroup.SettingCategoryDtoMapper;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Singleton;
@@ -28,6 +29,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(PortDtoMapper.class).to(PortDtoMapper.class).in(Singleton.class);
         bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
         bind(AutomationHistoryDtoMapper.class).to(AutomationHistoryDtoMapper.class).in(Singleton.class);
+        bind(SettingCategoryDtoMapper.class).to(SettingCategoryDtoMapper.class).in(Singleton.class);
 
         //holders
         bind(PluginsCoordinatorHolderService.class).to(PluginsCoordinatorHolderService.class).in(Singleton.class);

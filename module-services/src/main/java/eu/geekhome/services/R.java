@@ -19,4 +19,8 @@ public class R {
             "Initialization error",
             "Błąd inicjalizacji");
 
+    public static Resource validator_required_field = new Resource(
+            "This field is required",
+            "To pole jest wymagane"
+    );
 }
