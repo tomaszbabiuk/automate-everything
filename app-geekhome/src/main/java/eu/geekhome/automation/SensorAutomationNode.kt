@@ -9,6 +9,6 @@ class SensorAutomationNode(
 ) : IValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
-        return deviceUnit.lastEvaluation?.value as PortValue?
+        return deviceUnit.lastEvaluation.value as PortValue?
     }
 }

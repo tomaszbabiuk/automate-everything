@@ -1,78 +1,97 @@
 package eu.geekhome.aforeplugin
 
+import eu.geekhome.aforeplugin.AforeAdapter.Companion.INVERTER_IP_ADDRESS
+import eu.geekhome.aforeplugin.AforeAdapterFactory.Companion.FACTORY_ID
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.DiscoveryEventData
-import eu.geekhome.services.hardware.HardwareAdapterBase
-import eu.geekhome.services.hardware.OperationMode
-import eu.geekhome.services.hardware.Port
-import kotlinx.coroutines.delay
+import eu.geekhome.services.events.PortUpdateEventData
+import eu.geekhome.services.hardware.*
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.auth.*
+import io.ktor.client.features.auth.providers.*
+import io.ktor.client.features.json.*
+import io.ktor.client.request.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 class AforeAdapter : HardwareAdapterBase() {
 
+    private var operationSink: EventsSink? = null
     override val newPorts = ArrayList<Port<*>>()
+    private val httpClient = createHttpClient()
+    private val idBuilder = PortIdBuilder(FACTORY_ID, ADAPTER_ID)
+    private var ports = ArrayList<AforeWattagePort>()
+
+    private fun createHttpClient() = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = GsonSerializer()
+        }
+
+        install(Auth) {
+            basic {
+                password = "admin"
+                username = "admin"
+            }
+        }
+
+        engine {
+            maxConnectionsCount = 1000
+
+            endpoint {
+                maxConnectionsPerRoute = 100
+                pipelineMaxSize = 20
+                keepAliveTime = 5000
+                connectTimeout = 5000
+                connectAttempts = 5
+            }
+        }
+    }
 
     override fun clearNewPorts() {
         newPorts.clear()
     }
 
-    //    private val okClient: OkHttpClient = createAuthenticatedClient("admin", "admin")
     private var lastRefresh: Long = 0
 
     override suspend fun internalDiscovery(eventsSink: EventsSink) : MutableList<Port<*>> {
+        broadcastEvent(eventsSink, "AFORE discovery - DEV/hardcoded IP address $INVERTER_IP_ADDRESS")
+
         val result = ArrayList<Port<*>>()
-//        val portId = idBuilder.buildPortId(INVERTER_PORT_PREFIX)
-//        val inverterPower = readInverterPower()
-//        val inverterPort: Port<Double, Wattage> = WattageInputPort(portId, inverterPower)
-//        ports.add(inverterPort)
+        val portId = idBuilder.buildPortId(INVERTER_IP_ADDRESS, 0, "W")
+        val portOperator = AforeWattageReadPortOperator(httpClient)
+        val inverterPort = AforeWattagePort(portId, portOperator)
+        ports.add(inverterPort)
+        result.add(inverterPort)
 
-        broadcastEvent(eventsSink, "afore discovery, this will take 10 sec")
-        repeat(100) {
-            delay(1000)
-            broadcastEvent(eventsSink, "afore $it")
-        }
-
-        broadcastEvent(eventsSink, "DONE afore discovery")
+        broadcastEvent(eventsSink, "AFORE discovery has finished")
 
         return result
     }
 
-    fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        val event = DiscoveryEventData(AforeAdapterFactory.ID, message)
+    private fun broadcastEvent(eventsSink: EventsSink, message: String) {
+        val event = DiscoveryEventData(FACTORY_ID, message)
         eventsSink.broadcastEvent(event)
     }
 
-//    private fun readInverterPower(): Double {
-//        try {
-//            val inverterResponse = doRequest(okClient, "http://192.168.1.4/status.html")
-//            val lines = inverterResponse.split(";").toTypedArray()
-//            for (line in lines) {
-//                if (line.contains("webdata_now_p")) {
-//                    val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
-//                    return java.lang.Double.valueOf(s)
-//                }
-//            }
-//        } catch (ex: Exception) {
-//            _logger.warning("A problem reading inverter power: ", ex)
-//        }
-//        return 0.0
-//    }
-
     @Throws(Exception::class)
-    override fun refresh(now: Calendar) {
-        if (now.timeInMillis - lastRefresh > 15000) {
+    override suspend fun refresh(now: Calendar) {
+        if (now.timeInMillis - lastRefresh > 30000) {
+            //TODO: recheck if ktor is busy
+            ports.forEach {
+                val changed = it.refresh()
+                if (changed) {
+                    val event = PortUpdateEventData(FACTORY_ID, ADAPTER_ID, it)
+                    operationSink?.broadcastEvent(event)
+                }
+            }
 
-//            Double inverterPower = readInverterPower();
-//            SynchronizedInputPort<Double> inverterPort =  (SynchronizedInputPort<Double>)_hardwareManager.findPowerInputPort(INVERTER_PORT_ID);
-//            inverterPort.setValue(inverterPower);
             lastRefresh = now.timeInMillis
         }
     }
 
-    override fun executePendingChanges() {
+    override suspend fun executePendingChanges() {
     }
-
 
     @Throws(Exception::class)
     override fun reconfigure(operationMode: OperationMode) {
@@ -82,29 +101,62 @@ class AforeAdapter : HardwareAdapterBase() {
     }
 
     override fun start(operationSink: EventsSink) {
+        this.operationSink = operationSink
     }
 
-//    companion object {
-//        const val INVERTER_PORT_PREFIX = "192.168.1.4"
-//        private val _logger = LoggingService.getLogger()
-//        private fun createAuthenticatedClient(
-//            username: String,
-//            password: String
-//        ): OkHttpClient {
-//            return OkHttpClient.Builder().authenticator { route: Route?, response: Response ->
-//                val credential = Credentials.basic(username, password)
-//                response.request.newBuilder().header("Authorization", credential).build()
-//            }.build()
-//        }
-//
-//        @Throws(Exception::class)
-//        private fun doRequest(httpClient: OkHttpClient, anyURL: String): String {
-//            val request = Request.Builder().url(anyURL).build()
-//            val response = httpClient.newCall(request).execute()
-//            if (!response.isSuccessful) {
-//                throw IOException("Unexpected code $response")
-//            }
-//            return response.body!!.string()
-//        }
-//    }
+    companion object {
+        const val INVERTER_IP_ADDRESS = "192.168.1.103"
+        const val ADAPTER_ID = "0"
+    }
+}
+
+class AforeWattagePort(id: String, portOperator: AforeWattageReadPortOperator) : ConnectiblePort<Wattage>(id, Wattage::class.java, portOperator) {
+    init {
+        this.connectionValidUntil = Calendar.getInstance().timeInMillis + 1000 * 60 * 10 //now + 10 minutes
+    }
+
+    suspend fun refresh(): Boolean {
+        try {
+            val aforeOperator = readPortOperator as AforeWattageReadPortOperator
+            return aforeOperator.refresh()
+        } catch (ex: Exception) {
+            cancelValidity()
+        }
+
+        return false
+    }
+}
+
+class AforeWattageReadPortOperator(
+    private val httpClient: HttpClient) : ReadPortOperator<Wattage> {
+
+    private var cachedValue = Wattage(0.0)
+
+    override fun read(): Wattage {
+        return cachedValue
+    }
+
+    suspend fun refresh() : Boolean {
+        val newValue = readInverterPower()
+        if (cachedValue.value != newValue) {
+            cachedValue = Wattage(newValue)
+            return true
+        }
+
+        return false
+    }
+
+    private suspend fun readInverterPower(): Double {
+        val inverterResponse = httpClient.get<String>("http://$INVERTER_IP_ADDRESS/status.html")
+        val lines = inverterResponse.split(";").toTypedArray()
+        for (line in lines) {
+            if (line.contains("webdata_now_p")) {
+                val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
+                return java.lang.Double.valueOf(s)
+            }
+        }
+
+        return 0.0
+    }
+
 }

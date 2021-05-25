@@ -63,7 +63,8 @@ class PortsController @Inject constructor(
             } else {
                 //TODO
             }
-            bundle.adapter.executePendingChanges()
+            //TODO
+            //bundle.adapter.executePendingChanges()
         } else {
             throw ResourceNotFoundException()
         }

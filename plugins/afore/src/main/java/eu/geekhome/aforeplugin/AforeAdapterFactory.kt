@@ -1,28 +1,22 @@
-package eu.geekhome.aforeplugin;
+package eu.geekhome.aforeplugin
 
-import eu.geekhome.services.hardware.HardwareAdapter;
-import eu.geekhome.services.hardware.HardwareAdapterFactory;
-import org.jetbrains.annotations.NotNull;
+import eu.geekhome.services.hardware.HardwareAdapter
+import eu.geekhome.services.hardware.HardwareAdapterFactory
 
-import java.util.ArrayList;
-import java.util.List;
+internal class AforeAdapterFactory : HardwareAdapterFactory {
 
-class AforeAdapterFactory implements HardwareAdapterFactory {
-
-    @NotNull
-    public static final String ID = "afore";
-
-    @Override
-    public List<HardwareAdapter> createAdapters() {
-        ArrayList<HardwareAdapter> result = new ArrayList<>();
-        AforeAdapter adapter = new AforeAdapter();
-        result.add(adapter);
-
-        return result;
+    override fun createAdapters(): List<HardwareAdapter> {
+        val result = ArrayList<HardwareAdapter>()
+        val adapter = AforeAdapter()
+        result.add(adapter)
+        return result
     }
 
-    @Override
-    public String getId() {
-        return ID;
+    override fun getId(): String {
+        return FACTORY_ID
+    }
+
+    companion object {
+        const val FACTORY_ID = "afore"
     }
 }

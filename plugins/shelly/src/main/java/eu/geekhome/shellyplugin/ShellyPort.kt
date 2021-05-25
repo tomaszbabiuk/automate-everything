@@ -24,4 +24,5 @@ class ShellyPort<V: PortValue>(
 
     constructor(sleepInterval: Long, id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>)
             : this(sleepInterval, id, true, false, valueType, readPortOperator, null)
-    }
+
+}

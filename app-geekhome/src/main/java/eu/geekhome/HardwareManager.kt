@@ -17,7 +17,14 @@ class HardwareManager(
         pluginsCoordinator.addPluginStateListener(this)
     }
 
-    fun afterAutomationLoop(now: Calendar) {
+    suspend fun beforeAutomationLoop(now: Calendar) {
+        bundles()
+            .forEach { bundle ->
+                bundle.adapter.refresh(now)
+            }
+    }
+
+    suspend fun afterAutomationLoop(now: Calendar) {
         bundles()
             .forEach { bundle ->
                 bundle.adapter.executePendingChanges()

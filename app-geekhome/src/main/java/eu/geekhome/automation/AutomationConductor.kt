@@ -154,6 +154,8 @@ class AutomationConductor(
             automationJob = GlobalScope.launch {
             while (isActive && !hasNewPorts) {
                 val now = Calendar.getInstance()
+                hardwareManager.beforeAutomationLoop(now)
+
                 if (automations.isNotEmpty()) {
                     println("Processing automation loop")
                     triggers.forEach {

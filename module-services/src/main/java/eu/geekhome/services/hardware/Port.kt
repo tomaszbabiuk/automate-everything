@@ -79,4 +79,8 @@ open class ConnectiblePort<V : PortValue>(
 
     constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>)
             : this(id, true, false, valueType, readPortOperator, null)
+
+    protected fun cancelValidity() {
+        connectionValidUntil = 0L
+    }
 }

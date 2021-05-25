@@ -11,9 +11,9 @@ interface HardwareAdapter {
     suspend fun discover(discoverySink: EventsSink) : MutableList<Port<*>>
 
     @Throws(Exception::class)
-    fun refresh(now: Calendar)
+    suspend fun refresh(now: Calendar)
     var state: AdapterState
-    fun executePendingChanges()
+    suspend fun executePendingChanges()
 
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)
