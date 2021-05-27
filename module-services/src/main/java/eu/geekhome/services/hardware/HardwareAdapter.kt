@@ -13,7 +13,7 @@ interface HardwareAdapter {
     @Throws(Exception::class)
     suspend fun refresh(now: Calendar)
     var state: AdapterState
-    suspend fun executePendingChanges()
+    suspend fun executePendingChanges(now: Calendar)
 
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)

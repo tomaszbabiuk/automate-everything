@@ -28,10 +28,4 @@ class AforePlugin(wrapper: PluginWrapper?) : HardwarePlugin(wrapper), PluginMeta
     override fun getDescription(): Resource {
         return R.plugin_description
     }
-
-    companion object {
-        const val PLUGIN_ID_MQTT = "mqtt"
-        const val PLUGIN_ID_AFORE = "afore"
-    }
-
 }

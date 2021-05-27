@@ -151,10 +151,17 @@ class AutomationConductor(
         val triggers = automations.flatten()
 
         var hasNewPorts = false
-            automationJob = GlobalScope.launch {
+        var beforeAutomationLoopTask: Deferred<Unit>? = null
+        automationJob = GlobalScope.launch {
             while (isActive && !hasNewPorts) {
                 val now = Calendar.getInstance()
-                hardwareManager.beforeAutomationLoop(now)
+                if (beforeAutomationLoopTask == null || beforeAutomationLoopTask!!.isCompleted) {
+                    beforeAutomationLoopTask = async {
+                        hardwareManager.beforeAutomationLoop(now)
+                    }
+                } else {
+                    println("Skipping before automation loop call (busy)")
+                }
 
                 if (automations.isNotEmpty()) {
                     println("Processing automation loop")

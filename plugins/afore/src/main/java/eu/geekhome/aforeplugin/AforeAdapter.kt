@@ -1,19 +1,19 @@
 package eu.geekhome.aforeplugin
 
-import eu.geekhome.aforeplugin.AforeAdapter.Companion.INVERTER_IP_ADDRESS
 import eu.geekhome.aforeplugin.AforeAdapterFactory.Companion.FACTORY_ID
-import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.DiscoveryEventData
+import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.PortUpdateEventData
-import eu.geekhome.services.hardware.*
+import eu.geekhome.services.hardware.HardwareAdapterBase
+import eu.geekhome.services.hardware.OperationMode
+import eu.geekhome.services.hardware.Port
+import eu.geekhome.services.hardware.PortIdBuilder
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.auth.*
 import io.ktor.client.features.auth.providers.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AforeAdapter : HardwareAdapterBase() {
 
@@ -36,10 +36,10 @@ class AforeAdapter : HardwareAdapterBase() {
         }
 
         engine {
-            maxConnectionsCount = 1000
+            maxConnectionsCount = 1
 
             endpoint {
-                maxConnectionsPerRoute = 100
+                maxConnectionsPerRoute = 1
                 pipelineMaxSize = 20
                 keepAliveTime = 5000
                 connectTimeout = 5000
@@ -76,10 +76,9 @@ class AforeAdapter : HardwareAdapterBase() {
 
     @Throws(Exception::class)
     override suspend fun refresh(now: Calendar) {
-        if (now.timeInMillis - lastRefresh > 30000) {
-            //TODO: recheck if ktor is busy
+        if (now.timeInMillis - lastRefresh > 1000 * 30) {
             ports.forEach {
-                val changed = it.refresh()
+                val changed = it.refresh(now)
                 if (changed) {
                     val event = PortUpdateEventData(FACTORY_ID, ADAPTER_ID, it)
                     operationSink?.broadcastEvent(event)
@@ -90,7 +89,7 @@ class AforeAdapter : HardwareAdapterBase() {
         }
     }
 
-    override suspend fun executePendingChanges() {
+    override suspend fun executePendingChanges(now: Calendar) {
     }
 
     @Throws(Exception::class)
@@ -105,58 +104,8 @@ class AforeAdapter : HardwareAdapterBase() {
     }
 
     companion object {
-        const val INVERTER_IP_ADDRESS = "192.168.1.103"
+        const val INVERTER_IP_ADDRESS = "192.168.1.103" //TODO: use settings when ready
         const val ADAPTER_ID = "0"
     }
 }
 
-class AforeWattagePort(id: String, portOperator: AforeWattageReadPortOperator) : ConnectiblePort<Wattage>(id, Wattage::class.java, portOperator) {
-    init {
-        this.connectionValidUntil = Calendar.getInstance().timeInMillis + 1000 * 60 * 10 //now + 10 minutes
-    }
-
-    suspend fun refresh(): Boolean {
-        try {
-            val aforeOperator = readPortOperator as AforeWattageReadPortOperator
-            return aforeOperator.refresh()
-        } catch (ex: Exception) {
-            cancelValidity()
-        }
-
-        return false
-    }
-}
-
-class AforeWattageReadPortOperator(
-    private val httpClient: HttpClient) : ReadPortOperator<Wattage> {
-
-    private var cachedValue = Wattage(0.0)
-
-    override fun read(): Wattage {
-        return cachedValue
-    }
-
-    suspend fun refresh() : Boolean {
-        val newValue = readInverterPower()
-        if (cachedValue.value != newValue) {
-            cachedValue = Wattage(newValue)
-            return true
-        }
-
-        return false
-    }
-
-    private suspend fun readInverterPower(): Double {
-        val inverterResponse = httpClient.get<String>("http://$INVERTER_IP_ADDRESS/status.html")
-        val lines = inverterResponse.split(";").toTypedArray()
-        for (line in lines) {
-            if (line.contains("webdata_now_p")) {
-                val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
-                return java.lang.Double.valueOf(s)
-            }
-        }
-
-        return 0.0
-    }
-
-}

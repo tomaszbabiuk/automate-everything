@@ -17,6 +17,10 @@ class HardwareManager(
         pluginsCoordinator.addPluginStateListener(this)
     }
 
+    /**
+     * This method is called before every automation loop. The method is executed in an async way so it's not
+     * blocking automation loop processing. This function will not be called if previous execution is still ongoing.
+     */
     suspend fun beforeAutomationLoop(now: Calendar) {
         bundles()
             .forEach { bundle ->
@@ -24,10 +28,14 @@ class HardwareManager(
             }
     }
 
+    /**
+     * This method is called after every automation loop. The method is called in a blocking way. The code from here
+     * must be executed before new automation loop.
+     */
     suspend fun afterAutomationLoop(now: Calendar) {
         bundles()
             .forEach { bundle ->
-                bundle.adapter.executePendingChanges()
+                bundle.adapter.executePendingChanges(now)
             }
     }
 

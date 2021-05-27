@@ -118,7 +118,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     override suspend fun refresh(now: Calendar) {
     }
 
-    override suspend fun executePendingChanges() {
+    override suspend fun executePendingChanges(now: Calendar) {
         ports
             .mapNotNull { it.writePortOperator }
             .filterIsInstance<ShellyWritePortOperator<*>>()
