@@ -7,5 +7,5 @@ interface SettingsCategory  : ExtensionPoint{
     val titleRes: Resource
     val descriptionRes: Resource
     val iconRaw: String
-    val fields: Map<String, FieldDefinition<*>>
+    val fieldDefinitions: Map<String, FieldDefinition<*>>
 }

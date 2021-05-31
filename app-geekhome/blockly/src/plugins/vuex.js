@@ -16,10 +16,10 @@ export const ADD_INSTANCE = 'ADD_INSTANCE'
 export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const REMOVE_INSTANCE = 'REMOVE_INSTANCE' 
-export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD' 
-export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON' 
-export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG' 
-export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG' 
+export const UPDATE_INSTANCE_FIELD = 'UPDATE_INSTANCE_FIELD'
+export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON'
+export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG'
+export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG'
 export const UPDATE_INSTANCE_AUTOMATION = 'UPDATE_INSTANCE_AUTOMATION'
 export const SET_INSTANCES = 'SET_INSTANCES'
 export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
@@ -57,7 +57,11 @@ export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
 export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
 
+export const RESET_SETTINGS = 'RESET_SETTINGS'
 export const SET_SETTING_CATEGORIES= 'SET_SETTING_CATEGORIES' 
+export const SET_SETTINGS_VALIDATION = 'SET_SETTINGS_VALIDATION'
+export const CLEAR_SETTINGS_VALIDATION = 'CLEAR_SETTINGS_VALIDATION'
+export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD' 
 
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
@@ -81,7 +85,6 @@ export default new Vuex.Store({
     configurables: [],
     instances: [],
     instanceValidation: [],
-    validation: [],
     tags: [],
     iconCategories: [],
     discoveryEvents: [],
@@ -103,7 +106,12 @@ export default new Vuex.Store({
       tagIds: [],
     },
     counter: 0,
-    settingCategories: []
+    settingCategories: [],
+    settingsValidation: [],
+    settings: {
+      class: null,
+      fields: {}
+    }
   },
 
   mutations: {
@@ -404,6 +412,29 @@ export default new Vuex.Store({
 
     [SET_SETTING_CATEGORIES](state, settingCategories) {
       state.settingCategories = settingCategories
+    },
+
+    [SET_SETTINGS_VALIDATION](state, validationData) {
+      state.settingsValidation = validationData
+    },
+
+    [CLEAR_SETTINGS_VALIDATION](state) {
+      state.settingsValidation = []
+    },
+
+    [RESET_SETTINGS](state, settingCategory) {
+      state.settings.clazz = settingCategory.clazz
+
+      settingCategory.fields.forEach(element => {
+        Vue.set(state.settings.fields, element.name, '')
+      })
+    },
+
+    [UPDATE_SETTINGS_FIELD](state, payload) {
+      /*
+        payload should be { name: ..., value:... }
+      */
+      state.settings.fields[payload.name] = payload.value
     },
   }
 })

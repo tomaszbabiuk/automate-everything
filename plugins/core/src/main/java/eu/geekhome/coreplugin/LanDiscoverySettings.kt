@@ -10,9 +10,9 @@ class LanDiscoverySettings: SettingsCategory {
     override val titleRes: Resource = R.settings_lan_discovery_title
     override val descriptionRes: Resource = R.settings_lan_discovery_description
 
-    override val fields: Map<String, FieldDefinition<*>>
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
-            val result: MutableMap<String, FieldDefinition<*>> = HashMap()
+            val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap()
             result[FIELD_IP_FROM] = ipFromField
             result[FIELD_IP_TO] = ipToField
             return result

@@ -48,7 +48,6 @@ export default {
         name: "settingCategory",
         params: { clazz: category.clazz },
       });
-      this.refresh();
     },
   },
   mounted: function () {

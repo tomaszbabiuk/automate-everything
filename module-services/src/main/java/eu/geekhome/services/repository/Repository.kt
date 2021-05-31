@@ -32,4 +32,7 @@ interface Repository : ExtensionPoint {
     fun getAllPorts(): List<PortDto>
     fun savePort(port: PortDto): Long
     fun deletePortSnapshot(id: String)
+
+    fun saveSettings(settingsDto: SettingsDto)
+    fun updateSettings(settingsDto: SettingsDto)
 }

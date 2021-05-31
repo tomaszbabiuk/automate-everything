@@ -15,7 +15,7 @@ data: function() {
       text: '',
     };
   },
-  props: ["id", "hint", "required", "counter"],
+  props: ["id", "hint", "counter"],
   computed: {
     validation() {
       return this.$store.state.instanceValidation[this.id]

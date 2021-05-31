@@ -12,7 +12,7 @@ class SettingCategoryDtoMapper @Inject constructor(
     @Throws(MappingException::class)
     fun map(category: SettingsCategory): SettingCategoryDto {
         val fields: List<FieldDefinitionDto>? = category
-            .fields
+            .fieldDefinitions
             .values
             .stream()
             .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }

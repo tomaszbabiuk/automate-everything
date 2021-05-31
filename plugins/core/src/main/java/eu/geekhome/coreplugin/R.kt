@@ -4,13 +4,13 @@ import eu.geekhome.services.localization.Resource
 
 object R {
     val field_ip_from = Resource(
-        "Starting IPv4 address, the discovery will start from this address",
-        "Adres startowy IPv4 od którego zacznie się wykrywanie urządzeń"
+        "Starting IPv4 address",
+        "Adres startowy IPv4"
     )
 
     val field_ip_to = Resource(
-        "Ending IPv4 address, the discovery will finish on this address",
-        "Adres końcowy IPv4 na którym zakończy się wykrywanie urządzeń"
+        "Ending IPv4 address",
+        "Adres końcowy IPv4"
     )
 
     val settings_lan_discovery_title = Resource(

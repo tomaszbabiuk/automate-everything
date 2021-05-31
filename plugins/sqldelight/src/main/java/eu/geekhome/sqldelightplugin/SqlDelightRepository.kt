@@ -35,7 +35,7 @@ class SqlDelightRepository : Repository {
         val fieldsMap = HashMap<String, String?>()
 
         database
-            .fieldInstanceQueries
+            .configurableFieldInstanceQueries
             .selectOfConfigurableInstance(configurableInstance.id)
             .executeAsList()
             .forEach { fieldsMap[it.name] = it.value }
@@ -73,7 +73,7 @@ class SqlDelightRepository : Repository {
             database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId, instanceDto.automation)
             val insertedDtoId = database.generalQueries.lastInsertRowId().executeAsOne()
             instanceDto.fields.forEach {
-                database.fieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
+                database.configurableFieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
             }
 
             instanceDto.tagIds.forEach {
@@ -88,7 +88,7 @@ class SqlDelightRepository : Repository {
                 instanceDto.automation, instanceDto.id)
 
             instanceDto.fields.forEach {
-                database.fieldInstanceQueries.update(it.value, it.key, instanceDto.id)
+                database.configurableFieldInstanceQueries.update(it.value, it.key, instanceDto.id)
             }
 
             database.instanceTaggingQueries.deleteAllOfInstance(instanceDto.id)
@@ -270,5 +270,13 @@ class SqlDelightRepository : Repository {
         database.transaction {
             database.portQueries.delete(id)
         }
+    }
+
+    override fun saveSettings(settingsDto: SettingsDto) {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateSettings(settingsDto: SettingsDto) {
+        TODO("Not yet implemented")
     }
 }
