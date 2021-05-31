@@ -41,7 +41,7 @@
               </v-tab>
 
               <v-tab-item>
-                <configurable-form></configurable-form>
+                <configurable-form :clazz="getConfigurableClazz()"></configurable-form>
               </v-tab-item>
               <v-tab-item v-if="configurable.editableIcon">
                 <configurable-iconselector></configurable-iconselector>

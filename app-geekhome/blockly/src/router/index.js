@@ -9,6 +9,7 @@ import Tags from '../views/Tags'
 import Icons from '../views/Icons'
 import Discover from '../views/Discover'
 import Settings from '../views/Settings'
+import SettingCategory from '../views/SettingCategory'
 
 Vue.use(VueRouter)
 
@@ -57,6 +58,11 @@ const routes = [
     path: '/settings',
     name: 'settings',
     component: Settings
+  },
+  {
+    path: '/settings/:clazz',
+    name: 'settingCategory',
+    component: SettingCategory
   },
   {
     path: '/',

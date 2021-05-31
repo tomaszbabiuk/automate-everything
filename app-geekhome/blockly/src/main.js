@@ -16,6 +16,9 @@ import ConfigurableIconSelector from './components/geekhome/configurable/IconSel
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
 
+import SettingsForm from './components/geekhome/settings/Form'
+import SettingsStringField from './components/geekhome/settings/StringField'
+
 import PortControl from './components/geekhome/PortControl'
 
 //configurables
@@ -30,6 +33,10 @@ Vue.component('configurable-wattagereadportfield', ConfigurableWattageReadPortFi
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
+
+//settings
+Vue.component('settings-form', SettingsForm)
+Vue.component('settings-stringfield', SettingsStringField)
 
 //geekhome
 Vue.component('portcontrol', PortControl)

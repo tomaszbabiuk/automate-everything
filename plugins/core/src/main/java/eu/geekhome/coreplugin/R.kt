@@ -3,19 +3,24 @@ package eu.geekhome.coreplugin
 import eu.geekhome.services.localization.Resource
 
 object R {
-    val field_ip_mask = Resource(
-        "IPv4 addresses mask",
-        "Maska adresów IPv4"
+    val field_ip_from = Resource(
+        "Starting IPv4 address, the discovery will start from this address",
+        "Adres startowy IPv4 od którego zacznie się wykrywanie urządzeń"
+    )
+
+    val field_ip_to = Resource(
+        "Ending IPv4 address, the discovery will finish on this address",
+        "Adres końcowy IPv4 na którym zakończy się wykrywanie urządzeń"
     )
 
     val settings_lan_discovery_title = Resource(
       "LAN discovery",
-      "Odkrywanie w sieci LAN"
+      "Wykrywanie urządzeń w sieci LAN"
     )
 
     val settings_lan_discovery_description = Resource(
       "Local IP address range that will be checked for being a smart device during discovery process",
-      "Zakres adresów IP w sieci lokalnej, które będą odpytywane w czasie procesu wyszukiwania urządzeń inteligentnych"
+      "Zakres adresów IP w sieci lokalnej, które będą odpytywane w czasie procesu wyszukiwania inteligentnych urządzeń"
     )
 
     val plugin_description = Resource(

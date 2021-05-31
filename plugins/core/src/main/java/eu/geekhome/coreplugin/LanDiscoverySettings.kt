@@ -13,7 +13,8 @@ class LanDiscoverySettings: SettingsCategory {
     override val fields: Map<String, FieldDefinition<*>>
         get() {
             val result: MutableMap<String, FieldDefinition<*>> = HashMap()
-            result[FIELD_IP_MASK] = discoveryMaskField
+            result[FIELD_IP_FROM] = ipFromField
+            result[FIELD_IP_TO] = ipToField
             return result
         }
 
@@ -26,10 +27,12 @@ class LanDiscoverySettings: SettingsCategory {
                  </g>
                 </svg>"""
 
-    private val discoveryMaskField = StringField(FIELD_IP_MASK, R.field_ip_mask, 15, RequiredStringValidator(), IPMaskValidator())
+    private val ipFromField = StringField(FIELD_IP_FROM, R.field_ip_from, 15, RequiredStringValidator(), IPMaskValidator())
+    private val ipToField = StringField(FIELD_IP_TO, R.field_ip_to, 15, RequiredStringValidator(), IPMaskValidator())
 
 
     companion object {
-        const val FIELD_IP_MASK = "discoveryMask"
+        const val FIELD_IP_FROM = "ipFrom"
+        const val FIELD_IP_TO = "ipTo"
     }
 }

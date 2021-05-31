@@ -1,15 +1,15 @@
 <template>
   <div>
-    <v-form ref="form" v-if="configurable != null">
+    <v-form ref="form" v-if="settingCategory != null">
       <component
         class="ma-4"
-        v-for="field in configurable.fields"
+        v-for="field in settingCategory.fields"
         :key="field.name"
         :hint="field.hint"
         :counter="field.maxSize"
         :required="field.required"
         :id="field.name"
-        v-bind:is="configurableClassToFormComponent(field.clazz)"
+        v-bind:is="fieldClassToFormComponent(field.clazz)"
       >
       </component>
     </v-form>
@@ -20,19 +20,18 @@
 export default {
   props: ["clazz"],
   computed: {
-    configurable: function () {
-      console.log(this.clazz)
-      return this.getConfigurableByClazz(this.clazz);
+    settingCategory: function () {
+      return this.getSettingCategoryByClazz(this.clazz);
     },
   },
   methods: {
-    configurableClassToFormComponent: function (clazz) {
-      return "configurable-" + clazz.toLowerCase();
+    fieldClassToFormComponent: function (clazz) {
+      return "settings-" + clazz.toLowerCase();
     },
 
-    getConfigurableByClazz: function (clazz) {
+    getSettingCategoryByClazz: function (clazz) {
       var result = null;
-      this.$store.state.configurables.forEach((element) => {
+      this.$store.state.settingCategories.forEach((element) => {
         if (element.clazz == clazz) {
           result = element;
         }
