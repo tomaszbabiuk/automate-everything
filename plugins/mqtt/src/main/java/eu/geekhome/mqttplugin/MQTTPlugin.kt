@@ -4,7 +4,6 @@ import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.localization.Resource
 import eu.geekhome.services.mqtt.MqttBrokerPlugin
 import eu.geekhome.services.mqtt.MqttBrokerService
-import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
 class MQTTPlugin(wrapper: PluginWrapper?) : MqttBrokerPlugin(wrapper), PluginMetadata {
@@ -21,13 +20,8 @@ class MQTTPlugin(wrapper: PluginWrapper?) : MqttBrokerPlugin(wrapper), PluginMet
         _broker.stop()
     }
 
-    override fun getName(): Resource {
-        return R.plugin_name
-    }
-
-    override fun getDescription(): Resource {
-        return R.plugin_description
-    }
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
 
     override fun getBroker(): MqttBrokerService {
         return _broker

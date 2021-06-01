@@ -1,5 +1,6 @@
 package eu.geekhome.aforeplugin
 
+import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.geekhome.services.hardware.HardwarePlugin
@@ -21,11 +22,6 @@ class AforePlugin(wrapper: PluginWrapper?) : HardwarePlugin(wrapper), PluginMeta
         println("Stopping AFORE plugin")
     }
 
-    override fun getName(): Resource {
-        return R.plugin_name
-    }
-
-    override fun getDescription(): Resource {
-        return R.plugin_description
-    }
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
 }

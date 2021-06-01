@@ -3,7 +3,6 @@ package eu.geekhome.coreplugin
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
-import java.util.HashMap
 
 @Extension
 class LanDiscoverySettings: SettingsCategory {

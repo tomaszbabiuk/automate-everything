@@ -1,5 +1,6 @@
 package eu.geekhome.rest.plugins
 
+import eu.geekhome.services.configurable.SettingsCategoryDto
 import eu.geekhome.services.localization.Resource
 
 data class PluginDto(
@@ -9,5 +10,6 @@ data class PluginDto(
     val provider: String,
     val version: String,
     val isHardwareFactory: Boolean,
-    val enabled: Boolean
+    val enabled: Boolean,
+    val settingsCategories: List<SettingsCategoryDto>?
 )

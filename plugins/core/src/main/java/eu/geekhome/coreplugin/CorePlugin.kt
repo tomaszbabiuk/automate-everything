@@ -14,11 +14,6 @@ class CorePlugin(wrapper: PluginWrapper?) : Plugin(wrapper), PluginMetadata {
         println("WelcomePlugin.stop()")
     }
 
-    override fun getName(): Resource {
-        return R.plugin_name
-    }
-
-    override fun getDescription(): Resource {
-        return R.plugin_description
-    }
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
 }

@@ -1,5 +1,6 @@
 package eu.geekhome.sqldelightplugin
 
+import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Plugin
@@ -14,11 +15,6 @@ class SqlDelightPlugin(wrapper: PluginWrapper?) : Plugin(wrapper), PluginMetadat
         println("SQLDelight plugin.stop()")
     }
 
-    override fun getName(): Resource {
-        return R.plugin_name
-    }
-
-    override fun getDescription(): Resource {
-        return R.plugin_description
-    }
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
 }

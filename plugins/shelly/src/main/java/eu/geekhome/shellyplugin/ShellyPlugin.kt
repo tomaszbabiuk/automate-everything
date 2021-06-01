@@ -1,5 +1,6 @@
 package eu.geekhome.shellyplugin
 
+import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.hardware.HardwareAdapterFactory
 import eu.geekhome.services.hardware.HardwarePlugin
@@ -30,13 +31,8 @@ class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMeta
         println("Stopping SHELLY plugin")
     }
 
-    override fun getName(): Resource {
-        return R.plugin_name
-    }
-
-    override fun getDescription(): Resource {
-        return R.plugin_description
-    }
+    override val name: Resource =  R.plugin_name
+    override val description: Resource = R.plugin_description
 
     override fun pluginStateChanged(event: PluginStateEvent) {
         if (event.pluginState == PluginState.STOPPED) {

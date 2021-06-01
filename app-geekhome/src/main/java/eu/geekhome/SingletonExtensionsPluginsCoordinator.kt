@@ -18,7 +18,7 @@ interface PluginsCoordinator {
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val repository: Repository
-    val settingCategories: List<SettingsCategory>
+    fun findSettingsCategories(pluginId: String): List<SettingsCategory>
 }
 
 class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) : PluginsCoordinator {
@@ -70,11 +70,12 @@ class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) 
     override val configurables: List<Configurable>
         get() = wrapped.getExtensions(Configurable::class.java)
 
-    override val settingCategories: List<SettingsCategory>
-        get() = wrapped.getExtensions(SettingsCategory::class.java)
-
     override val repository: Repository
         get() = wrapped.getExtensions(Repository::class.java).first()
+
+    override fun findSettingsCategories(pluginId: String): List<SettingsCategory> {
+        return wrapped.getExtensions(SettingsCategory::class.java, pluginId)
+    }
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins

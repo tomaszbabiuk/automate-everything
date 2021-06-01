@@ -10,7 +10,7 @@ class SettingCategoryDtoMapper @Inject constructor(
     private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper
 ) {
     @Throws(MappingException::class)
-    fun map(category: SettingsCategory): SettingCategoryDto {
+    fun map(category: SettingsCategory): SettingsCategoryDto {
         val fields: List<FieldDefinitionDto>? = category
             .fieldDefinitions
             .values
@@ -18,7 +18,7 @@ class SettingCategoryDtoMapper @Inject constructor(
             .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }
             .collect(Collectors.toList())
 
-        return SettingCategoryDto(
+        return SettingsCategoryDto(
             category.javaClass.name,
             category.titleRes,
             category.descriptionRes,
