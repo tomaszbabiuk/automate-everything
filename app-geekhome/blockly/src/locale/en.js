@@ -23,6 +23,7 @@ export default {
         disabled: "Disabled",
         enable: "Enable",
         disable: "Disable",
+        settings: "Settings",
     },
     common: {
         retry: "Retry",

@@ -1,4 +1,4 @@
-package eu.geekhome.rest.settingsgroup
+package eu.geekhome.rest.settinggroup
 
 import eu.geekhome.rest.MappingException
 import eu.geekhome.rest.field.FieldDefinitionDtoMapper
@@ -6,11 +6,11 @@ import eu.geekhome.services.configurable.*
 import java.util.stream.Collectors
 import javax.inject.Inject
 
-class SettingCategoryDtoMapper @Inject constructor(
+class SettingGroupDtoMapper @Inject constructor(
     private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper
 ) {
     @Throws(MappingException::class)
-    fun map(category: SettingsCategory): SettingsCategoryDto {
+    fun map(category: SettingGroup): SettingGroupDto {
         val fields: List<FieldDefinitionDto>? = category
             .fieldDefinitions
             .values
@@ -18,7 +18,7 @@ class SettingCategoryDtoMapper @Inject constructor(
             .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }
             .collect(Collectors.toList())
 
-        return SettingsCategoryDto(
+        return SettingGroupDto(
             category.javaClass.name,
             category.titleRes,
             category.descriptionRes,

@@ -58,7 +58,6 @@ export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
 
 export const RESET_SETTINGS = 'RESET_SETTINGS'
-export const SET_SETTING_CATEGORIES= 'SET_SETTING_CATEGORIES' 
 export const SET_SETTINGS_VALIDATION = 'SET_SETTINGS_VALIDATION'
 export const CLEAR_SETTINGS_VALIDATION = 'CLEAR_SETTINGS_VALIDATION'
 export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD' 
@@ -106,7 +105,6 @@ export default new Vuex.Store({
       tagIds: [],
     },
     counter: 0,
-    settingCategories: [],
     settingsValidation: [],
     settings: {
       class: null,
@@ -408,10 +406,6 @@ export default new Vuex.Store({
           element.evaluationResult = automationUnitDto.evaluationResult
         }
       })
-    },
-
-    [SET_SETTING_CATEGORIES](state, settingCategories) {
-      state.settingCategories = settingCategories
     },
 
     [SET_SETTINGS_VALIDATION](state, validationData) {

@@ -12,7 +12,6 @@ import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
 import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
 import { UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT } from './plugins/vuex'
 import { ADD_AUTOMATION_HISTORY } from './plugins/vuex'
-import { SET_SETTING_CATEGORIES } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -340,13 +339,6 @@ export const client = {
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }
-    )
-  },
-
-  getSettingCategories: async function () {
-    await this.handleRestError(
-      () => axiosInstance.get("rest/settingcategories"),
-      (response) => store.commit(SET_SETTING_CATEGORIES, response.data)
     )
   },
 }

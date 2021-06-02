@@ -1,6 +1,5 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.hardware.HardwareAdapterFactory
 import eu.geekhome.services.hardware.HardwarePlugin

@@ -1,6 +1,5 @@
 package eu.geekhome.aforeplugin
 
-import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.geekhome.services.hardware.HardwarePlugin

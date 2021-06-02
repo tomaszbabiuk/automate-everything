@@ -2,7 +2,7 @@ package eu.geekhome.rest.plugins
 
 import eu.geekhome.R
 import eu.geekhome.rest.PluginsCoordinatorHolderService
-import eu.geekhome.rest.settingsgroup.SettingCategoryDtoMapper
+import eu.geekhome.rest.settinggroup.SettingGroupDtoMapper
 import org.pf4j.PluginWrapper
 import org.pf4j.PluginState
 import eu.geekhome.services.hardware.HardwarePlugin
@@ -10,7 +10,7 @@ import eu.geekhome.services.extensibility.PluginMetadata
 import javax.inject.Inject
 
 class PluginDtoMapper @Inject constructor(
-    private val settingsCategoryDtoMapper: SettingCategoryDtoMapper,
+    private val settingsGroupDtoMapper: SettingGroupDtoMapper,
     pluginsCoordinatorHolderService: PluginsCoordinatorHolderService
 ) {
     val pluginsCoordinator = pluginsCoordinatorHolderService.instance
@@ -23,8 +23,8 @@ class PluginDtoMapper @Inject constructor(
         val enabled = pluginWrapper.pluginState == PluginState.STARTED
         val isHardwareFactory = pluginWrapper.plugin is HardwarePlugin
         val settingsCategories = pluginsCoordinator
-            .findSettingsCategories(id)
-            .map { settingsCategoryDtoMapper.map(it)}
+            .findPluginSettingGroups(id)
+            .map { settingsGroupDtoMapper.map(it)}
         return if (plugin is PluginMetadata) {
             val metadata = plugin as PluginMetadata
             PluginDto(id, metadata.name, metadata.description, provider, version, isHardwareFactory, enabled, settingsCategories)

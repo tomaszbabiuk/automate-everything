@@ -1,6 +1,5 @@
 package eu.geekhome.sqldelightplugin
 
-import eu.geekhome.services.configurable.SettingsCategory
 import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.localization.Resource
 import org.pf4j.Plugin

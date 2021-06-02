@@ -2,7 +2,7 @@ package eu.geekhome.services.configurable
 
 import eu.geekhome.services.localization.Resource
 
-data class SettingsCategoryDto(
+data class SettingGroupDto(
     val clazz: String,
     val titleRes: Resource,
     val descriptionRes: Resource,

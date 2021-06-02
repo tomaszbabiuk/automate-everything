@@ -5,7 +5,7 @@ import eu.geekhome.services.localization.Resource
 import org.pf4j.Extension
 
 @Extension
-class LanDiscoverySettings: SettingsCategory {
+class LanDiscoverySettings: SettingGroup {
     override val titleRes: Resource = R.settings_lan_discovery_title
     override val descriptionRes: Resource = R.settings_lan_discovery_description
 
