@@ -6,16 +6,16 @@
       </template>
     </v-breadcrumbs>
 
-    <!-- <v-expansion-panels focusable v-model="panels" multiple>
-      <v-expansion-panel :key="0" >
+    <v-expansion-panels focusable multiple v-if="plugin != null">
+      <v-expansion-panel v-for="settingGroup in plugin.settingGroups" :key="settingGroup.clazz">
         <v-expansion-panel-header>
           <template v-slot:default="{ open }">
             <v-row no-gutters>
-              <v-col cols="4"> LAN discovery </v-col>
+              <v-col cols="4"> {{ settingGroup.titleRes }} </v-col>
               <v-col cols="8" class="text--secondary">
                 <v-fade-transition leave-absolute>
                   <span v-if="open" key="0">
-                    {{ description }}
+                    {{ settingGroup.descriptionRes }}
                   </span>
                   <span v-else key="1"> </span>
                 </v-fade-transition>
@@ -24,7 +24,7 @@
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <settings-form :clazz="getSettingsClazz()"></settings-form>
+          <settings-form :settingGroup="settingGroup"></settings-form>
            <v-btn
            class="float-right"
             depressed
@@ -33,7 +33,7 @@
           </v-btn>
         </v-expansion-panel-content>
       </v-expansion-panel>
-    </v-expansion-panels> -->
+    </v-expansion-panels>
   </div>
 </template>
 
@@ -46,57 +46,44 @@ export default {
       panels: [0],
       breadcrumbs: [],
       plugin: null
-      // description: "",
     };
   },
   computed: {
     plugins() {
       return this.$store.state.plugins;
     },
-
-    settingGroups() {
-      var plugin = this.$store.state.plugins.filter((element) => {
-        return element.id === this.getPluginId();
-      });
-
-      if (plugin.length == 1) {
-        return plugin[0].settingGroups;
-      } else {
-        return null
-      }
-    }
   },
 
   watch: {
     plugins() {
-      console.log("Got plugins")
-      var plugin = this.getPlugin();
-      if (plugin != null) {
-        this.breadcrumbs = this.calculateBreadcrumbs(plugin);
-      }
+      this.refresh();
     }
-    // categories() {
-    //   var settingsClass = this.getSettingsClazz();
-    //   var settingCategory = this.getSettingCategoryByClazz(settingsClass);
-    //   this.breadcrumbs = this.calculateBreadcrumbs(settingCategory);
-    //   this.description = settingCategory.descriptionRes;
-    // },
   },
   methods: {
-    getPlugin: function () {
-      return this.$store.params.plugin;
+    refresh: function() {
+      this.plugin = this.findPlugin(this.getPluginId())
+      if (this.plugin == null) {
+        client.getPlugins();
+      } else {
+        this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
+      }
     },
 
-    // getSettingCategoryByClazz: function (clazz) {
-    //   var result = null;
-    //   this.$store.state.settingCategories.forEach((element) => {
-    //     if (element.clazz == clazz) {
-    //       result = element;
-    //     }
-    //   });
+    getPluginId: function() {
+      return this.$route.params.id;
+    },
 
-    //   return result;
-    // },
+    findPlugin: function(pluginId) {
+      var pluginsFound = this.$store.state.plugins.filter((element) => {
+        return element.id == pluginId;
+      });
+
+      if (pluginsFound.length == 1) {
+        return pluginsFound[0]
+      } else {
+        return null
+      }
+    },
 
     calculateBreadcrumbs(plugin) {
       var breadcrumbs = [];
@@ -118,9 +105,7 @@ export default {
 
   },
   beforeMount: function () {
-    if (this.$store.state.plugins == null) {
-      client.getPlugins();
-    }
+    this.refresh();
   },
 };
 </script>

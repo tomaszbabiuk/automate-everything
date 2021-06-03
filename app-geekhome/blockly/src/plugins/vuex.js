@@ -98,7 +98,7 @@ export default new Vuex.Store({
     automationUnits: [],
     newInstance: {
       id: null,
-      class: null,
+      clazz: null,
       fields: {},
       iconId: null,
       automation: null,
@@ -107,7 +107,7 @@ export default new Vuex.Store({
     counter: 0,
     settingsValidation: [],
     settings: {
-      class: null,
+      clazz: null,
       fields: {}
     }
   },
@@ -416,10 +416,10 @@ export default new Vuex.Store({
       state.settingsValidation = []
     },
 
-    [RESET_SETTINGS](state, settingCategory) {
-      state.settings.clazz = settingCategory.clazz
+    [RESET_SETTINGS](state, settingGroup) {
+      state.settings.clazz = settingGroup.clazz
 
-      settingCategory.fields.forEach(element => {
+      settingGroup.fields.forEach(element => {
         Vue.set(state.settings.fields, element.name, '')
       })
     },

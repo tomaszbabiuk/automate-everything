@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-form ref="form" v-if="settingCategory != null">
+    <v-form ref="form" v-if="settingGroup != null">
       <component
         class="ma-4"
-        v-for="field in settingCategory.fields"
+        v-for="field in settingGroup.fields"
         :key="field.name"
         :hint="field.hint"
         :counter="field.maxSize"
         :required="field.required"
-        :id="field.name"
+        :id="settingGroup.clazz+':'+field.name"
         v-bind:is="fieldClassToFormComponent(field.clazz)"
       >
       </component>
@@ -18,26 +18,10 @@
 
 <script>
 export default {
-  props: ["clazz"],
-  computed: {
-    settingCategory: function () {
-      return this.getSettingCategoryByClazz(this.clazz);
-    },
-  },
+  props: ["settingGroup"],
   methods: {
     fieldClassToFormComponent: function (clazz) {
       return "settings-" + clazz.toLowerCase();
-    },
-
-    getSettingCategoryByClazz: function (clazz) {
-      var result = null;
-      this.$store.state.settingCategories.forEach((element) => {
-        if (element.clazz == clazz) {
-          result = element;
-        }
-      });
-
-      return result;
     },
   },
 };
