@@ -4,6 +4,7 @@ import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.services.configurable.FieldValidationResult
 import eu.geekhome.services.configurable.SettingGroup
+import eu.geekhome.services.extensibility.PluginMetadata
 import eu.geekhome.services.repository.InstanceDto
 import eu.geekhome.services.repository.SettingsDto
 import java.util.*
@@ -18,8 +19,10 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
 
     private fun findSettingCategory(clazz: String): SettingGroup? {
         return pluginsCoordinator
-            .settingGroups
-            .firstOrNull { x -> x.javaClass.name.equals(clazz) }
+            .plugins
+            .filterIsInstance<PluginMetadata>()
+            .flatMap { it.settingGroups }
+            .firstOrNull() { it.javaClass.name == clazz }
     }
 
     @POST

@@ -69,7 +69,7 @@ class AutomationConductor(
         }
     }
 
-    fun rebuildAutomations(): List<List<IStatementNode>> {
+    private fun rebuildAutomations(): List<List<IStatementNode>> {
 
         val repository = pluginsCoordinator.repository
         val allInstances = repository.getAllInstances()

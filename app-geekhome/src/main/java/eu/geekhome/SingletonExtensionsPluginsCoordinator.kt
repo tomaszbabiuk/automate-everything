@@ -1,7 +1,6 @@
 package eu.geekhome
 
 import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.configurable.SettingGroup
 import eu.geekhome.services.events.EventsSink
 import eu.geekhome.services.events.PluginEventData
 import eu.geekhome.services.repository.Repository
@@ -18,8 +17,6 @@ interface PluginsCoordinator {
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val repository: Repository
-    val settingGroups: List<SettingGroup>
-    fun findPluginSettingGroups(pluginId: String): List<SettingGroup>
 }
 
 class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) : PluginsCoordinator {
@@ -74,14 +71,6 @@ class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) 
     override val repository: Repository
         get() = wrapped.getExtensions(Repository::class.java).first()
 
-    override val settingGroups: List<SettingGroup>
-        get() = wrapped.getExtensions(SettingGroup::class.java)
-
-    override fun findPluginSettingGroups(pluginId: String): List<SettingGroup> {
-        return wrapped.getExtensions(SettingGroup::class.java, pluginId)
-    }
-
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins
-
 }

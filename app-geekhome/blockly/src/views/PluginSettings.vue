@@ -38,11 +38,14 @@
 </template>
 
 <script>
+import { client } from "../rest.js";
+
 export default {
   data: function () {
     return {
       panels: [0],
       breadcrumbs: [],
+      plugin: null
       // description: "",
     };
   },
@@ -65,6 +68,13 @@ export default {
   },
 
   watch: {
+    plugins() {
+      console.log("Got plugins")
+      var plugin = this.getPlugin();
+      if (plugin != null) {
+        this.breadcrumbs = this.calculateBreadcrumbs(plugin);
+      }
+    }
     // categories() {
     //   var settingsClass = this.getSettingsClazz();
     //   var settingCategory = this.getSettingCategoryByClazz(settingsClass);
@@ -73,18 +83,8 @@ export default {
     // },
   },
   methods: {
-    getPluginId: function () {
-      return this.$route.params.id;
-    },
-
-    getPlugin: function() {
-      var plugin = this.$store.state.plugins.filter((element) => {
-        return element.id === this.getPluginId();
-      });
-
-      if (plugin.length == 1) {
-        return plugin[0]
-      }
+    getPlugin: function () {
+      return this.$store.params.plugin;
     },
 
     // getSettingCategoryByClazz: function (clazz) {
@@ -98,29 +98,29 @@ export default {
     //   return result;
     // },
 
-    // calculateBreadcrumbs(settingCategory) {
-    //   var breadcrumbs = [];
+    calculateBreadcrumbs(plugin) {
+      var breadcrumbs = [];
 
-    //   breadcrumbs.push({
-    //     text: settingCategory.titleRes,
-    //     disabled: true,
-    //     href: "/plugins/" + settingCategory.clazz,
-    //   });
+      breadcrumbs.push({
+        text: plugin.name,
+        disabled: true,
+        href: "/plugins/" + plugin.id,
+      });
 
-    //   breadcrumbs.push({
-    //     text: this.$vuetify.lang.t("$vuetify.navigation.plugins"),
-    //     disabled: false,
-    //     href: "/plugins",
-    //   });
+      breadcrumbs.push({
+        text: this.$vuetify.lang.t("$vuetify.navigation.plugins"),
+        disabled: false,
+        href: "/plugins",
+      });
 
-    //   return breadcrumbs.reverse();
-    // },
+      return breadcrumbs.reverse();
+    },
 
   },
   beforeMount: function () {
-    //client.getSettingCategories();
-
-    console.log(this.getPlugin())
+    if (this.$store.state.plugins == null) {
+      client.getPlugins();
+    }
   },
 };
 </script>
