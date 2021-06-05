@@ -40,6 +40,10 @@
 <script>
 import { client } from "../rest.js";
 
+import {
+  RESET_SETTINGS,
+} from "../plugins/vuex";
+
 export default {
   data: function () {
     return {
@@ -66,6 +70,7 @@ export default {
         client.getPlugins();
       } else {
         this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
+        this.$store.commit(RESET_SETTINGS, this.plugin.settingGroups);
       }
     },
 

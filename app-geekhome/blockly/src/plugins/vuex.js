@@ -106,10 +106,7 @@ export default new Vuex.Store({
     },
     counter: 0,
     settingsValidation: [],
-    settings: {
-      clazz: null,
-      fields: {}
-    }
+    settings: []
   },
 
   mutations: {
@@ -416,19 +413,21 @@ export default new Vuex.Store({
       state.settingsValidation = []
     },
 
-    [RESET_SETTINGS](state, settingGroup) {
-      state.settings.clazz = settingGroup.clazz
+    [RESET_SETTINGS](state, settingGroups) {
+      // state.settings.clazz = settingGroup.clazz
 
-      settingGroup.fields.forEach(element => {
-        Vue.set(state.settings.fields, element.name, '')
-      })
+      // settingGroup.fields.forEach(element => {
+      //   Vue.set(state.settings.fields, element.name, '')
+      // })
+      console.log("TODO")
+      console.log(settingGroups)
     },
 
     [UPDATE_SETTINGS_FIELD](state, payload) {
       /*
-        payload should be { name: ..., value:... }
+        payload should be { clazz: ..., name: ..., value:... }
       */
-      state.settings.fields[payload.name] = payload.value
+      state.settings[payload.clazz].fields[payload.name] = payload.value
     },
   }
 })

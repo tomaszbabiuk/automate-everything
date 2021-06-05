@@ -32,10 +32,10 @@ class HardwareManager(
      * This method is called after every automation loop. The method is called in a blocking way. The code from here
      * must be executed before new automation loop.
      */
-    suspend fun afterAutomationLoop(now: Calendar) {
+    fun afterAutomationLoop() {
         bundles()
             .forEach { bundle ->
-                bundle.adapter.executePendingChanges(now)
+                bundle.adapter.executePendingChanges()
             }
     }
 

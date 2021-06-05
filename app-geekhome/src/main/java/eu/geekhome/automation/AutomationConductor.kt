@@ -178,7 +178,7 @@ class AutomationConductor(
                     }
                 }
 
-                hardwareManager.afterAutomationLoop(now)
+                hardwareManager.afterAutomationLoop()
                 delay(1000)
             }
 

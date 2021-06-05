@@ -89,7 +89,7 @@ class AforeAdapter : HardwareAdapterBase() {
         }
     }
 
-    override suspend fun executePendingChanges(now: Calendar) {
+    override fun executePendingChanges() {
     }
 
     @Throws(Exception::class)

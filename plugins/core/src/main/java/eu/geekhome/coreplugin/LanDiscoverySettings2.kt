@@ -3,7 +3,7 @@ package eu.geekhome.coreplugin
 import eu.geekhome.services.configurable.*
 import eu.geekhome.services.localization.Resource
 
-class LanDiscoverySettings: SettingGroup {
+class LanDiscoverySettings2: SettingGroup {
     override val titleRes: Resource = R.settings_lan_discovery_title
     override val descriptionRes: Resource = R.settings_lan_discovery_description
 
