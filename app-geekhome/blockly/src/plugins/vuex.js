@@ -414,20 +414,32 @@ export default new Vuex.Store({
     },
 
     [RESET_SETTINGS](state, settingGroups) {
-      // state.settings.clazz = settingGroup.clazz
+      state.settings = []
 
-      // settingGroup.fields.forEach(element => {
-      //   Vue.set(state.settings.fields, element.name, '')
-      // })
-      console.log("TODO")
-      console.log(settingGroups)
+      settingGroups.forEach(settingGroup => {
+        var newSettingInstance = {
+          clazz: settingGroup.clazz,
+          fields: {}
+        }
+
+        settingGroup.fields.forEach(field => {
+          Vue.set(newSettingInstance.fields, field.name, '')
+        })
+        
+        //Vue.set(state.settings, settingGroup.clazz, newSettingInstance)
+        state.settings.push(newSettingInstance)
+      })
     },
 
     [UPDATE_SETTINGS_FIELD](state, payload) {
       /*
         payload should be { clazz: ..., name: ..., value:... }
       */
-      state.settings[payload.clazz].fields[payload.name] = payload.value
+      state.settings.forEach( element => {
+        if (element.clazz === payload.clazz) {
+          element.fields[payload.name] = payload.value;
+        }
+      })
     },
   }
 })

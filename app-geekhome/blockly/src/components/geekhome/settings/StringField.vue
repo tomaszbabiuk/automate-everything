@@ -15,13 +15,13 @@ data: function() {
       text: '',
     };
   },
-  props: ["id", "hint", "counter"],
+  props: ["id", "hint", "counter", "clazz"],
   computed: {
     validation() {
       return this.$store.state.settingsValidation[this.id]
     },
-    storeFieldData() {
-      return this.$store.state.settings.fields[this.id]
+    settings() {
+      return this.$store.state.settings;
     },  
   },
   watch: {
@@ -29,15 +29,17 @@ data: function() {
       this.error = !val.valid
       this.errorMessages = val.reasons
     },
-    storeFieldData(value) {
-      console.log('store: ' + value)
-      if (this.text != value) {
-        this.text = value
-      }
+    settings(val) {
+      console.log('store: ' + val)
+      
+      // if (this.text != value) {
+      //   this.text = value
+      // }
     },
     text(value) {
       console.log('text: ' + value)
       this.$store.commit(UPDATE_SETTINGS_FIELD, { 
+        clazz: this.clazz,
         name: this.id,
         value: value
       })

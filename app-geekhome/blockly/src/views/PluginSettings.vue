@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-16">
     <v-breadcrumbs :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-forward</v-icon>
@@ -7,7 +7,10 @@
     </v-breadcrumbs>
 
     <v-expansion-panels focusable multiple v-if="plugin != null">
-      <v-expansion-panel v-for="settingGroup in plugin.settingGroups" :key="settingGroup.clazz">
+      <v-expansion-panel
+        v-for="settingGroup in plugin.settingGroups"
+        :key="settingGroup.clazz"
+      >
         <v-expansion-panel-header>
           <template v-slot:default="{ open }">
             <v-row no-gutters>
@@ -25,31 +28,36 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <settings-form :settingGroup="settingGroup"></settings-form>
-           <v-btn
-           class="float-right"
-            depressed
-            color="primary">
-            Apply
-          </v-btn>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <v-btn
+      fab
+      dark
+      large
+      color="primary"
+      fixed
+      right
+      bottom
+      class="ma-4"
+      @click="onApplySettings()"
+    >
+      <v-icon dark>mdi-check-all</v-icon>
+    </v-btn>
   </div>
 </template>
 
 <script>
 import { client } from "../rest.js";
 
-import {
-  RESET_SETTINGS,
-} from "../plugins/vuex";
+import { RESET_SETTINGS } from "../plugins/vuex";
 
 export default {
   data: function () {
     return {
       panels: [0],
       breadcrumbs: [],
-      plugin: null
+      plugin: null,
     };
   },
   computed: {
@@ -61,11 +69,11 @@ export default {
   watch: {
     plugins() {
       this.refresh();
-    }
+    },
   },
   methods: {
-    refresh: function() {
-      this.plugin = this.findPlugin(this.getPluginId())
+    refresh: function () {
+      this.plugin = this.findPlugin(this.getPluginId());
       if (this.plugin == null) {
         client.getPlugins();
       } else {
@@ -74,19 +82,19 @@ export default {
       }
     },
 
-    getPluginId: function() {
+    getPluginId: function () {
       return this.$route.params.id;
     },
 
-    findPlugin: function(pluginId) {
+    findPlugin: function (pluginId) {
       var pluginsFound = this.$store.state.plugins.filter((element) => {
         return element.id == pluginId;
       });
 
       if (pluginsFound.length == 1) {
-        return pluginsFound[0]
+        return pluginsFound[0];
       } else {
-        return null
+        return null;
       }
     },
 
@@ -108,6 +116,22 @@ export default {
       return breadcrumbs.reverse();
     },
 
+    onApplySettings() {
+      console.log("onApplySettings");
+      client.putSettings(this.$store.state.settings, this.handleValidationResult)
+    },
+
+    
+    handleValidationResult: function (validationResult) {
+      console.log("TODO: handle validation result")
+      console.log(validationResult)
+      // var isFormValid = true;
+      // for (const field in validationResult) {
+      //   if (!validationResult[field].valid) {
+      //     isFormValid = false;
+      //   }
+      // }
+    },
   },
   beforeMount: function () {
     this.refresh();

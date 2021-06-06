@@ -8,7 +8,8 @@
         :hint="field.hint"
         :counter="field.maxSize"
         :required="field.required"
-        :id="settingGroup.clazz+':'+field.name"
+        :id="field.name"
+        :clazz="settingGroup.clazz"
         v-bind:is="fieldClassToFormComponent(field.clazz)"
       >
       </component>

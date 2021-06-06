@@ -272,11 +272,7 @@ class SqlDelightRepository : Repository {
         }
     }
 
-    override fun saveSettings(settingsDto: SettingsDto) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateSettings(settingsDto: SettingsDto) {
+    override fun updateSettings(settingsDto: List<SettingsDto>) {
         TODO("Not yet implemented")
     }
 }

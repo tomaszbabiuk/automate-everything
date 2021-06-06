@@ -23,4 +23,9 @@ public class R {
             "This field is required",
             "To pole jest wymagane"
     );
+
+    public static Resource validator_invalid_field = new Resource(
+            "Invalid field",
+            "To pole jest nieprawidłowe"
+    );
 }

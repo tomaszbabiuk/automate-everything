@@ -4,5 +4,5 @@ import eu.geekhome.services.localization.Resource
 
 interface Validator<T> {
     val reason: Resource
-    fun validate(fieldValue: T): Boolean
+    fun validate(fieldValue: T?): Boolean
 }

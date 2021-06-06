@@ -1,17 +1,20 @@
 import axios from 'axios'
 import vuetify from './plugins/vuetify'
-import store, { UPDATE_AUTOMATION_UNIT } from './plugins/vuex'
-import { SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN } from './plugins/vuex'
-import { SET_CONFIGURABLES, SET_CONDITIONS, SET_FILTERS } from './plugins/vuex'
-import { SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE } from './plugins/vuex'
-import { CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG } from './plugins/vuex'
-import { CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY } from './plugins/vuex'
-import { ADD_ICON, UPDATE_ICON, REMOVE_ICON } from './plugins/vuex'
-import { CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT } from './plugins/vuex'
-import { CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER } from './plugins/vuex'
-import { CLEAR_PORTS, ADD_PORT } from './plugins/vuex'
-import { UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT } from './plugins/vuex'
-import { ADD_AUTOMATION_HISTORY } from './plugins/vuex'
+import store, { 
+  UPDATE_AUTOMATION_UNIT,
+  SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN,
+  SET_CONFIGURABLES, SET_CONDITIONS, SET_FILTERS,
+  SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE,
+  CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG,
+  CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY,
+  ADD_ICON, UPDATE_ICON, REMOVE_ICON,
+  CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT,
+  CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER,
+  CLEAR_PORTS, ADD_PORT,
+  UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
+  ADD_AUTOMATION_HISTORY,
+  SET_SETTINGS_VALIDATION
+} from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
 
@@ -75,27 +78,24 @@ export const client = {
     )
   },
 
+  setInstanceValidation: function(response, callback) {
+    store.commit(SET_INSTANCE_VALIDATION, response.data)
+    if (callback !== null) {
+      callback(response.data)
+    }
+  },
+  
   postNewInstance: async function (newInstance, callback) {
     await this.handleRestError(
       () => axiosInstance.post("rest/instances", JSON.stringify(newInstance)),
-      (response) => {
-        store.commit(SET_INSTANCE_VALIDATION, response.data)
-        if (callback !== null) {
-          callback(response.data)
-        }
-      }
+      (response) => this.setInstanceValidation(response, callback)
     )
   },
 
-  putInstance: async function (newInstance, callback) {
+  putInstance: async function (updatedInstance, callback) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/instances", JSON.stringify(newInstance)),
-      (response) => {
-        store.commit(SET_INSTANCE_VALIDATION, response.data)
-        if (callback !== null) {
-          callback(response.data)
-        }
-      }
+      () => axiosInstance.put("rest/instances", JSON.stringify(updatedInstance)),
+      (response) => this.setInstanceValidation(response, callback)
     )
   },
 
@@ -338,6 +338,20 @@ export const client = {
       () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", state),
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
+      }
+    )
+  },
+
+  putSettings: async function (updatedSettings, callback) {
+    
+
+    await this.handleRestError(
+      () => axiosInstance.put("rest/settings", JSON.stringify(updatedSettings)),
+      (response) => {
+          store.commit(SET_SETTINGS_VALIDATION, response.data)
+          if (callback !== null) {
+            callback(response.data)
+          }
       }
     )
   },

@@ -5,7 +5,11 @@ import eu.geekhome.services.localization.Resource
 
 class RequiredLongValidator : Validator<Long> {
 
-    override fun validate(fieldValue: Long): Boolean {
+    override fun validate(fieldValue: Long?): Boolean {
+        if (fieldValue == null) {
+            return false
+        }
+
         return fieldValue > 0
     }
 

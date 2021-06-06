@@ -12,6 +12,8 @@ import javax.inject.Inject
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
+typealias ValidationResultMap = Map<String, FieldValidationResult>
+
 @Path("settings")
 class SettingsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
 
@@ -20,34 +22,35 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
     private fun findSettingCategory(clazz: String): SettingGroup? {
         return pluginsCoordinator
             .plugins
+            .map {it.plugin }
             .filterIsInstance<PluginMetadata>()
             .flatMap { it.settingGroups }
             .firstOrNull() { it.javaClass.name == clazz }
     }
 
-    @POST
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Throws(Exception::class)
-    fun postInstances(settingsDto: SettingsDto): Map<String, FieldValidationResult> {
-        return validate(settingsDto) {
-            pluginsCoordinator.repository.saveSettings(settingsDto)
-        }
-    }
-
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putInstances(settingsDto: SettingsDto): Map<String, FieldValidationResult> {
-        return validate(settingsDto) {
-            pluginsCoordinator.repository.updateSettings(settingsDto)
-        }
-    }
+    fun putInstances(settingsDtos: List<SettingsDto>): Map<String, ValidationResultMap> {
+        val validationResult = HashMap<String, ValidationResultMap>()
+        var hasErrors = false
 
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getInstancesById(@PathParam("id") id: Long): InstanceDto {
-        return pluginsCoordinator.repository.getInstance(id)
+        settingsDtos.forEach { settingsDto ->
+            val validation = validate(settingsDto)
+            validation.entries.forEach {
+                if (!it.value.isValid) {
+                    hasErrors = true
+                }
+            }
+
+            validationResult[settingsDto.clazz] = validation
+        }
+
+        if (!hasErrors) {
+            pluginsCoordinator.repository.updateSettings(settingsDtos)
+        }
+
+        return validationResult
     }
 
     @GET
@@ -58,33 +61,19 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
         } else ArrayList()
     }
 
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun deleteInstance(@PathParam("id") id: Long) {
-        pluginsCoordinator.repository.deleteInstance(id)
-    }
-
-    private fun validate(settingsDto: SettingsDto, onValidCallback: () -> (Unit)):
-            Map<String, FieldValidationResult> {
+    private fun validate(settingsDto: SettingsDto):
+            ValidationResultMap {
         val category = findSettingCategory(settingsDto.clazz)
         return if (category != null) {
             val validationResult: MutableMap<String, FieldValidationResult> = HashMap()
-            var isObjectValid = true
             for (fieldDefinition in category.fieldDefinitions.values) {
                 val fieldValue = settingsDto.fields[fieldDefinition.name]
                 val isValid = fieldDefinition.validate(fieldValue)
                 validationResult[fieldDefinition.name] = isValid
-                if (!isValid.isValid) {
-                    isObjectValid = false
-                }
-            }
-            if (isObjectValid) {
-                onValidCallback()
             }
             validationResult
         } else {
-            throw Exception("Unsupported configurable class")
+            throw Exception("Unsupported settings class")
         }
     }
 }
