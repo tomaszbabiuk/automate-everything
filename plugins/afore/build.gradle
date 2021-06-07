@@ -4,21 +4,23 @@ plugins {
 }
 
 dependencies {
-    compileOnly project(':module-services')
-    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion") {
-        exclude group: "org.slf4j"
-        exclude group: "org.slf4j.impl"
-    }
+    //common
+    shadow project(':module-services')
+
+    //pf4j
+    shadow "org.pf4j:pf4j:$pf4jVersion"
     kapt(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
     annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "$pf4jVersion")
 
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+    //kotlin
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
-    compileOnly "io.ktor:ktor-client-core:$ktorVersion"
-    compileOnly "io.ktor:ktor-client-cio:$ktorVersion"
-    compileOnly "io.ktor:ktor-client-gson:$ktorVersion"
-    compileOnly "io.ktor:ktor-client-auth:$ktorVersion"
+    //ktor
+    shadow "io.ktor:ktor-client-core:$ktorVersion"
+    shadow "io.ktor:ktor-client-cio:$ktorVersion"
+    shadow "io.ktor:ktor-client-gson:$ktorVersion"
+    shadow "io.ktor:ktor-client-auth:$ktorVersion"
 }
 
 shadowJar {

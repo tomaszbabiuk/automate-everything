@@ -9,10 +9,10 @@ run {
 }
 
 dependencies {
-//    implementation project(":module-common")
-//    implementation project(":module-synchronization")
+    //common
     implementation project(":module-services")
 
+    //jetty
     implementation "org.eclipse.jetty:jetty-http:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-io:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-security:$jettyVersion"
@@ -21,6 +21,7 @@ dependencies {
     implementation "org.eclipse.jetty:jetty-servlets:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
 
+    //jersey + glassfish
     implementation "org.glassfish.jersey.core:jersey-server:2.32"
     implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:2.32"
     implementation "org.glassfish.jersey.containers:jersey-container-servlet:2.32"
@@ -28,18 +29,23 @@ dependencies {
     implementation "org.glassfish.jersey.media:jersey-media-sse:2.32"
     implementation "org.glassfish.hk2:hk2-api:2.1.58"
 
+    //ktor
     implementation "io.ktor:ktor-client-core:$ktorVersion"
     implementation "io.ktor:ktor-client-auth:$ktorVersion"
     implementation "io.ktor:ktor-client-cio:$ktorVersion"
     implementation "io.ktor:ktor-client-gson:$ktorVersion"
-    compileOnly "com.google.code.gson:gson:$gsonVersion"
 
+    //gson
+    implementation "com.google.code.gson:gson:$gsonVersion"
+
+    //slf4j
     implementation "org.slf4j:slf4j-api:1.7.5"
     implementation "org.slf4j:slf4j-simple:1.6.4"
 
-    // https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream
-    implementation group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.15'
+    //xstream
+    implementation "com.thoughtworks.xstream:xstream:1.4.15"
 
+    //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 }
