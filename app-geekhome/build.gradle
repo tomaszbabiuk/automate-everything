@@ -12,6 +12,9 @@ dependencies {
     //common
     implementation project(":module-services")
 
+    //pf4j
+    implementation "org.pf4j:pf4j:${pf4jVersion}"
+
     //jetty
     implementation "org.eclipse.jetty:jetty-http:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-io:$jettyVersion"

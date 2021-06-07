@@ -1,21 +1,13 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
 }
+
 dependencies {
-    compile group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}"
+    implementation "org.pf4j:pf4j:${pf4jVersion}"
     implementation "com.google.code.gson:gson:${gsonVersion}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
+
 repositories {
     mavenCentral()
-}
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
