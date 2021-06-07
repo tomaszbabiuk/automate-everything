@@ -8,20 +8,13 @@ dependencies {
     shadow project(':module-services')
 
     //pf4j
-    shadow "org.pf4j:pf4j:${pf4jVersion}"
-    kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
-    annotationProcessor(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
+    shadow "org.pf4j:pf4j:$pf4jVersion"
+    kapt "org.pf4j:pf4j:$pf4jVersion"
+    annotationProcessor "org.pf4j:pf4j:$pf4jVersion"
 
     //kotlin
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
 
     //project specific
     implementation 'io.moquette:moquette-broker:0.12.1'
-}
-
-shadowJar {
-    exclude 'kotlin/**'
-    exclude 'org/intellij/**'
-    exclude 'org/jetbrains/**'
-    exclude 'org/slf4j/**'
 }
