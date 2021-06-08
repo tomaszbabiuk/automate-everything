@@ -272,7 +272,30 @@ class SqlDelightRepository : Repository {
         }
     }
 
-    override fun updateSettings(settingsDto: List<SettingsDto>) {
-        TODO("Not yet implemented")
+    override fun updateSettings(settingsDtos: List<SettingsDto>) {
+        database.transaction {
+            settingsDtos.forEach { settingDto ->
+                settingDto.fields.forEach { field ->
+                    database
+                        .settingsFieldInstanceQueries
+                        .insertOrReplace(settingDto.clazz, field.key, field.value)
+                }
+            }
+        }
+    }
+
+    override fun getAllSettings(): List<SettingsDto> {
+        return database
+            .settingsFieldInstanceQueries
+            .selectAll()
+            .executeAsList()
+            .groupBy { it.clazz }
+            .map {
+                val fields = HashMap<String, String?>()
+                it.value.forEach { fieldInstance ->
+                    fields[fieldInstance.name] = fieldInstance.value
+                }
+                SettingsDto(it.key, fields)
+            }
     }
 }

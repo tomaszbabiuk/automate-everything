@@ -57,6 +57,7 @@ export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
 export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
 
+export const SET_SETTINGS = 'SET_SETTINGS'
 export const RESET_SETTINGS = 'RESET_SETTINGS'
 export const SET_SETTINGS_VALIDATION = 'SET_SETTINGS_VALIDATION'
 export const CLEAR_SETTINGS_VALIDATION = 'CLEAR_SETTINGS_VALIDATION'
@@ -440,6 +441,15 @@ export default new Vuex.Store({
           element.fields[payload.name] = payload.value;
         }
       })
+      // var settingsGroup = state.settings[payload.clazz]
+      // if (settingsGroup != null) {
+      //   settingsGroup[payload.name] = payload.value
+      // }
+    },
+
+    [SET_SETTINGS](state, payload) {
+      console.log("x" + state + payload)
+      //state.settings = payload
     },
   }
 })

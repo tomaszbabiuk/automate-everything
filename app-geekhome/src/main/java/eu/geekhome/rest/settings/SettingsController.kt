@@ -5,14 +5,17 @@ import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.services.configurable.FieldValidationResult
 import eu.geekhome.services.configurable.SettingGroup
 import eu.geekhome.services.extensibility.PluginMetadata
-import eu.geekhome.services.repository.InstanceDto
 import eu.geekhome.services.repository.SettingsDto
 import java.util.*
 import javax.inject.Inject
+import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.*
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
+import kotlin.collections.HashMap
 
 typealias ValidationResultMap = Map<String, FieldValidationResult>
+typealias SettingsFieldsMap = Map<String, String?>
 
 @Path("settings")
 class SettingsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
@@ -28,10 +31,24 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
             .firstOrNull() { it.javaClass.name == clazz }
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun getSettings(@Context request: HttpServletRequest?): Map<String, SettingsFieldsMap> {
+        val result = HashMap<String, SettingsFieldsMap>()
+        pluginsCoordinator
+            .repository
+            .getAllSettings()
+            .forEach {
+                result[it.clazz] = it.fields
+            }
+
+        return result
+    }
+
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putInstances(settingsDtos: List<SettingsDto>): Map<String, ValidationResultMap> {
+    fun putSettings(settingsDtos: List<SettingsDto>): Map<String, ValidationResultMap> {
         val validationResult = HashMap<String, ValidationResultMap>()
         var hasErrors = false
 
@@ -51,14 +68,6 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
         }
 
         return validationResult
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getInstancesOfClass(@QueryParam("class") clazz: String?): List<InstanceDto> {
-        return if (clazz != null) {
-            pluginsCoordinator.repository.getInstancesOfClazz(clazz)
-        } else ArrayList()
     }
 
     private fun validate(settingsDto: SettingsDto):

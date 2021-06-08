@@ -1,22 +1,14 @@
 CREATE TABLE IF NOT EXISTS settingsFieldInstance (
-  settings_category_class TEXT NOT NULL,
+  clazz TEXT NOT NULL,
   name TEXT NOT NULL,
   value TEXT,
-  PRIMARY KEY(name, settings_category_class)
+  PRIMARY KEY(name, clazz)
 );
 
 selectAll:
 SELECT *
 FROM settingsFieldInstance;
 
-insert:
-INSERT INTO settingsFieldInstance(settings_category_class, name, value)
+insertOrReplace:
+INSERT OR REPLACE INTO settingsFieldInstance(clazz, name, value)
 VALUES (?, ?, ?);
-
-update:
-UPDATE settingsFieldInstance
-SET value = ?
-WHERE
-    name = ?
-    AND
-    settings_category_class = ?;

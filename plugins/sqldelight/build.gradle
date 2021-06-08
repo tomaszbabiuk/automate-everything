@@ -23,5 +23,6 @@ dependencies {
 sqldelight {
     Database {
         packageName = "eu.geekhome.sqldelightplugin.database"
+        dialect = "sqlite:3.24"
     }
 }

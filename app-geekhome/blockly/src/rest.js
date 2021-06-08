@@ -13,7 +13,7 @@ import store, {
   CLEAR_PORTS, ADD_PORT,
   UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
   ADD_AUTOMATION_HISTORY,
-  SET_SETTINGS_VALIDATION
+  SET_SETTINGS, SET_SETTINGS_VALIDATION
 } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
@@ -343,8 +343,6 @@ export const client = {
   },
 
   putSettings: async function (updatedSettings, callback) {
-    
-
     await this.handleRestError(
       () => axiosInstance.put("rest/settings", JSON.stringify(updatedSettings)),
       (response) => {
@@ -353,6 +351,13 @@ export const client = {
             callback(response.data)
           }
       }
+    )
+  },
+
+  getSettings: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/settings"),
+      (response) => store.commit(SET_SETTINGS, response.data)
     )
   },
 }

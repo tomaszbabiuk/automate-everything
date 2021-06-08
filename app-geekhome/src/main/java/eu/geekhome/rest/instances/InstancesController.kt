@@ -2,6 +2,7 @@ package eu.geekhome.rest.instances
 
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.rest.settings.ValidationResultMap
 import eu.geekhome.services.configurable.ConfigurableWithFields
 import eu.geekhome.services.configurable.FieldValidationResult
 import eu.geekhome.services.repository.InstanceDto
@@ -27,7 +28,7 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun postInstances(instanceDto: InstanceDto): Map<String, FieldValidationResult> {
+    fun postInstances(instanceDto: InstanceDto): ValidationResultMap {
         return validate(instanceDto) {
             pluginsCoordinator.repository.saveInstance(instanceDto)
         }
@@ -36,7 +37,7 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putInstances(instanceDto: InstanceDto): Map<String, FieldValidationResult> {
+    fun putInstances(instanceDto: InstanceDto): ValidationResultMap {
         return validate(instanceDto) {
             pluginsCoordinator.repository.updateInstance(instanceDto)
         }

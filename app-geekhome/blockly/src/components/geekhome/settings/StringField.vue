@@ -8,34 +8,36 @@
 import {UPDATE_SETTINGS_FIELD} from '../../../plugins/vuex'
 
 export default {
-data: function() {
+  data: function() {
     return {
       error: false,
       errorMessages: [],
       text: '',
     };
   },
+
   props: ["id", "hint", "counter", "clazz"],
+
   computed: {
     validation() {
-      return this.$store.state.settingsValidation[this.id]
+      return this.$store.state.settingsValidation[this.clazz]
     },
-    settings() {
-      return this.$store.state.settings;
-    },  
   },
+
   watch: {
-    validation(val) {
-      this.error = !val.valid
-      this.errorMessages = val.reasons
+    validation(value) {
+      var validation = value[this.id]
+      this.error = !validation.valid
+      this.errorMessages = validation.reasons
     },
-    settings(val) {
-      console.log('store: ' + val)
-      
-      // if (this.text != value) {
-      //   this.text = value
-      // }
+
+    settings(value) {
+      console.log('store: ' + value)
+      if (this.text != value) {
+        this.text = value
+      }
     },
+
     text(value) {
       console.log('text: ' + value)
       this.$store.commit(UPDATE_SETTINGS_FIELD, { 

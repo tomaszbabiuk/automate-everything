@@ -33,5 +33,6 @@ interface Repository : ExtensionPoint {
     fun savePort(port: PortDto): Long
     fun deletePortSnapshot(id: String)
 
-    fun updateSettings(settingsDto: List<SettingsDto>)
+    fun updateSettings(settingsDtos: List<SettingsDto>)
+    fun getAllSettings() : List<SettingsDto>
 }

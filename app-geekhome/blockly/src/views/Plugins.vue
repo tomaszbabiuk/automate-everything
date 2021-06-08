@@ -23,7 +23,7 @@
           <div class="text-justify">{{plugin.description}}</div>
         </v-col>
         <v-col md="2" sm="2">
-          <v-btn
+          <v-btn v-if="plugin.settingGroups.length > 0"
             class="float-right"
             outlined
             color="primary"

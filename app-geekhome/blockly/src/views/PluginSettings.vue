@@ -60,10 +60,15 @@ export default {
       plugin: null,
     };
   },
+
   computed: {
     plugins() {
       return this.$store.state.plugins;
     },
+
+    settings() {
+      return this.$store.settings;
+    }
   },
 
   watch: {
@@ -71,12 +76,14 @@ export default {
       this.refresh();
     },
   },
+
   methods: {
     refresh: function () {
       this.plugin = this.findPlugin(this.getPluginId());
       if (this.plugin == null) {
         client.getPlugins();
       } else {
+        console.log("sssssss")
         this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
         this.$store.commit(RESET_SETTINGS, this.plugin.settingGroups);
       }
@@ -120,7 +127,6 @@ export default {
       console.log("onApplySettings");
       client.putSettings(this.$store.state.settings, this.handleValidationResult)
     },
-
     
     handleValidationResult: function (validationResult) {
       console.log("TODO: handle validation result")
@@ -135,6 +141,7 @@ export default {
   },
   beforeMount: function () {
     this.refresh();
+    client.getSettings();
   },
 };
 </script>
