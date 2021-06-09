@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType
 @Singleton
 @Path("plugins")
 class PluginsController @Inject constructor(
-    private val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
+    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
     private val pluginDtoMapper: PluginDtoMapper
 ) {
     private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance

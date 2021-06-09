@@ -31,20 +31,20 @@ export default {
       this.errorMessages = validation.reasons
     },
 
-    settings(value) {
-      console.log('store: ' + value)
-      if (this.text != value) {
-        this.text = value
-      }
-    },
-
     text(value) {
-      console.log('text: ' + value)
       this.$store.commit(UPDATE_SETTINGS_FIELD, { 
         clazz: this.clazz,
         name: this.id,
         value: value
       })
+    }
+
+  },
+
+  mounted: function() {
+    var settings = this.$store.state.settings[this.clazz]
+    if (settings != null) {
+      this.text=settings[this.id]
     }
   }
 };

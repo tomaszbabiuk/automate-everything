@@ -58,7 +58,6 @@ export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
 
 export const SET_SETTINGS = 'SET_SETTINGS'
-export const RESET_SETTINGS = 'RESET_SETTINGS'
 export const SET_SETTINGS_VALIDATION = 'SET_SETTINGS_VALIDATION'
 export const CLEAR_SETTINGS_VALIDATION = 'CLEAR_SETTINGS_VALIDATION'
 export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD' 
@@ -414,42 +413,15 @@ export default new Vuex.Store({
       state.settingsValidation = []
     },
 
-    [RESET_SETTINGS](state, settingGroups) {
-      state.settings = []
-
-      settingGroups.forEach(settingGroup => {
-        var newSettingInstance = {
-          clazz: settingGroup.clazz,
-          fields: {}
-        }
-
-        settingGroup.fields.forEach(field => {
-          Vue.set(newSettingInstance.fields, field.name, '')
-        })
-        
-        //Vue.set(state.settings, settingGroup.clazz, newSettingInstance)
-        state.settings.push(newSettingInstance)
-      })
-    },
-
     [UPDATE_SETTINGS_FIELD](state, payload) {
-      /*
-        payload should be { clazz: ..., name: ..., value:... }
-      */
-      state.settings.forEach( element => {
-        if (element.clazz === payload.clazz) {
-          element.fields[payload.name] = payload.value;
-        }
-      })
-      // var settingsGroup = state.settings[payload.clazz]
-      // if (settingsGroup != null) {
-      //   settingsGroup[payload.name] = payload.value
-      // }
+      var settingsGroup = state.settings[payload.clazz]
+      if (settingsGroup != null) {
+        settingsGroup[payload.name] = payload.value
+      }
     },
 
     [SET_SETTINGS](state, payload) {
-      console.log("x" + state + payload)
-      //state.settings = payload
+      state.settings = payload
     },
   }
 })

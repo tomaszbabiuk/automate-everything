@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  props: ["settingGroup"],
+  props: ["settingGroup", "settings"],
   methods: {
     fieldClassToFormComponent: function (clazz) {
       return "settings-" + clazz.toLowerCase();

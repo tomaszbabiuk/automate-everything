@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType
 import kotlin.collections.HashMap
 
 typealias ValidationResultMap = Map<String, FieldValidationResult>
-typealias SettingsFieldsMap = Map<String, String?>
+typealias SettingsValuesMap = Map<String, String?>
 
 @Path("settings")
 class SettingsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
@@ -33,8 +33,8 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getSettings(@Context request: HttpServletRequest?): Map<String, SettingsFieldsMap> {
-        val result = HashMap<String, SettingsFieldsMap>()
+    fun getSettings(@Context request: HttpServletRequest?): Map<String, SettingsValuesMap> {
+        val result = HashMap<String, SettingsValuesMap>()
         pluginsCoordinator
             .repository
             .getAllSettings()
@@ -48,10 +48,11 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putSettings(settingsDtos: List<SettingsDto>): Map<String, ValidationResultMap> {
+    fun putSettings(settings: Map<String, SettingsValuesMap>): Map<String, ValidationResultMap> {
         val validationResult = HashMap<String, ValidationResultMap>()
         var hasErrors = false
 
+        val settingsDtos = settings.map { SettingsDto(it.key, it.value) }
         settingsDtos.forEach { settingsDto ->
             val validation = validate(settingsDto)
             validation.entries.forEach {

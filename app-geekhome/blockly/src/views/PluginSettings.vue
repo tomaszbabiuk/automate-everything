@@ -50,12 +50,9 @@
 <script>
 import { client } from "../rest.js";
 
-import { RESET_SETTINGS } from "../plugins/vuex";
-
 export default {
   data: function () {
     return {
-      panels: [0],
       breadcrumbs: [],
       plugin: null,
     };
@@ -64,10 +61,6 @@ export default {
   computed: {
     plugins() {
       return this.$store.state.plugins;
-    },
-
-    settings() {
-      return this.$store.settings;
     }
   },
 
@@ -83,9 +76,7 @@ export default {
       if (this.plugin == null) {
         client.getPlugins();
       } else {
-        console.log("sssssss")
         this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
-        this.$store.commit(RESET_SETTINGS, this.plugin.settingGroups);
       }
     },
 
@@ -131,17 +122,14 @@ export default {
     handleValidationResult: function (validationResult) {
       console.log("TODO: handle validation result")
       console.log(validationResult)
-      // var isFormValid = true;
-      // for (const field in validationResult) {
-      //   if (!validationResult[field].valid) {
-      //     isFormValid = false;
-      //   }
-      // }
     },
   },
-  beforeMount: function () {
+  beforeMount: async function () {
     this.refresh();
-    client.getSettings();
+
+    await Promise.all([client.getSettings(), client.getPlugins()]).then(function() {
+      console.log('ready to unblock UI')
+    })
   },
 };
 </script>
