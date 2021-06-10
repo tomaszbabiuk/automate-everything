@@ -2,14 +2,11 @@ package eu.geekhome
 
 import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.rest.CORSFilter
-import eu.geekhome.rest.DependencyInjectionBinder
-import eu.geekhome.rest.GsonMessageBodyHandler
-import eu.geekhome.rest.ResourceNotFoundExceptionMapper
+import eu.geekhome.rest.*
 import eu.geekhome.services.events.NumberedEventsSink
 import org.glassfish.jersey.server.ResourceConfig
 
-class App : ResourceConfig() {
+open class App : ResourceConfig() {
     init {
         val liveEvents = NumberedEventsSink()
 
