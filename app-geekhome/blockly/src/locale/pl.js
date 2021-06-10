@@ -12,7 +12,6 @@ export default {
         tags:       "Tagi",
         icons:      "Ikony",
         discover:   "Odkrywanie",
-        settings:   "Ustawienia",
         plugins:    "Rozszerzenia",
     },
     plugins_list: {
@@ -25,6 +24,9 @@ export default {
         disable:        "Wyłącz",
         settings:       "Ustawienia",
     },
+    plugin_settings: {
+        saved_message: "Zapisano! Zmiany zostaną wprowadzone po zrestartowaniu pluginu."
+    },
     common: {
         retry: "Ponów",
         add: "Dodaj",
@@ -34,14 +36,14 @@ export default {
         delete_question: "Czy na pewno usunąć ten obiekt?",
         cancel: "Anuluj",
         ok: "OK",
+        dismiss: "Odsuń",
         nA: "n/d",
         refresh_page: "Odśwież stronę"
     },
     app: {
         enable: "Włącz",
-        automationDisabledInfo: "Automatyka jest wyłączona. Nie zapomniej jej włączyć, gdy konfiguracja zostanie zakończona."
+        automation_disabled_info: "Automatyka jest wyłączona. Nie zapomniej jej włączyć, gdy konfiguracja zostanie zakończona."
     },
-
     validation: {
         field_required: "To pole jest wymagane",
         field_lessThan50: "To pole musi zawierać mniej niż 50 znaków",

@@ -7,7 +7,6 @@ import IconBell from '../components/icons/IconBell'
 import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
 import IconEmpty from '../components/icons/IconEmpty'
-import IconEqualizer from '../components/icons/IconEqualizer'
 import IconObjects from '../components/icons/IconObjects'
 import IconIcons from '../components/icons/IconIcons'
 import IconTag from '../components/icons/IconTag'
@@ -48,9 +47,6 @@ export default new Vuetify({
       },
       empty: {
         component: IconEmpty
-      },
-      equalizer: {
-        component: IconEqualizer
       },
       objects: {
         component: IconObjects

@@ -12,7 +12,6 @@ export default {
         tags:       "Tags",
         icons:      "Icons",
         discover:   "Discovery",
-        settings:   "Settings",
         plugins:    "Plugins",
     },
     plugins_list: {
@@ -25,6 +24,9 @@ export default {
         disable: "Disable",
         settings: "Settings",
     },
+    plugin_settings: {
+        saved_message: "Saved! Changes will take place after plugin is restarted."
+    },
     common: {
         retry: "Retry",
         add: "Add",
@@ -34,12 +36,13 @@ export default {
         delete_question: "Are you sure you want to delete this item?",
         cancel: "Cancel",
         ok: "OK",
+        dismiss: "Dismiss",
         nA: "n/A",
         refresh_page: "Refresh page"
     },
     app: {
         enable: "Enable",
-        automationDisabledInfo: "Automation is disabled. Don't forget to enable it after configuration is finished."
+        automation_disabled_info: "Automation is disabled. Don't forget to enable it after configuration is finished."
     },
     validation: {
         field_required: "This field is required",

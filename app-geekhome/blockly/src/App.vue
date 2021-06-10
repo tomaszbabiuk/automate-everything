@@ -98,7 +98,7 @@
           <v-alert v-cloak prominent type="error" v-if="!automation.enabled">
             <v-row align="center">
               <v-col class="grow">
-                {{ $vuetify.lang.t("$vuetify.app.automationDisabledInfo") }}
+                {{ $vuetify.lang.t("$vuetify.app.automation_disabled_info") }}
               </v-col>
               <v-col class="shrink">
                 <v-btn @click="enableAutomation(true)">{{ $vuetify.lang.t("$vuetify.app.enable") }}</v-btn>
@@ -159,11 +159,6 @@ export default {
           title: "$vuetify.navigation.discover",
           route: "/discover/null",
           icon: "crosshair",
-        },
-        {
-          title: "$vuetify.navigation.settings",
-          route: "/settings",
-          icon: "equalizer",
         },
         {
           title: "$vuetify.navigation.plugins",

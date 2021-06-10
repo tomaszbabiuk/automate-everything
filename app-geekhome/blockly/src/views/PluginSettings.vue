@@ -53,7 +53,7 @@
     <v-snackbar
       v-model="snackbar"
     >
-      Saved! Changes will take place after plugin is restarted.
+      {{$vuetify.lang.t('$vuetify.plugin_settings.saved_message')}}
 
       <template v-slot:action="{ attrs }">
         <v-btn
@@ -62,7 +62,7 @@
           v-bind="attrs"
           @click="snackbar = false"
         >
-          Dismiss
+          {{$vuetify.lang.t('$vuetify.common.dismiss')}}
         </v-btn>
       </template>
     </v-snackbar>
