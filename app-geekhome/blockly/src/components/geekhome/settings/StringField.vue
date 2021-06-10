@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-text-field v-model="text" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages"></v-text-field>
+      <v-text-field v-model="text" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages" :disabled="disabled"></v-text-field>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
     };
   },
 
-  props: ["id", "hint", "counter", "clazz"],
+  props: ["id", "hint", "counter", "clazz", "disabled"],
 
   computed: {
     validation() {

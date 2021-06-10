@@ -10,6 +10,7 @@
         :required="field.required"
         :id="field.name"
         :clazz="settingGroup.clazz"
+        :disabled="disabled"
         v-bind:is="fieldClassToFormComponent(field.clazz)"
       >
       </component>
@@ -19,7 +20,7 @@
 
 <script>
 export default {
-  props: ["settingGroup", "settings"],
+  props: ["settingGroup", "disabled"],
   methods: {
     fieldClassToFormComponent: function (clazz) {
       return "settings-" + clazz.toLowerCase();

@@ -8,7 +8,6 @@ import Configurables from '../views/Configurables'
 import Tags from '../views/Tags'
 import Icons from '../views/Icons'
 import Discover from '../views/Discover'
-import Settings from '../views/Settings'
 import PluginSettings from '../views/PluginSettings'
 
 Vue.use(VueRouter)
@@ -58,11 +57,6 @@ const routes = [
     path: '/icons',
     name: 'icons',
     component: Icons
-  },
-  {
-    path: '/settings',
-    name: 'settings',
-    component: Settings
   },
   {
     path: '/',

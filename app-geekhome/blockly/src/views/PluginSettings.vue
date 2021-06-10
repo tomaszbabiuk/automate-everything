@@ -6,7 +6,11 @@
       </template>
     </v-breadcrumbs>
 
-    <v-expansion-panels focusable multiple v-if="plugin != null">
+    <v-skeleton-loader v-if="loading"
+      type="paragraph, table-tfoot"
+    ></v-skeleton-loader>
+    <v-expansion-panels focusable multiple v-else v-model="panels"
+    :disabled="saving">
       <v-expansion-panel
         v-for="settingGroup in plugin.settingGroups"
         :key="settingGroup.clazz"
@@ -27,11 +31,13 @@
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <settings-form :settingGroup="settingGroup"></settings-form>
+          <settings-form :settingGroup="settingGroup" :disabled="saving"></settings-form>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
     <v-btn
+      v-if="loading == false"
+      :disabled="saving"
       fab
       dark
       large
@@ -44,6 +50,22 @@
     >
       <v-icon dark>mdi-check-all</v-icon>
     </v-btn>
+    <v-snackbar
+      v-model="snackbar"
+    >
+      Saved! Changes will take place after plugin is restarted.
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Dismiss
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -53,6 +75,10 @@ import { client } from "../rest.js";
 export default {
   data: function () {
     return {
+      snackbar: false,
+      panels: [0,1],
+      loading: true,
+      saving: false,
       breadcrumbs: [],
       plugin: null,
     };
@@ -61,23 +87,14 @@ export default {
   computed: {
     plugins() {
       return this.$store.state.plugins;
-    }
-  },
-
-  watch: {
-    plugins() {
-      this.refresh();
     },
   },
 
   methods: {
-    refresh: function () {
+    dataLoaded() {
+      console.log('data loaded')
       this.plugin = this.findPlugin(this.getPluginId());
-      if (this.plugin == null) {
-        client.getPlugins();
-      } else {
-        this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
-      }
+      this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
     },
 
     getPluginId: function () {
@@ -115,21 +132,28 @@ export default {
     },
 
     onApplySettings() {
-      console.log("onApplySettings");
-      client.putSettings(this.$store.state.settings, this.handleValidationResult)
+      this.saving = true;
+      client.putSettings(
+        this.$store.state.settings,
+        this.handleValidationResult
+      );
     },
-    
-    handleValidationResult: function (validationResult) {
-      console.log("TODO: handle validation result")
-      console.log(validationResult)
+
+    handleValidationResult: function () {
+      this.panels = [];
+      this.snackbar = true;
+      this.saving = false;
     },
   },
   beforeMount: async function () {
-    this.refresh();
 
-    await Promise.all([client.getSettings(), client.getPlugins()]).then(function() {
-      console.log('ready to unblock UI')
-    })
+    var that = this;
+    await Promise.all([client.getSettings(), client.getPlugins()]).then(
+      function () {
+        that.loading = false;
+        that.dataLoaded();
+      }
+    );
   },
 };
 </script>
