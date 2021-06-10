@@ -19,54 +19,26 @@ class SqlDelightRepository : Repository {
         database = Database(driver)
     }
 
-    private fun convertStringOfIdsToList(input: String): List<Long> {
-        return if (input.isNotEmpty()) {
-            input.split(',').map { it.toLong() }
-        } else {
-            ArrayList()
-        }
-    }
+    private val portSnapshotToPortDtoMapper: Mapper<PortSnapshot, PortDto> =
+        PortSnapshotMapper()
 
-    private fun mapSelectAllShortToConfigurableBriefDto(configurableShort: SelectAllShort) : InstanceBriefDto {
-        return InstanceBriefDto(configurableShort.id, configurableShort.clazz, configurableShort.value)
-    }
+    private val iconToIconDtoMapper: Mapper<Icon, IconDto> =
+        IconToIconDtoMapper()
 
-    private fun mapConfigurableInstanceToInstanceDto(configurableInstance: ConfigurableInstanceWithTagIds) : InstanceDto {
-        val fieldsMap = HashMap<String, String?>()
+    private val selectAllWithIconsToIconCategoryDtoMapper: Mapper<SelectAllWithIcons, IconCategoryDto> =
+        SelectAllWithIconsToIconCategoryDtoMapper()
 
-        database
-            .configurableFieldInstanceQueries
-            .selectOfConfigurableInstance(configurableInstance.id)
-            .executeAsList()
-            .forEach { fieldsMap[it.name] = it.value }
+    private val selectAllShortToInstanceBriefDtoMapper: Mapper<SelectAllShort, InstanceBriefDto> =
+        SelectAllShortToInstanceBriefDtoMapper()
 
-        return InstanceDto(
-            configurableInstance.id,
-            configurableInstance.icon_id,
-            convertStringOfIdsToList(configurableInstance.tagIds),
-            configurableInstance.clazz,
-            fieldsMap,
-            configurableInstance.automation
-        )
-    }
+    private val configurableInstanceWithTagIdsToInstanceDtoMapper: Mapper<ConfigurableInstanceWithTagIds, InstanceDto> =
+        ConfigurableInstanceWithTagIdsToInstanceDtoMapper(database)
 
-    private fun mapIconToIconDto(icon: Icon): IconDto {
-        return IconDto(icon.id, icon.icon_category_id, icon.raw)
-    }
+    private val tagToTagDtoMapper : Mapper<Tag, TagDto> =
+        TagToTagDtoMapper()
 
-    private fun mapPortSnapshotToPortDto(portSnapshot: PortSnapshot): PortDto {
-        return PortDto(
-            portSnapshot.id,
-            portSnapshot.factoryId,
-            portSnapshot.adapterId,
-            null,
-            null,
-            portSnapshot.valueType,
-            portSnapshot.canRead == 1L,
-            portSnapshot.canWrite == 1L,
-            false
-        )
-    }
+    private val settingsFieldInstanceListToSettingsDtoList:  Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
+        SettingsFieldInstanceListToSettingsDtoListMapper()
 
     override fun saveInstance(instanceDto: InstanceDto) {
         database.transaction {
@@ -103,7 +75,7 @@ class SqlDelightRepository : Repository {
                 .configurableInstanceQueries
                 .selectAll()
                 .executeAsList()
-                .map { mapConfigurableInstanceToInstanceDto(it) }
+                .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
     }
 
     override fun getAllInstanceBriefs(): List<InstanceBriefDto> {
@@ -111,7 +83,7 @@ class SqlDelightRepository : Repository {
                 .configurableInstanceQueries
                 .selectAllShort()
                 .executeAsList()
-                .map(this::mapSelectAllShortToConfigurableBriefDto)
+                .map(selectAllShortToInstanceBriefDtoMapper::map)
     }
 
     override fun getInstancesOfClazz(clazz: String): List<InstanceDto> {
@@ -119,7 +91,7 @@ class SqlDelightRepository : Repository {
                 .configurableInstanceQueries
                 .selectByClazz(clazz)
                 .executeAsList()
-                .map(this::mapConfigurableInstanceToInstanceDto)
+                .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
     }
 
     override fun deleteInstance(id: Long) {
@@ -134,19 +106,15 @@ class SqlDelightRepository : Repository {
                 .selectById(id)
                 .executeAsOne()
 
-        return mapConfigurableInstanceToInstanceDto(instance)
+        return configurableInstanceWithTagIdsToInstanceDtoMapper.map(instance)
     }
 
     override fun getAllTags(): List<TagDto> {
-        fun mapTagToTagDto(tag: Tag): TagDto {
-            return TagDto(tag.id, tag.parent_id, tag.name)
-        }
-
         return database
                 .tagQueries
                 .selectAll()
                 .executeAsList()
-                .map { mapTagToTagDto(it) }
+                .map(tagToTagDtoMapper::map)
     }
 
     override fun saveTag(tag: TagDto): Long {
@@ -172,17 +140,11 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllIconCategories(): List<IconCategoryDto> {
-
-        fun mapIconCategoryToIconCategoryDto(iconCategory: SelectAllWithIcons): IconCategoryDto {
-            val iconIds = convertStringOfIdsToList(iconCategory.iconIds)
-            return IconCategoryDto(iconCategory.id, iconCategory.name, iconIds)
-        }
-
         return database
                 .iconCategoryQueries
                 .selectAllWithIcons()
                 .executeAsList()
-                .map { mapIconCategoryToIconCategoryDto(it) }
+                .map(selectAllWithIconsToIconCategoryDtoMapper::map)
     }
 
     override fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long {
@@ -212,11 +174,11 @@ class SqlDelightRepository : Repository {
                 .iconQueries
                 .selectAll()
                 .executeAsList()
-                .map { mapIconToIconDto(it) }
+                .map(iconToIconDtoMapper::map)
     }
 
     override fun getIcon(id: Long): IconDto {
-        return mapIconToIconDto(database
+        return iconToIconDtoMapper.map(database
                     .iconQueries
                     .selectById(id)
                     .executeAsOne()
@@ -246,12 +208,11 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllPorts(): List<PortDto> {
-
         return database
             .portQueries
             .selectAll()
             .executeAsList()
-            .map { mapPortSnapshotToPortDto(it) }
+            .map(portSnapshotToPortDtoMapper::map)
     }
 
     override fun savePort(port: PortDto): Long {
@@ -285,17 +246,11 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllSettings(): List<SettingsDto> {
-        return database
+        val list = database
             .settingsFieldInstanceQueries
             .selectAll()
             .executeAsList()
-            .groupBy { it.clazz }
-            .map {
-                val fields = HashMap<String, String?>()
-                it.value.forEach { fieldInstance ->
-                    fields[fieldInstance.name] = fieldInstance.value
-                }
-                SettingsDto(it.key, fields)
-            }
+
+        return settingsFieldInstanceListToSettingsDtoList.map(list)
     }
 }
