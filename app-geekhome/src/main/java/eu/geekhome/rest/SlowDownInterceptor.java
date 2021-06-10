@@ -4,7 +4,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.*;
 import java.io.IOException;
 
-@Provider
 public class SlowDownInterceptor implements WriterInterceptor, ReaderInterceptor {
 
     @Override
