@@ -10,7 +10,7 @@ run {
 
 dependencies {
     //common
-    implementation project(":module-services")
+    implementation project(":module-domain")
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"
