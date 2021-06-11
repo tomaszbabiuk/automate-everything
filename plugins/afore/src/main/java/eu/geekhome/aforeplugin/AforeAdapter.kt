@@ -1,13 +1,13 @@
 package eu.geekhome.aforeplugin
 
 import eu.geekhome.aforeplugin.AforeAdapterFactory.Companion.FACTORY_ID
-import eu.geekhome.services.events.DiscoveryEventData
-import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.PortUpdateEventData
-import eu.geekhome.services.hardware.HardwareAdapterBase
-import eu.geekhome.services.hardware.OperationMode
-import eu.geekhome.services.hardware.Port
-import eu.geekhome.services.hardware.PortIdBuilder
+import eu.geekhome.domain.events.DiscoveryEventData
+import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.events.PortUpdateEventData
+import eu.geekhome.domain.hardware.HardwareAdapterBase
+import eu.geekhome.domain.hardware.OperationMode
+import eu.geekhome.domain.hardware.Port
+import eu.geekhome.domain.hardware.PortIdBuilder
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.auth.*

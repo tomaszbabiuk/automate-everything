@@ -1,8 +1,8 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.R
-import eu.geekhome.services.automation.EvaluationResult
-import eu.geekhome.services.automation.DeviceAutomationUnit
+import eu.geekhome.domain.R
+import eu.geekhome.domain.automation.EvaluationResult
+import eu.geekhome.domain.automation.DeviceAutomationUnit
 import java.util.*
 
 class AutomationUnitWrapper<T>(

@@ -3,10 +3,10 @@ package eu.geekhome.automation.blocks
 import eu.geekhome.R
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
-import eu.geekhome.services.configurable.StateDeviceConfigurable
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.automation.State
+import eu.geekhome.domain.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.configurable.StateDeviceConfigurable
+import eu.geekhome.domain.localization.Resource
 
 class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory {
 

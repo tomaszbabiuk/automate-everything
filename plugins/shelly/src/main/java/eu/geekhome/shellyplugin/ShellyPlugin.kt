@@ -1,10 +1,10 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.extensibility.PluginMetadata
-import eu.geekhome.services.hardware.HardwareAdapterFactory
-import eu.geekhome.services.hardware.HardwarePlugin
-import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.mqtt.MqttBrokerPlugin
+import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.hardware.HardwareAdapterFactory
+import eu.geekhome.domain.hardware.HardwarePlugin
+import eu.geekhome.domain.localization.Resource
+import eu.geekhome.domain.mqtt.MqttBrokerPlugin
 import org.pf4j.PluginState
 import org.pf4j.PluginStateEvent
 import org.pf4j.PluginStateListener

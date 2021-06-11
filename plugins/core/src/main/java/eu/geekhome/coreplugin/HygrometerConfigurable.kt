@@ -1,9 +1,9 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.configurable.HumidityReadPortField
-import eu.geekhome.services.configurable.RequiredStringValidator
-import eu.geekhome.services.hardware.Humidity
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.HumidityReadPortField
+import eu.geekhome.domain.configurable.RequiredStringValidator
+import eu.geekhome.domain.hardware.Humidity
+import eu.geekhome.domain.localization.Resource
 import org.pf4j.Extension
 
 @Extension

@@ -1,6 +1,6 @@
 package eu.geekhome.sqldelightplugin;
 
-import eu.geekhome.services.localization.Resource;
+import eu.geekhome.domain.localization.Resource;
 
 public class R {
     public static Resource plugin_description = new Resource(

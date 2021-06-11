@@ -3,9 +3,9 @@ package eu.geekhome.rest.instances
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.settings.ValidationResultMap
-import eu.geekhome.services.configurable.ConfigurableWithFields
-import eu.geekhome.services.configurable.FieldValidationResult
-import eu.geekhome.services.repository.InstanceDto
+import eu.geekhome.domain.configurable.ConfigurableWithFields
+import eu.geekhome.domain.configurable.FieldValidationResult
+import eu.geekhome.domain.repository.InstanceDto
 import java.util.*
 import javax.inject.Inject
 import javax.ws.rs.*

@@ -1,6 +1,6 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.hardware.*
+import eu.geekhome.domain.hardware.*
 import eu.geekhome.shellyplugin.operators.*
 
 class ShellyPortFactory {

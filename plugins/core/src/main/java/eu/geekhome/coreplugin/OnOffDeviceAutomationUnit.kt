@@ -1,10 +1,10 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.ControlMode
-import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
-import eu.geekhome.services.hardware.Port
-import eu.geekhome.services.hardware.Relay
+import eu.geekhome.domain.automation.ControlMode
+import eu.geekhome.domain.automation.State
+import eu.geekhome.domain.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.hardware.Port
+import eu.geekhome.domain.hardware.Relay
 import java.lang.Exception
 import kotlin.Throws
 import java.util.Calendar

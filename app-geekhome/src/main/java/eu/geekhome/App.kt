@@ -3,7 +3,7 @@ package eu.geekhome
 import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
-import eu.geekhome.services.events.NumberedEventsSink
+import eu.geekhome.domain.events.NumberedEventsSink
 import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {

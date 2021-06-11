@@ -5,8 +5,8 @@ import eu.geekhome.rest.AutomationConductorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.rest.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
-import eu.geekhome.services.automation.ControlMode
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.automation.ControlMode
+import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import java.lang.Exception
 import javax.inject.Inject
 import javax.ws.rs.*

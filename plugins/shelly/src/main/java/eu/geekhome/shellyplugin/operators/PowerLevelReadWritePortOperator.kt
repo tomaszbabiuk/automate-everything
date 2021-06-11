@@ -1,7 +1,7 @@
 package eu.geekhome.shellyplugin.operators
 
 import com.google.gson.Gson
-import eu.geekhome.services.hardware.PowerLevel
+import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.shellyplugin.LightBriefDto
 import eu.geekhome.shellyplugin.LightSetDto
 import eu.geekhome.shellyplugin.ShellyWritePortOperator

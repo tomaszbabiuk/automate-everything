@@ -1,7 +1,7 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.DiscoveryEventData
+import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.events.DiscoveryEventData
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*

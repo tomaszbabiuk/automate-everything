@@ -1,7 +1,7 @@
 package eu.geekhome.automation
 
 import eu.geekhome.automation.blocks.ComparisonOperator
-import eu.geekhome.services.hardware.PortValue
+import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 
 class ComparisonAutomationNode(

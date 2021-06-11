@@ -1,10 +1,10 @@
 package eu.geekhome.shellyplugin
 
 import com.google.gson.Gson
-import eu.geekhome.services.events.*
-import eu.geekhome.services.hardware.*
-import eu.geekhome.services.mqtt.MqttBrokerService
-import eu.geekhome.services.mqtt.MqttListener
+import eu.geekhome.domain.events.*
+import eu.geekhome.domain.hardware.*
+import eu.geekhome.domain.mqtt.MqttBrokerService
+import eu.geekhome.domain.mqtt.MqttListener
 import eu.geekhome.shellyplugin.operators.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*

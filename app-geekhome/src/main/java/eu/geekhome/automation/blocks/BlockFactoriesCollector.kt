@@ -3,13 +3,13 @@ package eu.geekhome.automation.blocks
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.BlockFactory
 import eu.geekhome.R
-import eu.geekhome.services.automation.StateType
-import eu.geekhome.services.configurable.*
-import eu.geekhome.services.hardware.Humidity
-import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.hardware.Temperature
-import eu.geekhome.services.hardware.Wattage
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.automation.StateType
+import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.hardware.Humidity
+import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.hardware.Temperature
+import eu.geekhome.domain.hardware.Wattage
+import eu.geekhome.domain.localization.Resource
 
 interface IBlockFactoriesCollector {
     fun collect(thisDevice: Configurable?): List<BlockFactory<*>>

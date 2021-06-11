@@ -1,6 +1,6 @@
 package eu.geekhome.shellyplugin.operators
 
-import eu.geekhome.services.hardware.Humidity
+import eu.geekhome.domain.hardware.Humidity
 import eu.geekhome.shellyplugin.HumidityBriefDto
 
 class ShellyHumidityReadPortOperator(shellyId: String) : ShellyReadPortOperator<Humidity> {

@@ -3,7 +3,7 @@ package eu.geekhome.rest.icons
 import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
 import eu.geekhome.rest.PluginsCoordinatorHolderService
-import eu.geekhome.services.repository.IconDto
+import eu.geekhome.domain.repository.IconDto
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

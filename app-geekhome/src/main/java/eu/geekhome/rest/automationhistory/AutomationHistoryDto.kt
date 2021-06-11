@@ -1,6 +1,6 @@
 package eu.geekhome.rest.automationhistory
 
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 data class AutomationHistoryDto(
     val no: Int,

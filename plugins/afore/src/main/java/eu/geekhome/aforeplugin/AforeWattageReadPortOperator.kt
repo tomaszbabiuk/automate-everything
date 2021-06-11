@@ -1,8 +1,8 @@
 package eu.geekhome.aforeplugin
 
 import eu.geekhome.aforeplugin.AforeAdapter.Companion.INVERTER_IP_ADDRESS
-import eu.geekhome.services.hardware.ReadPortOperator
-import eu.geekhome.services.hardware.Wattage
+import eu.geekhome.domain.hardware.ReadPortOperator
+import eu.geekhome.domain.hardware.Wattage
 import io.ktor.client.*
 import io.ktor.client.request.*
 

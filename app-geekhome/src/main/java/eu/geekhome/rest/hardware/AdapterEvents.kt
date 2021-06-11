@@ -1,9 +1,9 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.rest.EventsSinkHolderService
-import eu.geekhome.services.events.DiscoveryEventData
-import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.hardware.DiscoveryEventDto
+import eu.geekhome.domain.events.DiscoveryEventData
+import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.hardware.DiscoveryEventDto
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path

@@ -1,6 +1,6 @@
 package eu.geekhome.shellyplugin.operators
 
-import eu.geekhome.services.hardware.Wattage
+import eu.geekhome.domain.hardware.Wattage
 
 class LightWattageReadPortOperator(shellyId: String,
                                    channel : Int,

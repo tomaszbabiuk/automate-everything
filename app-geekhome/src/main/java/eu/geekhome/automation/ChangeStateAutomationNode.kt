@@ -1,7 +1,7 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.automation.ControlMode
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.automation.ControlMode
+import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import java.util.*
 
 class ChangeStateAutomationNode(

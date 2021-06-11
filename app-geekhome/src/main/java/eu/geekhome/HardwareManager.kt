@@ -1,7 +1,7 @@
 package eu.geekhome
 
-import eu.geekhome.services.events.*
-import eu.geekhome.services.hardware.*
+import eu.geekhome.domain.events.*
+import eu.geekhome.domain.hardware.*
 import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*

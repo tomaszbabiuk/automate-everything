@@ -1,7 +1,7 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.HardwareManager
-import eu.geekhome.services.hardware.HardwareAdapterDto
+import eu.geekhome.domain.hardware.HardwareAdapterDto
 
 class HardwareAdapterDtoMapper {
 

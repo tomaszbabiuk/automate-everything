@@ -1,7 +1,7 @@
 package eu.geekhome.aforeplugin
 
-import eu.geekhome.services.hardware.HardwareAdapter
-import eu.geekhome.services.hardware.HardwareAdapterFactory
+import eu.geekhome.domain.hardware.HardwareAdapter
+import eu.geekhome.domain.hardware.HardwareAdapterFactory
 
 internal class AforeAdapterFactory : HardwareAdapterFactory {
 

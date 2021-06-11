@@ -1,8 +1,8 @@
 package eu.geekhome.automation
 
 import eu.geekhome.automation.blocks.MathOperator
-import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.hardware.PortValueBuilder
+import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.hardware.PortValueBuilder
 import java.util.*
 
 class EquationAutomationNode(

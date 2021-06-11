@@ -1,8 +1,8 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.mqtt.MqttBrokerService
-import eu.geekhome.services.hardware.HardwareAdapterFactory
-import eu.geekhome.services.hardware.HardwareAdapter
+import eu.geekhome.domain.mqtt.MqttBrokerService
+import eu.geekhome.domain.hardware.HardwareAdapterFactory
+import eu.geekhome.domain.hardware.HardwareAdapter
 import java.util.ArrayList
 
 internal class ShellyAdapterFactory(private val mqttBroker: MqttBrokerService) :

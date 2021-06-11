@@ -4,8 +4,8 @@ import eu.geekhome.R
 import eu.geekhome.rest.settinggroup.SettingGroupDtoMapper
 import org.pf4j.PluginWrapper
 import org.pf4j.PluginState
-import eu.geekhome.services.hardware.HardwarePlugin
-import eu.geekhome.services.extensibility.PluginMetadata
+import eu.geekhome.domain.hardware.HardwarePlugin
+import eu.geekhome.domain.extensibility.PluginMetadata
 import javax.inject.Inject
 
 class PluginDtoMapper @Inject constructor(

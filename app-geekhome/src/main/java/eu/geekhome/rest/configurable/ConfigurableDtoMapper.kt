@@ -2,8 +2,8 @@ package eu.geekhome.rest.configurable
 
 import eu.geekhome.rest.MappingException
 import eu.geekhome.rest.field.FieldDefinitionDtoMapper
-import eu.geekhome.services.configurable.*
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.localization.Resource
 import java.util.stream.Collectors
 import javax.inject.Inject
 

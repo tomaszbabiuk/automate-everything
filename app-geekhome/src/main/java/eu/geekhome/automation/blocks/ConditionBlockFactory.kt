@@ -3,8 +3,8 @@ package eu.geekhome.automation.blocks
 import eu.geekhome.R
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.configurable.ConditionConfigurable
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.ConditionConfigurable
+import eu.geekhome.domain.localization.Resource
 
 class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : EvaluatorBlockFactory {
 

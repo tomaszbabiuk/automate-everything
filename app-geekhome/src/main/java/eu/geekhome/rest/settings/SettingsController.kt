@@ -2,11 +2,10 @@ package eu.geekhome.rest.settings
 
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
-import eu.geekhome.services.configurable.FieldValidationResult
-import eu.geekhome.services.configurable.SettingGroup
-import eu.geekhome.services.extensibility.PluginMetadata
-import eu.geekhome.services.repository.SettingsDto
-import java.util.*
+import eu.geekhome.domain.configurable.FieldValidationResult
+import eu.geekhome.domain.configurable.SettingGroup
+import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.repository.SettingsDto
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.*

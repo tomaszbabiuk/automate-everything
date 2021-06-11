@@ -3,7 +3,7 @@ package eu.geekhome.rest;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import eu.geekhome.services.localization.Language;
+import eu.geekhome.domain.localization.Language;
 
 import java.io.IOException;
 

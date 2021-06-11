@@ -2,7 +2,7 @@ package eu.geekhome.rest.automation
 
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
-import eu.geekhome.services.automation.EvaluationResult
+import eu.geekhome.domain.automation.EvaluationResult
 
 class EvaluationResultDtoMapper {
 

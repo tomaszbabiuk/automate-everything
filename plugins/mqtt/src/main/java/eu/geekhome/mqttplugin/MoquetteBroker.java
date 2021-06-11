@@ -1,7 +1,7 @@
 package eu.geekhome.mqttplugin;
 
-import eu.geekhome.services.mqtt.MqttBrokerService;
-import eu.geekhome.services.mqtt.MqttListener;
+import eu.geekhome.domain.mqtt.MqttBrokerService;
+import eu.geekhome.domain.mqtt.MqttListener;
 import io.moquette.BrokerConstants;
 import io.moquette.broker.ClientDescriptor;
 import io.moquette.broker.Server;

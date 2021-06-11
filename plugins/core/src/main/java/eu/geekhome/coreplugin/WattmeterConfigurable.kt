@@ -1,9 +1,9 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.configurable.RequiredStringValidator
-import eu.geekhome.services.configurable.WattageReadPortField
-import eu.geekhome.services.hardware.Wattage
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.RequiredStringValidator
+import eu.geekhome.domain.configurable.WattageReadPortField
+import eu.geekhome.domain.hardware.Wattage
+import eu.geekhome.domain.localization.Resource
 import org.pf4j.Extension
 
 @Extension

@@ -1,6 +1,6 @@
 package eu.geekhome.rest;
 
-import eu.geekhome.services.events.EventsSink;
+import eu.geekhome.domain.events.EventsSink;
 import org.jvnet.hk2.annotations.Service;
 
 import javax.ws.rs.core.Application;

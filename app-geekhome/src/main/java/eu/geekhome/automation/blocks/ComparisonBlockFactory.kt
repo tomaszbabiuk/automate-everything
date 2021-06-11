@@ -2,8 +2,8 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.localization.Resource
 
 class ComparisonBlockFactory<T: PortValue>(
     private val valueType: Class<T>,

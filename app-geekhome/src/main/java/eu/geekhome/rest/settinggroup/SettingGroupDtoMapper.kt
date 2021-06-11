@@ -2,7 +2,7 @@ package eu.geekhome.rest.settinggroup
 
 import eu.geekhome.rest.MappingException
 import eu.geekhome.rest.field.FieldDefinitionDtoMapper
-import eu.geekhome.services.configurable.*
+import eu.geekhome.domain.configurable.*
 import java.util.stream.Collectors
 import javax.inject.Inject
 

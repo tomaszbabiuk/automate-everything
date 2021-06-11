@@ -1,9 +1,9 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.EvaluationResult
-import eu.geekhome.services.automation.DeviceAutomationUnit
-import eu.geekhome.services.hardware.Port
-import eu.geekhome.services.hardware.PortValue
+import eu.geekhome.domain.automation.EvaluationResult
+import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.hardware.Port
+import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(

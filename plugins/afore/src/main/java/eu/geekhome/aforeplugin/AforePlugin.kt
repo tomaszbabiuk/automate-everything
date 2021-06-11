@@ -1,10 +1,10 @@
 package eu.geekhome.aforeplugin
 
-import eu.geekhome.services.extensibility.PluginMetadata
+import eu.geekhome.domain.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
-import eu.geekhome.services.hardware.HardwarePlugin
-import eu.geekhome.services.hardware.HardwareAdapterFactory
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.hardware.HardwarePlugin
+import eu.geekhome.domain.hardware.HardwareAdapterFactory
+import eu.geekhome.domain.localization.Resource
 
 class AforePlugin(wrapper: PluginWrapper?) : HardwarePlugin(wrapper), PluginMetadata {
     private val factory: AforeAdapterFactory = AforeAdapterFactory()

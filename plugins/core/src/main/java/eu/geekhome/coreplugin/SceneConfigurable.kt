@@ -1,8 +1,8 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.configurable.NameDescriptionConfigurable
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.configurable.NameDescriptionConfigurable
+import eu.geekhome.domain.localization.Resource
 import org.pf4j.Extension
 
 @Extension

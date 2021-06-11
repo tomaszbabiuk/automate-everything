@@ -1,9 +1,9 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.hardware.ConnectiblePort
-import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.hardware.ReadPortOperator
-import eu.geekhome.services.hardware.WritePortOperator
+import eu.geekhome.domain.hardware.ConnectiblePort
+import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.hardware.ReadPortOperator
+import eu.geekhome.domain.hardware.WritePortOperator
 import java.util.*
 
 class ShellyPort<V: PortValue>(

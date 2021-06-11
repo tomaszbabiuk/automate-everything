@@ -6,7 +6,7 @@ import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
-import eu.geekhome.services.hardware.*
+import eu.geekhome.domain.hardware.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

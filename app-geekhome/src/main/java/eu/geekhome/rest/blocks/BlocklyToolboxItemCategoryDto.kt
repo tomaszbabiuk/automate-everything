@@ -1,6 +1,6 @@
 package eu.geekhome.rest.blocks
 
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 data class BlocklyToolboxItemCategoryDto(
     val name: Resource,

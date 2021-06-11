@@ -1,13 +1,13 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.DeviceAutomationUnit
-import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.StateType
-import eu.geekhome.services.configurable.*
-import eu.geekhome.services.hardware.IPortFinder
-import eu.geekhome.services.hardware.Relay
-import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.repository.InstanceDto
+import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.automation.State
+import eu.geekhome.domain.automation.StateType
+import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.hardware.IPortFinder
+import eu.geekhome.domain.hardware.Relay
+import eu.geekhome.domain.localization.Resource
+import eu.geekhome.domain.repository.InstanceDto
 import org.pf4j.Extension
 import java.util.*
 

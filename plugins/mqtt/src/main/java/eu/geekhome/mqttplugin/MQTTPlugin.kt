@@ -1,9 +1,9 @@
 package eu.geekhome.mqttplugin
 
-import eu.geekhome.services.extensibility.PluginMetadata
-import eu.geekhome.services.localization.Resource
-import eu.geekhome.services.mqtt.MqttBrokerPlugin
-import eu.geekhome.services.mqtt.MqttBrokerService
+import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.localization.Resource
+import eu.geekhome.domain.mqtt.MqttBrokerPlugin
+import eu.geekhome.domain.mqtt.MqttBrokerService
 import org.pf4j.PluginWrapper
 
 class MQTTPlugin(wrapper: PluginWrapper?) : MqttBrokerPlugin(wrapper), PluginMetadata {

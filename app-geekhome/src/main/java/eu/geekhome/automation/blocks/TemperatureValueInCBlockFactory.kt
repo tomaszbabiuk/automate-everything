@@ -1,7 +1,7 @@
 package eu.geekhome.automation.blocks
 
 import eu.geekhome.R
-import eu.geekhome.services.hardware.Temperature
+import eu.geekhome.domain.hardware.Temperature
 
 class TemperatureValueInCBlockFactory(val color: Int) : SimpleValueBlockFactory<Temperature>(
     Temperature::class.java,

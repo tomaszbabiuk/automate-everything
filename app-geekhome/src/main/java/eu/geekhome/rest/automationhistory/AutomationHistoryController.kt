@@ -1,8 +1,8 @@
 package eu.geekhome.rest.automationhistory
 
 import eu.geekhome.rest.EventsSinkHolderService
-import eu.geekhome.services.events.AutomationStateEventData
-import eu.geekhome.services.events.AutomationUpdateEventData
+import eu.geekhome.domain.events.AutomationStateEventData
+import eu.geekhome.domain.events.AutomationUpdateEventData
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path

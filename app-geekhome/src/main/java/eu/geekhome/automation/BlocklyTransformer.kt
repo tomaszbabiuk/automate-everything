@@ -1,6 +1,6 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.hardware.PortValue
+import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 import kotlin.collections.ArrayList
 

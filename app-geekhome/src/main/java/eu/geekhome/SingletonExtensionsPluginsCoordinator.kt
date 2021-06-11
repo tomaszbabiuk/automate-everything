@@ -1,9 +1,9 @@
 package eu.geekhome
 
-import eu.geekhome.services.configurable.Configurable
-import eu.geekhome.services.events.EventsSink
-import eu.geekhome.services.events.PluginEventData
-import eu.geekhome.services.repository.Repository
+import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.events.PluginEventData
+import eu.geekhome.domain.repository.Repository
 import org.pf4j.*
 
 interface PluginsCoordinator {

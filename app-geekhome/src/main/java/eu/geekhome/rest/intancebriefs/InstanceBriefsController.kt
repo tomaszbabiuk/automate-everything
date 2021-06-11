@@ -5,9 +5,9 @@ import javax.inject.Inject
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
-import eu.geekhome.services.repository.InstanceBriefDto
+import eu.geekhome.domain.repository.InstanceBriefDto
 import javax.ws.rs.PathParam
-import eu.geekhome.services.configurable.ConfigurableType
+import eu.geekhome.domain.configurable.ConfigurableType
 import javax.ws.rs.Path
 import javax.ws.rs.core.MediaType
 

@@ -5,7 +5,7 @@ import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
-import eu.geekhome.services.hardware.HardwareAdapterDto
+import eu.geekhome.domain.hardware.HardwareAdapterDto
 import javax.ws.rs.Path
 import javax.ws.rs.core.MediaType
 

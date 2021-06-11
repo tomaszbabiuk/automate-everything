@@ -1,7 +1,7 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.automation.DeviceAutomationUnit
-import eu.geekhome.services.hardware.PortValue
+import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 
 class SensorAutomationNode(

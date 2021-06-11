@@ -3,13 +3,13 @@ package eu.geekhome.automation
 import eu.geekhome.HardwareManager
 import eu.geekhome.PluginsCoordinator
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.services.automation.DeviceAutomationUnit
-import eu.geekhome.services.automation.IEvaluableAutomationUnit
-import eu.geekhome.services.automation.State
-import eu.geekhome.services.automation.StateDeviceAutomationUnit
-import eu.geekhome.services.configurable.*
-import eu.geekhome.services.events.*
-import eu.geekhome.services.repository.InstanceDto
+import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.automation.IEvaluableAutomationUnit
+import eu.geekhome.domain.automation.State
+import eu.geekhome.domain.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.events.*
+import eu.geekhome.domain.repository.InstanceDto
 import kotlinx.coroutines.*
 import java.util.*
 

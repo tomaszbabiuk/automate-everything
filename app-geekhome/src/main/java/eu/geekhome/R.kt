@@ -1,6 +1,6 @@
 package eu.geekhome
 
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 object R {
     var category_this_device = Resource(

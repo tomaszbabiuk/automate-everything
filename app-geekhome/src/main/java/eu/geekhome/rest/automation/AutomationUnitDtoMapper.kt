@@ -2,8 +2,8 @@ package eu.geekhome.rest.automation
 
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
-import eu.geekhome.services.automation.DeviceAutomationUnit
-import eu.geekhome.services.repository.InstanceDto
+import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.repository.InstanceDto
 import javax.inject.Inject
 
 class AutomationUnitDtoMapper @Inject constructor(

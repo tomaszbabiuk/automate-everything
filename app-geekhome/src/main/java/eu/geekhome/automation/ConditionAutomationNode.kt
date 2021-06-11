@@ -1,6 +1,6 @@
 package eu.geekhome.automation
 
-import eu.geekhome.services.automation.IEvaluableAutomationUnit
+import eu.geekhome.domain.automation.IEvaluableAutomationUnit
 import java.util.*
 
 class ConditionAutomationNode(

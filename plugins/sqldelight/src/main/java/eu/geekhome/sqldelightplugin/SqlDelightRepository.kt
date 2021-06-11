@@ -1,8 +1,8 @@
 package eu.geekhome.sqldelightplugin
 
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
-import eu.geekhome.services.hardware.PortDto
-import eu.geekhome.services.repository.*
+import eu.geekhome.domain.hardware.PortDto
+import eu.geekhome.domain.repository.*
 import eu.geekhome.sqldelightplugin.database.*
 import org.pf4j.Extension
 

@@ -2,9 +2,9 @@ package eu.geekhome.automation.blocks
 
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.configurable.SensorConfigurable
-import eu.geekhome.services.hardware.PortValue
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.SensorConfigurable
+import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.localization.Resource
 
 class SensorBlockFactory<T: PortValue>(
     private val valueType: Class<T>,

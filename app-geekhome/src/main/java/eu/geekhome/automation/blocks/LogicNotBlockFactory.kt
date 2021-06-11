@@ -3,7 +3,7 @@ package eu.geekhome.automation.blocks
 import eu.geekhome.R
 import eu.geekhome.automation.*
 import eu.geekhome.rest.RawJson
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 class LogicNotBlockFactory(private val color: Int) : EvaluatorBlockFactory {
 

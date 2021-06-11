@@ -6,7 +6,7 @@ import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
-import eu.geekhome.services.events.*
+import eu.geekhome.domain.events.*
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path

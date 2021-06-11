@@ -1,6 +1,6 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 object R {
     var plugin_description = Resource(

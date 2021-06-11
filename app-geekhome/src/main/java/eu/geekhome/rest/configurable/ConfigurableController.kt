@@ -6,7 +6,7 @@ import eu.geekhome.rest.PluginsCoordinatorHolderService
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
 import javax.servlet.http.HttpServletRequest
-import eu.geekhome.services.configurable.ConfigurableDto
+import eu.geekhome.domain.configurable.ConfigurableDto
 import java.util.stream.Collectors
 import javax.ws.rs.Path
 import javax.ws.rs.core.Context

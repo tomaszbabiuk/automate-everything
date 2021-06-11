@@ -3,7 +3,7 @@ package eu.geekhome.rest.tags
 import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
 import eu.geekhome.rest.PluginsCoordinatorHolderService
-import eu.geekhome.services.repository.TagDto
+import eu.geekhome.domain.repository.TagDto
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

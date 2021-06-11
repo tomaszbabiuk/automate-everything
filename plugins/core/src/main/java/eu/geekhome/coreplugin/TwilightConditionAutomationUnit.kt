@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.automation.EvaluableAutomationUnit
+import eu.geekhome.domain.automation.EvaluableAutomationUnit
 import java.util.*
 
 class TwilightConditionAutomationUnit(private val _longitude: Double, private val _latitude: Double) :

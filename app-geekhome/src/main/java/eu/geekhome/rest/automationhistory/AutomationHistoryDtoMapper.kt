@@ -3,9 +3,9 @@ package eu.geekhome.rest.automationhistory
 import eu.geekhome.R
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
-import eu.geekhome.services.events.AutomationStateEventData
-import eu.geekhome.services.events.AutomationUpdateEventData
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.events.AutomationStateEventData
+import eu.geekhome.domain.events.AutomationUpdateEventData
+import eu.geekhome.domain.localization.Resource
 import javax.inject.Inject
 
 class AutomationHistoryDtoMapper @Inject constructor() {

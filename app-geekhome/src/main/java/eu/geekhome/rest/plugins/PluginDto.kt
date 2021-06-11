@@ -1,7 +1,7 @@
 package eu.geekhome.rest.plugins
 
-import eu.geekhome.services.configurable.SettingGroupDto
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.configurable.SettingGroupDto
+import eu.geekhome.domain.localization.Resource
 
 data class PluginDto(
     val id: String,

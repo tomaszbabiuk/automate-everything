@@ -1,7 +1,7 @@
 package eu.geekhome.aforeplugin
 
-import eu.geekhome.services.hardware.ConnectiblePort
-import eu.geekhome.services.hardware.Wattage
+import eu.geekhome.domain.hardware.ConnectiblePort
+import eu.geekhome.domain.hardware.Wattage
 import java.util.*
 
 class AforeWattagePort(id: String, portOperator: AforeWattageReadPortOperator) :

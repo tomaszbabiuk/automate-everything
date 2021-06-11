@@ -1,7 +1,7 @@
 package eu.geekhome.rest.field
 
-import eu.geekhome.services.configurable.FieldDefinition
-import eu.geekhome.services.configurable.FieldDefinitionDto
+import eu.geekhome.domain.configurable.FieldDefinition
+import eu.geekhome.domain.configurable.FieldDefinitionDto
 
 class FieldDefinitionDtoMapper {
     fun map(field: FieldDefinition<*>): FieldDefinitionDto {

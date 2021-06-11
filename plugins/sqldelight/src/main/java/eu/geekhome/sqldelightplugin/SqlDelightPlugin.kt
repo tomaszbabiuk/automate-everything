@@ -1,7 +1,7 @@
 package eu.geekhome.sqldelightplugin
 
-import eu.geekhome.services.extensibility.PluginMetadata
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.localization.Resource
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 

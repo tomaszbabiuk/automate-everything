@@ -1,6 +1,6 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.services.localization.Resource
+import eu.geekhome.domain.localization.Resource
 
 object R {
     val field_ip_from = Resource(

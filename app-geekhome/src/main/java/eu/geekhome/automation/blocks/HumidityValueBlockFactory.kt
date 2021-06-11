@@ -1,7 +1,7 @@
 package eu.geekhome.automation.blocks
 
 import eu.geekhome.R
-import eu.geekhome.services.hardware.Humidity
+import eu.geekhome.domain.hardware.Humidity
 
 class HumidityValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Humidity>(
     Humidity::class.java,
