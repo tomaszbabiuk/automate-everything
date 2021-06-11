@@ -1,11 +1,9 @@
-package eu.geekhome.services.mqtt;
+package eu.geekhome.services.mqtt
 
-import java.net.InetAddress;
+import java.net.InetAddress
 
-public interface MqttListener {
-    void onPublish(String clientID, String topicName, String msgAsString);
-
-    void onDisconnected(String clientID);
-
-    void onConnected(InetAddress address);
+interface MqttListener {
+    fun onPublish(clientID: String, topicName: String, msgAsString: String)
+    fun onDisconnected(clientID: String)
+    fun onConnected(address: InetAddress)
 }

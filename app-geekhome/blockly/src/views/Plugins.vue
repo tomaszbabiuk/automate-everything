@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-card class="pa-3 mb-3" v-for="plugin in plugins" :key="plugin.name">
+    <v-skeleton-loader v-if="loading"
+      type="table"
+    ></v-skeleton-loader>
+    <v-card class="pa-3 mb-3" v-for="plugin in plugins" :key="plugin.name" v-else>
       <v-row>
         <v-col md="8" sm="12">
           <div class="caption grey--text">{{$vuetify.lang.t('$vuetify.plugins_list.name')}}</div>
@@ -39,6 +42,12 @@
 import { client } from "../rest.js";
 
 export default {
+  data: function() {
+    return {
+      loading: true
+    }
+  },
+
   methods: {
     submitState(plugin) {
       if (plugin.enabled) {
@@ -55,13 +64,18 @@ export default {
       });
     },
   },
+
   computed: {
     plugins() {
       return this.$store.state.plugins;
     }
   },
-  mounted: function() {
-    client.getPlugins();
+  
+  mounted: async function() {
+    var that = this;
+    await client.getPlugins().then(function() {
+      that.loading = false
+    })
   },
 };
 </script>
