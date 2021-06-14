@@ -28,7 +28,7 @@ class EvaluationResult<T> (
     }
 
     override fun hashCode(): Int {
-        var result = interfaceValue?.hashCode() ?: 0
+        var result = interfaceValue.hashCode()
         result = 31 * result + (value?.hashCode() ?: 0)
         result = 31 * result + isSignaled.hashCode()
         result = 31 * result + descriptions.hashCode()

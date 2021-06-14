@@ -1,12 +1,11 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.HardwareManager
-import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.domain.hardware.*
+import eu.geekhome.rest.RepositoryHolderService
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
@@ -14,15 +13,17 @@ import javax.ws.rs.core.MediaType
 class PortsController @Inject constructor(
     val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
     hardwareManagerHolderService: HardwareManagerHolderService,
+    repositoryHolderService: RepositoryHolderService,
     private val portDtoMapper: PortDtoMapper
 ) {
-    private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val hardwareManager = hardwareManagerHolderService.instance
+    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val repository = repositoryHolderService.instance
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET
     fun getPorts() : List<PortDto> {
-        val portsInRepo = pluginsCoordinator.repository.getAllPorts().toMutableList()
+        val portsInRepo = repository.getAllPorts().toMutableList()
 
         hardwareManager.checkNewPorts()
 

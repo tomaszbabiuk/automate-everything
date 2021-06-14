@@ -6,35 +6,22 @@ import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.IEvaluableAutomationUnit
 import eu.geekhome.domain.automation.State
-import eu.geekhome.domain.automation.StateDeviceAutomationUnit
-import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.configurable.ConditionConfigurable
+import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.configurable.SensorConfigurable
+import eu.geekhome.domain.configurable.StateDeviceConfigurable
 import eu.geekhome.domain.events.*
 import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.sqldelightplugin.SqlDelightRepository
 import kotlinx.coroutines.*
 import java.util.*
-
-class AutomationContext(
-    val instanceDto: InstanceDto,
-    val thisDevice: Configurable?,
-    val automationUnitsCache: Map<Long, DeviceAutomationUnit<*>>,
-    val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
-    val blocksCache: List<BlockFactory<*>>,
-    private val liveEvents: NumberedEventsSink
-) {
-    fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto, deviceUnit.lastEvaluation)
-        liveEvents.broadcastEvent(eventData)
-
-        //TODO:
-        //send this change to other change state triggers
-    }
-}
 
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
     private val pluginsCoordinator: PluginsCoordinator,
-    private val liveEvents: NumberedEventsSink
+    private val liveEvents: NumberedEventsSink,
+    private val repository: SqlDelightRepository
 ) : LiveEventsListener {
 
     init {
@@ -71,7 +58,6 @@ class AutomationConductor(
 
     private fun rebuildAutomations(): List<List<IStatementNode>> {
 
-        val repository = pluginsCoordinator.repository
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
 

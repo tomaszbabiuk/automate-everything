@@ -11,14 +11,16 @@ open class App : ResourceConfig() {
     init {
         val liveEvents = NumberedEventsSink()
         val repository = SqlDelightRepository()
-        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents, repository)
+        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents)
         pluginsCoordinator.loadPlugins()
 
-        val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents)
-        val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator)
-        val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator, liveEvents)
+        val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents, repository)
+        val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
+        val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
+            liveEvents, repository)
 
         packages("eu.geekhome.rest")
+        register(repository)
         register(liveEvents)
         register(DependencyInjectionBinder())
         register(GsonMessageBodyHandler())

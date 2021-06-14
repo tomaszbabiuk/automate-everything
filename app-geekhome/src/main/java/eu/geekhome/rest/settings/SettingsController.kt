@@ -1,11 +1,11 @@
 package eu.geekhome.rest.settings
 
-import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.extensibility.PluginMetadata
 import eu.geekhome.domain.repository.SettingsDto
+import eu.geekhome.rest.RepositoryHolderService
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.*
@@ -17,9 +17,12 @@ typealias ValidationResultMap = Map<String, FieldValidationResult>
 typealias SettingsValuesMap = Map<String, String?>
 
 @Path("settings")
-class SettingsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
+class SettingsController @Inject constructor(
+    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
+    repositoryHolderService: RepositoryHolderService) {
 
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val repository = repositoryHolderService.instance
 
     private fun findSettingCategory(clazz: String): SettingGroup? {
         return pluginsCoordinator
@@ -34,8 +37,7 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getSettings(@Context request: HttpServletRequest?): Map<String, SettingsValuesMap> {
         val result = HashMap<String, SettingsValuesMap>()
-        pluginsCoordinator
-            .repository
+        repository
             .getAllSettings()
             .forEach {
                 result[it.clazz] = it.fields
@@ -64,7 +66,7 @@ class SettingsController @Inject constructor(pluginsCoordinatorHolderService: Pl
         }
 
         if (!hasErrors) {
-            pluginsCoordinator.repository.updateSettings(settingsDtos)
+            repository.updateSettings(settingsDtos)
         }
 
         return validationResult

@@ -1,20 +1,23 @@
 package eu.geekhome.rest.instances
 
-import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.settings.ValidationResultMap
 import eu.geekhome.domain.configurable.ConfigurableWithFields
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.rest.RepositoryHolderService
 import java.util.*
 import javax.inject.Inject
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("instances")
-class InstancesController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
+class InstancesController @Inject constructor(
+    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
+    repositoryHolder: RepositoryHolderService) {
 
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val repository = repositoryHolder.instance
 
     private fun findConfigurable(clazz: String): ConfigurableWithFields? {
         return pluginsCoordinator
@@ -30,7 +33,7 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @Throws(Exception::class)
     fun postInstances(instanceDto: InstanceDto): ValidationResultMap {
         return validate(instanceDto) {
-            pluginsCoordinator.repository.saveInstance(instanceDto)
+            repository.saveInstance(instanceDto)
         }
     }
 
@@ -39,7 +42,7 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @Throws(Exception::class)
     fun putInstances(instanceDto: InstanceDto): ValidationResultMap {
         return validate(instanceDto) {
-            pluginsCoordinator.repository.updateInstance(instanceDto)
+            repository.updateInstance(instanceDto)
         }
     }
 
@@ -47,14 +50,14 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getInstancesById(@PathParam("id") id: Long): InstanceDto {
-        return pluginsCoordinator.repository.getInstance(id)
+        return repository.getInstance(id)
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getInstancesOfClass(@QueryParam("class") clazz: String?): List<InstanceDto> {
         return if (clazz != null) {
-            pluginsCoordinator.repository.getInstancesOfClazz(clazz)
+            repository.getInstancesOfClazz(clazz)
         } else ArrayList()
     }
 
@@ -62,7 +65,7 @@ class InstancesController @Inject constructor(pluginsCoordinatorHolderService: P
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deleteInstance(@PathParam("id") id: Long) {
-        pluginsCoordinator.repository.deleteInstance(id)
+        repository.deleteInstance(id)
     }
 
     private fun validate(instanceDto: InstanceDto, onValidCallback: () -> Unit):

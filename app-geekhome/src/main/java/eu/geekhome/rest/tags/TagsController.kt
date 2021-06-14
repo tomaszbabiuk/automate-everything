@@ -1,46 +1,41 @@
 package eu.geekhome.rest.tags
 
-import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
-import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.domain.repository.TagDto
+import eu.geekhome.rest.RepositoryHolderService
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("tags")
-class TagsController @Inject constructor(pluginsCoordinatorHolderService: PluginsCoordinatorHolderService) {
+class TagsController @Inject constructor(repositoryHolderService: RepositoryHolderService) {
 
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
+    private val repository = repositoryHolderService.instance
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun postTag(tagDto: TagDto?): Long {
-        return pluginsCoordinator
-            .repository
+        return repository
             .saveTag(tagDto!!)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun putTag(tagDto: TagDto?) {
-        pluginsCoordinator
-            .repository
+        repository
             .updateTag(tagDto!!)
     }
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @get:GET
     val allTags: List<TagDto>
-        get() = pluginsCoordinator
-                    .repository
+        get() = repository
                     .getAllTags()
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deleteTag(@PathParam("id") id: Long) {
-        pluginsCoordinator
-            .repository
+        repository
             .deleteTag(id)
     }
 }

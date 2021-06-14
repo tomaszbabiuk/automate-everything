@@ -2,13 +2,15 @@ package eu.geekhome
 
 import eu.geekhome.domain.events.*
 import eu.geekhome.domain.hardware.*
+import eu.geekhome.domain.repository.Repository
 import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*
 
 class HardwareManager(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val liveEvents: NumberedEventsSink
+    private val liveEvents: NumberedEventsSink,
+    private val repository: Repository,
 ) : PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
@@ -60,7 +62,7 @@ class HardwareManager(
                     bundle.ports.forEach {
                         val portSnapshot = PortDto(it.id, factory.id, bundle.adapter.id,
                             null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
-                        pluginsCoordinator.repository.savePort(portSnapshot)
+                        repository.savePort(portSnapshot)
                         val event = PortUpdateEventData(factory.id, bundle.adapter.id, it)
                         liveEvents.broadcastEvent(event)
                     }

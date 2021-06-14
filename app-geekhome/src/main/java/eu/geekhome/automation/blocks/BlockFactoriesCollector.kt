@@ -10,6 +10,7 @@ import eu.geekhome.domain.hardware.PortValue
 import eu.geekhome.domain.hardware.Temperature
 import eu.geekhome.domain.hardware.Wattage
 import eu.geekhome.domain.localization.Resource
+import eu.geekhome.sqldelightplugin.SqlDelightRepository
 
 interface IBlockFactoriesCollector {
     fun collect(thisDevice: Configurable?): List<BlockFactory<*>>
@@ -33,7 +34,8 @@ enum class CategoryConstants(
     }
 }
 
-class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator) : IBlockFactoriesCollector {
+class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator,
+                              private val repository: SqlDelightRepository) : IBlockFactoriesCollector {
 
     override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
@@ -91,7 +93,7 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
     }
 
     private fun collectConditionBlocks(): List<BlockFactory<*>> {
-        val instanceBriefs = pluginsCoordinator.repository.getAllInstanceBriefs()
+        val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
@@ -108,7 +110,7 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
     }
 
     private fun collectSensorBlocks(): List<BlockFactory<*>> {
-        val instanceBriefs = pluginsCoordinator.repository.getAllInstanceBriefs()
+        val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs

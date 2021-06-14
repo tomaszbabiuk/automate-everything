@@ -3,7 +3,6 @@ package eu.geekhome
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PluginEventData
-import eu.geekhome.domain.repository.Repository
 import org.pf4j.*
 
 interface PluginsCoordinator {
@@ -16,12 +15,10 @@ interface PluginsCoordinator {
 
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
-    val repository: Repository
 }
 
 class SingletonExtensionsPluginsCoordinator(
-    private val liveEvents: EventsSink,
-    override val repository: Repository) : PluginsCoordinator {
+    private val liveEvents: EventsSink) : PluginsCoordinator {
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
