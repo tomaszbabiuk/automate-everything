@@ -4,13 +4,14 @@ import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
+import eu.geekhome.sqldelightplugin.SqlDelightRepository
 import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {
     init {
         val liveEvents = NumberedEventsSink()
-
-        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents)
+        val repository = SqlDelightRepository()
+        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents, repository)
         pluginsCoordinator.loadPlugins()
 
         val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents)

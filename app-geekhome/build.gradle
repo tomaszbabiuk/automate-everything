@@ -11,6 +11,7 @@ run {
 dependencies {
     //common
     implementation project(":module-domain")
+    implementation project(":module-repository-sqldelight")
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"

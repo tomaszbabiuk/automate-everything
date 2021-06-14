@@ -3,11 +3,11 @@ rootProject.name = 'geekhome-server2'
 include "app-geekhome"
 
 include "module-domain"
+include "module-repository-sqldelight"
 
 include 'plugins'
 
 include 'plugins:core'
 include 'plugins:shelly'
-include 'plugins:sqldelight'
 include 'plugins:mqtt'
 include 'plugins:afore'

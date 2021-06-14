@@ -19,7 +19,9 @@ interface PluginsCoordinator {
     val repository: Repository
 }
 
-class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) : PluginsCoordinator {
+class SingletonExtensionsPluginsCoordinator(
+    private val liveEvents: EventsSink,
+    override val repository: Repository) : PluginsCoordinator {
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
@@ -67,9 +69,6 @@ class SingletonExtensionsPluginsCoordinator(private val liveEvents: EventsSink) 
 
     override val configurables: List<Configurable>
         get() = wrapped.getExtensions(Configurable::class.java)
-
-    override val repository: Repository
-        get() = wrapped.getExtensions(Repository::class.java).first()
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins

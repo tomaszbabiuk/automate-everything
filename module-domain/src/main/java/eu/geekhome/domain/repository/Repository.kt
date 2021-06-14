@@ -1,9 +1,8 @@
 package eu.geekhome.domain.repository
 
 import eu.geekhome.domain.hardware.PortDto
-import org.pf4j.ExtensionPoint
 
-interface Repository : ExtensionPoint {
+interface Repository {
 
     fun saveInstance(instanceDto: InstanceDto)
     fun updateInstance(instanceDto: InstanceDto)
