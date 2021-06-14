@@ -36,6 +36,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(HardwareManagerHolderService.class).to(HardwareManagerHolderService.class).in(Singleton.class);
         bind(EventsSinkHolderService.class).to(EventsSinkHolderService.class).in(Singleton.class);
         bind(AutomationConductorHolderService.class).to(AutomationConductorHolderService.class).in(Singleton.class);
+        bind(RepositoryHolderService.class).to(RepositoryHolderService.class).in(Singleton.class);
 
         //blocks
         bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);
