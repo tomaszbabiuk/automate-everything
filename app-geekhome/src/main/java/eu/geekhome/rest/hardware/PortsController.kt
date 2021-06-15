@@ -30,7 +30,7 @@ class PortsController @Inject constructor(
         val portsInHardware = hardwareManager
             .bundles()
             .flatMap {
-                val factoryId = it.factoryId
+                val factoryId = it.owningPluginId
                 it
                     .ports
                     .map { port -> Triple(port, factoryId, it.adapter.id) }

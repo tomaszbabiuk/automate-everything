@@ -6,8 +6,9 @@ import eu.geekhome.domain.hardware.HardwarePlugin
 import eu.geekhome.domain.hardware.HardwareAdapterFactory
 import eu.geekhome.domain.localization.Resource
 
-class AforePlugin(wrapper: PluginWrapper?) : HardwarePlugin(wrapper), PluginMetadata {
-    private val factory: AforeAdapterFactory = AforeAdapterFactory()
+class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata {
+
+    private val factory: AforeAdapterFactory = AforeAdapterFactory(wrapper.pluginId)
 
     override fun getFactory(): HardwareAdapterFactory {
         return factory

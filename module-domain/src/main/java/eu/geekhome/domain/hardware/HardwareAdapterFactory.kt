@@ -1,9 +1,6 @@
-package eu.geekhome.domain.hardware;
+package eu.geekhome.domain.hardware
 
-import java.util.List;
-
-public interface HardwareAdapterFactory {
-
-    List<HardwareAdapter> createAdapters();
-    String getId();
+interface HardwareAdapterFactory {
+    fun createAdapters(): List<HardwareAdapter>
+    val owningPluginId: String
 }

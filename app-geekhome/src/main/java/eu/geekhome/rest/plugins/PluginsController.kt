@@ -36,7 +36,7 @@ class PluginsController @Inject constructor(
             throw ResourceNotFoundException()
         }
 
-        return pluginDtoMapper.map(pluginsCoordinator.getPlugin(id))
+        return pluginDtoMapper.map(pluginsCoordinator.getPluginWrapper(id))
     }
 
     @PUT

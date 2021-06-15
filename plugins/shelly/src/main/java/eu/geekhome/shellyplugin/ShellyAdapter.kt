@@ -5,6 +5,7 @@ import eu.geekhome.domain.events.*
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.mqtt.MqttListener
+import eu.geekhome.domain.repository.SettingsDto
 import eu.geekhome.shellyplugin.operators.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -16,10 +17,10 @@ import java.net.InetAddress
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
+class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
 
     override val newPorts = ArrayList<ConnectiblePort<*>>()
-    private var idBuilder = PortIdBuilder(factoryId, id)
+    private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
     private var finder: ShellyFinder
     private val client = createHttpClient()
@@ -140,7 +141,7 @@ class ShellyAdapter(factoryId: String, private val mqttBroker: MqttBrokerService
     override fun reconfigure(operationMode: OperationMode) {
     }
 
-    override fun start(operationSink: EventsSink) {
+    override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
         this.updateSink = operationSink
         mqttBroker.addMqttListener(this)
     }

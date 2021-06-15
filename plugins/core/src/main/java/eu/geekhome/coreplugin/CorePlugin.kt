@@ -6,7 +6,7 @@ import eu.geekhome.domain.localization.Resource
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
-class CorePlugin(wrapper: PluginWrapper?) : Plugin(wrapper), PluginMetadata {
+class CorePlugin(wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
     override fun start() {
         println("WelcomePlugin.start()")
     }

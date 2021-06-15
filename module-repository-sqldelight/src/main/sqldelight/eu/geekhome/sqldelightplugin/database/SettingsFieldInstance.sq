@@ -9,6 +9,11 @@ selectAll:
 SELECT *
 FROM settingsFieldInstance;
 
+selectByClazz:
+SELECT *
+FROM settingsFieldInstance
+WHERE clazz = ?;
+
 insertOrReplace:
 INSERT OR REPLACE INTO settingsFieldInstance(clazz, name, value)
 VALUES (?, ?, ?);

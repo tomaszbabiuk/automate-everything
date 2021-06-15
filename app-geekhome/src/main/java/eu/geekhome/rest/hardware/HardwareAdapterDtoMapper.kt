@@ -10,7 +10,7 @@ class HardwareAdapterDtoMapper {
 
         return HardwareAdapterDto(
             bundle.adapter.id,
-            bundle.factoryId,
+            bundle.owningPluginId,
             bundle.adapter.state,
             bundle.adapter.lastDiscoveryTime,
             lastError,

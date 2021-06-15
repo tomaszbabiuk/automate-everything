@@ -1,18 +1,20 @@
 package eu.geekhome
 
 import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PluginEventData
+import eu.geekhome.domain.extensibility.PluginMetadata
 import org.pf4j.*
 
 interface PluginsCoordinator {
-    fun enablePlugin(id: String): PluginWrapper
-    fun disablePlugin(id: String): PluginWrapper
+    fun enablePlugin(pluginId: String): PluginWrapper
+    fun disablePlugin(pluginId: String): PluginWrapper
     fun loadPlugins()
     fun startPlugins()
     fun addPluginStateListener(listener: PluginStateListener)
-    fun getPlugin(id: String): PluginWrapper
-
+    fun getPluginWrapper(pluginId: String): PluginWrapper
+    fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
 }
@@ -36,20 +38,26 @@ class SingletonExtensionsPluginsCoordinator(
         }
     }
 
-    override fun getPlugin(id: String): PluginWrapper {
-        return wrapped.getPlugin(id)
+    override fun getPluginWrapper(pluginId: String): PluginWrapper {
+        return wrapped.getPlugin(pluginId)
     }
 
-    override fun enablePlugin(id: String): PluginWrapper {
-        wrapped.enablePlugin(id)
-        wrapped.startPlugin(id)
-        return getPlugin(id)
+    override fun getPluginSettingGroups(pluginId: String): List<SettingGroup> {
+        val pluginWrapper = getPluginWrapper(pluginId)
+        val metadata = pluginWrapper.plugin as PluginMetadata
+        return metadata.settingGroups
     }
 
-    override fun disablePlugin(id: String): PluginWrapper {
-        wrapped.stopPlugin(id)
-        wrapped.disablePlugin(id)
-        return getPlugin(id)
+    override fun enablePlugin(pluginId: String): PluginWrapper {
+        wrapped.enablePlugin(pluginId)
+        wrapped.startPlugin(pluginId)
+        return getPluginWrapper(pluginId)
+    }
+
+    override fun disablePlugin(pluginId: String): PluginWrapper {
+        wrapped.stopPlugin(pluginId)
+        wrapped.disablePlugin(pluginId)
+        return getPluginWrapper(pluginId)
     }
 
     override fun loadPlugins() {

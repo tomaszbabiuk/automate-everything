@@ -3,6 +3,7 @@ package eu.geekhome
 import eu.geekhome.domain.events.*
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.repository.Repository
+import eu.geekhome.domain.repository.SettingsDto
 import kotlinx.coroutines.*
 import org.pf4j.*
 import java.util.*
@@ -43,7 +44,7 @@ class HardwareManager(
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
         factories
-            .filter { factory.id == it.key.id }
+            .filter { factory.owningPluginId == it.key.owningPluginId }
             .flatMap { it.value }
             .forEach {
                 it.discoveryJob?.cancelAndJoin()
@@ -53,21 +54,27 @@ class HardwareManager(
 
     private suspend fun startAdaptersAndDiscover(factory: HardwareAdapterFactory) = coroutineScope {
         factories
-            .filter { factory.id == it.key.id }
+            .filter { factory.owningPluginId == it.key.owningPluginId }
             .flatMap { it.value }
             .forEach { bundle ->
-                bundle.adapter.start(liveEvents)
+                bundle.adapter.start(liveEvents, extractPluginSettings(bundle.owningPluginId))
                 bundle.discoveryJob = async {
                     bundle.ports = bundle.adapter.discover(liveEvents)
                     bundle.ports.forEach {
-                        val portSnapshot = PortDto(it.id, factory.id, bundle.adapter.id,
+                        val portSnapshot = PortDto(it.id, factory.owningPluginId, bundle.adapter.id,
                             null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                         repository.savePort(portSnapshot)
-                        val event = PortUpdateEventData(factory.id, bundle.adapter.id, it)
+                        val event = PortUpdateEventData(factory.owningPluginId, bundle.adapter.id, it)
                         liveEvents.broadcastEvent(event)
                     }
                 }
             }
+    }
+
+    private fun extractPluginSettings(pluginId: String): List<SettingsDto> {
+        return pluginsCoordinator
+            .getPluginSettingGroups(pluginId)
+            .mapNotNull { repository.getSettingsByClazz(it.javaClass.name) }
     }
 
     private suspend fun removeFactory(factory: HardwareAdapterFactory) {
@@ -83,7 +90,7 @@ class HardwareManager(
 
         val adaptersInFactory = factory.createAdapters()
         val adapterBundles = adaptersInFactory
-            .map { adapter: HardwareAdapter -> AdapterBundle(factory.id, adapter, ArrayList()) }
+            .map { adapter: HardwareAdapter -> AdapterBundle(factory.owningPluginId, adapter, ArrayList()) }
             .toList()
         factories[factory] = adapterBundles
 
@@ -124,7 +131,7 @@ class HardwareManager(
     }
 
     data class AdapterBundle(
-        internal val factoryId: String,
+        internal val owningPluginId: String,
         internal val adapter: HardwareAdapter,
         internal var ports: MutableList<Port<*>>
     ) {

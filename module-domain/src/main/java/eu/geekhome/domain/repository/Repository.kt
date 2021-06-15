@@ -34,4 +34,5 @@ interface Repository {
 
     fun updateSettings(settingsDtos: List<SettingsDto>)
     fun getAllSettings() : List<SettingsDto>
+    fun getSettingsByClazz(clazz: String): SettingsDto?
 }

@@ -11,6 +11,12 @@ import org.pf4j.PluginStateListener
 import org.pf4j.PluginWrapper
 
 class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, PluginStateListener {
+
+    companion object {
+        const val PLUGIN_ID_MQTT = "mqtt"
+        const val PLUGIN_ID_SHELLY = "shelly"
+    }
+
     private val factory: ShellyAdapterFactory
 
     override fun getFactory(): HardwareAdapterFactory {
@@ -42,16 +48,11 @@ class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMeta
         }
     }
 
-    companion object {
-        const val PLUGIN_ID_MQTT = "mqtt"
-        const val PLUGIN_ID_SHELLY = "shelly"
-    }
-
     init {
         val manager = wrapper.pluginManager
         manager.addPluginStateListener(this)
         val mqttPluginWrapper = manager.getPlugin(PLUGIN_ID_MQTT)
         val broker = (mqttPluginWrapper.plugin as MqttBrokerPlugin).broker
-        factory = ShellyAdapterFactory(broker)
+        factory = ShellyAdapterFactory(PLUGIN_ID_SHELLY, broker)
     }
 }

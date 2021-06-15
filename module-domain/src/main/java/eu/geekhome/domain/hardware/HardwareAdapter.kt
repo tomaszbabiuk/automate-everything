@@ -1,6 +1,7 @@
 package eu.geekhome.domain.hardware
 
 import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.repository.SettingsDto
 import java.util.*
 
 interface HardwareAdapter {
@@ -18,7 +19,7 @@ interface HardwareAdapter {
     @Throws(Exception::class)
     fun reconfigure(operationMode: OperationMode)
     fun stop()
-    fun start(operationSink: EventsSink)
+    fun start(operationSink: EventsSink, settings: List<SettingsDto>)
 
     var lastDiscoveryTime: Long
     var lastError: Throwable?

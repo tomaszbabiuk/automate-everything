@@ -244,11 +244,22 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllSettings(): List<SettingsDto> {
-        val list = database
+        val result = database
             .settingsFieldInstanceQueries
             .selectAll()
             .executeAsList()
 
-        return settingsFieldInstanceListToSettingsDtoList.map(list)
+        return settingsFieldInstanceListToSettingsDtoList.map(result)
+    }
+
+    override fun getSettingsByClazz(clazz: String): SettingsDto? {
+        val result = database
+            .settingsFieldInstanceQueries
+            .selectByClazz(clazz)
+            .executeAsList()
+
+        return settingsFieldInstanceListToSettingsDtoList
+            .map(result)
+            .firstOrNull()
     }
 }
