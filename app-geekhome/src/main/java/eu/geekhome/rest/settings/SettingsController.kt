@@ -30,7 +30,7 @@ class SettingsController @Inject constructor(
             .map {it.plugin }
             .filterIsInstance<PluginMetadata>()
             .flatMap { it.settingGroups }
-            .firstOrNull() { it.javaClass.name == clazz }
+            .firstOrNull { it.javaClass.name == clazz }
     }
 
     @GET

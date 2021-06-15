@@ -1,11 +1,15 @@
-package eu.geekhome.coreplugin
+package eu.geekhome.landiscoverysettings
 
-import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.domain.configurable.FieldDefinition
+import eu.geekhome.domain.configurable.SettingGroup
+import eu.geekhome.domain.configurable.StringField
+import eu.geekhome.domain.configurable.RequiredStringValidator
+import eu.geekhome.domain.configurable.IPMaskValidator
 
-class LanDiscoverySettings2: SettingGroup {
-    override val titleRes: Resource = R.settings_lan_discovery_title
-    override val descriptionRes: Resource = R.settings_lan_discovery_description
+class LanDiscoverySettings: SettingGroup {
+
+    override val titleRes = R.settings_lan_discovery_title
+    override val descriptionRes = R.settings_lan_discovery_description
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {

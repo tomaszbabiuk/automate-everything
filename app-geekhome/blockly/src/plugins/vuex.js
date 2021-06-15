@@ -417,6 +417,10 @@ export default new Vuex.Store({
       var settingsGroup = state.settings[payload.clazz]
       if (settingsGroup != null) {
         settingsGroup[payload.name] = payload.value
+      } else {
+        var newSetting = {}
+        newSetting[payload.name] = payload.value
+        state.settings[payload.clazz] = newSetting
       }
     },
 
