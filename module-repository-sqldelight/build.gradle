@@ -1,6 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'com.squareup.sqldelight'   version '1.4.4'
+    id 'com.squareup.sqldelight'   version "$sqlDelightVersion"
 }
 
 dependencies {
@@ -9,7 +9,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     //plugin specific
-    implementation 'com.squareup.sqldelight:sqlite-driver:1.4.4'
+    implementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
 
 }
 

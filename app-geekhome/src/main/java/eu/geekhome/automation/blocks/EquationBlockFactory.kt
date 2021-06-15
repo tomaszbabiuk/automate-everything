@@ -10,7 +10,7 @@ class EquationBlockFactory<T: PortValue>(
     override val category: Resource,
     private val color: Int) : ValueBlockFactory {
 
-    override val type: String = "${valueType.simpleName.toLowerCase()}_equation"
+    override val type: String = "${valueType.simpleName.lowercase()}_equation"
 
     override fun match(type: String) : Boolean {
         return type == this.type
