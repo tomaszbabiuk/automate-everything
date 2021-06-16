@@ -8,12 +8,12 @@ import eu.geekhome.domain.extensibility.PluginMetadata
 import org.pf4j.*
 
 interface PluginsCoordinator {
-    fun enablePlugin(pluginId: String): PluginWrapper
-    fun disablePlugin(pluginId: String): PluginWrapper
+    fun enablePlugin(pluginId: String): PluginWrapper?
+    fun disablePlugin(pluginId: String): PluginWrapper?
     fun loadPlugins()
     fun startPlugins()
     fun addPluginStateListener(listener: PluginStateListener)
-    fun getPluginWrapper(pluginId: String): PluginWrapper
+    fun getPluginWrapper(pluginId: String): PluginWrapper?
     fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
@@ -38,26 +38,31 @@ class SingletonExtensionsPluginsCoordinator(
         }
     }
 
-    override fun getPluginWrapper(pluginId: String): PluginWrapper {
+    override fun getPluginWrapper(pluginId: String): PluginWrapper? {
         return wrapped.getPlugin(pluginId)
     }
 
     override fun getPluginSettingGroups(pluginId: String): List<SettingGroup> {
-        val pluginWrapper = getPluginWrapper(pluginId)
+        val pluginWrapper = getPluginWrapper(pluginId) ?: return listOf()
         val metadata = pluginWrapper.plugin as PluginMetadata
         return metadata.settingGroups
     }
 
-    override fun enablePlugin(pluginId: String): PluginWrapper {
-        wrapped.enablePlugin(pluginId)
-        wrapped.startPlugin(pluginId)
-        return getPluginWrapper(pluginId)
+    override fun enablePlugin(pluginId: String): PluginWrapper? {
+        if (wrapped.enablePlugin(pluginId)) {
+            wrapped.startPlugin(pluginId)
+            return getPluginWrapper(pluginId)
+        }
+
+        return null
     }
 
-    override fun disablePlugin(pluginId: String): PluginWrapper {
-        wrapped.stopPlugin(pluginId)
-        wrapped.disablePlugin(pluginId)
-        return getPluginWrapper(pluginId)
+    override fun disablePlugin(pluginId: String): PluginWrapper? {
+        if (wrapped.disablePlugin(pluginId)) {
+            return getPluginWrapper(pluginId)
+        }
+
+        return null
     }
 
     override fun loadPlugins() {

@@ -36,7 +36,10 @@ class PluginsController @Inject constructor(
             throw ResourceNotFoundException()
         }
 
-        return pluginDtoMapper.map(pluginsCoordinator.getPluginWrapper(id))
+        val pluginWrapper = pluginsCoordinator.getPluginWrapper(id)
+            ?: throw ResourceNotFoundException()
+
+        return pluginDtoMapper.map(pluginWrapper)
     }
 
     @PUT
@@ -47,7 +50,9 @@ class PluginsController @Inject constructor(
             throw ResourceNotFoundException()
         }
 
-        val pluginWrapper = if (enable) pluginsCoordinator.enablePlugin(id) else pluginsCoordinator.disablePlugin(id)
+        val pluginWrapper = (if (enable) pluginsCoordinator.enablePlugin(id) else pluginsCoordinator.disablePlugin(id))
+            ?: throw ResourceNotFoundException()
+
         return pluginDtoMapper.map(pluginWrapper)
     }
 }
