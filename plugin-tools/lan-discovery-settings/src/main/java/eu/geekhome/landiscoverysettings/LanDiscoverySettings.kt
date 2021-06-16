@@ -4,7 +4,7 @@ import eu.geekhome.domain.configurable.FieldDefinition
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.configurable.StringField
 import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.configurable.IPMaskValidator
+import eu.geekhome.domain.configurable.IPAddressValidator
 
 class LanDiscoverySettings: SettingGroup {
 
@@ -28,8 +28,8 @@ class LanDiscoverySettings: SettingGroup {
                  </g>
                 </svg>"""
 
-    private val ipFromField = StringField(FIELD_IP_FROM, R.field_ip_from, 15, RequiredStringValidator(), IPMaskValidator())
-    private val ipToField = StringField(FIELD_IP_TO, R.field_ip_to, 15, RequiredStringValidator(), IPMaskValidator())
+    private val ipFromField = StringField(FIELD_IP_FROM, R.field_ip_from, 15, RequiredStringValidator(), IPAddressValidator())
+    private val ipToField = StringField(FIELD_IP_TO, R.field_ip_to, 15, RequiredStringValidator(), IPAddressValidator())
 
 
     companion object {

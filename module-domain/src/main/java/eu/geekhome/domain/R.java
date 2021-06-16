@@ -28,4 +28,9 @@ public class R {
             "Invalid field",
             "To pole jest nieprawidłowe"
     );
+
+    public static Resource validator_invalid_ip_address = new Resource(
+            "Invalid ip address",
+            "Nieprawidłowy adres IP"
+    );
 }

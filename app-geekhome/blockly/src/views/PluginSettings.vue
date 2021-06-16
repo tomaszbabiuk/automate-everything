@@ -139,10 +139,25 @@ export default {
       );
     },
 
-    handleValidationResult: function () {
-      this.panels = [];
-      this.snackbar = true;
+    handleValidationResult: function (validationResult) {
+      console.log(validationResult)
+      
+      var isFormValid = true;
+      for (const clazz in validationResult) {
+        var validationGroup = validationResult[clazz]
+        for (const field in validationGroup) {
+          if (!validationGroup[field].valid) {
+            isFormValid = false;
+          }
+        }      
+      }
+
       this.saving = false;
+
+      if (isFormValid) {
+        this.panels = [];
+        this.snackbar = true;
+      }
     },
   },
   beforeMount: async function () {
