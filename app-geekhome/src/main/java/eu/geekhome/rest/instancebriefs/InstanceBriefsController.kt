@@ -1,4 +1,4 @@
-package eu.geekhome.rest.intancebriefs
+package eu.geekhome.rest.instancebriefs
 
 import javax.inject.Inject
 import eu.geekhome.rest.PluginsCoordinatorHolderService

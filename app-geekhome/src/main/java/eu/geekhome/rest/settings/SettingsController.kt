@@ -1,5 +1,6 @@
 package eu.geekhome.rest.settings
 
+import eu.geekhome.domain.configurable.ConfigurableType
 import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.configurable.SettingGroup
@@ -34,11 +35,12 @@ class SettingsController @Inject constructor(
     }
 
     @GET
+    @Path("/{pluginId}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getSettings(@Context request: HttpServletRequest?): Map<String, SettingsValuesMap> {
+    fun getSettings(@PathParam("pluginId") pluginId: String, @Context request: HttpServletRequest?): Map<String, SettingsValuesMap> {
         val result = HashMap<String, SettingsValuesMap>()
         repository
-            .getAllSettings()
+            .getSettingsByPluginId(pluginId)
             .forEach {
                 result[it.clazz] = it.fields
             }
@@ -47,13 +49,14 @@ class SettingsController @Inject constructor(
     }
 
     @PUT
+    @Path("/{pluginId}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putSettings(settings: Map<String, SettingsValuesMap>): Map<String, ValidationResultMap> {
+    fun putSettings(@PathParam("pluginId") pluginId: String, settings: Map<String, SettingsValuesMap>): Map<String, ValidationResultMap> {
         val validationResult = HashMap<String, ValidationResultMap>()
         var hasErrors = false
 
-        val settingsDtos = settings.map { SettingsDto(it.key, it.value) }
+        val settingsDtos = settings.map { SettingsDto(pluginId, it.key, it.value) }
         settingsDtos.forEach { settingsDto ->
             val validation = validate(settingsDto)
             validation.entries.forEach {

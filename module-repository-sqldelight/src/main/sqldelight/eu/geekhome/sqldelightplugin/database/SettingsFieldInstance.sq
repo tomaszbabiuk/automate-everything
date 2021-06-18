@@ -1,8 +1,11 @@
+
+
 CREATE TABLE IF NOT EXISTS settingsFieldInstance (
+  pluginId TEXT NOT NULL,
   clazz TEXT NOT NULL,
   name TEXT NOT NULL,
   value TEXT,
-  PRIMARY KEY(name, clazz)
+  PRIMARY KEY(pluginId, name, clazz)
 );
 
 selectAll:
@@ -14,6 +17,11 @@ SELECT *
 FROM settingsFieldInstance
 WHERE clazz = ?;
 
+selectByPluginId:
+SELECT *
+FROM settingsFieldInstance
+WHERE pluginId = ?;
+
 insertOrReplace:
-INSERT OR REPLACE INTO settingsFieldInstance(clazz, name, value)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO settingsFieldInstance(pluginId, clazz, name, value)
+VALUES (?, ?, ?, ?);

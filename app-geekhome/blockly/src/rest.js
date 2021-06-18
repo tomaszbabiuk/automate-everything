@@ -342,9 +342,16 @@ export const client = {
     )
   },
 
-  putSettings: async function (updatedSettings, callback) {
+  getSettings: async function (pluginId) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/settings", JSON.stringify(updatedSettings)),
+      () => axiosInstance.get("rest/settings/" + pluginId),
+      (response) => store.commit(SET_SETTINGS, response.data)
+    )
+  },
+  
+  putSettings: async function (pluginId, updatedSettings, callback) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/settings/" + pluginId, JSON.stringify(updatedSettings)),
       (response) => {
           store.commit(SET_SETTINGS_VALIDATION, response.data)
           if (callback !== null) {
@@ -352,12 +359,5 @@ export const client = {
           }
       }
     )
-  },
-
-  getSettings: async function () {
-    await this.handleRestError(
-      () => axiosInstance.get("rest/settings"),
-      (response) => store.commit(SET_SETTINGS, response.data)
-    )
-  },
+  }
 }

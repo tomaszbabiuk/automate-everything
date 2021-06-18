@@ -237,16 +237,16 @@ class SqlDelightRepository : Repository {
                 settingDto.fields.forEach { field ->
                     database
                         .settingsFieldInstanceQueries
-                        .insertOrReplace(settingDto.clazz, field.key, field.value)
+                        .insertOrReplace(settingDto.pluginId, settingDto.clazz, field.key, field.value)
                 }
             }
         }
     }
 
-    override fun getAllSettings(): List<SettingsDto> {
+    override fun getSettingsByPluginId(pluginId: String): List<SettingsDto> {
         val result = database
             .settingsFieldInstanceQueries
-            .selectAll()
+            .selectByPluginId(pluginId)
             .executeAsList()
 
         return settingsFieldInstanceListToSettingsDtoList.map(result)

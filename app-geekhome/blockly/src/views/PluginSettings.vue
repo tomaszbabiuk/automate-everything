@@ -134,6 +134,7 @@ export default {
     onApplySettings() {
       this.saving = true;
       client.putSettings(
+        this.getPluginId(),
         this.$store.state.settings,
         this.handleValidationResult
       );
@@ -163,7 +164,7 @@ export default {
   beforeMount: async function () {
 
     var that = this;
-    await Promise.all([client.getSettings(), client.getPlugins()]).then(
+    await Promise.all([client.getSettings(this.getPluginId()), client.getPlugins()]).then(
       function () {
         that.loading = false;
         that.dataLoaded();

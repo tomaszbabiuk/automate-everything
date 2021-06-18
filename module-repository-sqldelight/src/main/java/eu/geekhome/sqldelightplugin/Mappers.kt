@@ -72,13 +72,14 @@ class TagToTagDtoMapper : Mapper<Tag, TagDto> {
 class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFieldInstance>, List<SettingsDto>> {
     override fun map(from: List<SettingsFieldInstance>): List<SettingsDto> {
         return from
-            .groupBy { it.clazz }
+            .groupBy { Pair(it.pluginId, it.clazz) }
             .map {
                 val fields = HashMap<String, String?>()
                 it.value.forEach { fieldInstance ->
                     fields[fieldInstance.name] = fieldInstance.value
                 }
-                SettingsDto(it.key, fields)
+
+                SettingsDto(it.key.first, it.key.second, fields)
             }
     }
 }
