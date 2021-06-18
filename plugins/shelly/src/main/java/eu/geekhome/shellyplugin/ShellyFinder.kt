@@ -7,7 +7,7 @@ import io.ktor.client.request.*
 import kotlinx.coroutines.*
 import java.net.InetAddress
 
-class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress) {
+class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAddress?) {
 
     suspend fun checkIfShelly(ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
@@ -24,40 +24,54 @@ class ShellyFinder(private val client: HttpClient, private val brokerIP: InetAdd
     @Suppress("BlockingMethodInNonBlockingContext")
     @ExperimentalCoroutinesApi
     suspend fun searchForShellies(eventsSink: EventsSink): List<Pair<InetAddress, ShellySettingsResponse>> = coroutineScope {
-        val lookupAddressBegin = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
-            0.toByte()))
-        val lookupAddressEnd = InetAddress.getByAddress(byteArrayOf(brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
-            255.toByte()
-        ))
-
-        broadcastEvent(eventsSink,
-            "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd ")
-
-        val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()
-
-        for (i in 0..255) {
-            val ipToCheck = InetAddress.getByAddress(
+        if (brokerIP == null) {
+            broadcastEvent(eventsSink,"Error! Broker IP address couldn't be resolved!")
+            listOf()
+        } else {
+            val lookupAddressBegin = InetAddress.getByAddress(
                 byteArrayOf(
-                    brokerIP.address[0],
-                    brokerIP.address[1],
-                    brokerIP.address[2],
-                    i.toByte()
+                    brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
+                    0.toByte()
+                )
+            )
+            val lookupAddressEnd = InetAddress.getByAddress(
+                byteArrayOf(
+                    brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
+                    255.toByte()
                 )
             )
 
-            val job = async(start = CoroutineStart.LAZY) {
-                checkIfShelly(ipToCheck, eventsSink)
+            broadcastEvent(
+                eventsSink,
+                "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd "
+            )
+
+            val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()
+
+            for (i in 0..255) {
+                val ipToCheck = InetAddress.getByAddress(
+                    byteArrayOf(
+                        brokerIP.address[0],
+                        brokerIP.address[1],
+                        brokerIP.address[2],
+                        i.toByte()
+                    )
+                )
+
+                val job = async(start = CoroutineStart.LAZY) {
+                    checkIfShelly(ipToCheck, eventsSink)
+                }
+                jobs.add(job)
             }
-            jobs.add(job)
+
+            val result = jobs.awaitAll()
+                .filterNotNull()
+                .toList()
+
+            broadcastEvent(eventsSink, "Done looking for shellies, found: ${result.size}")
+
+            result
         }
-
-        val result = jobs.awaitAll()
-            .filterNotNull()
-            .toList()
-
-        broadcastEvent(eventsSink,"Done looking for shellies, found: ${result.size}")
-
-        result
     }
 
     private fun broadcastEvent(eventsSink: EventsSink, message: String) {

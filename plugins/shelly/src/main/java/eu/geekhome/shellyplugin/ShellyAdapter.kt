@@ -46,17 +46,6 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
         }
     }
 
-
-    private fun resolveIpInLan(): InetAddress? {
-        try {
-            val addresses = LanInetAddressHelper.ipsInLan
-            return addresses[addresses.size - 2]
-        } catch (ex: Exception) {
-            //TODO: add possibility to change broker IP address in settings
-        }
-        return null
-    }
-
     @Throws(IOException::class)
     private suspend fun hijackShellyIfNeeded(settings: ShellySettingsResponse, shellyIP: InetAddress) {
         if (settings.cloud.enabled) {
@@ -205,8 +194,8 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
     }
 
     init {
-        brokerIP = resolveIpInLan()
-        finder = ShellyFinder(client, brokerIP!!)
+        brokerIP = LanInetAddressResolver.resolve()
+        finder = ShellyFinder(client, brokerIP)
         gson = Gson()
     }
 }
