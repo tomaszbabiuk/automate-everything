@@ -8,14 +8,10 @@ CREATE TABLE IF NOT EXISTS settingsFieldInstance (
   PRIMARY KEY(pluginId, name, clazz)
 );
 
-selectAll:
-SELECT *
-FROM settingsFieldInstance;
-
-selectByClazz:
+selectByPluginIdAndClazz:
 SELECT *
 FROM settingsFieldInstance
-WHERE clazz = ?;
+WHERE pluginId = ? AND clazz = ?;
 
 selectByPluginId:
 SELECT *

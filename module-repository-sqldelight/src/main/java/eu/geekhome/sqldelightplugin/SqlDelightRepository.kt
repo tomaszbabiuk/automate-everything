@@ -252,10 +252,10 @@ class SqlDelightRepository : Repository {
         return settingsFieldInstanceListToSettingsDtoList.map(result)
     }
 
-    override fun getSettingsByClazz(clazz: String): SettingsDto? {
+    override fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto? {
         val result = database
             .settingsFieldInstanceQueries
-            .selectByClazz(clazz)
+            .selectByPluginIdAndClazz(pluginId, clazz)
             .executeAsList()
 
         return settingsFieldInstanceListToSettingsDtoList

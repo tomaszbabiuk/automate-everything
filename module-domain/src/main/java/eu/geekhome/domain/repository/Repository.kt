@@ -33,6 +33,6 @@ interface Repository {
     fun deletePortSnapshot(id: String)
 
     fun updateSettings(settingsDtos: List<SettingsDto>)
-    fun getSettingsByClazz(clazz: String): SettingsDto?
+    fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
 }

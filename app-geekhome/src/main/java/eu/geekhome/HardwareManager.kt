@@ -74,7 +74,7 @@ class HardwareManager(
     private fun extractPluginSettings(pluginId: String): List<SettingsDto> {
         return pluginsCoordinator
             .getPluginSettingGroups(pluginId)
-            .mapNotNull { repository.getSettingsByClazz(it.javaClass.name) }
+            .mapNotNull { repository.getSettingsByPluginIdAndClazz(pluginId, it.javaClass.name) }
     }
 
     private suspend fun removeFactory(factory: HardwareAdapterFactory) {
