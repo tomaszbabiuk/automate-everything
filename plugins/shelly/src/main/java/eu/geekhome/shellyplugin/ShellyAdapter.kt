@@ -24,7 +24,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
     private var updateSink: EventsSink? = null
     private var finder: ShellyFinder
     private val client = createHttpClient()
-    private val brokerIP: InetAddress?
+    private val brokerIP: InetAddress? = LanInetAddressResolver.resolve()
     private val gson: Gson
     private val ports = ArrayList<ShellyPort<*>>()
 
@@ -194,7 +194,6 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
     }
 
     init {
-        brokerIP = LanInetAddressResolver.resolve()
         finder = ShellyFinder(client, brokerIP)
         gson = Gson()
     }

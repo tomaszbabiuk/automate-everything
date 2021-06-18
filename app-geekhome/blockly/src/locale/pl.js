@@ -93,6 +93,7 @@ export default {
     discover: {
         ports: "Porty",
         restart_discovery: "Odkryj ponownie",
+        report_header: "Raport",
         r: "O",
         w: "Z",
         id: "Id",

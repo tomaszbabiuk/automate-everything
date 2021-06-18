@@ -53,11 +53,14 @@
       </v-data-table>
     </v-col>
     <v-col sm="12" md="12" lg="5" xl="5">
+    <v-skeleton-loader v-if="loading"
+      type="card"
+    ></v-skeleton-loader>
       <v-card v-if="discoveryEvents.length > 0">
         <v-list>
-          <v-subheader
-            ><v-badge inline color="blue" :content="discoveryEvents.length">
-              DISCOVERY REPORT
+          <v-subheader>
+            <v-badge inline color="blue" :content="discoveryEvents.length">
+              {{ $vuetify.lang.t("$vuetify.discover.report_header") }}
             </v-badge>
           </v-subheader>
         </v-list>
@@ -83,6 +86,7 @@ import {
 export default {
   data: () => ({
     headers: [],
+    loading: true
   }),
   watch: {
     $route() {
@@ -109,11 +113,18 @@ export default {
       await client.enablePlugin(factoryId, true)
     },
 
-    refresh: function () {
+    refresh: async function () {
+      this.loading = true;
       this.events = [];
       client.clearDiscoveryEvents();
-      client.getDiscoveryEvents();
-      client.getPorts();
+
+      var that = this;
+      await Promise.all([client.getDiscoveryEvents(), client.getPorts()]).then(
+        function () {
+          that.loading = false;
+        }
+      );
+      
       this.filter = this.$route.params.clazz;
     },
   },
