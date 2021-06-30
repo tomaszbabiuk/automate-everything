@@ -1,32 +1,32 @@
 package eu.geekhome.shellyplugin
 
-import com.google.gson.Gson
-import eu.geekhome.domain.events.*
+import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.events.LiveEventsHelper
+import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.mqtt.MqttListener
 import eu.geekhome.domain.repository.SettingsDto
-import eu.geekhome.shellyplugin.operators.*
+import eu.geekhome.langateway.JavaLanGatewayResolver
+import eu.geekhome.langateway.LanGateway
+import eu.geekhome.shellyplugin.operators.ShellyReadPortOperator
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.*
-import java.io.IOException
+import java.net.Inet4Address
 import java.net.InetAddress
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
 
     override val newPorts = ArrayList<ConnectiblePort<*>>()
     private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
-    private var finder: ShellyFinder
     private val client = createHttpClient()
-    private val brokerIP: InetAddress? = LanInetAddressResolver.resolve()
-    private val gson: Gson
+    private val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
     private val ports = ArrayList<ShellyPort<*>>()
+    private var brokerIP: Inet4Address? = null
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -46,55 +46,38 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
         }
     }
 
-    @Throws(IOException::class)
-    private suspend fun hijackShellyIfNeeded(settings: ShellySettingsResponse, shellyIP: InetAddress) {
-        if (settings.cloud.enabled) {
-            disableCloud(shellyIP)
-        }
-        val expectedMqttServerSetting = brokerIP!!.hostAddress + ":1883"
-        if (!settings.mqtt.enable || settings.mqtt.server != expectedMqttServerSetting) {
-            enableMQTT(shellyIP)
-        }
-    }
-
-
-    @Throws(IOException::class)
-    private suspend fun enableMQTT(shellyIP: InetAddress) {
-        client.get<String>("""http://$shellyIP/settings/mqtt?mqtt_enable=1&mqtt_server=${brokerIP!!.hostAddress}%3A1883""")
-    }
-
-    @Throws(IOException::class)
-    private suspend fun callForStatus(shellyIP: InetAddress): ShellyStatusResponse {
-        return client.get("http://$shellyIP/status")
-    }
-
-    @Throws(IOException::class)
-    private suspend fun callForSettings(shellyIP: InetAddress): ShellySettingsResponse {
-        return client.get("http://$shellyIP/settings")
-    }
-
-    @Throws(IOException::class)
-    private suspend fun disableCloud(shellyIP: InetAddress) {
-        client.get<String>("http://$shellyIP/settings/cloud?enabled=0")
-    }
-
     @ExperimentalCoroutinesApi
-    override suspend fun internalDiscovery(
-        eventsSink: EventsSink
-    ): MutableList<Port<*>> = coroutineScope {
+    override suspend fun internalDiscovery(eventsSink: EventsSink): MutableList<Port<*>> = coroutineScope {
         ports.clear()
 
-        val discoveryJob = async { finder.searchForShellies(eventsSink) }
-        val shellies = discoveryJob.await()
-        shellies.forEach {
-            val shellyIP = it.first
-            val settingsResponse = it.second
-            val shellyId = settingsResponse.device.hostname
-            hijackShellyIfNeeded(settingsResponse, shellyIP)
-            val statusResponse = callForStatus(shellyIP)
+        if (lanGateways.isEmpty()) {
+            LiveEventsHelper.broadcastEvent(
+                eventsSink,
+                ShellyPlugin.PLUGIN_ID_SHELLY,
+                "The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting"
+            )
+        } else {
+            val defaultLanGateway = lanGateways.first()
+            if (lanGateways.size > 1) {
+                LiveEventsHelper.broadcastEvent(
+                    eventsSink,
+                    ShellyPlugin.PLUGIN_ID_SHELLY,
+                    "WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}"
+                )
+            }
+            brokerIP = defaultLanGateway.inet4Address
+            val discoveryJob = async { ShellyHelper.searchForShellies(client, brokerIP!!, eventsSink) }
+            val shellies = discoveryJob.await()
+            shellies.forEach {
+                val shellyIP = it.first
+                val settingsResponse = it.second
+                val shellyId = settingsResponse.device.hostname
+                ShellyHelper.hijackShellyIfNeeded(client, brokerIP!!, settingsResponse, shellyIP)
+                val statusResponse = ShellyHelper.callForStatus(client, shellyIP)
 
-            val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse)
-            ports.addAll(portsFromDevice)
+                val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse)
+                ports.addAll(portsFromDevice)
+            }
         }
 
         ports.toMutableList()
@@ -139,7 +122,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
         mqttBroker.removeMqttListener(this)
     }
 
-    override fun onPublish(clientID: String, topicName: String, payload: String) {
+    override fun onPublish(clientID: String, topicName: String, msgAsString: String) {
         val now = Calendar.getInstance().timeInMillis
 
         ports
@@ -149,7 +132,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
         ports
             .filter { (it.readPortOperator as ShellyReadPortOperator<*>?)?.readTopic == topicName }
             .forEach {
-                (it.readPortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(payload)
+                (it.readPortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(msgAsString)
 
                 val updateEvent = PortUpdateEventData(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
                 updateSink?.broadcastEvent(updateEvent)
@@ -166,35 +149,29 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
             }
     }
 
-    override fun onConnected(address: InetAddress) {
-        GlobalScope.launch {
-            val finderResponse = finder.checkIfShelly(address, null)
-            if (finderResponse != null) {
-                val statusResponse = callForStatus(address)
-                val settingsResponse = callForSettings(address)
-                val shellyId = finderResponse.second.device.hostname
-                val portsFromDevice = ShellyPortFactory().constructPorts(
-                    shellyId,
-                    idBuilder,
-                    statusResponse,
-                    settingsResponse
-                )
-                portsFromDevice.forEach { newPort ->
-                    val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
-                    if (!isAlreadyDiscovered) {
-                        val foundAsNewAlready = newPorts.find { it.id == newPort.id} != null
-                        if (!foundAsNewAlready) {
-                            newPorts.add(newPort)
-                            ports.add(newPort)
-                        }
+    override suspend fun onConnected(address: InetAddress) = withContext(Dispatchers.IO) {
+        val finderResponse = ShellyHelper.checkIfShelly(client, address, null)
+        if (finderResponse != null) {
+            val statusResponse = ShellyHelper.callForStatus(client, address)
+            val settingsResponse = ShellyHelper.callForSettings(client, address)
+            val shellyId = finderResponse.second.device.hostname
+            val portsFromDevice = ShellyPortFactory().constructPorts(
+                shellyId,
+                idBuilder,
+                statusResponse,
+                settingsResponse
+            )
+
+            portsFromDevice.forEach { newPort ->
+                val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
+                if (!isAlreadyDiscovered) {
+                    val foundAsNewAlready = newPorts.find { it.id == newPort.id} != null
+                    if (!foundAsNewAlready) {
+                        newPorts.add(newPort)
+                        ports.add(newPort)
                     }
                 }
             }
         }
-    }
-
-    init {
-        finder = ShellyFinder(client, brokerIP)
-        gson = Gson()
     }
 }

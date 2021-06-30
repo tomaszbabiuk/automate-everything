@@ -31,3 +31,10 @@ class AutomationUpdateEventData(
 ) : LiveEventData()
 
 class PluginEventData(val plugin: PluginWrapper) : LiveEventData()
+
+object LiveEventsHelper {
+    fun broadcastEvent(eventsSink: EventsSink, pluginId: String, message: String) {
+        val event = DiscoveryEventData(pluginId, message)
+        eventsSink.broadcastEvent(event)
+    }
+}

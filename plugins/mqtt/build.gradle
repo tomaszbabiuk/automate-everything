@@ -13,7 +13,8 @@ dependencies {
     annotationProcessor "org.pf4j:pf4j:$pf4jVersion"
 
     //kotlin
-    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
     //project specific
     implementation 'io.moquette:moquette-broker:0.12.1'

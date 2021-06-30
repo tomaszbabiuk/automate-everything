@@ -8,7 +8,8 @@ import eu.geekhome.domain.hardware.OperationMode
 import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.PortIdBuilder
 import eu.geekhome.domain.repository.SettingsDto
-import eu.geekhome.landiscoverysettings.LanDiscoverySettings
+import eu.geekhome.langateway.JavaLanGatewayResolver
+import eu.geekhome.langateway.LanGateway
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.auth.*
@@ -16,13 +17,10 @@ import io.ktor.client.features.auth.providers.*
 import io.ktor.client.features.json.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import java.net.InetAddress
 import java.util.*
 
 class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
 
-    private var from: InetAddress? = null
-    private var to: InetAddress? = null
     private var operationSink: EventsSink? = null
     override val newPorts = ArrayList<Port<*>>()
     private val httpClient = createHttpClient()
@@ -48,7 +46,7 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
                 maxConnectionsPerRoute = 100
                 pipelineMaxSize = 20
                 keepAliveTime = 5000
-                connectTimeout = 5000
+                connectTimeout = 10000
                 connectAttempts = 5
             }
         }
@@ -63,10 +61,25 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
     override suspend fun internalDiscovery(eventsSink: EventsSink) : MutableList<Port<*>> = coroutineScope {
         broadcastEvent(eventsSink, "Starting AFORE discovery")
 
-        val result = ArrayList<Port<*>>()
-        if (from != null && to != null) {
-            val finder = AforeFinder(owningPluginId, httpClient, from!!, to!!)
+        val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
+        val lanGateway: LanGateway? = when (lanGateways.size) {
+            0 -> {
+                broadcastEvent(eventsSink, "Cannot resolve LAN gateway... aborting!")
+                null
+            }
+            1 -> {
+                lanGateways.first()
+            }
+            else -> {
+                broadcastEvent(eventsSink, "There's more than one LAN gateways. Using the first one: ${lanGateways.first().interfaceName}!")
+                lanGateways.first()
+            }
+        }
 
+        val result = ArrayList<Port<*>>()
+        if (lanGateway != null) {
+            val machineIPAddress = lanGateway.inet4Address
+            val finder = AforeFinder(owningPluginId, httpClient, machineIPAddress)
             val discoveryJob = async { finder.searchForAforeDevices(eventsSink) }
             val aforeDevices = discoveryJob.await()
 
@@ -78,8 +91,6 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
                 ports.add(inverterPort)
                 result.add(inverterPort)
             }
-        } else {
-            broadcastEvent(eventsSink, "AFORE plugin settings are incorrect - abandon!")
         }
 
         broadcastEvent(eventsSink, "AFORE discovery has finished")
@@ -118,14 +129,6 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
 
     override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
         this.operationSink = operationSink
-
-        try {
-            val lanDiscoverySettings = settings.first { it.clazz == LanDiscoverySettings::class.java.name }
-            from = InetAddress.getByName(lanDiscoverySettings.fields[LanDiscoverySettings.FIELD_IP_FROM])
-            to = InetAddress.getByName(lanDiscoverySettings.fields[LanDiscoverySettings.FIELD_IP_TO])
-        } catch (ex: Exception) {
-            broadcastEvent(operationSink, "Afore plugin settings seems to be invalid!")
-        }
     }
 
     companion object {

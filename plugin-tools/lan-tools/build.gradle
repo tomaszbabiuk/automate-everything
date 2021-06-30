@@ -4,6 +4,4 @@ plugins {
 }
 
 dependencies {
-    //common
-    api project(':module-domain')
 }

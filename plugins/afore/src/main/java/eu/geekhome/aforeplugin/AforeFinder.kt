@@ -2,6 +2,7 @@ package eu.geekhome.aforeplugin
 
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.DiscoveryEventData
+import eu.geekhome.domain.events.LiveEventsHelper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -10,8 +11,7 @@ import java.net.InetAddress
 class AforeFinder(
     private val owningPluginId: String,
     private val client: HttpClient,
-    private val from: InetAddress,
-    private val to: InetAddress) {
+    private val machineIpAddress: InetAddress) {
 
     private suspend fun checkIfAfore(ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, String>? = coroutineScope {
         var serialNumber: String? = null
@@ -46,23 +46,42 @@ class AforeFinder(
     suspend fun searchForAforeDevices(eventsSink: EventsSink): List<Pair<InetAddress, String>> = coroutineScope {
         val jobs = ArrayList<Deferred<Pair<InetAddress, String>?>>()
 
-        for (a0 in from.address[0]..to.address[0]) {
-            for (a1 in from.address[1]..to.address[1]) {
-                for (a2 in from.address[2]..to.address[2]) {
-                    for (a3 in from.address[3]..to.address[3]) {
-                        val ipToCheck = InetAddress.getByAddress(
-                            byteArrayOf(a0.toByte(), a1.toByte(), a2.toByte(), a3.toByte())
-                        )
+        val lookupAddressBegin =  InetAddress.getByAddress(
+            byteArrayOf(
+                machineIpAddress.address[0],
+                machineIpAddress.address[1],
+                machineIpAddress.address[2],
+                0)
+        )
 
-                        broadcastEvent(eventsSink, "Checking address: $ipToCheck")
-                        val job = async(start = CoroutineStart.LAZY) {
-                            checkIfAfore(ipToCheck, eventsSink)
-                        }
+        val lookupAddressEnd =  InetAddress.getByAddress(
+            byteArrayOf(
+                machineIpAddress.address[0],
+                machineIpAddress.address[1],
+                machineIpAddress.address[2],
+                255.toByte())
+        )
 
-                        jobs.add(job)
-                    }
-                }
+        LiveEventsHelper.broadcastEvent(
+            eventsSink,
+            AforePlugin.PLUGIN_ID_AFORE,
+            "Looking for afore devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd "
+        )
+
+        for (i in 0..255) {
+            val ipToCheck = InetAddress.getByAddress(
+                byteArrayOf(
+                    machineIpAddress.address[0],
+                    machineIpAddress.address[1],
+                    machineIpAddress.address[2],
+                    i.toByte())
+            )
+
+            val job = async(start = CoroutineStart.LAZY) {
+                checkIfAfore(ipToCheck, eventsSink)
             }
+
+            jobs.add(job)
         }
 
         val result = jobs.awaitAll()

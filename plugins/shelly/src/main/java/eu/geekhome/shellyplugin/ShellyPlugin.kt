@@ -1,12 +1,10 @@
 package eu.geekhome.shellyplugin
 
-import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.extensibility.PluginMetadata
 import eu.geekhome.domain.hardware.HardwareAdapterFactory
 import eu.geekhome.domain.hardware.HardwarePlugin
 import eu.geekhome.domain.localization.Resource
 import eu.geekhome.domain.mqtt.MqttBrokerPlugin
-import eu.geekhome.landiscoverysettings.LanDiscoverySettings
 import org.pf4j.PluginState
 import org.pf4j.PluginStateEvent
 import org.pf4j.PluginStateListener
@@ -40,9 +38,6 @@ class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMeta
 
     override val name: Resource =  R.plugin_name
     override val description: Resource = R.plugin_description
-
-    override val settingGroups: List<SettingGroup>
-        get() = listOf(LanDiscoverySettings())
 
     override fun pluginStateChanged(event: PluginStateEvent) {
         if (event.pluginState == PluginState.STOPPED) {

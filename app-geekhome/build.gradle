@@ -12,7 +12,7 @@ dependencies {
     //common
     implementation project(":module-domain")
     implementation project(":module-repository-sqldelight")
-    implementation project(":plugin-tools:lan-discovery-settings")
+    implementation project(":plugin-tools:lan-tools")
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"
