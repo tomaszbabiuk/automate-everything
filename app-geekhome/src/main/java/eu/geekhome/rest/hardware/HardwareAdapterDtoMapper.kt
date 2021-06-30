@@ -14,6 +14,6 @@ class HardwareAdapterDtoMapper {
             bundle.adapter.state,
             bundle.adapter.lastDiscoveryTime,
             lastError,
-            bundle.ports.size)
+            bundle.adapter.ports.size)
     }
 }

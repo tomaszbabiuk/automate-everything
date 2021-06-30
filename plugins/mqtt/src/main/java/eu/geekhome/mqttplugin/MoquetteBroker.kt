@@ -91,6 +91,9 @@ class MoquetteBroker : MqttBrokerService {
 
     @Throws(IOException::class)
     fun start() {
+        if (pluginScope != null) {
+            pluginScope?.cancel("MQTT Broker already started")
+        }
         pluginScope = CoroutineScope(Dispatchers.IO)
         val userHandlers: List<InterceptHandler?> = listOf(PublisherListener(pluginScope!!, listeners, broker))
         val memoryConfig = MemoryConfig(Properties())
@@ -100,6 +103,7 @@ class MoquetteBroker : MqttBrokerService {
 
     fun stop() {
         pluginScope?.cancel("MQTT Broker has been stopped")
+        pluginScope = null
         broker.stopServer()
     }
 

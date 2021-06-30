@@ -4,8 +4,6 @@ import eu.geekhome.domain.events.DiscoveryEventData
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
-import eu.geekhome.domain.hardware.OperationMode
-import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.PortIdBuilder
 import eu.geekhome.domain.repository.SettingsDto
 import eu.geekhome.langateway.JavaLanGatewayResolver
@@ -15,17 +13,16 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.auth.*
 import io.ktor.client.features.auth.providers.*
 import io.ktor.client.features.json.*
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import java.util.*
 
 class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
 
+    var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
-    override val newPorts = ArrayList<Port<*>>()
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId, ADAPTER_ID)
-    private var ports = ArrayList<AforeWattagePort>()
+    override var ports = ArrayList<AforeWattagePort>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -53,12 +50,14 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
     }
 
     override fun clearNewPorts() {
-        newPorts.clear()
+        //AFORE is not detecting new ports automatically
     }
 
-    private var lastRefresh: Long = 0
+    override fun hasNewPorts(): Boolean {
+        return false
+    }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink) : MutableList<Port<*>> = coroutineScope {
+    override suspend fun internalDiscovery(eventsSink: EventsSink) = coroutineScope {
         broadcastEvent(eventsSink, "Starting AFORE discovery")
 
         val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
@@ -76,7 +75,6 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
             }
         }
 
-        val result = ArrayList<Port<*>>()
         if (lanGateway != null) {
             val machineIPAddress = lanGateway.inet4Address
             val finder = AforeFinder(owningPluginId, httpClient, machineIPAddress)
@@ -89,12 +87,10 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
                 val portOperator = AforeWattageReadPortOperator(httpClient, it.first)
                 val inverterPort = AforeWattagePort(portId, portOperator)
                 ports.add(inverterPort)
-                result.add(inverterPort)
             }
         }
 
         broadcastEvent(eventsSink, "AFORE discovery has finished")
-        result
     }
 
     private fun broadcastEvent(eventsSink: EventsSink, message: String) {
@@ -102,33 +98,42 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
         eventsSink.broadcastEvent(event)
     }
 
-    @Throws(Exception::class)
-    override suspend fun refresh(now: Calendar) {
-        if (now.timeInMillis - lastRefresh > 1000 * 30) {
-            ports.forEach {
-                val changed = it.refresh(now)
-                if (changed) {
-                    val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)
-                    operationSink?.broadcastEvent(event)
-                }
+    private suspend fun maintenanceLoop(now: Calendar) {
+        ports.forEach {
+            val changed = it.refresh(now)
+            if (changed) {
+                val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)
+                operationSink?.broadcastEvent(event)
             }
-
-            lastRefresh = now.timeInMillis
         }
     }
 
     override fun executePendingChanges() {
-    }
-
-    @Throws(Exception::class)
-    override fun reconfigure(operationMode: OperationMode) {
+        //This adapter is read-only
     }
 
     override fun stop() {
+        operationScope?.cancel("Stop called")
     }
 
     override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
         this.operationSink = operationSink
+        this.operationScope = CoroutineScope(Dispatchers.IO)
+
+        if (operationScope != null) {
+            operationScope!!.cancel("Adapter already started")
+            operationScope = null
+        }
+
+        operationScope = CoroutineScope(Dispatchers.IO)
+        operationScope?.launch {
+            while (isActive) {
+                maintenanceLoop(Calendar.getInstance())
+                delay(30000)
+
+                println(ports.size)
+            }
+        }
     }
 
     companion object {

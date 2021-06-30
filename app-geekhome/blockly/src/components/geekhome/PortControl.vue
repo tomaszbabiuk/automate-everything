@@ -42,7 +42,6 @@ export default {
     },
 
     controlPowerLevel: function() {
-      console.log("Power level" + this.powerLevel)
       this.$store.state.ports.forEach(element => {
         if (element.id === this.portId) {
           client.controlPort(this.portId, this.powerLevel)

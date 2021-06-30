@@ -25,10 +25,6 @@ class HardwareManager(
      * blocking automation loop processing. This function will not be called if previous execution is still ongoing.
      */
     suspend fun beforeAutomationLoop(now: Calendar) {
-        bundles()
-            .forEach { bundle ->
-                bundle.adapter.refresh(now)
-            }
     }
 
     /**
@@ -59,8 +55,8 @@ class HardwareManager(
             .forEach { bundle ->
                 bundle.adapter.start(liveEvents, extractPluginSettings(bundle.owningPluginId))
                 bundle.discoveryJob = async {
-                    bundle.ports = bundle.adapter.discover(liveEvents)
-                    bundle.ports.forEach {
+                    bundle.adapter.discover(liveEvents)
+                    bundle.adapter.ports.forEach {
                         val portSnapshot = PortDto(it.id, factory.owningPluginId, bundle.adapter.id,
                             null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                         repository.savePort(portSnapshot)
@@ -90,7 +86,7 @@ class HardwareManager(
 
         val adaptersInFactory = factory.createAdapters()
         val adapterBundles = adaptersInFactory
-            .map { adapter: HardwareAdapter -> AdapterBundle(factory.owningPluginId, adapter, ArrayList()) }
+            .map { adapter: HardwareAdapter -> AdapterBundle(factory.owningPluginId, adapter) }
             .toList()
         factories[factory] = adapterBundles
 
@@ -121,7 +117,7 @@ class HardwareManager(
 
     fun findPort(id: String): Pair<Port<*>, AdapterBundle>? {
         bundles().forEach { bundle ->
-            val port = bundle.ports.firstOrNull { it.id == id }
+            val port = bundle.adapter.ports.firstOrNull { it.id == id }
             if (port != null) {
                 return Pair(port, bundle)
             }
@@ -133,7 +129,6 @@ class HardwareManager(
     data class AdapterBundle(
         internal val owningPluginId: String,
         internal val adapter: HardwareAdapter,
-        internal var ports: MutableList<Port<*>>
     ) {
         var discoveryJob: Deferred<Unit>? = null
     }
@@ -146,7 +141,7 @@ class HardwareManager(
     ): Port<T> {
         val port = factories
             .flatMap { it.value }
-            .flatMap { it.ports }
+            .flatMap { it.adapter.ports }
             .find { it.id == id }
 
         if (port != null && port.valueType == valueType) {
@@ -160,15 +155,8 @@ class HardwareManager(
         var result = false
         bundles()
             .forEach { bundle ->
-                val hasNewPorts = bundle.adapter.newPorts.isNotEmpty()
+                val hasNewPorts = bundle.adapter.hasNewPorts()
                 if (hasNewPorts) {
-                    bundle.adapter.newPorts.forEach { newPort ->
-                        val portAlreadyExists = bundle.ports.find { it.id == newPort.id } != null
-                        if (!portAlreadyExists) {
-                            bundle.ports.add(newPort)
-                        }
-                    }
-
                     bundle.adapter.clearNewPorts()
                     result = true
                 }

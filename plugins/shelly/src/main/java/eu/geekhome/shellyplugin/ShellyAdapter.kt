@@ -20,13 +20,13 @@ import java.util.*
 
 class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
 
-    override val newPorts = ArrayList<ConnectiblePort<*>>()
+    private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
     private val client = createHttpClient()
+    private var hasNewPorts = false
     private val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
-    private val ports = ArrayList<ShellyPort<*>>()
-    private var brokerIP: Inet4Address? = null
+    override val ports = ArrayList<ShellyPort<*>>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -47,7 +47,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun internalDiscovery(eventsSink: EventsSink): MutableList<Port<*>> = coroutineScope {
+    override suspend fun internalDiscovery(eventsSink: EventsSink) = coroutineScope {
         ports.clear()
 
         if (lanGateways.isEmpty()) {
@@ -68,6 +68,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
             brokerIP = defaultLanGateway.inet4Address
             val discoveryJob = async { ShellyHelper.searchForShellies(client, brokerIP!!, eventsSink) }
             val shellies = discoveryJob.await()
+
             shellies.forEach {
                 val shellyIP = it.first
                 val settingsResponse = it.second
@@ -79,16 +80,14 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
                 ports.addAll(portsFromDevice)
             }
         }
-
-        ports.toMutableList()
     }
 
     override fun clearNewPorts() {
-        newPorts.clear()
+        hasNewPorts = false
     }
 
-    @Throws(Exception::class)
-    override suspend fun refresh(now: Calendar) {
+    override fun hasNewPorts(): Boolean {
+        return false
     }
 
     override fun executePendingChanges() {
@@ -107,10 +106,6 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
             mqttBroker.publish(topic, mqttPayload)
             shellyOutput.reset()
         }
-    }
-
-    @Throws(Exception::class)
-    override fun reconfigure(operationMode: OperationMode) {
     }
 
     override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
@@ -165,11 +160,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
             portsFromDevice.forEach { newPort ->
                 val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
                 if (!isAlreadyDiscovered) {
-                    val foundAsNewAlready = newPorts.find { it.id == newPort.id} != null
-                    if (!foundAsNewAlready) {
-                        newPorts.add(newPort)
-                        ports.add(newPort)
-                    }
+                    hasNewPorts = true
                 }
             }
         }

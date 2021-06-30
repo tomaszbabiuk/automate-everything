@@ -32,6 +32,7 @@ class PortsController @Inject constructor(
             .flatMap {
                 val factoryId = it.owningPluginId
                 it
+                    .adapter
                     .ports
                     .map { port -> Triple(port, factoryId, it.adapter.id) }
             }

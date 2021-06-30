@@ -2,22 +2,18 @@ package eu.geekhome.domain.hardware
 
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.repository.SettingsDto
-import java.util.*
 
 interface HardwareAdapter {
 
-    val newPorts: List<Port<*>>
+    val ports: List<Port<*>>
     fun clearNewPorts()
+    fun hasNewPorts(): Boolean
     val id: String
-    suspend fun discover(discoverySink: EventsSink) : MutableList<Port<*>>
+    suspend fun discover(discoverySink: EventsSink)
 
-    @Throws(Exception::class)
-    suspend fun refresh(now: Calendar)
     var state: AdapterState
     fun executePendingChanges()
 
-    @Throws(Exception::class)
-    fun reconfigure(operationMode: OperationMode)
     fun stop()
     fun start(operationSink: EventsSink, settings: List<SettingsDto>)
 

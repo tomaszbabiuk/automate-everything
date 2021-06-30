@@ -23,19 +23,18 @@ class AforeFinder(
             for (line in lines) {
                 if (line.startsWith("var webdata_sn = ")) {
                     serialNumber = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
-                    println(serialNumber)
                 } else if (line.startsWith("var webdata_now_p = ")) {
                     hasPowerReadings = true
                 }
-            }
-
-            if (eventsSink != null) {
-                broadcastEvent(eventsSink, "Afore found! Ip address: $ipToCheck")
             }
         } catch (ignored: Exception) {
         }
 
         if (serialNumber != null && hasPowerReadings) {
+            if (eventsSink != null) {
+                broadcastEvent(eventsSink, "Afore found! Ip address: $ipToCheck")
+            }
+
             Pair(ipToCheck, serialNumber)
         } else {
             null

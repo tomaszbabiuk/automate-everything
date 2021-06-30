@@ -25,7 +25,7 @@ class NumberedEventsSink : EventsSink {
             events.removeAt(0)
         }
 
-        println("broadcasting event: $payload")
+        println(payload)
 
         eventCounter++
         val now = Calendar.getInstance().timeInMillis

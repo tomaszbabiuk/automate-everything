@@ -3,6 +3,7 @@ package eu.geekhome.domain.events
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.EvaluationResult
 import eu.geekhome.domain.hardware.Port
+import eu.geekhome.domain.localization.Language
 import eu.geekhome.domain.repository.InstanceDto
 import org.pf4j.PluginWrapper
 
@@ -16,13 +17,29 @@ class LiveEvent<T: LiveEventData>(
 sealed class LiveEventData
 
 class DiscoveryEventData(val factoryId: String,
-                         val message: String) : LiveEventData()
+                         val message: String) : LiveEventData() {
+    override fun toString(): String {
+        return "Discovery event from $factoryId: ($message)"
+    }
+}
 
 class PortUpdateEventData(val factoryId: String,
                           val adapterId: String,
-                          val port: Port<*>) : LiveEventData()
+                          val port: Port<*>) : LiveEventData() {
+    override fun toString(): String {
+        return "Port ${port.id}/$adapterId update event (${port.read().toFormattedString().getValue(Language.EN)})"
+    }
+}
 
-class AutomationStateEventData(val enabled: Boolean) : LiveEventData()
+class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
+    override fun toString(): String {
+        return if (enabled) {
+            "Automation event (enabled)"
+        } else {
+            "Automation event (disabled)"
+        }
+    }
+}
 
 class AutomationUpdateEventData(
     val unit: DeviceAutomationUnit<*>,
@@ -30,7 +47,11 @@ class AutomationUpdateEventData(
     val evaluation: EvaluationResult<*>,
 ) : LiveEventData()
 
-class PluginEventData(val plugin: PluginWrapper) : LiveEventData()
+class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
+    override fun toString(): String {
+        return "Plugin ${plugin.pluginId} event: (${plugin.pluginState})"
+    }
+}
 
 object LiveEventsHelper {
     fun broadcastEvent(eventsSink: EventsSink, pluginId: String, message: String) {
