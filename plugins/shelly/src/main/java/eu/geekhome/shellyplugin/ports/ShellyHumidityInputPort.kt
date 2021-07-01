@@ -1,9 +1,12 @@
-package eu.geekhome.shellyplugin.operators
+package eu.geekhome.shellyplugin.ports
 
 import eu.geekhome.domain.hardware.Humidity
 import eu.geekhome.shellyplugin.HumidityBriefDto
 
-class ShellyHumidityReadPortOperator(shellyId: String) : ShellyReadPortOperator<Humidity> {
+class ShellyHumidityInputPort(
+        id: String,
+        shellyId: String,
+        sleepInterval: Long) : ShellyInputPort<Humidity>(id, Humidity::class.java, sleepInterval) {
 
     private val value = Humidity(0.0)
     override val readTopic = "shellies/$shellyId/sensor/humidity"

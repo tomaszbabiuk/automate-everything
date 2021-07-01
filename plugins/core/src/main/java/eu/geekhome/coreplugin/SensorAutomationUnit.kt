@@ -2,12 +2,14 @@ package eu.geekhome.coreplugin
 
 import eu.geekhome.domain.automation.EvaluationResult
 import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.hardware.InputPort
 import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
-    private val port: Port<T>) :
+    private val port: InputPort<T>
+) :
     DeviceAutomationUnit<T>() {
 
     override val usedPortsIds: Array<String>

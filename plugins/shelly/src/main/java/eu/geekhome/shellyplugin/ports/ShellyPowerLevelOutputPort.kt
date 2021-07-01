@@ -1,15 +1,16 @@
-package eu.geekhome.shellyplugin.operators
+package eu.geekhome.shellyplugin.ports
 
 import com.google.gson.Gson
 import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.shellyplugin.LightBriefDto
 import eu.geekhome.shellyplugin.LightSetDto
-import eu.geekhome.shellyplugin.ShellyWritePortOperator
 
-class PowerLevelReadWritePortOperator(
+class ShellyPowerLevelOutputPort(
+    id: String,
     shellyId: String,
     channel: Int,
-) : ShellyReadPortOperator<PowerLevel>, ShellyWritePortOperator<PowerLevel> {
+    sleepInterval: Long
+) : ShellyOutputPort<PowerLevel>(id, PowerLevel::class.java, sleepInterval) {
 
     private val gson = Gson()
     private val readValue = PowerLevel(0)
@@ -20,10 +21,6 @@ class PowerLevelReadWritePortOperator(
     override fun read(): PowerLevel {
         return readValue
     }
-
-//    override fun <PowerLevel> write(value: PowerLevel) {
-//        requestedValue = value
-//    }
 
     override fun write(value: PowerLevel) {
         requestedValue = value

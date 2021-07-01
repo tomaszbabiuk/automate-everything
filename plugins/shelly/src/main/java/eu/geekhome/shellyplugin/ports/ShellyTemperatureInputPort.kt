@@ -1,9 +1,13 @@
-package eu.geekhome.shellyplugin.operators
+package eu.geekhome.shellyplugin.ports
 
 import eu.geekhome.domain.hardware.Temperature
 import eu.geekhome.shellyplugin.TemperatureBriefDto
 
-class ShellyTemperatureReadPortOperator(shellyId: String) : ShellyReadPortOperator<Temperature> {
+class ShellyTemperatureInputPort(
+    id: String,
+    shellyId: String,
+    sleepInterval: Long)
+    : ShellyInputPort<Temperature>(id, Temperature::class.java, sleepInterval) {
 
     private val value = Temperature(0.0)
     override val readTopic = "shellies/$shellyId/temperature"

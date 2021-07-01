@@ -22,7 +22,7 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
     private var operationSink: EventsSink? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId, ADAPTER_ID)
-    override var ports = ArrayList<AforeWattagePort>()
+    override var ports = ArrayList<AforeWattageInputPort>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -84,8 +84,7 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
             aforeDevices.forEach {
                 broadcastEvent(eventsSink, "AFORE inverter found, IP:${it.first}, s/n:${it.second}")
                 val portId = idBuilder.buildPortId(it.second, 0, "W")
-                val portOperator = AforeWattageReadPortOperator(httpClient, it.first)
-                val inverterPort = AforeWattagePort(portId, portOperator)
+                val inverterPort = AforeWattageInputPort(portId, httpClient, it.first)
                 ports.add(inverterPort)
             }
         }

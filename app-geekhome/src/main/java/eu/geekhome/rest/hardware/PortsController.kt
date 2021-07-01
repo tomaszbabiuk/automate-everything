@@ -11,13 +11,11 @@ import javax.ws.rs.core.MediaType
 
 @Path("ports")
 class PortsController @Inject constructor(
-    val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
     hardwareManagerHolderService: HardwareManagerHolderService,
     repositoryHolderService: RepositoryHolderService,
     private val portDtoMapper: PortDtoMapper
 ) {
     private val hardwareManager = hardwareManagerHolderService.instance
-    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
     private val repository = repositoryHolderService.instance
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -58,10 +56,10 @@ class PortsController @Inject constructor(
 
             if (port.valueType.name == Relay::class.java.name) {
                 val newValue = Relay.fromInteger(value)
-                (port as Port<Relay>).write(newValue)
+                (port as OutputPort<Relay>).write(newValue)
             } else if (port.valueType.name == PowerLevel::class.java.name) {
                 val newValue = PowerLevel.fromInteger(value)
-                (port as Port<PowerLevel>).write(newValue)
+                (port as OutputPort<PowerLevel>).write(newValue)
             } else {
                 //TODO
             }

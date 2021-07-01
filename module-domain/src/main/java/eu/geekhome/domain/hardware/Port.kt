@@ -1,6 +1,5 @@
 package eu.geekhome.domain.hardware
 
-import java.io.IOException
 import java.util.*
 
 interface IConnectible {
@@ -19,68 +18,31 @@ interface IConnectible {
     }
 }
 
-abstract class Port<V: PortValue>(
-    val id: String,
-    val canRead: Boolean,
-    val canWrite: Boolean,
-    val valueType: Class<V>,
-    val readPortOperator: ReadPortOperator<V>? = null,
-    val writePortOperator: WritePortOperator<V>? = null
-) {
-    var isShadowed: Boolean = false; protected set
+interface Port<V: PortValue> : IConnectible {
+    val id: String
 
-    fun read() : V {
-        if (canRead) {
-            if (readPortOperator == null) {
-                throw IOException("There's no read operator for this port")
-            }
+    val valueType: Class<V>
 
-            return readPortOperator.read()
-        }
+    val canRead: Boolean
+        get() = this is InputPort<V>
 
-        throw IOException("This port cannot read")
+    val canWrite: Boolean
+        get() = this is OutputPort<V>
+
+    fun tryRead() : V? {
+        return (this as InputPort<V>).read()
     }
 
-    fun write(value : V) {
-        if (canWrite) {
-            if (writePortOperator == null) {
-                throw IOException("There's no write operator for this port")
-            }
-
-            writePortOperator.write(value)
-        } else {
-            throw IOException("This port cannot write")
-        }
+    fun tryWrite(value: V) {
+        return (this as OutputPort<V>).write(value)
     }
 }
 
-interface ReadPortOperator<V> {
+interface InputPort<V : PortValue> : Port<V> {
     fun read() : V
 }
 
-interface WritePortOperator<V> {
+interface OutputPort<V : PortValue> : InputPort<V> {
     fun write(value : V)
     fun reset()
-}
-
-open class ConnectiblePort<V : PortValue>(
-    id : String,
-    canRead: Boolean,
-    canWrite: Boolean,
-    valueType: Class<V>,
-    readPortOperator: ReadPortOperator<V>?,
-    writePortOperator: WritePortOperator<V>?)
-    : Port<V>(id, canRead, canWrite, valueType, readPortOperator, writePortOperator), IConnectible {
-
-    override var connectionValidUntil: Long = 0L
-
-    constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>, writePortOperator: WritePortOperator<V>)
-            : this(id, true, true, valueType, readPortOperator, writePortOperator)
-
-    constructor(id: String, valueType: Class<V>, readPortOperator: ReadPortOperator<V>)
-            : this(id, true, false, valueType, readPortOperator, null)
-
-    protected fun cancelValidity() {
-        connectionValidUntil = 0L
-    }
 }

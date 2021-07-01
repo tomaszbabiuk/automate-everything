@@ -1,5 +1,7 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.domain.hardware.InputPort
+import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.Relay
 
@@ -44,11 +46,12 @@ abstract class StateDeviceAutomationUnit(
         @Throws(Exception::class)
         @JvmStatic
         protected fun <T> changeOutputPortStateIfNeeded(
-            port: Port<Relay>?,
+            port: OutputPort<Relay>,
             state: Relay?,
             invalidate: Boolean = false
         ) {
-            if (port != null && state != null && (invalidate || state != port.read())) {
+            if (state != null &&
+                (invalidate || state != port.read())) {
                 port.write(state)
             }
         }

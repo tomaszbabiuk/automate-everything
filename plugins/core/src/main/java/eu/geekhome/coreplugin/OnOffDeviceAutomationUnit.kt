@@ -3,7 +3,7 @@ package eu.geekhome.coreplugin
 import eu.geekhome.domain.automation.ControlMode
 import eu.geekhome.domain.automation.State
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
-import eu.geekhome.domain.hardware.Port
+import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.Relay
 import java.lang.Exception
 import kotlin.Throws
@@ -12,7 +12,7 @@ import java.util.Calendar
 class OnOffDeviceAutomationUnit(
     states: Map<String, State>,
     initialState: String,
-    private val controlPort: Port<Relay>,
+    private val controlPort: OutputPort<Relay>,
 ) : StateDeviceAutomationUnit(states, initialState) {
 
     init {

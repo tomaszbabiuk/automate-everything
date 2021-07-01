@@ -45,7 +45,7 @@ object ShellyHelper {
         LiveEventsHelper.broadcastEvent(
             eventsSink,
             ShellyPlugin.PLUGIN_ID_SHELLY,
-            "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd "
+            "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
 
         val jobs = ArrayList<Deferred<Pair<InetAddress, ShellySettingsResponse>?>>()

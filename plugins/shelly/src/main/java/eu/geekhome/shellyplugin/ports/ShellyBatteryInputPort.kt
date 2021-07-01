@@ -1,9 +1,10 @@
-package eu.geekhome.shellyplugin.operators
+package eu.geekhome.shellyplugin.ports
 
 import eu.geekhome.domain.hardware.BatteryCharge
 import eu.geekhome.shellyplugin.BatteryBriefDto
 
-class ShellyBatteryReadPortOperator(shellyId: String) : ShellyReadPortOperator<BatteryCharge> {
+class ShellyBatteryInputPort(id: String, shellyId: String, sleepInterval: Long) :
+    ShellyInputPort<BatteryCharge>(id, BatteryCharge::class.java, sleepInterval) {
 
     private val value = BatteryCharge(0.0)
     override val readTopic = "shellies/$shellyId/sensor/battery"

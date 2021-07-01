@@ -2,6 +2,7 @@ package eu.geekhome.domain.events
 
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.EvaluationResult
+import eu.geekhome.domain.hardware.InputPort
 import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.localization.Language
 import eu.geekhome.domain.repository.InstanceDto
@@ -27,7 +28,11 @@ class PortUpdateEventData(val factoryId: String,
                           val adapterId: String,
                           val port: Port<*>) : LiveEventData() {
     override fun toString(): String {
-        return "Port ${port.id}/$adapterId update event (${port.read().toFormattedString().getValue(Language.EN)})"
+        return if (port is InputPort<*>) {
+            "Update event of port ${port.id}/$adapterId (${port.read().toFormattedString().getValue(Language.EN)})"
+        } else {
+            "Update event of port ${port.id}/$adapterId"
+        }
     }
 }
 

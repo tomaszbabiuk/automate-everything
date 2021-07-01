@@ -1,13 +1,14 @@
-package eu.geekhome.shellyplugin.operators
+package eu.geekhome.shellyplugin.ports
 
 import eu.geekhome.domain.hardware.Relay
 import eu.geekhome.shellyplugin.RelayResponseDto
-import eu.geekhome.shellyplugin.ShellyWritePortOperator
 
-class ShellyRelayReadWritePortOperator(
+class ShellyRelayOutputPort(
+    id: String,
     shellyId: String,
     channel: Int,
-) : ShellyReadPortOperator<Relay>, ShellyWritePortOperator<Relay> {
+    sleepInterval: Long
+) : ShellyOutputPort<Relay>(id, Relay::class.java, sleepInterval) {
 
     private val readValue = Relay(false)
     private var requestedValue : Relay? = null

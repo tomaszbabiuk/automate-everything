@@ -16,10 +16,7 @@ import io.moquette.broker.Server
 import io.netty.handler.codec.mqtt.MqttMessageBuilders
 import io.netty.handler.codec.mqtt.MqttQoS
 import io.netty.buffer.Unpooled
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.pf4j.Extension
 import java.net.UnknownHostException
 import java.util.*
@@ -40,13 +37,13 @@ class MoquetteBroker : MqttBrokerService {
     }
 
     internal class PublisherListener(
-        private val pluginScope: CoroutineScope,
+        private val brokerActiveScope: CoroutineScope,
         private val listeners: List<MqttListener>,
         private val server: Server
     ) :
         AbstractInterceptHandler() {
         override fun getID(): String {
-            return "EmbeddedLauncherPublishListener"
+            return "InternalPublishListener"
         }
 
         override fun onPublish(msg: InterceptPublishMessage) {
@@ -73,8 +70,8 @@ class MoquetteBroker : MqttBrokerService {
         @Suppress("BlockingMethodInNonBlockingContext")
         override fun onConnect(msg: InterceptConnectMessage) {
             super.onConnect(msg)
-            pluginScope.launch {
-                for (client in server.listConnectedClients()) {
+            brokerActiveScope.launch {
+                if (isActive) for (client in server.listConnectedClients()) {
                     if (msg.clientID == client.clientID) {
                         for (listener in listeners) {
                             try {

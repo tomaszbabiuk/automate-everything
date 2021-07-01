@@ -133,11 +133,9 @@ class HardwareManager(
         var discoveryJob: Deferred<Unit>? = null
     }
 
-    override fun <T : PortValue> searchForPort(
+    override fun <T : PortValue> searchForAnyPort(
         valueType: Class<T>,
-        id: String,
-        canRead: Boolean,
-        canWrite: Boolean
+        id: String
     ): Port<T> {
         val port = factories
             .flatMap { it.value }
@@ -146,6 +144,24 @@ class HardwareManager(
 
         if (port != null && port.valueType == valueType) {
             return port as Port<T>
+        }
+
+        throw PortNotFoundException(id)
+    }
+
+    override fun <T : PortValue> searchForInputPort(valueType: Class<T>, id: String): InputPort<T> {
+        val anyPort = searchForAnyPort(valueType, id)
+        if (anyPort is InputPort<T>) {
+            return anyPort
+        }
+
+        throw PortNotFoundException(id)
+    }
+
+    override fun <T : PortValue> searchForOutputPort(valueType: Class<T>, id: String): OutputPort<T> {
+        val anyPort = searchForAnyPort(valueType, id)
+        if (anyPort is OutputPort<T>) {
+            return anyPort
         }
 
         throw PortNotFoundException(id)

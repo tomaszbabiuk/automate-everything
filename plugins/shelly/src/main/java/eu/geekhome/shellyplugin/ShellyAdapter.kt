@@ -9,7 +9,9 @@ import eu.geekhome.domain.mqtt.MqttListener
 import eu.geekhome.domain.repository.SettingsDto
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.langateway.LanGateway
-import eu.geekhome.shellyplugin.operators.ShellyReadPortOperator
+import eu.geekhome.shellyplugin.ports.ShellyInputPort
+import eu.geekhome.shellyplugin.ports.ShellyOutputPort
+import eu.geekhome.shellyplugin.ports.ShellyPort
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -26,7 +28,7 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
     private val client = createHttpClient()
     private var hasNewPorts = false
     private val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
-    override val ports = ArrayList<ShellyPort<*>>()
+    override val ports = ArrayList<Port<*>>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -92,14 +94,13 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
 
     override fun executePendingChanges() {
         ports
-            .mapNotNull { it.writePortOperator }
-            .filterIsInstance<ShellyWritePortOperator<*>>()
+            .filterIsInstance<ShellyOutputPort<*>>()
             .forEach {
                 executeShellyChanges(it)
             }
     }
 
-    private fun executeShellyChanges(shellyOutput: ShellyWritePortOperator<*>) {
+    private fun executeShellyChanges(shellyOutput: ShellyOutputPort<*>) {
         val mqttPayload = shellyOutput.getExecutePayload()
         if (mqttPayload != null) {
             val topic = shellyOutput.writeTopic
@@ -122,12 +123,13 @@ class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerSe
 
         ports
             .filter { it.id.contains(clientID) }
+            .filterIsInstance<ShellyPort<*>>()
             .forEach { it.updateValidUntil(now + it.sleepInterval) }
 
         ports
-            .filter { (it.readPortOperator as ShellyReadPortOperator<*>?)?.readTopic == topicName }
+            .filter { (it as ShellyInputPort<*>?)?.readTopic == topicName }
             .forEach {
-                (it.readPortOperator as ShellyReadPortOperator<*>?)?.setValueFromMqttPayload(msgAsString)
+                (it as ShellyInputPort<*>?)?.setValueFromMqttPayload(msgAsString)
 
                 val updateEvent = PortUpdateEventData(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
                 updateSink?.broadcastEvent(updateEvent)
