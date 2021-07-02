@@ -5,8 +5,11 @@ import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PluginEventData
 import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.langateway.LanGatewayResolver
+import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
-import eu.geekhome.domain.mqtt.RequiresMqtt
+import eu.geekhome.domain.plugininjection.AllFeaturesInjectedListener
+import eu.geekhome.domain.plugininjection.RequiresMqtt
 import org.pf4j.*
 
 interface PluginsCoordinator {
@@ -17,8 +20,7 @@ interface PluginsCoordinator {
     fun addPluginStateListener(listener: PluginStateListener)
     fun getPluginWrapper(pluginId: String): PluginWrapper?
     fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
-    fun injectPlugins(mqttBrokerService: MqttBrokerService)
-
+    fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver)
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
 }
@@ -52,12 +54,21 @@ class SingletonExtensionsPluginsCoordinator(
         return metadata.settingGroups
     }
 
-    override fun injectPlugins(mqttBrokerService: MqttBrokerService) {
+    override fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver) {
         plugins
             .map { it.plugin }
-            .filterIsInstance<RequiresMqtt>()
             .forEach {
-                it.injectMqttBrokerService(mqttBrokerService)
+                if (it is RequiresLanGatewayResolver) {
+                    it.injectLanGatewayResolver(lanGatewayResolver)
+                }
+
+                if (it is RequiresMqtt) {
+                    it.injectMqttBrokerService(mqttBrokerService)
+                }
+
+                if (it is AllFeaturesInjectedListener) {
+                    it.allFeaturesInjected()
+                }
             }
     }
 

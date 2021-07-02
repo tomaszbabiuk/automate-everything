@@ -3,20 +3,23 @@ package eu.geekhome.shellyplugin
 import eu.geekhome.domain.extensibility.PluginMetadata
 import eu.geekhome.domain.hardware.HardwareAdapterFactory
 import eu.geekhome.domain.hardware.HardwarePlugin
+import eu.geekhome.domain.langateway.LanGatewayResolver
+import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.domain.localization.Resource
 import eu.geekhome.domain.mqtt.MqttBrokerService
-import eu.geekhome.domain.mqtt.RequiresMqtt
+import eu.geekhome.domain.plugininjection.RequiresMqtt
 import org.pf4j.PluginWrapper
 
-class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper),
-    PluginMetadata,
-    RequiresMqtt{
+class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, RequiresMqtt,
+    RequiresLanGatewayResolver {
 
     companion object {
         const val PLUGIN_ID_SHELLY = "shelly"
     }
 
     private lateinit var factory: ShellyAdapterFactory
+    private lateinit var lanGatewayResolver: LanGatewayResolver
+    private lateinit var mqttBroker: MqttBrokerService
 
     override fun getFactory(): HardwareAdapterFactory {
         return factory
@@ -34,7 +37,15 @@ class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper),
     override val description: Resource = R.plugin_description
 
     override fun injectMqttBrokerService(broker: MqttBrokerService) {
-        println("Injecting mqtt broker")
-        factory = ShellyAdapterFactory(PLUGIN_ID_SHELLY, broker)
+        mqttBroker = broker
+    }
+
+    override fun injectLanGatewayResolver(resolver: LanGatewayResolver) {
+        lanGatewayResolver = resolver
+    }
+
+    override fun allFeaturesInjected() {
+        factory = ShellyAdapterFactory(PLUGIN_ID_SHELLY, mqttBroker, lanGatewayResolver)
+
     }
 }

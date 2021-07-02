@@ -4,7 +4,9 @@ import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
+import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
+import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
 import org.glassfish.jersey.server.ResourceConfig
@@ -21,6 +23,7 @@ open class App : ResourceConfig() {
         val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
             liveEvents, repository)
 
+        //Dependency injection of REST controllers
         packages("eu.geekhome.rest")
         register(repository)
         register(liveEvents)
@@ -33,8 +36,13 @@ open class App : ResourceConfig() {
         register(automationConductor)
         register(blockFactoriesCoordinator)
 
+        //dependency injection of Plugins
         val mqttBrokerService: MqttBrokerService = MoquetteBroker()
-        pluginsCoordinator.injectPlugins(mqttBrokerService)
+        val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
+        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver)
+
+        //start
         pluginsCoordinator.startPlugins()
+        mqttBrokerService.start()
     }
 }

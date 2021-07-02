@@ -6,8 +6,8 @@ import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
 import eu.geekhome.domain.hardware.PortIdBuilder
 import eu.geekhome.domain.repository.SettingsDto
-import eu.geekhome.langateway.JavaLanGatewayResolver
-import eu.geekhome.langateway.LanGateway
+import eu.geekhome.domain.langateway.LanGateway
+import eu.geekhome.domain.langateway.LanGatewayResolver
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.auth.*
@@ -16,7 +16,9 @@ import io.ktor.client.features.json.*
 import kotlinx.coroutines.*
 import java.util.*
 
-class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
+class AforeAdapter(
+    private val owningPluginId: String,
+    private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase() {
 
     var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
@@ -60,7 +62,7 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
     override suspend fun internalDiscovery(eventsSink: EventsSink) = coroutineScope {
         broadcastEvent(eventsSink, "Starting AFORE discovery")
 
-        val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
+        val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
         val lanGateway: LanGateway? = when (lanGateways.size) {
             0 -> {
                 broadcastEvent(eventsSink, "Cannot resolve LAN gateway... aborting!")

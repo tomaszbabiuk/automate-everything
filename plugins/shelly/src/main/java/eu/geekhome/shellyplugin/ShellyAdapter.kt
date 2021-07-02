@@ -7,8 +7,8 @@ import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.mqtt.MqttListener
 import eu.geekhome.domain.repository.SettingsDto
-import eu.geekhome.langateway.JavaLanGatewayResolver
-import eu.geekhome.langateway.LanGateway
+import eu.geekhome.domain.langateway.LanGateway
+import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.shellyplugin.ports.ShellyInputPort
 import eu.geekhome.shellyplugin.ports.ShellyOutputPort
 import eu.geekhome.shellyplugin.ports.ShellyPort
@@ -20,14 +20,16 @@ import java.net.Inet4Address
 import java.net.InetAddress
 import java.util.*
 
-class ShellyAdapter(owningPluginId: String, private val mqttBroker: MqttBrokerService) : HardwareAdapterBase(), MqttListener {
+class ShellyAdapter(owningPluginId: String,
+                    private val mqttBroker: MqttBrokerService,
+                    lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase(), MqttListener {
 
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
     private val client = createHttpClient()
     private var hasNewPorts = false
-    private val lanGateways: List<LanGateway> = JavaLanGatewayResolver().resolve()
+    private val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
     override val ports = ArrayList<Port<*>>()
 
     private fun createHttpClient() = HttpClient(CIO) {

@@ -4,15 +4,17 @@ import eu.geekhome.domain.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.geekhome.domain.hardware.HardwarePlugin
 import eu.geekhome.domain.hardware.HardwareAdapterFactory
+import eu.geekhome.domain.langateway.LanGatewayResolver
+import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.domain.localization.Resource
 
-class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata {
+class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, RequiresLanGatewayResolver {
 
     companion object {
         const val PLUGIN_ID_AFORE = "afore"
     }
 
-    private val factory: AforeAdapterFactory = AforeAdapterFactory(wrapper.pluginId)
+    private lateinit var factory: AforeAdapterFactory
 
     override fun getFactory(): HardwareAdapterFactory {
         return factory
@@ -28,4 +30,13 @@ class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetad
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    lateinit var lanGatewayResolver: LanGatewayResolver
+
+    override fun injectLanGatewayResolver(resolver: LanGatewayResolver) {
+        lanGatewayResolver = resolver
+    }
+
+    override fun allFeaturesInjected() {
+        factory = AforeAdapterFactory(wrapper.pluginId, lanGatewayResolver)
+    }
 }

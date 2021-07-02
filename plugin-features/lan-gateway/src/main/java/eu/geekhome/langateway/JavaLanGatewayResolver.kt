@@ -1,16 +1,9 @@
 package eu.geekhome.langateway
 
+import eu.geekhome.domain.langateway.LanGateway
+import eu.geekhome.domain.langateway.LanGatewayResolver
 import java.net.Inet4Address
 import java.net.NetworkInterface
-
-data class LanGateway(
-    val interfaceName: String,
-    val inet4Address: Inet4Address
-)
-
-interface LanGatewayResolver {
-    fun resolve() : List<LanGateway>
-}
 
 class JavaLanGatewayResolver : LanGatewayResolver {
     override fun resolve(): List<LanGateway> {

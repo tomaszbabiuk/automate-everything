@@ -12,7 +12,7 @@ dependencies {
     //common
     implementation project(":module-domain")
     implementation project(":module-repository-sqldelight")
-    implementation project(":plugin-tools:lan-tools")
+    implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
 
     //pf4j

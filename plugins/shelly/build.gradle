@@ -6,7 +6,6 @@ plugins {
 dependencies {
     //common
     shadow project(':module-domain')
-    shadow project(':plugin-tools:lan-tools')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"

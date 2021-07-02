@@ -26,7 +26,6 @@ class MoquetteBroker : MqttBrokerService {
     private val listeners: MutableList<MqttListener> = ArrayList()
     var serviceScope: CoroutineScope? = null
 
-
     override fun addMqttListener(listener: MqttListener) {
         listeners.add(listener)
     }
@@ -86,7 +85,7 @@ class MoquetteBroker : MqttBrokerService {
     }
 
     @Throws(IOException::class)
-    fun start() {
+    override fun start() {
         if (serviceScope != null) {
             serviceScope?.cancel("MQTT Broker already started")
         }
@@ -97,7 +96,7 @@ class MoquetteBroker : MqttBrokerService {
         broker.startServer(memoryConfig, userHandlers)
     }
 
-    fun stop() {
+    override fun stop() {
         serviceScope?.cancel("MQTT Broker has been stopped")
         serviceScope = null
         broker.stopServer()

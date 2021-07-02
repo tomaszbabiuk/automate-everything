@@ -11,6 +11,5 @@ include 'plugins:core'
 include 'plugins:shelly'
 include 'plugins:afore'
 
-include 'plugin-tools:lan-tools'
-
+include 'plugin-features:lan-gateway'
 include 'plugin-features:mqtt'
