@@ -225,6 +225,12 @@ class SqlDelightRepository : Repository {
         return id
     }
 
+    override fun deletePort(id: String) {
+        database.transaction {
+            database.portQueries.delete(id)
+        }
+    }
+
     override fun deletePortSnapshot(id: String) {
         database.transaction {
             database.portQueries.delete(id)

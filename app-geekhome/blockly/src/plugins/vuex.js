@@ -48,6 +48,7 @@ export const ADD_HARDWARE_ADAPTER = 'ADD_HARDWARE_ADAPTER'
 export const CLEAR_PORTS = 'CLEAR_PORTS'
 export const ADD_PORT = 'ADD_PORT'
 export const UPDATE_PORT = 'UPDATE_PORT'
+export const REMOVE_PORT = 'REMOVE_PORT'
 
 export const UPDATE_AUTOMATION = 'UPDATE_AUTOMATION'
 export const CLEAR_AUTOMATION_UNITS = 'CLEAR_AUTOMATION_UNITS'
@@ -366,6 +367,14 @@ export default new Vuex.Store({
 
     [ADD_PORT](state, portDto) {
       state.ports.push(portDto)
+    },
+
+    [REMOVE_PORT](state, portId) {
+      state.ports.forEach( (element, i) => {
+        if (element.id === portId) {
+          Vue.delete(state.ports, i)
+        }
+      })
     },
 
     [UPDATE_PORT](state, portDto) {

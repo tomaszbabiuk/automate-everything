@@ -99,7 +99,9 @@ export default {
         id: "Id",
         value: "Wartość",
         control: "Kontrola",
-        connected: "Połączenie"
+        connected: "Połączenie",
+        actions: "Akcje",
+        delete_port_question: "Czy na pewno chcesz usunąć ten port?"
     },
     ago: {
         s: "{0}s temu",

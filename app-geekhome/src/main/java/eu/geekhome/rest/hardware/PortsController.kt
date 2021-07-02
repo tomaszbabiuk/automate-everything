@@ -2,7 +2,6 @@ package eu.geekhome.rest.hardware
 
 import javax.inject.Inject
 import eu.geekhome.rest.HardwareManagerHolderService
-import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.rest.RepositoryHolderService
@@ -68,5 +67,13 @@ class PortsController @Inject constructor(
         } else {
             throw ResourceNotFoundException()
         }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun deleteTag(@PathParam("id") id: String) {
+        repository
+            .deletePort(id)
     }
 }

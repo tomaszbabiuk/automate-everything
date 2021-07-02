@@ -10,7 +10,7 @@ import store, {
   ADD_ICON, UPDATE_ICON, REMOVE_ICON,
   CLEAR_DISCOVERY_EVENTS, ADD_DISCOVERY_EVENT,
   CLEAR_HARDWARE_ADAPTERS, ADD_HARDWARE_ADAPTER,
-  CLEAR_PORTS, ADD_PORT,
+  CLEAR_PORTS, ADD_PORT, REMOVE_PORT,
   UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
   ADD_AUTOMATION_HISTORY,
   SET_SETTINGS, SET_SETTINGS_VALIDATION
@@ -286,6 +286,14 @@ export const client = {
       }
     )
   },
+
+  deletePort: async function (id) {
+    await this.handleRestError(
+      () => axiosInstance.delete("rest/ports/" + id),
+      () => store.commit(REMOVE_PORT, id)
+    )
+  },
+
 
   controlPort: async function (portId, controlValue) {
     await this.handleRestError(

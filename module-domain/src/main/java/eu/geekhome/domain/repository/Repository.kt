@@ -30,8 +30,9 @@ interface Repository {
 
     fun getAllPorts(): List<PortDto>
     fun savePort(port: PortDto): Long
-    fun deletePortSnapshot(id: String)
+    fun deletePort(id: String)
 
+    fun deletePortSnapshot(id: String)
     fun updateSettings(settingsDtos: List<SettingsDto>)
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
