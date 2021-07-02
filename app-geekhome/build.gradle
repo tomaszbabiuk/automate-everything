@@ -13,6 +13,7 @@ dependencies {
     implementation project(":module-domain")
     implementation project(":module-repository-sqldelight")
     implementation project(":plugin-tools:lan-tools")
+    implementation project(":plugin-features:mqtt")
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"

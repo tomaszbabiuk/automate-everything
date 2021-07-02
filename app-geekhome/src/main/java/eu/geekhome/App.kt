@@ -4,6 +4,8 @@ import eu.geekhome.automation.AutomationConductor
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
+import eu.geekhome.domain.mqtt.MqttBrokerService
+import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
 import org.glassfish.jersey.server.ResourceConfig
 
@@ -31,6 +33,8 @@ open class App : ResourceConfig() {
         register(automationConductor)
         register(blockFactoriesCoordinator)
 
+        val mqttBrokerService: MqttBrokerService = MoquetteBroker()
+        pluginsCoordinator.injectPlugins(mqttBrokerService)
         pluginsCoordinator.startPlugins()
     }
 }

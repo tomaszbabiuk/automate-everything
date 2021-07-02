@@ -9,6 +9,8 @@ include 'plugins'
 
 include 'plugins:core'
 include 'plugins:shelly'
-include 'plugins:mqtt'
 include 'plugins:afore'
+
 include 'plugin-tools:lan-tools'
+
+include 'plugin-features:mqtt'

@@ -1,4 +1,4 @@
-package eu.geekhome.mqttplugin
+package eu.geekhome.pluginfeatures.mqtt
 
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.mqtt.MqttListener
@@ -17,15 +17,14 @@ import io.netty.handler.codec.mqtt.MqttMessageBuilders
 import io.netty.handler.codec.mqtt.MqttQoS
 import io.netty.buffer.Unpooled
 import kotlinx.coroutines.*
-import org.pf4j.Extension
 import java.net.UnknownHostException
 import java.util.*
 
-@Extension
 class MoquetteBroker : MqttBrokerService {
+
     private val broker: Server = Server()
     private val listeners: MutableList<MqttListener> = ArrayList()
-    var pluginScope: CoroutineScope? = null
+    var serviceScope: CoroutineScope? = null
 
 
     override fun addMqttListener(listener: MqttListener) {
@@ -88,19 +87,19 @@ class MoquetteBroker : MqttBrokerService {
 
     @Throws(IOException::class)
     fun start() {
-        if (pluginScope != null) {
-            pluginScope?.cancel("MQTT Broker already started")
+        if (serviceScope != null) {
+            serviceScope?.cancel("MQTT Broker already started")
         }
-        pluginScope = CoroutineScope(Dispatchers.IO)
-        val userHandlers: List<InterceptHandler?> = listOf(PublisherListener(pluginScope!!, listeners, broker))
+        serviceScope = CoroutineScope(Dispatchers.IO)
+        val userHandlers: List<InterceptHandler?> = listOf(PublisherListener(serviceScope!!, listeners, broker))
         val memoryConfig = MemoryConfig(Properties())
         memoryConfig.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, "true")
         broker.startServer(memoryConfig, userHandlers)
     }
 
     fun stop() {
-        pluginScope?.cancel("MQTT Broker has been stopped")
-        pluginScope = null
+        serviceScope?.cancel("MQTT Broker has been stopped")
+        serviceScope = null
         broker.stopServer()
     }
 

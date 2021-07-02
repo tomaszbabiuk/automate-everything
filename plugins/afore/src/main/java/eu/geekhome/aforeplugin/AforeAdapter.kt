@@ -129,8 +129,6 @@ class AforeAdapter(private val owningPluginId: String) : HardwareAdapterBase() {
             while (isActive) {
                 maintenanceLoop(Calendar.getInstance())
                 delay(30000)
-
-                println(ports.size)
             }
         }
     }
