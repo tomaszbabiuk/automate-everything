@@ -2,13 +2,12 @@ package eu.geekhome.rest.icons
 
 import javax.inject.Inject
 import eu.geekhome.domain.repository.IconDto
-import eu.geekhome.rest.RepositoryHolderService
+import eu.geekhome.domain.repository.Repository
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("icons")
-class IconController @Inject constructor(repositoryHolderService: RepositoryHolderService) {
-    private val repository = repositoryHolderService.instance
+class IconController @Inject constructor(private val repository: Repository) {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

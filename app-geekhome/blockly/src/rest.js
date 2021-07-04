@@ -275,6 +275,15 @@ export const client = {
     )
   },
 
+  discoverHardwareAdapters: async function(factoryId) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/hardwareadapters/" + factoryId + "/discover"),
+      (response) => {
+        console.log(response.data)
+      }
+    )
+  },
+
   getPorts: async function () {
     await this.handleRestError(
       () => axiosInstance.get("rest/ports"),

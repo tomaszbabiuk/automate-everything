@@ -1,21 +1,19 @@
 package eu.geekhome.rest.hardware
 
+import eu.geekhome.HardwareManager
 import javax.inject.Inject
-import eu.geekhome.rest.HardwareManagerHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.domain.hardware.*
-import eu.geekhome.rest.RepositoryHolderService
+import eu.geekhome.domain.repository.Repository
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("ports")
 class PortsController @Inject constructor(
-    hardwareManagerHolderService: HardwareManagerHolderService,
-    repositoryHolderService: RepositoryHolderService,
+    private val hardwareManager: HardwareManager,
+    private val repository: Repository,
     private val portDtoMapper: PortDtoMapper
 ) {
-    private val hardwareManager = hardwareManagerHolderService.instance
-    private val repository = repositoryHolderService.instance
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET
@@ -31,7 +29,7 @@ class PortsController @Inject constructor(
                 it
                     .adapter
                     .ports
-                    .map { port -> Triple(port, factoryId, it.adapter.id) }
+                    .map { port -> Triple(port.value, factoryId, it.adapter.id) }
             }
             .map { portDtoMapper.map(it.first, it.second, it.third) }
 

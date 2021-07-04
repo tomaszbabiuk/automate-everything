@@ -1,6 +1,5 @@
 package eu.geekhome.rest.live
 
-import eu.geekhome.rest.*
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
 import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
@@ -19,7 +18,7 @@ import javax.ws.rs.sse.SseEventSink
 
 @Path("live")
 class LiveController @Inject constructor(
-    eventsSinkHolder: EventsSinkHolderService,
+    eventsSink: EventsSink,
     private val portDtoMapper: PortDtoMapper,
     private val pluginDtoMapper: PluginDtoMapper,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
@@ -28,7 +27,6 @@ class LiveController @Inject constructor(
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
-    private val eventsSink = eventsSinkHolder.instance
 
     init {
         eventsSink.addAdapterEventListener(object : LiveEventsListener {

@@ -1,7 +1,6 @@
 package eu.geekhome.rest.automation
 
 import eu.geekhome.automation.AutomationConductor
-import eu.geekhome.rest.AutomationConductorHolderService
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.PUT
@@ -11,14 +10,12 @@ import javax.ws.rs.core.MediaType
 
 @Path("automation")
 class AutomationController @Inject constructor(
-    automationHolder: AutomationConductorHolderService
+    private val automationConductor: AutomationConductor
 ) {
-    private var automation: AutomationConductor = automationHolder.instance
-
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): AutomationDto {
-        return AutomationDto(automation.isEnabled())
+        return AutomationDto(automationConductor.isEnabled())
     }
 
     @PUT
@@ -26,12 +23,12 @@ class AutomationController @Inject constructor(
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     fun updateEnableState(enable: Boolean): AutomationDto {
         if (enable) {
-            automation.enable()
+            automationConductor.enable()
         } else {
-            automation.disable()
+            automationConductor.disable()
         }
 
-        return AutomationDto(automation.isEnabled())
+        return AutomationDto(automationConductor.isEnabled())
     }
 }
 

@@ -15,7 +15,7 @@ object ShellyHelper {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
             if (eventsSink != null) {
-                LiveEventsHelper.broadcastEvent(
+                LiveEventsHelper.broadcastDiscoveryEvent(
                     eventsSink,
                     ShellyPlugin.PLUGIN_ID_SHELLY,
                     "Shelly found! Ip address: $ipToCheck"
@@ -42,7 +42,7 @@ object ShellyHelper {
             )
         )
 
-        LiveEventsHelper.broadcastEvent(
+        LiveEventsHelper.broadcastDiscoveryEvent(
             eventsSink,
             ShellyPlugin.PLUGIN_ID_SHELLY,
             "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
@@ -70,7 +70,7 @@ object ShellyHelper {
             .filterNotNull()
             .toList()
 
-        LiveEventsHelper.broadcastEvent(
+        LiveEventsHelper.broadcastDiscoveryEvent(
             eventsSink,
             ShellyPlugin.PLUGIN_ID_SHELLY,
             "Done looking for shellies, found: ${result.size}"

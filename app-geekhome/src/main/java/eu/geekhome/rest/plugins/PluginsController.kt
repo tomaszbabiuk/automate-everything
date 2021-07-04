@@ -1,7 +1,6 @@
 package eu.geekhome.rest.plugins
 
 import eu.geekhome.PluginsCoordinator
-import eu.geekhome.rest.PluginsCoordinatorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import org.pf4j.PluginWrapper
 import javax.inject.Inject
@@ -14,10 +13,9 @@ import javax.ws.rs.core.MediaType
 @Singleton
 @Path("plugins")
 class PluginsController @Inject constructor(
-    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
+    private val pluginsCoordinator: PluginsCoordinator,
     private val pluginDtoMapper: PluginDtoMapper
 ) {
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")

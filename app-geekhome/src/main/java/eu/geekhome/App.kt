@@ -9,6 +9,8 @@ import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {
@@ -25,16 +27,11 @@ open class App : ResourceConfig() {
 
         //Dependency injection of REST controllers
         packages("eu.geekhome.rest")
-        register(repository)
-        register(liveEvents)
-        register(DependencyInjectionBinder())
+        register(DependencyInjectionBinder(liveEvents, repository, pluginsCoordinator, hardwareManager,
+            automationConductor, blockFactoriesCoordinator))
         register(GsonMessageBodyHandler())
         register(CORSFilter())
         register(ResourceNotFoundExceptionMapper())
-        register(pluginsCoordinator)
-        register(hardwareManager)
-        register(automationConductor)
-        register(blockFactoriesCoordinator)
 
         //dependency injection of Plugins
         val mqttBrokerService: MqttBrokerService = MoquetteBroker()

@@ -1,12 +1,11 @@
 package eu.geekhome.rest.settings
 
-import eu.geekhome.domain.configurable.ConfigurableType
-import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.PluginsCoordinator
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.extensibility.PluginMetadata
+import eu.geekhome.domain.repository.Repository
 import eu.geekhome.domain.repository.SettingsDto
-import eu.geekhome.rest.RepositoryHolderService
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.*
@@ -19,11 +18,8 @@ typealias SettingsValuesMap = Map<String, String?>
 
 @Path("settings")
 class SettingsController @Inject constructor(
-    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
-    repositoryHolderService: RepositoryHolderService) {
-
-    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
-    private val repository = repositoryHolderService.instance
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val repository: Repository) {
 
     private fun findSettingCategory(clazz: String): SettingGroup? {
         return pluginsCoordinator

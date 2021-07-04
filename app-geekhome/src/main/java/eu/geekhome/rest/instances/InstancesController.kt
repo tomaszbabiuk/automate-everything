@@ -1,11 +1,11 @@
 package eu.geekhome.rest.instances
 
-import eu.geekhome.rest.PluginsCoordinatorHolderService
+import eu.geekhome.PluginsCoordinator
 import eu.geekhome.rest.settings.ValidationResultMap
 import eu.geekhome.domain.configurable.ConfigurableWithFields
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.repository.InstanceDto
-import eu.geekhome.rest.RepositoryHolderService
+import eu.geekhome.domain.repository.Repository
 import java.util.*
 import javax.inject.Inject
 import javax.ws.rs.*
@@ -13,11 +13,8 @@ import javax.ws.rs.core.MediaType
 
 @Path("instances")
 class InstancesController @Inject constructor(
-    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
-    repositoryHolder: RepositoryHolderService) {
-
-    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
-    private val repository = repositoryHolder.instance
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val repository: Repository) {
 
     private fun findConfigurable(clazz: String): ConfigurableWithFields? {
         return pluginsCoordinator

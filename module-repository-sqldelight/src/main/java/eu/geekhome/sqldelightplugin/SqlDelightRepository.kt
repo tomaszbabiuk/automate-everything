@@ -213,12 +213,13 @@ class SqlDelightRepository : Repository {
             .map(portSnapshotToPortDtoMapper::map)
     }
 
-    override fun savePort(port: PortDto): Long {
+    override fun updatePort(port: PortDto): Long {
         var id: Long = 0
         database.transaction {
+            database.portQueries.delete(port.id)
             val canRead = if (port.canRead) { 1L } else { 0L }
             val canWrite = if (port.canWrite) { 1L } else { 0L }
-            database.portQueries.insertOrUpdate(port.id, port.factoryId, port.adapterId, port.valueType, canRead, canWrite)
+            database.portQueries.insert(port.id, port.factoryId, port.adapterId, port.valueType, canRead, canWrite)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
         }
 

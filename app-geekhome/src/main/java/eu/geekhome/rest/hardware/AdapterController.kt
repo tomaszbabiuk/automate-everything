@@ -1,26 +1,31 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.HardwareManager
+import eu.geekhome.domain.events.EventsSink
 import javax.inject.Inject
-import eu.geekhome.rest.HardwareManagerHolderService
-import javax.ws.rs.GET
-import javax.ws.rs.Produces
 import eu.geekhome.domain.hardware.HardwareAdapterDto
-import javax.ws.rs.Path
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("hardwareadapters")
 class AdapterController @Inject constructor(
-    hardwareManagerHolderService: HardwareManagerHolderService,
-    private val mapper: HardwareAdapterDtoMapper
+    private val hardwareManager: HardwareManager,
+    private val mapper: HardwareAdapterDtoMapper,
+    private val liveEvent: EventsSink
 ) {
 
-    private val hardwareManager: HardwareManager = hardwareManagerHolderService.instance
-
-    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @get:GET
-    val adapters: List<HardwareAdapterDto>
-        get() = hardwareManager
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @GET
+    fun getAdapters(): List<HardwareAdapterDto> {
+        return hardwareManager
             .bundles()
-            .map { mapper.map(it)}
+            .map { mapper.map(it) }
+    }
+
+    @PUT
+    @Path("/{factoryId}/discover")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    fun discover(@PathParam("factoryId") factoryId: String) {
+        hardwareManager.scheduleDiscovery(factoryId)
+    }
 }

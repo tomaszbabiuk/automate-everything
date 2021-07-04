@@ -1,8 +1,8 @@
 package eu.geekhome.rest.automationhistory
 
-import eu.geekhome.rest.EventsSinkHolderService
 import eu.geekhome.domain.events.AutomationStateEventData
 import eu.geekhome.domain.events.AutomationUpdateEventData
+import eu.geekhome.domain.events.EventsSink
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -11,14 +11,13 @@ import javax.ws.rs.core.MediaType
 
 @Path("automationhistory")
 class AutomationHistoryController @Inject constructor(
-    private val eventsSinkHolder: EventsSinkHolderService,
+    private val eventsSink: EventsSink,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
 ) {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): List<AutomationHistoryDto> {
-        return eventsSinkHolder
-            .instance
+        return eventsSink
             .all()
             .filter { it.data is AutomationUpdateEventData || it.data is AutomationStateEventData }
             .mapNotNull {

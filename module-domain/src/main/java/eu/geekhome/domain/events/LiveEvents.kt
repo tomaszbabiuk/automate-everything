@@ -59,8 +59,13 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
 }
 
 object LiveEventsHelper {
-    fun broadcastEvent(eventsSink: EventsSink, pluginId: String, message: String) {
-        val event = DiscoveryEventData(pluginId, message)
+    fun broadcastDiscoveryEvent(eventsSink: EventsSink, factoryId: String, message: String) {
+        val event = DiscoveryEventData(factoryId, message)
+        eventsSink.broadcastEvent(event)
+    }
+
+    fun broadcastPortUpdateEvent(eventsSink: EventsSink, factoryId: String, adapterId: String, port: Port<*>) {
+        val event = PortUpdateEventData(factoryId, adapterId, port)
         eventsSink.broadcastEvent(event)
     }
 }

@@ -61,7 +61,7 @@ class AforeFinder(
                 255.toByte())
         )
 
-        LiveEventsHelper.broadcastEvent(
+        LiveEventsHelper.broadcastDiscoveryEvent(
             eventsSink,
             AforePlugin.PLUGIN_ID_AFORE,
             "Looking for afore devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"

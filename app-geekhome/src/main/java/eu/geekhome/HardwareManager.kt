@@ -1,6 +1,8 @@
 package eu.geekhome
 
 import eu.geekhome.domain.events.*
+import eu.geekhome.domain.events.LiveEventsHelper.broadcastDiscoveryEvent
+import eu.geekhome.domain.events.LiveEventsHelper.broadcastPortUpdateEvent
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.repository.Repository
 import eu.geekhome.domain.repository.SettingsDto
@@ -15,16 +17,10 @@ class HardwareManager(
 ) : PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
+    private val hardwareManagerScope = CoroutineScope(Dispatchers.IO)
 
     init {
         pluginsCoordinator.addPluginStateListener(this)
-    }
-
-    /**
-     * This method is called before every automation loop. The method is executed in an async way so it's not
-     * blocking automation loop processing. This function will not be called if previous execution is still ongoing.
-     */
-    suspend fun beforeAutomationLoop(now: Calendar) {
     }
 
     /**
@@ -54,17 +50,24 @@ class HardwareManager(
             .flatMap { it.value }
             .forEach { bundle ->
                 bundle.adapter.start(liveEvents, extractPluginSettings(bundle.owningPluginId))
-                bundle.discoveryJob = async {
-                    bundle.adapter.discover(liveEvents)
-                    bundle.adapter.ports.forEach {
-                        val portSnapshot = PortDto(it.id, factory.owningPluginId, bundle.adapter.id,
-                            null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
-                        repository.savePort(portSnapshot)
-                        val event = PortUpdateEventData(factory.owningPluginId, bundle.adapter.id, it)
-                        liveEvents.broadcastEvent(event)
-                    }
+                discover(bundle)
+            }
+    }
+
+    private suspend fun discover(bundle: AdapterBundle) = coroutineScope {
+        if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
+            broadcastDiscoveryEvent(liveEvents, bundle.owningPluginId, "Previous discovery is still pending, try again later")
+        } else {
+            bundle.discoveryJob = async {
+                bundle.adapter.discover(liveEvents)
+                bundle.adapter.ports.values.forEach {
+                    val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
+                        null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
+                    repository.updatePort(portSnapshot)
+                    broadcastPortUpdateEvent(liveEvents, bundle.owningPluginId, bundle.adapter.id, it)
                 }
             }
+        }
     }
 
     private fun extractPluginSettings(pluginId: String): List<SettingsDto> {
@@ -86,7 +89,7 @@ class HardwareManager(
 
         val adaptersInFactory = factory.createAdapters()
         val adapterBundles = adaptersInFactory
-            .map { adapter: HardwareAdapter -> AdapterBundle(factory.owningPluginId, adapter) }
+            .map { adapter -> AdapterBundle(factory.owningPluginId, adapter) }
             .toList()
         factories[factory] = adapterBundles
 
@@ -98,13 +101,13 @@ class HardwareManager(
         if (isHardwarePluginAffected) {
             val hardwarePlugin = event.plugin.plugin as HardwarePlugin
             if (event.pluginState == PluginState.STARTED) {
-                GlobalScope.launch {
+                hardwareManagerScope.launch {
                     addFactory(hardwarePlugin.factory)
                 }
             }
 
             if (event.pluginState == PluginState.STOPPED) {
-                GlobalScope.launch {
+                hardwareManagerScope.launch {
                     removeFactory(hardwarePlugin.factory)
                 }
             }
@@ -117,8 +120,8 @@ class HardwareManager(
 
     fun findPort(id: String): Pair<Port<*>, AdapterBundle>? {
         bundles().forEach { bundle ->
-            val port = bundle.adapter.ports.firstOrNull { it.id == id }
-            if (port != null) {
+            if  (bundle.adapter.ports.containsKey(id)) {
+                val port = bundle.adapter.ports[id]!!
                 return Pair(port, bundle)
             }
         }
@@ -128,7 +131,7 @@ class HardwareManager(
 
     data class AdapterBundle(
         internal val owningPluginId: String,
-        internal val adapter: HardwareAdapter,
+        internal val adapter: HardwareAdapter<*>,
     ) {
         var discoveryJob: Deferred<Unit>? = null
     }
@@ -139,7 +142,7 @@ class HardwareManager(
     ): Port<T> {
         val port = factories
             .flatMap { it.value }
-            .flatMap { it.adapter.ports }
+            .flatMap { it.adapter.ports.values }
             .find { it.id == id }
 
         if (port != null && port.valueType == valueType) {
@@ -179,7 +182,17 @@ class HardwareManager(
             }
 
         return result
+    }
 
+    fun scheduleDiscovery(factoryId: String) {
+        factories
+            .filter { it.key.owningPluginId == factoryId }
+            .flatMap { it.value }
+            .forEach {
+                hardwareManagerScope.launch {
+                    discover(it)
+                }
+            }
     }
 }
 

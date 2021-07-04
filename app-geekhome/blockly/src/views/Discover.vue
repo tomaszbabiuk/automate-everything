@@ -138,8 +138,7 @@ export default {
     restartDiscovery: async function () {
       var factoryId = this.$route.params.clazz;
       store.commit(CLEAR_DISCOVERY_EVENTS);
-      await client.enablePlugin(factoryId, false);
-      await client.enablePlugin(factoryId, true);
+      await client.discoverHardwareAdapters(factoryId);
     },
 
     refresh: async function () {

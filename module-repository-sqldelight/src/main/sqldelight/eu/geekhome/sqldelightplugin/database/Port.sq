@@ -11,8 +11,8 @@ selectAll:
 SELECT *
 FROM portSnapshot;
 
-insertOrUpdate:
-REPLACE INTO portSnapshot(id, factoryId, adapterId, valueType, canRead, canWrite)
+insert:
+INSERT INTO portSnapshot(id, factoryId, adapterId, valueType, canRead, canWrite)
 VALUES (?,?,?,?,?,?);
 
 delete:

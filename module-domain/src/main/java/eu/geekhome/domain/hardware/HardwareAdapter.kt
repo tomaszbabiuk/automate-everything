@@ -3,9 +3,9 @@ package eu.geekhome.domain.hardware
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.repository.SettingsDto
 
-interface HardwareAdapter {
+interface HardwareAdapter<T : Port<*>> {
 
-    val ports: List<Port<*>>
+    val ports: HashMap<String, T>
     fun clearNewPorts()
     fun hasNewPorts(): Boolean
     val id: String

@@ -12,8 +12,8 @@ internal class ShellyAdapterFactory(
     private val lanGatewayResolver: LanGatewayResolver) :
     HardwareAdapterFactory {
 
-    override fun createAdapters(): List<HardwareAdapter> {
-        val result = ArrayList<HardwareAdapter>()
+    override fun createAdapters(): List<HardwareAdapter<*>> {
+        val result = ArrayList<HardwareAdapter<*>>()
         val adapter = ShellyAdapter(owningPluginId, mqttBroker, lanGatewayResolver)
         result.add(adapter)
         return result

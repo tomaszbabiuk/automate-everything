@@ -1,23 +1,20 @@
 package eu.geekhome.rest.instancebriefs
 
+import eu.geekhome.PluginsCoordinator
 import javax.inject.Inject
-import eu.geekhome.rest.PluginsCoordinatorHolderService
 import javax.ws.rs.GET
 import javax.ws.rs.Produces
 import eu.geekhome.domain.repository.InstanceBriefDto
 import javax.ws.rs.PathParam
 import eu.geekhome.domain.configurable.ConfigurableType
-import eu.geekhome.rest.RepositoryHolderService
+import eu.geekhome.domain.repository.Repository
 import javax.ws.rs.Path
 import javax.ws.rs.core.MediaType
 
 @Path("instancebriefs")
 class InstanceBriefsController @Inject constructor(
-    pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
-    repositoryHolderService: RepositoryHolderService) {
-
-    private val pluginsCoordinator = pluginsCoordinatorHolderService.instance
-    private val repository = repositoryHolderService.instance
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val repository: Repository) {
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @get:GET

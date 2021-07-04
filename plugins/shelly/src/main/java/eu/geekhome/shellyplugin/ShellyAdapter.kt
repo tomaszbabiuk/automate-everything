@@ -22,15 +22,13 @@ import java.util.*
 
 class ShellyAdapter(owningPluginId: String,
                     private val mqttBroker: MqttBrokerService,
-                    lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase(), MqttListener {
+                    lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
 
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
     private val client = createHttpClient()
-    private var hasNewPorts = false
     private val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
-    override val ports = ArrayList<Port<*>>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -51,11 +49,11 @@ class ShellyAdapter(owningPluginId: String,
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun internalDiscovery(eventsSink: EventsSink) = coroutineScope {
-        ports.clear()
+    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<ShellyPort<*>> = coroutineScope {
+        val result = ArrayList<ShellyPort<*>>()
 
         if (lanGateways.isEmpty()) {
-            LiveEventsHelper.broadcastEvent(
+            LiveEventsHelper.broadcastDiscoveryEvent(
                 eventsSink,
                 ShellyPlugin.PLUGIN_ID_SHELLY,
                 "The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting"
@@ -63,7 +61,7 @@ class ShellyAdapter(owningPluginId: String,
         } else {
             val defaultLanGateway = lanGateways.first()
             if (lanGateways.size > 1) {
-                LiveEventsHelper.broadcastEvent(
+                LiveEventsHelper.broadcastDiscoveryEvent(
                     eventsSink,
                     ShellyPlugin.PLUGIN_ID_SHELLY,
                     "WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}"
@@ -81,21 +79,16 @@ class ShellyAdapter(owningPluginId: String,
                 val statusResponse = ShellyHelper.callForStatus(client, shellyIP)
 
                 val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse)
-                ports.addAll(portsFromDevice)
+                result.addAll(portsFromDevice)
             }
         }
-    }
 
-    override fun clearNewPorts() {
-        hasNewPorts = false
-    }
-
-    override fun hasNewPorts(): Boolean {
-        return false
+        result
     }
 
     override fun executePendingChanges() {
         ports
+            .values
             .filterIsInstance<ShellyOutputPort<*>>()
             .forEach {
                 executeShellyChanges(it)
@@ -124,11 +117,12 @@ class ShellyAdapter(owningPluginId: String,
         val now = Calendar.getInstance().timeInMillis
 
         ports
+            .values
             .filter { it.id.contains(clientID) }
-            .filterIsInstance<ShellyPort<*>>()
             .forEach { it.updateValidUntil(now + it.sleepInterval) }
 
         ports
+            .values
             .filter { (it as ShellyInputPort<*>?)?.readTopic == topicName }
             .forEach {
                 (it as ShellyInputPort<*>?)?.setValueFromMqttPayload(msgAsString)
@@ -140,6 +134,7 @@ class ShellyAdapter(owningPluginId: String,
 
     override fun onDisconnected(clientID: String) {
         ports
+            .values
             .forEach {
                 val port = it
                 if (port.id.contains(clientID)) {
@@ -161,12 +156,7 @@ class ShellyAdapter(owningPluginId: String,
                 settingsResponse
             )
 
-            portsFromDevice.forEach { newPort ->
-                val isAlreadyDiscovered = ports.find { it.id == newPort.id} != null
-                if (!isAlreadyDiscovered) {
-                    hasNewPorts = true
-                }
-            }
+            addPotentialNewPorts(portsFromDevice)
         }
     }
 }

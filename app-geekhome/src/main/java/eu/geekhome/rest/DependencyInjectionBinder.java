@@ -1,6 +1,12 @@
 package eu.geekhome.rest;
 
+import eu.geekhome.HardwareManager;
+import eu.geekhome.PluginsCoordinator;
+import eu.geekhome.automation.AutomationConductor;
 import eu.geekhome.automation.BlocklyParser;
+import eu.geekhome.automation.blocks.BlockFactoriesCollector;
+import eu.geekhome.domain.events.EventsSink;
+import eu.geekhome.domain.repository.Repository;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
 import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper;
@@ -11,11 +17,35 @@ import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper;
 import eu.geekhome.rest.hardware.PortDtoMapper;
 import eu.geekhome.rest.plugins.PluginDtoMapper;
 import eu.geekhome.rest.settinggroup.SettingGroupDtoMapper;
+import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Singleton;
 
 public class DependencyInjectionBinder extends AbstractBinder {
+
+    private final EventsSink _eventsSink;
+    private final Repository _repository;
+    private final PluginsCoordinator _pluginsCoordinator;
+    private final HardwareManager _hardwareManager;
+    private final AutomationConductor _automationConductor;
+    private final BlockFactoriesCollector _blockFactoriesCollector;
+
+    public DependencyInjectionBinder(
+            EventsSink eventsSink,
+            Repository repository,
+            PluginsCoordinator pluginsCoordinator,
+            HardwareManager hardwareManager,
+            AutomationConductor automationConductor,
+            BlockFactoriesCollector blockFactoriesCollector
+    ) {
+        _eventsSink = eventsSink;
+        _repository = repository;
+        _pluginsCoordinator = pluginsCoordinator;
+        _hardwareManager = hardwareManager;
+        _automationConductor = automationConductor;
+        _blockFactoriesCollector = blockFactoriesCollector;
+    }
 
     @Override
     protected void configure() {
@@ -31,15 +61,32 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(AutomationHistoryDtoMapper.class).to(AutomationHistoryDtoMapper.class).in(Singleton.class);
         bind(SettingGroupDtoMapper.class).to(SettingGroupDtoMapper.class).in(Singleton.class);
 
-        //holders
-        bind(PluginsCoordinatorHolderService.class).to(PluginsCoordinatorHolderService.class).in(Singleton.class);
-        bind(HardwareManagerHolderService.class).to(HardwareManagerHolderService.class).in(Singleton.class);
-        bind(EventsSinkHolderService.class).to(EventsSinkHolderService.class).in(Singleton.class);
-        bind(AutomationConductorHolderService.class).to(AutomationConductorHolderService.class).in(Singleton.class);
-        bind(RepositoryHolderService.class).to(RepositoryHolderService.class).in(Singleton.class);
+        //factories for objects shared with the App
+        bindFactory(new SingletonFactory<>(_hardwareManager)).to(HardwareManager.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_automationConductor)).to(AutomationConductor.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_pluginsCoordinator)).to(PluginsCoordinator.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_repository)).to(Repository.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_eventsSink)).to(EventsSink.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_blockFactoriesCollector)).to(BlockFactoriesCollector.class).in(Singleton.class);
 
         //blocks
         bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);
-        bind(BlockFactoriesCollectorHolderService.class).to(BlockFactoriesCollectorHolderService.class).in(Singleton.class);
+    }
+
+    static class SingletonFactory<T> implements Factory<T> {
+        private final T instance;
+
+        public SingletonFactory(T instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public T provide() {
+            return instance;
+        }
+
+        @Override
+        public void dispose(T instance) {
+        }
     }
 }

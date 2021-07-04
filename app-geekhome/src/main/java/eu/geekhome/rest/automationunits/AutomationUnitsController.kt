@@ -1,7 +1,6 @@
 package eu.geekhome.rest.automationunits
 
 import eu.geekhome.automation.AutomationConductor
-import eu.geekhome.rest.AutomationConductorHolderService
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.rest.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
@@ -14,15 +13,14 @@ import javax.ws.rs.core.MediaType
 
 @Path("automationunits")
 class AutomationUnitsController @Inject constructor(
-    automationHolder: AutomationConductorHolderService,
+    private val automationConductor: AutomationConductor,
     private val mapper: AutomationUnitDtoMapper
 ) {
-    private var automation: AutomationConductor = automationHolder.instance
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun listAllAutomationUnits(): List<AutomationUnitDto> {
-        return automation
+        return automationConductor
             .automationUnitsCache
             .values
             .map {
@@ -34,7 +32,7 @@ class AutomationUnitsController @Inject constructor(
     @Path("/{instanceId}/state")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
     fun updateState(@PathParam("instanceId") id: Long, state: String): AutomationUnitDto {
-        val instanceAndUnitPair = automation
+        val instanceAndUnitPair = automationConductor
             .automationUnitsCache
             .filter { it.key == id }
             .map { it.value }

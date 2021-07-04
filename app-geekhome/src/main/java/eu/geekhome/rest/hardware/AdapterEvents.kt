@@ -1,6 +1,5 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.rest.EventsSinkHolderService
 import eu.geekhome.domain.events.DiscoveryEventData
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.hardware.DiscoveryEventDto
@@ -12,11 +11,9 @@ import javax.ws.rs.core.MediaType
 
 @Path("adapterevents")
 class AdapterEvents @Inject constructor(
-    eventsSinkHolderService: EventsSinkHolderService,
+    private val eventsSink: EventsSink,
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
 ) {
-
-    private val eventsSink: EventsSink = eventsSinkHolderService.instance
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -29,7 +29,7 @@ interface Repository {
     fun updateIcon(iconDto: IconDto)
 
     fun getAllPorts(): List<PortDto>
-    fun savePort(port: PortDto): Long
+    fun updatePort(port: PortDto): Long
     fun deletePort(id: String)
 
     fun deletePortSnapshot(id: String)

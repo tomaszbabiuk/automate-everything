@@ -18,13 +18,12 @@ import java.util.*
 
 class AforeAdapter(
     private val owningPluginId: String,
-    private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase() {
+    private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<AforeWattageInputPort>() {
 
     var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId, ADAPTER_ID)
-    override var ports = ArrayList<AforeWattageInputPort>()
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {
@@ -51,15 +50,8 @@ class AforeAdapter(
         }
     }
 
-    override fun clearNewPorts() {
-        //AFORE is not detecting new ports automatically
-    }
-
-    override fun hasNewPorts(): Boolean {
-        return false
-    }
-
-    override suspend fun internalDiscovery(eventsSink: EventsSink) = coroutineScope {
+    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<AforeWattageInputPort> = coroutineScope {
+        val result = ArrayList<AforeWattageInputPort>()
         broadcastEvent(eventsSink, "Starting AFORE discovery")
 
         val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
@@ -87,11 +79,13 @@ class AforeAdapter(
                 broadcastEvent(eventsSink, "AFORE inverter found, IP:${it.first}, s/n:${it.second}")
                 val portId = idBuilder.buildPortId(it.second, 0, "W")
                 val inverterPort = AforeWattageInputPort(portId, httpClient, it.first)
-                ports.add(inverterPort)
+                result.add(inverterPort)
             }
         }
 
         broadcastEvent(eventsSink, "AFORE discovery has finished")
+
+        result
     }
 
     private fun broadcastEvent(eventsSink: EventsSink, message: String) {
@@ -100,7 +94,7 @@ class AforeAdapter(
     }
 
     private suspend fun maintenanceLoop(now: Calendar) {
-        ports.forEach {
+        ports.values.forEach {
             val changed = it.refresh(now)
             if (changed) {
                 val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)

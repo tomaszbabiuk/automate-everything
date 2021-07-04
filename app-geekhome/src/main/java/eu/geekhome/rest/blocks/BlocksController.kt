@@ -1,7 +1,7 @@
 package eu.geekhome.rest.blocks
 
 import eu.geekhome.PluginsCoordinator
-import eu.geekhome.automation.blocks.IBlockFactoriesCollector
+import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
 import javax.inject.Inject
 import javax.ws.rs.GET
@@ -12,11 +12,9 @@ import javax.ws.rs.core.MediaType
 
 @Path("blocks")
 class BlocksController @Inject constructor(
-    private val pluginsCoordinatorHolderService: PluginsCoordinatorHolderService,
-    blockFactoriesCollectorHolder: BlockFactoriesCollectorHolderService,
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val blockFactoriesCollector: BlockFactoriesCollector
 ) {
-    private val blockFactoriesCollector : IBlockFactoriesCollector = blockFactoriesCollectorHolder.instance
-    private val pluginsCoordinator: PluginsCoordinator = pluginsCoordinatorHolderService.instance
 
     @Throws(ResourceNotFoundException::class)
     @GET
