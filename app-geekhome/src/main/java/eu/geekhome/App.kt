@@ -40,6 +40,7 @@ open class App : ResourceConfig() {
 
         //start
         pluginsCoordinator.startPlugins()
+        hardwareManager.start()
         mqttBrokerService.start()
     }
 }

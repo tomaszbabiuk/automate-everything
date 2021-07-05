@@ -14,10 +14,9 @@ class HardwareManager(
     private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: NumberedEventsSink,
     private val repository: Repository,
-) : PluginStateListener, IPortFinder {
+) : WithStartStopScope(), PluginStateListener, IPortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
-    private val hardwareManagerScope = CoroutineScope(Dispatchers.IO)
 
     init {
         pluginsCoordinator.addPluginStateListener(this)
@@ -101,13 +100,13 @@ class HardwareManager(
         if (isHardwarePluginAffected) {
             val hardwarePlugin = event.plugin.plugin as HardwarePlugin
             if (event.pluginState == PluginState.STARTED) {
-                hardwareManagerScope.launch {
+                startStopScope.launch {
                     addFactory(hardwarePlugin.factory)
                 }
             }
 
             if (event.pluginState == PluginState.STOPPED) {
-                hardwareManagerScope.launch {
+                startStopScope.launch {
                     removeFactory(hardwarePlugin.factory)
                 }
             }
@@ -189,7 +188,7 @@ class HardwareManager(
             .filter { it.key.owningPluginId == factoryId }
             .flatMap { it.value }
             .forEach {
-                hardwareManagerScope.launch {
+                startStopScope.launch {
                     discover(it)
                 }
             }

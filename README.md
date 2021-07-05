@@ -62,7 +62,7 @@ cd app-geekhome
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar build/libs/app-geekhome-all.jar
 ```
 
-# Running in slow mode (for testing purpose)
+# Running in slow mode (for UI testing purpose)
 When using this option, all requests are going to be delayed for 5 seconds (good for UI testing).
 ```
 cd app-geekhome

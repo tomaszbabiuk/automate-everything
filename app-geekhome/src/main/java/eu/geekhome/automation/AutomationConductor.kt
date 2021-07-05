@@ -2,6 +2,7 @@ package eu.geekhome.automation
 
 import eu.geekhome.HardwareManager
 import eu.geekhome.PluginsCoordinator
+import eu.geekhome.WithStartStopScope
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.IEvaluableAutomationUnit
@@ -22,7 +23,7 @@ class AutomationConductor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: NumberedEventsSink,
     private val repository: SqlDelightRepository
-) : LiveEventsListener {
+) : WithStartStopScope(), LiveEventsListener {
 
     init {
         liveEvents.addAdapterEventListener(this)
@@ -52,12 +53,13 @@ class AutomationConductor(
             evaluationUnitsCache.clear()
 
             println("Enabling automation")
-            startAutomations()
+            start()
+        } else {
+            stop()
         }
     }
 
     private fun rebuildAutomations(): List<List<IStatementNode>> {
-
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -128,7 +130,9 @@ class AutomationConductor(
         }
     }
 
-    private fun startAutomations() {
+    override fun start() {
+        super.start()
+
         val automations = rebuildAutomations()
 
         hardwareManager.checkNewPorts()
@@ -137,7 +141,7 @@ class AutomationConductor(
         val triggers = automations.flatten()
 
         var hasNewPorts = false
-        automationJob = GlobalScope.launch {
+        automationJob = startStopScope.launch {
             while (isActive && !hasNewPorts) {
                 val now = Calendar.getInstance()
 
@@ -163,7 +167,7 @@ class AutomationConductor(
             println("Automation stopped")
             if (hasNewPorts) {
                 println("Restarting, reason = HAS NEW PORTS")
-                startAutomations()
+                start()
             }
         }
     }
