@@ -6,7 +6,7 @@ class EvaluationResult<T> (
     val interfaceValue: Resource,
     val value: T? = null,
     val isSignaled: Boolean = false,
-    val descriptions: Map<String, Resource> = HashMap(),
+    val descriptions: List<Resource> = ArrayList(),
     val controlMode: ControlMode = ControlMode.Auto,
     val error: Exception? = null,
     val nextStates: List<State>? = null

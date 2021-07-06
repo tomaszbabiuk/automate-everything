@@ -1,13 +1,14 @@
 package eu.geekhome.automation
 
 import eu.geekhome.domain.R
+import eu.geekhome.domain.automation.AutomationErrorException
 import eu.geekhome.domain.automation.EvaluationResult
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import java.util.*
 
 class AutomationUnitWrapper<T>(
     valueType: Class<T>,
-    initError: Exception
+    initError: AutomationErrorException
 ) : DeviceAutomationUnit<T>() {
 
     override val usedPortsIds: Array<String>
@@ -21,6 +22,7 @@ class AutomationUnitWrapper<T>(
 
     override var lastEvaluation = EvaluationResult<T>(
         interfaceValue = R.error_initialization,
-        error = initError
+        error = initError,
+        descriptions = listOf(initError.localizedMessage)
     )
 }

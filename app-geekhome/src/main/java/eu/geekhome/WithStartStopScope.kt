@@ -7,13 +7,13 @@ import kotlinx.coroutines.cancel
 abstract  class WithStartStopScope {
     var startStopScope = restartScope()
 
-    fun start() {
+    open fun start() {
         startStopScope.cancel("Restarting...")
+        startStopScope = restartScope()
     }
 
-    fun stop() {
+    open fun stop() {
         startStopScope.cancel("Stopping ${this.javaClass.name}")
-        startStopScope = restartScope()
     }
 
     private fun restartScope() : CoroutineScope {

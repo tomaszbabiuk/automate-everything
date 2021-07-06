@@ -11,6 +11,8 @@ interface Repository {
     fun getInstancesOfClazz(clazz: String): List<InstanceDto>
     fun deleteInstance(id: Long)
     fun getInstance(id: Long): InstanceDto
+    fun clearInstanceUpdatedFlag()
+    fun hasUpdatedInstance(): Boolean
 
     fun getAllTags(): List<TagDto>
     fun saveTag(tag: TagDto): Long

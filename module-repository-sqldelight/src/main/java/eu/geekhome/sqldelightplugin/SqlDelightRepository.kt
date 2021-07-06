@@ -8,6 +8,7 @@ import eu.geekhome.sqldelightplugin.database.*
 class SqlDelightRepository : Repository {
 
     private var database: Database
+    private var hasUpdatedInstance = false
 
     init {
         Class.forName("org.sqlite.JDBC")
@@ -65,6 +66,8 @@ class SqlDelightRepository : Repository {
             instanceDto.tagIds.forEach {
                 database.instanceTaggingQueries.insert(it, instanceDto.id)
             }
+
+            hasUpdatedInstance = true
         }
     }
 
@@ -105,6 +108,14 @@ class SqlDelightRepository : Repository {
                 .executeAsOne()
 
         return configurableInstanceWithTagIdsToInstanceDtoMapper.map(instance)
+    }
+
+    override fun clearInstanceUpdatedFlag() {
+        hasUpdatedInstance = false
+    }
+
+    override fun hasUpdatedInstance(): Boolean {
+        return hasUpdatedInstance
     }
 
     override fun getAllTags(): List<TagDto> {

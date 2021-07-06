@@ -8,7 +8,7 @@ data class EvaluationResultDto(
     val interfaceValue: Resource?,
     val controlMode: ControlMode,
     val isSignaled: Boolean,
-    val descriptions: Map<String, Resource>?,
+    val descriptions: List<Resource>?,
     val error: String?,
     val nextStates: List<State>?
 )

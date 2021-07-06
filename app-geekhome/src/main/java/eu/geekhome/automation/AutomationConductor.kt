@@ -2,8 +2,11 @@ package eu.geekhome.automation
 
 import eu.geekhome.HardwareManager
 import eu.geekhome.PluginsCoordinator
+import eu.geekhome.PortNotFoundException
 import eu.geekhome.WithStartStopScope
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.domain.R
+import eu.geekhome.domain.automation.AutomationErrorException
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.IEvaluableAutomationUnit
 import eu.geekhome.domain.automation.State
@@ -31,7 +34,6 @@ class AutomationConductor(
 
     private var automationJob: Job? = null
     private var enabled: Boolean = false
-    private var checkingNewPortsTime = 0L
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
     val automationUnitsCache = HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>()
@@ -59,7 +61,7 @@ class AutomationConductor(
         }
     }
 
-    private fun rebuildAutomations(): List<List<IStatementNode>> {
+    private fun rebuildAutomations(): Map<Long, List<IStatementNode>> {
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -69,8 +71,13 @@ class AutomationConductor(
                 try {
                     val physicalUnit = buildPhysicalUnit(configurable, instance)
                     automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
+                } catch (ex: PortNotFoundException) {
+                    val aex = AutomationErrorException(R.error_port_not_found(ex.portId), ex)
+                    val wrapper = buildWrappedUnit(configurable, aex)
+                    automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 } catch (ex: Exception) {
-                    val wrapper = buildWrappedUnit(configurable, ex)
+                    val aex = AutomationErrorException(R.error_automation, ex)
+                    val wrapper = buildWrappedUnit(configurable, aex)
                     automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 }
             }
@@ -83,7 +90,7 @@ class AutomationConductor(
 
         return allInstances
             .filter { it.automation != null }
-            .map { instanceDto ->
+            .associateBy({ it.id}, { instanceDto ->
                 val thisDevice = allConfigurables
                     .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
 
@@ -99,7 +106,7 @@ class AutomationConductor(
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
                 blocklyTransformer.transform(blocklyXml, context)
-            }
+            })
     }
 
     private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): DeviceAutomationUnit<*> {
@@ -116,7 +123,7 @@ class AutomationConductor(
         }
     }
 
-    private fun buildWrappedUnit(configurable: Configurable, ex: Exception): AutomationUnitWrapper<*> {
+    private fun buildWrappedUnit(configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
                 AutomationUnitWrapper(State::class.java, ex)
@@ -133,41 +140,48 @@ class AutomationConductor(
     override fun start() {
         super.start()
 
-        val automations = rebuildAutomations()
+        var automations = rebuildAutomations()
 
-        hardwareManager.checkNewPorts()
-        checkingNewPortsTime = Calendar.getInstance().timeInMillis
-
-        val triggers = automations.flatten()
-
-        var hasNewPorts = false
         automationJob = startStopScope.launch {
-            while (isActive && !hasNewPorts) {
+            while (isActive) {
                 val now = Calendar.getInstance()
 
-                if (automations.isNotEmpty()) {
-                    println("Processing automation loop")
-                    triggers.forEach {
-                        it.process(now)
+                val hasAutomations = automations.isNotEmpty()
+                val hasNewPorts = hardwareManager.checkNewPorts()
+                val hasUpdatedInstance = repository.hasUpdatedInstance()
+
+                if (hasNewPorts || hasUpdatedInstance) {
+                    if (hasNewPorts) {
+                        println("Hardware manager has new ports... rebuilding automation")
                     }
+
+                    if (hasUpdatedInstance) {
+                        println("Repository has updated instance... rebuilding automation")
+                    }
+
+                    automations = rebuildAutomations()
                 }
 
-                println("Processing maintenance loop")
-                if (now.timeInMillis > checkingNewPortsTime + CHECKING_NEW_PORTS_INTERVAL) {
-                    hasNewPorts = hardwareManager.checkNewPorts()
-                    if (hasNewPorts) {
-                        println("Has new ports, automation has to be restarted")
-                    }
+                if (hasAutomations) {
+                    println("Processing maintenance + automation loop")
+                    automations
+                        .forEach { (instanceId,automationList) ->
+                            automationList.forEach {
+                                try {
+                                    it.process(now)
+                                } catch (ex: AutomationErrorException) {
+                                    println("Exception during automation $instanceId")
+                                    automationUnitsCache[instanceId]!!.second.markExternalError(ex)
+                                }
+                            }
+                        }
+                } else {
+                    println("Processing maintenance loop")
                 }
+
 
                 hardwareManager.afterAutomationLoop()
                 delay(1000)
-            }
-
-            println("Automation stopped")
-            if (hasNewPorts) {
-                println("Restarting, reason = HAS NEW PORTS")
-                start()
             }
         }
     }
@@ -203,9 +217,5 @@ class AutomationConductor(
                     }
                 }
         }
-    }
-
-    companion object {
-        const val CHECKING_NEW_PORTS_INTERVAL = 15000L
     }
 }

@@ -6,7 +6,7 @@ import eu.geekhome.domain.repository.SettingsDto
 interface HardwareAdapter<T : Port<*>> {
 
     val ports: HashMap<String, T>
-    fun clearNewPorts()
+    fun clearNewPortsFlag()
     fun hasNewPorts(): Boolean
     val id: String
     suspend fun discover(discoverySink: EventsSink)

@@ -175,7 +175,7 @@ class HardwareManager(
             .forEach { bundle ->
                 val hasNewPorts = bundle.adapter.hasNewPorts()
                 if (hasNewPorts) {
-                    bundle.adapter.clearNewPorts()
+                    bundle.adapter.clearNewPortsFlag()
                     result = true
                 }
             }
@@ -195,4 +195,4 @@ class HardwareManager(
     }
 }
 
-class PortNotFoundException(id: String) : Exception("Cannot find port: $id")
+class PortNotFoundException(val portId: String) : Exception("Cannot find port: $portId")

@@ -15,13 +15,19 @@ abstract class DeviceAutomationUnit<T> {
         return try {
             calculateInternal(now)
         } catch (ex: Exception) {
-            lastEvaluation = evaluateAsAutomationError(ex)
+            val aex = AutomationErrorException(R.error_automation, ex)
+            lastEvaluation = evaluateAsAutomationError(aex)
         }
     }
 
-    private fun evaluateAsAutomationError(ex: java.lang.Exception): EvaluationResult<T> {
+    fun markExternalError(ex: AutomationErrorException) {
+        lastEvaluation = evaluateAsAutomationError(ex)
+    }
+
+    private fun evaluateAsAutomationError(ex: AutomationErrorException): EvaluationResult<T> {
         return EvaluationResult(
             interfaceValue = R.error_automation,
-            error =  ex)
+            error =  ex,
+            descriptions  = listOf(ex.localizedMessage))
     }
 }

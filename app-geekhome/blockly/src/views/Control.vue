@@ -52,9 +52,9 @@
           <v-expand-transition>
       <div v-show="automationUnit.show">
         <v-divider></v-divider>
-
         <v-card-text>
-          (no descriptions)
+          <div v-for="(description, index) in automationUnit.evaluationResult.descriptions" :key="index">
+           {{description}}</div>
         </v-card-text>
       </div>
     </v-expand-transition>

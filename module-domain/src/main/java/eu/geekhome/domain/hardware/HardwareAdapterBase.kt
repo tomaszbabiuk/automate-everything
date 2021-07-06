@@ -13,12 +13,12 @@ abstract class HardwareAdapterBase<T : Port<*>> : HardwareAdapter<T> {
     override val ports: HashMap<String, T> = HashMap()
     private var hasNewPorts: Boolean = false
 
-    override fun clearNewPorts() {
+    override fun clearNewPortsFlag() {
         hasNewPorts = false
     }
 
     override fun hasNewPorts(): Boolean {
-        return false
+        return hasNewPorts
     }
     abstract suspend fun internalDiscovery(eventsSink: EventsSink) : ArrayList<T>
 
