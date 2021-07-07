@@ -7,9 +7,10 @@ import eu.geekhome.domain.automation.DeviceAutomationUnit
 import java.util.*
 
 class AutomationUnitWrapper<T>(
+    name: String?,
     valueType: Class<T>,
     initError: AutomationErrorException
-) : DeviceAutomationUnit<T>() {
+) : DeviceAutomationUnit<T>(name) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf()

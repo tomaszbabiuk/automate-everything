@@ -12,7 +12,8 @@ class SensorAutomationNode(
 
     override fun getValue(now: Calendar): PortValue? {
         if (deviceUnit.lastEvaluation.error != null) {
-            throw AutomationErrorException(R.error_other_device_failure,
+            val otherName: String = deviceUnit.nameOfOrigin ?: "xxx"
+            throw AutomationErrorException(R.error_other_device_failure(otherName),
                 deviceUnit.lastEvaluation.error!!)
         }
 

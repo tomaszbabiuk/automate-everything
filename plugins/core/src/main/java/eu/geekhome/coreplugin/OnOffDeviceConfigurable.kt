@@ -50,7 +50,8 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
-        return OnOffDeviceAutomationUnit(states, STATE_ON, port)
+        val name = instance.fields["name"]
+        return OnOffDeviceAutomationUnit(name, states, STATE_ON, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {

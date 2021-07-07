@@ -1,5 +1,6 @@
 package eu.geekhome
 
+import eu.geekhome.domain.automation.PortNotFoundException
 import eu.geekhome.domain.events.*
 import eu.geekhome.domain.events.LiveEventsHelper.broadcastDiscoveryEvent
 import eu.geekhome.domain.events.LiveEventsHelper.broadcastPortUpdateEvent
@@ -194,5 +195,3 @@ class HardwareManager(
             }
     }
 }
-
-class PortNotFoundException(val portId: String) : Exception("Cannot find port: $portId")

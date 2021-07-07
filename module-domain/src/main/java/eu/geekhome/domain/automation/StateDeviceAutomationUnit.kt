@@ -1,14 +1,13 @@
 package eu.geekhome.domain.automation
 
-import eu.geekhome.domain.hardware.InputPort
 import eu.geekhome.domain.hardware.OutputPort
-import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnit(
+    name: String?,
     protected val states: Map<String, State>,
     initialStateId: String) :
-    DeviceAutomationUnit<State>(), IStateDeviceAutomationUnit {
+    DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
     var currentState: State
     override var controlMode: ControlMode = ControlMode.Auto

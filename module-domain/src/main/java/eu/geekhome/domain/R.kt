@@ -1,17 +1,21 @@
+@file:Suppress("FunctionName")
+
 package eu.geekhome.domain
 
 import eu.geekhome.domain.localization.Resource
 
 object R {
-    var field_name_hint = Resource(
+    val field_name_hint = Resource(
         "Name",
         "Nazwa"
     )
-    var field_description_hint = Resource(
+
+    val field_description_hint = Resource(
         "Description",
         "Opis"
     )
-    var error_automation = Resource(
+
+    val error_automation = Resource(
         "Automation error",
         "Błąd automatyki"
     )
@@ -23,23 +27,32 @@ object R {
         )
     }
 
-    var error_initialization = Resource(
+    val error_initialization = Resource(
         "Initialization error",
         "Błąd inicjalizacji"
     )
-    var error_other_device_failure = Resource(
-        "Automation of this device uses another device that's not available",
-        "Automatyka tego urządzenia używa innego urządzenia, które jest niedostępne"
+    
+    fun error_other_device_failure(unknownName: String) = Resource(
+        "Automation of this device uses another device ($unknownName) that's not available",
+        "Automatyka tego urządzenia używa innego urządzenia ($unknownName), które jest niedostępne"
     )
-    var validator_required_field = Resource(
+    
+    val error_unknown_device_name = Resource(
+        "no name",
+        "bez nazwy"
+    )
+    
+    val validator_required_field = Resource(
         "This field is required",
         "To pole jest wymagane"
     )
-    var validator_invalid_field = Resource(
+
+    val validator_invalid_field = Resource(
         "Invalid field",
         "To pole jest nieprawidłowe"
     )
-    var validator_invalid_ip_address = Resource(
+
+    val validator_invalid_ip_address = Resource(
         "Invalid ip address",
         "Nieprawidłowy adres IP"
     )

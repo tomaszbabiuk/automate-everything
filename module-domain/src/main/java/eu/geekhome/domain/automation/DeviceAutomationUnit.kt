@@ -3,7 +3,7 @@ package eu.geekhome.domain.automation
 import eu.geekhome.domain.R
 import java.util.*
 
-abstract class DeviceAutomationUnit<T> {
+abstract class DeviceAutomationUnit<T>(var nameOfOrigin: String?) {
     abstract var lastEvaluation: EvaluationResult<T>
     abstract val usedPortsIds: Array<String>
     abstract val recalculateOnTimeChange: Boolean

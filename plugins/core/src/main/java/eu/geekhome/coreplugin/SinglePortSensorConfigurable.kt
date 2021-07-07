@@ -18,7 +18,8 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForInputPort(valueType, portId)
-        return SensorAutomationUnit(port)
+        val name = instance.fields["name"]
+        return SensorAutomationUnit(name, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {

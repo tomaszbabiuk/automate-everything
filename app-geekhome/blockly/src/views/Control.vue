@@ -7,8 +7,7 @@
             <v-list-item-content>
               <v-list-item-title class="headline mb-1">
                 {{
-                  automationUnit.evaluationResult
-                    .interfaceValue
+                  automationUnit.evaluationResult.interfaceValue
                 }}
               </v-list-item-title>
               <v-list-item-subtitle>{{
@@ -42,15 +41,14 @@
                 @click="changeState(automationUnit.instance, state)">{{state.name}}</v-btn>
             </div>
             <v-spacer></v-spacer>
-
-            <v-btn icon @click="automationUnit.show = !automationUnit.show">
+            <v-btn icon @click="automationUnit.show = !automationUnit.show"  v-if="automationUnit.evaluationResult.descriptions.length > 0">
               <v-icon>{{
                 automationUnit.show ? "mdi-chevron-up" : "mdi-chevron-down"
               }}</v-icon>
             </v-btn>
           </v-card-actions>
           <v-expand-transition>
-      <div v-show="automationUnit.show">
+      <div v-show="automationUnit.show" v-if="automationUnit.evaluationResult.descriptions.length > 0">
         <v-divider></v-divider>
         <v-card-text>
           <div v-for="(description, index) in automationUnit.evaluationResult.descriptions" :key="index">

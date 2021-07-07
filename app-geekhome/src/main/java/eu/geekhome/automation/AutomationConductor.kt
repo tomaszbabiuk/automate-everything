@@ -2,14 +2,10 @@ package eu.geekhome.automation
 
 import eu.geekhome.HardwareManager
 import eu.geekhome.PluginsCoordinator
-import eu.geekhome.PortNotFoundException
 import eu.geekhome.WithStartStopScope
 import eu.geekhome.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.R
-import eu.geekhome.domain.automation.AutomationErrorException
-import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.automation.IEvaluableAutomationUnit
-import eu.geekhome.domain.automation.State
+import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.configurable.ConditionConfigurable
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SensorConfigurable
@@ -62,6 +58,7 @@ class AutomationConductor(
     }
 
     private fun rebuildAutomations(): Map<Long, List<IStatementNode>> {
+
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -71,13 +68,14 @@ class AutomationConductor(
                 try {
                     val physicalUnit = buildPhysicalUnit(configurable, instance)
                     automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
-                } catch (ex: PortNotFoundException) {
-                    val aex = AutomationErrorException(R.error_port_not_found(ex.portId), ex)
-                    val wrapper = buildWrappedUnit(configurable, aex)
+                } catch (ex: AutomationErrorException) {
+                    val originName = instance.fields["name"]
+                    val wrapper = buildWrappedUnit(originName, configurable, ex)
                     automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 } catch (ex: Exception) {
+                    val originName = instance.fields["name"]
                     val aex = AutomationErrorException(R.error_automation, ex)
-                    val wrapper = buildWrappedUnit(configurable, aex)
+                    val wrapper = buildWrappedUnit(originName, configurable, aex)
                     automationUnitsCache[instance.id] = Pair(instance, wrapper)
                 }
             }
@@ -123,14 +121,14 @@ class AutomationConductor(
         }
     }
 
-    private fun buildWrappedUnit(configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
+    private fun buildWrappedUnit(originName: String?, configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                AutomationUnitWrapper(State::class.java, ex)
+                AutomationUnitWrapper(originName, State::class.java, ex)
             }
 
             is SensorConfigurable<*> -> {
-                AutomationUnitWrapper(configurable.valueType, ex)
+                AutomationUnitWrapper(originName, configurable.valueType, ex)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated")

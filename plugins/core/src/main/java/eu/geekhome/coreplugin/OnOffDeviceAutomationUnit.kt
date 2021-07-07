@@ -10,10 +10,11 @@ import kotlin.Throws
 import java.util.Calendar
 
 class OnOffDeviceAutomationUnit(
+    name: String?,
     states: Map<String, State>,
     initialState: String,
     private val controlPort: OutputPort<Relay>,
-) : StateDeviceAutomationUnit(states, initialState) {
+) : StateDeviceAutomationUnit(name, states, initialState) {
 
     init {
         setCurrentState("off")
