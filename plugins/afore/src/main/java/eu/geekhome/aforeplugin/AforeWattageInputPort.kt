@@ -25,16 +25,13 @@ class AforeWattageInputPort(
         connectionValidUntil = now.timeInMillis + 1000 * 60 * 5 //now + 5 minutes
     }
 
-    suspend fun refresh(now: Calendar): Boolean {
+    suspend fun refresh(now: Calendar) {
         try {
-            val result = refreshInverterData()
+            refreshInverterData()
             prolongValidity(now)
-            return result
         } catch (ex: Exception) {
             markDisconnected()
         }
-
-        return false
     }
 
     private var cachedValue = Wattage(0.0)
@@ -43,14 +40,11 @@ class AforeWattageInputPort(
         return cachedValue
     }
 
-    private suspend fun refreshInverterData() : Boolean {
+    private suspend fun refreshInverterData() {
         val newValue = readInverterPower()
         if (cachedValue.value != newValue) {
             cachedValue = Wattage(newValue)
-            return true
         }
-
-        return false
     }
 
     private suspend fun readInverterPower(): Double {

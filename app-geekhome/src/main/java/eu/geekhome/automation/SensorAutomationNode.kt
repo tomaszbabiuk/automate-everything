@@ -20,7 +20,6 @@ class SensorAutomationNode(
                 throw AutomationErrorException(R.error_other_device_failure,
                     deviceUnit.lastEvaluation.error!!)
             }
-
         }
 
         return deviceUnit.lastEvaluation.value as PortValue?

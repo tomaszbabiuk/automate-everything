@@ -383,6 +383,7 @@ export default new Vuex.Store({
         if (element.id === portDto.id) {
           element.integerValue = portDto.integerValue
           element.interfaceValue = portDto.interfaceValue
+          element.connected = portDto.connected
           portFound = true
         }
       })

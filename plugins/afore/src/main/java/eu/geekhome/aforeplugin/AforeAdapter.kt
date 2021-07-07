@@ -95,8 +95,14 @@ class AforeAdapter(
 
     private suspend fun maintenanceLoop(now: Calendar) {
         ports.values.forEach {
-            val changed = it.refresh(now)
-            if (changed) {
+            val previousValue = it.read().value
+            val previousConnectionState = it.checkIfConnected(now)
+
+            it.refresh(now)
+
+            val valueHasChanged = it.read().value != previousValue
+            val connectionStateHasChanged = it.checkIfConnected(now) != previousConnectionState
+            if (valueHasChanged || connectionStateHasChanged) {
                 val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)
                 operationSink?.broadcastEvent(event)
             }

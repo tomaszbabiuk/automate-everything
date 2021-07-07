@@ -1,6 +1,5 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.domain.hardware.IConnectible
 import eu.geekhome.domain.hardware.Port
 import eu.geekhome.domain.hardware.PortDto
 import eu.geekhome.domain.localization.Resource
@@ -11,7 +10,7 @@ class PortDtoMapper {
         val now = Calendar.getInstance()
         val integerValue: Int? = if (port.canRead) { port.tryRead()?.asInteger() } else null
         val interfaceValue: Resource? = if (port.canRead) { port.tryRead()?.toFormattedString() } else null
-        val connected = if (port is IConnectible) { port.checkIfConnected(now) } else false
+        val connected = port.checkIfConnected(now)
         return PortDto(
             port.id,
             factoryId,

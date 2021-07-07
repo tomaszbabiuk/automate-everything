@@ -22,8 +22,8 @@ object R {
 
     fun error_port_not_found(portId: String): Resource {
         return Resource(
-            "Port $portId not found",
-            "Nie odnaleziono portu $portId"
+            "Port $portId not found or disconnected",
+            "Nie odnaleziono portu $portId lub port został rozłączony"
         )
     }
 
