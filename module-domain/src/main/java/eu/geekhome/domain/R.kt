@@ -31,7 +31,12 @@ object R {
         "Initialization error",
         "Błąd inicjalizacji"
     )
-    
+
+    val error_other_device_failure = Resource(
+        "Automation of this device uses another device that's not available",
+        "Automatyka tego urządzenia używa innego urządzenia, które jest niedostępne"
+    )
+
     fun error_other_device_failure(unknownName: String) = Resource(
         "Automation of this device uses another device ($unknownName) that's not available",
         "Automatyka tego urządzenia używa innego urządzenia ($unknownName), które jest niedostępne"
