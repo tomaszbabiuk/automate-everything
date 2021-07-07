@@ -6,6 +6,7 @@ import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.domain.events.*
+import eu.geekhome.heartbeat.HeartbeatDtoMapper
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -24,6 +25,7 @@ class LiveController @Inject constructor(
     private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
     private val automationUnitMapper: AutomationUnitDtoMapper,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
+    private val heartbeatDtoMapper: HeartbeatDtoMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
@@ -85,6 +87,11 @@ class LiveController @Inject constructor(
                 val payloadHistory = event.data as AutomationStateEventData
                 val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
                 broadcast(mappedHistory.javaClass, mappedHistory)
+            }
+            is HeartbeatEventData -> {
+                val payload = event.data as HeartbeatEventData
+                val mapped = heartbeatDtoMapper.map(payload)
+                broadcast(mapped.javaClass, mapped)
             }
         }
 

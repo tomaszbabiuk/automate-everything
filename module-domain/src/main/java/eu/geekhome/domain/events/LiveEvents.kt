@@ -58,6 +58,8 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
     }
 }
 
+class HeartbeatEventData(val timestamp: Long) : LiveEventData()
+
 object LiveEventsHelper {
     fun broadcastDiscoveryEvent(eventsSink: EventsSink, factoryId: String, message: String) {
         val event = DiscoveryEventData(factoryId, message)
@@ -66,6 +68,11 @@ object LiveEventsHelper {
 
     fun broadcastPortUpdateEvent(eventsSink: EventsSink, factoryId: String, adapterId: String, port: Port<*>) {
         val event = PortUpdateEventData(factoryId, adapterId, port)
+        eventsSink.broadcastEvent(event)
+    }
+
+    fun broadcastHeartbeatEvent(eventsSink: EventsSink, timestamp: Long) {
+        val event = HeartbeatEventData(timestamp)
         eventsSink.broadcastEvent(event)
     }
 }

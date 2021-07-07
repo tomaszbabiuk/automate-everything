@@ -38,6 +38,7 @@
               <portcontrol
                 :valueType="item.valueType"
                 :portId="item.id"
+                :disabled="!item.connected"
               ></portcontrol>
             </div>
             <div v-else>

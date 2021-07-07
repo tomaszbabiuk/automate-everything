@@ -7,6 +7,7 @@ import eu.geekhome.automation.BlocklyParser;
 import eu.geekhome.automation.blocks.BlockFactoriesCollector;
 import eu.geekhome.domain.events.EventsSink;
 import eu.geekhome.domain.repository.Repository;
+import eu.geekhome.heartbeat.HeartbeatDtoMapper;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
 import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper;
@@ -60,6 +61,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
         bind(AutomationHistoryDtoMapper.class).to(AutomationHistoryDtoMapper.class).in(Singleton.class);
         bind(SettingGroupDtoMapper.class).to(SettingGroupDtoMapper.class).in(Singleton.class);
+        bind(HeartbeatDtoMapper.class).to(HeartbeatDtoMapper.class).in(Singleton.class);
 
         //factories for objects shared with the App
         bindFactory(new SingletonFactory<>(_hardwareManager)).to(HardwareManager.class).in(Singleton.class);

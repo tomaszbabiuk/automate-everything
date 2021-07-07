@@ -1,7 +1,8 @@
 <template>
   <div>
-    <v-btn v-if="valueType == 'Relay'" @click="togglePort()">Toggle</v-btn>
-    <v-slider v-model="powerLevel" v-if="valueType == 'PowerLevel'" hint="Changing" max="100" min="0" thumb-label @click="controlPowerLevel()"></v-slider>
+    <v-btn v-if="valueType == 'Relay'" @click="togglePort()" :disabled="disabled">Toggle</v-btn>
+    <v-slider v-model="powerLevel" v-if="valueType == 'PowerLevel'" hint="Changing" max="100" min="0"
+       thumb-label @click="controlPowerLevel()" :disabled="disabled"></v-slider>
   </div>
 </template>
 <script>
@@ -14,7 +15,7 @@ export default {
       powerLevelThrottlingTimeout: null,
     };
   },
-  props: ["valueType", "portId"],
+  props: ["valueType", "portId", "disabled"],
   computed: {
     port: function() {
       return this.$store.state.ports.filter(element => {

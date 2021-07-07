@@ -6,16 +6,16 @@ import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
+import eu.geekhome.heartbeat.Pulser
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {
     init {
         val liveEvents = NumberedEventsSink()
+        val pulser = Pulser(liveEvents)
         val repository = SqlDelightRepository()
         val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents)
         pluginsCoordinator.loadPlugins()
@@ -42,5 +42,6 @@ open class App : ResourceConfig() {
         pluginsCoordinator.startPlugins()
         hardwareManager.start()
         mqttBrokerService.start()
+        pulser.start()
     }
 }
