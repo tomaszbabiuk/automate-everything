@@ -1,8 +1,8 @@
 package eu.geekhome.rest.tags
 
-import eu.geekhome.domain.repository.Repository
+import eu.geekhome.data.Repository
+import eu.geekhome.data.tags.TagDto
 import javax.inject.Inject
-import eu.geekhome.domain.repository.TagDto
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

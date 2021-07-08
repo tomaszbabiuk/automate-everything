@@ -3,9 +3,9 @@ package eu.geekhome.rest;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import eu.geekhome.domain.automation.RawJson;
-import eu.geekhome.domain.localization.Language;
-import eu.geekhome.domain.localization.Resource;
+import eu.geekhome.data.blocks.RawJson;
+import eu.geekhome.data.localization.Language;
+import eu.geekhome.data.localization.Resource;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;

@@ -1,11 +1,12 @@
 package eu.geekhome.rest.automationhistory
 
 import eu.geekhome.R
+import eu.geekhome.data.automationhistory.AutomationHistoryDto
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
 import eu.geekhome.domain.events.AutomationStateEventData
 import eu.geekhome.domain.events.AutomationUpdateEventData
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 import javax.inject.Inject
 
 class AutomationHistoryDtoMapper @Inject constructor() {

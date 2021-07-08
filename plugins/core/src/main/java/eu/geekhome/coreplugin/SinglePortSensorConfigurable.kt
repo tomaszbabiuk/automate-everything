@@ -1,10 +1,10 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.hardware.IPortFinder
 import eu.geekhome.domain.hardware.PortValue
-import eu.geekhome.domain.repository.InstanceDto
 import java.util.*
 
 abstract class SinglePortSensorConfigurable<T: PortValue>(

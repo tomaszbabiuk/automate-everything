@@ -6,8 +6,9 @@ import eu.geekhome.domain.events.LiveEventsHelper.broadcastDiscoveryEvent
 import eu.geekhome.domain.events.LiveEventsHelper.broadcastPortUpdateEvent
 import eu.geekhome.domain.events.NumberedEventsSink
 import eu.geekhome.domain.extensibility.PluginsCoordinator
-import eu.geekhome.domain.repository.Repository
-import eu.geekhome.domain.repository.SettingsDto
+import eu.geekhome.data.Repository
+import eu.geekhome.data.hardware.PortDto
+import eu.geekhome.data.settings.SettingsDto
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope

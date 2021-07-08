@@ -1,6 +1,6 @@
 package eu.geekhome.domain.hardware
 
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 import kotlin.math.roundToInt
 
 sealed class PortValue {

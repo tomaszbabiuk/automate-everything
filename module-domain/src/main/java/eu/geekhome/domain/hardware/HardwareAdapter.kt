@@ -1,7 +1,8 @@
 package eu.geekhome.domain.hardware
 
+import eu.geekhome.data.hardware.AdapterState
+import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.EventsSink
-import eu.geekhome.domain.repository.SettingsDto
 
 interface HardwareAdapter<T : Port<*>> {
 

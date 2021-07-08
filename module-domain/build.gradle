@@ -3,6 +3,9 @@ plugins {
 }
 
 dependencies {
+    //projects
+    implementation project(":module-data")
+
     implementation "org.pf4j:pf4j:${pf4jVersion}"
     implementation "com.google.code.gson:gson:${gsonVersion}"
 

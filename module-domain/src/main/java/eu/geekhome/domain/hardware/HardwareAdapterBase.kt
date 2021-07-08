@@ -1,5 +1,6 @@
 package eu.geekhome.domain.hardware
 
+import eu.geekhome.data.hardware.AdapterState
 import eu.geekhome.domain.events.EventsSink
 import java.util.*
 import kotlin.collections.HashMap

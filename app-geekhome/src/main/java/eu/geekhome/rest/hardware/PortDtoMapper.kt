@@ -1,8 +1,8 @@
 package eu.geekhome.rest.hardware
 
+import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.domain.hardware.Port
-import eu.geekhome.domain.hardware.PortDto
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 import java.util.*
 
 class PortDtoMapper {

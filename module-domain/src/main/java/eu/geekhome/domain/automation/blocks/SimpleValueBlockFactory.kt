@@ -1,9 +1,10 @@
 package eu.geekhome.domain.automation.blocks
 
+import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
 import eu.geekhome.domain.hardware.PortValueBuilder
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 
 
@@ -18,7 +19,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
     override val category: Resource,
     private val color: Int) : ValueBlockFactory {
 
-    override val type: String = "${valueType.simpleName.toLowerCase()}_value$typeSuffix"
+    override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
     override fun match(type: String) : Boolean {
         return type == this.type

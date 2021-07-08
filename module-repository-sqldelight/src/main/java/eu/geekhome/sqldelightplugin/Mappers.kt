@@ -1,7 +1,12 @@
 package eu.geekhome.sqldelightplugin
 
-import eu.geekhome.domain.hardware.PortDto
-import eu.geekhome.domain.repository.*
+import eu.geekhome.data.hardware.PortDto
+import eu.geekhome.data.icons.IconCategoryDto
+import eu.geekhome.data.icons.IconDto
+import eu.geekhome.data.instances.InstanceBriefDto
+import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.data.settings.SettingsDto
+import eu.geekhome.data.tags.TagDto
 import eu.geekhome.sqldelightplugin.database.*
 
 interface Mapper<From, To> {

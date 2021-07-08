@@ -1,10 +1,11 @@
 package eu.geekhome.rest.hardware
 
+import eu.geekhome.data.Repository
+import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.domain.hardware.HardwareManager
 import javax.inject.Inject
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.domain.hardware.*
-import eu.geekhome.domain.repository.Repository
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

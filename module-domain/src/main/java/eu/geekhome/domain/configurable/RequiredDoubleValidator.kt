@@ -1,6 +1,6 @@
 package eu.geekhome.domain.configurable
 
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 class RequiredDoubleValidator : Validator<Double?> {
     override val reason: Resource

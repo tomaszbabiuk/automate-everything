@@ -1,8 +1,8 @@
 package eu.geekhome.rest.icons
 
+import eu.geekhome.data.Repository
+import eu.geekhome.data.icons.IconDto
 import javax.inject.Inject
-import eu.geekhome.domain.repository.IconDto
-import eu.geekhome.domain.repository.Repository
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

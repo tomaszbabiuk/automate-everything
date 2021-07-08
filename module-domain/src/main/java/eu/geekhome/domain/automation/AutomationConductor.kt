@@ -1,5 +1,8 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.data.Repository
+import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.data.automation.State
 import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.domain.WithStartStopScope
@@ -10,8 +13,6 @@ import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SensorConfigurable
 import eu.geekhome.domain.configurable.StateDeviceConfigurable
 import eu.geekhome.domain.events.*
-import eu.geekhome.domain.repository.InstanceDto
-import eu.geekhome.domain.repository.Repository
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -196,7 +197,7 @@ class AutomationConductor(
     override fun onEvent(event: LiveEvent<*>) {
         val now = Calendar.getInstance()
         if (event.data is PortUpdateEventData) {
-            val port = (event.data as PortUpdateEventData).port
+            val port = event.data.port
             automationUnitsCache
                 .filter {
                     val unit = it.value.second

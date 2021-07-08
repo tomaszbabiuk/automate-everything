@@ -1,7 +1,7 @@
 package eu.geekhome.aforeplugin;
 
 
-import eu.geekhome.domain.localization.Resource;
+import eu.geekhome.data.localization.Resource;
 
 public class R {
     public static Resource plugin_description = new Resource(

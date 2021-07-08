@@ -1,12 +1,12 @@
 package eu.geekhome.shellyplugin
 
+import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.LiveEventsHelper
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.mqtt.MqttListener
-import eu.geekhome.domain.repository.SettingsDto
 import eu.geekhome.domain.langateway.LanGateway
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.shellyplugin.ports.ShellyInputPort

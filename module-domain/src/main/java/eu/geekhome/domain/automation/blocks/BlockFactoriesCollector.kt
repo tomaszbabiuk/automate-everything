@@ -3,14 +3,14 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.domain.automation.BlockFactory
 import eu.geekhome.domain.R
-import eu.geekhome.domain.automation.StateType
+import eu.geekhome.data.automation.StateType
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.hardware.Humidity
 import eu.geekhome.domain.hardware.PortValue
 import eu.geekhome.domain.hardware.Temperature
 import eu.geekhome.domain.hardware.Wattage
-import eu.geekhome.domain.localization.Resource
-import eu.geekhome.domain.repository.Repository
+import eu.geekhome.data.localization.Resource
+import eu.geekhome.data.Repository
 
 interface IBlockFactoriesCollector {
     fun collect(thisDevice: Configurable?): List<BlockFactory<*>>

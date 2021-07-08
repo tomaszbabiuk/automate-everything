@@ -1,11 +1,11 @@
 package eu.geekhome.domain.configurable
 
+import eu.geekhome.data.automation.State
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.EvaluableAutomationUnit
 import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.automation.State
 import eu.geekhome.domain.hardware.*
-import eu.geekhome.domain.localization.Resource
-import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.data.localization.Resource
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {

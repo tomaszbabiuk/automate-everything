@@ -1,5 +1,7 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.data.automation.ControlMode
+
 interface IStateDeviceAutomationUnit {
 
     @Throws(Exception::class)

@@ -1,9 +1,11 @@
 package eu.geekhome.domain.automation.blocks
 
+import eu.geekhome.data.automation.State
+import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.configurable.StateDeviceConfigurable
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory {
 

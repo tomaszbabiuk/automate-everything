@@ -1,5 +1,6 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.data.automation.ControlMode
 import java.util.*
 
 class ChangeStateAutomationNode(

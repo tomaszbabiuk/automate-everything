@@ -6,7 +6,7 @@ import eu.geekhome.domain.hardware.HardwarePlugin
 import eu.geekhome.domain.hardware.HardwareAdapterFactory
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, RequiresLanGatewayResolver {
 

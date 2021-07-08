@@ -3,7 +3,7 @@ package eu.geekhome.domain.automation
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.events.AutomationUpdateEventData
 import eu.geekhome.domain.events.NumberedEventsSink
-import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.data.instances.InstanceDto
 
 class AutomationContext(
     val instanceDto: InstanceDto,

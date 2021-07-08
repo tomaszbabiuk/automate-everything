@@ -10,6 +10,7 @@ run {
 
 dependencies {
     //common
+    implementation project(":module-data")
     implementation project(":module-domain")
     implementation project(":module-repository-sqldelight")
     implementation project(":plugin-features:lan-gateway")

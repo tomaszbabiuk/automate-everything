@@ -1,6 +1,6 @@
 package eu.geekhome
 
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 object R {
 

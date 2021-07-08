@@ -6,7 +6,6 @@ import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.domain.events.*
-import eu.geekhome.domain.heartbeat.HeartbeatDtoMapper
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path

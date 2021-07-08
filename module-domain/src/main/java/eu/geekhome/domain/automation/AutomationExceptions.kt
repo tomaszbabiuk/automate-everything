@@ -1,8 +1,8 @@
 package eu.geekhome.domain.automation
 
 import eu.geekhome.domain.R
-import eu.geekhome.domain.localization.Language
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Language
+import eu.geekhome.data.localization.Resource
 import java.lang.Exception
 
 open class AutomationErrorException(val localizedMessage: Resource, cause: Throwable? = null) :

@@ -1,5 +1,7 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.data.automation.ControlMode
+import eu.geekhome.data.automation.State
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.Relay
 

@@ -3,7 +3,7 @@ package eu.geekhome.rest.hardware
 import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.events.EventsSink
 import javax.inject.Inject
-import eu.geekhome.domain.hardware.HardwareAdapterDto
+import eu.geekhome.data.hardware.HardwareAdapterDto
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 

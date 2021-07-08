@@ -1,18 +1,18 @@
 package eu.geekhome.rest;
 
+import eu.geekhome.data.Repository;
 import eu.geekhome.domain.hardware.HardwareManager;
 import eu.geekhome.domain.extensibility.PluginsCoordinator;
 import eu.geekhome.domain.automation.AutomationConductor;
 import eu.geekhome.domain.automation.BlocklyParser;
 import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector;
 import eu.geekhome.domain.events.EventsSink;
-import eu.geekhome.domain.repository.Repository;
-import eu.geekhome.domain.heartbeat.HeartbeatDtoMapper;
+import eu.geekhome.rest.live.HeartbeatDtoMapper;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
 import eu.geekhome.rest.automation.EvaluationResultDtoMapper;
 import eu.geekhome.rest.automationhistory.AutomationHistoryDtoMapper;
-import eu.geekhome.rest.configurable.ConfigurableDtoMapper;
-import eu.geekhome.rest.field.FieldDefinitionDtoMapper;
+import eu.geekhome.rest.configurables.ConfigurableDtoMapper;
+import eu.geekhome.rest.fields.FieldDefinitionDtoMapper;
 import eu.geekhome.rest.hardware.HardwareAdapterDtoMapper;
 import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper;
 import eu.geekhome.rest.hardware.PortDtoMapper;

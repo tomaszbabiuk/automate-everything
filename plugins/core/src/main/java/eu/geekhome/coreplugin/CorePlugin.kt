@@ -1,8 +1,7 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.extensibility.PluginMetadata
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 

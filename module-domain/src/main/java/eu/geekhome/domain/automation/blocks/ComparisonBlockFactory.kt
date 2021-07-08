@@ -1,15 +1,16 @@
 package eu.geekhome.domain.automation.blocks
 
+import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 class ComparisonBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
     override val category: Resource,
     private val color: Int) : EvaluatorBlockFactory {
 
-    override val type: String = "${valueType.simpleName.toLowerCase()}_comparison"
+    override val type: String = "${valueType.simpleName.lowercase()}_comparison"
 
     override fun match(type: String) : Boolean {
         return type == this.type

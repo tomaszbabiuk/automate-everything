@@ -1,7 +1,6 @@
 package eu.geekhome.coreplugin
 
-import eu.geekhome.domain.automation.ControlMode
-import eu.geekhome.domain.automation.State
+import eu.geekhome.data.automation.State
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.Relay
@@ -42,9 +41,9 @@ class OnOffDeviceAutomationUnit(
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {
-            changeState("on", ControlMode.Manual, null, null)
+            changeState("on", eu.geekhome.data.automation.ControlMode.Manual, null, null)
         } else {
-            changeState("off", ControlMode.Manual, null, null)
+            changeState("off", eu.geekhome.data.automation.ControlMode.Manual, null, null)
         }
     }
 

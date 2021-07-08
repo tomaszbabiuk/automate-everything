@@ -1,5 +1,6 @@
 package eu.geekhome.rest.plugins
 
+import eu.geekhome.data.plugins.PluginDto
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.rest.ResourceNotFoundException
 import org.pf4j.PluginWrapper

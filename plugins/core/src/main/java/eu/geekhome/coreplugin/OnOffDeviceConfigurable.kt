@@ -1,13 +1,12 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.data.automation.State
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.automation.State
-import eu.geekhome.domain.automation.StateType
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.hardware.IPortFinder
 import eu.geekhome.domain.hardware.Relay
-import eu.geekhome.domain.localization.Resource
-import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.data.localization.Resource
 import org.pf4j.Extension
 import java.util.*
 
@@ -65,14 +64,14 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_ON] = State(
                 STATE_ON,
                 R.state_on,
-                StateType.NonSignaledAction,
+                eu.geekhome.data.automation.StateType.NonSignaledAction,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_OFF] = State(
                 STATE_OFF,
                 R.state_off,
-                StateType.SignaledAction,
+                eu.geekhome.data.automation.StateType.SignaledAction,
                 isSignaled = false,
                 codeRequired = false
             )

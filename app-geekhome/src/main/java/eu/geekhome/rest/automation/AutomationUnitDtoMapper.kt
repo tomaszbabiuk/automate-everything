@@ -1,9 +1,10 @@
 package eu.geekhome.rest.automation
 
+import eu.geekhome.data.automation.AutomationUnitDto
+import eu.geekhome.data.instances.InstanceDto
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
 import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.repository.InstanceDto
 import javax.inject.Inject
 
 class AutomationUnitDtoMapper @Inject constructor(

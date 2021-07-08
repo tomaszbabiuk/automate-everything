@@ -1,7 +1,7 @@
 package eu.geekhome.rest.hardware
 
 import eu.geekhome.domain.events.DiscoveryEventData
-import eu.geekhome.domain.hardware.DiscoveryEventDto
+import eu.geekhome.data.hardware.DiscoveryEventDto
 
 class NumberedHardwareEventToEventDtoMapper {
 

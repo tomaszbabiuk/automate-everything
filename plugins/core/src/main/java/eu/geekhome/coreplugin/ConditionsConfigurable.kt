@@ -2,7 +2,7 @@ package eu.geekhome.coreplugin
 
 import eu.geekhome.domain.configurable.CategoryConfigurable
 import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 import org.pf4j.Extension
 
 @Extension

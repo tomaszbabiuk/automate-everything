@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     //common
+    shadow project(':module-data')
     shadow project(':module-domain')
 
     //pf4j

@@ -1,6 +1,7 @@
 package eu.geekhome.domain.automation
 
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.blocks.RawJson
+import eu.geekhome.data.localization.Resource
 
 interface BlockFactory<N: IAutomationNode> {
     val category: Resource

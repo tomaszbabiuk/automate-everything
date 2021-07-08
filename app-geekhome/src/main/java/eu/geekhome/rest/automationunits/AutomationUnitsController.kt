@@ -2,9 +2,9 @@ package eu.geekhome.rest.automationunits
 
 import eu.geekhome.domain.automation.AutomationConductor
 import eu.geekhome.rest.ResourceNotFoundException
-import eu.geekhome.rest.automation.AutomationUnitDto
+import eu.geekhome.data.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
-import eu.geekhome.domain.automation.ControlMode
+import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import java.lang.Exception
 import javax.inject.Inject

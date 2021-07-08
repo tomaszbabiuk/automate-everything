@@ -1,9 +1,9 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.EvaluableAutomationUnit
 import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.localization.Resource
-import eu.geekhome.domain.repository.InstanceDto
+import eu.geekhome.data.localization.Resource
 import org.pf4j.Extension
 import java.util.*
 

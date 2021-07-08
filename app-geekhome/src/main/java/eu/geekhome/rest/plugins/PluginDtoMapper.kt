@@ -1,6 +1,7 @@
 package eu.geekhome.rest.plugins
 
 import eu.geekhome.R
+import eu.geekhome.data.plugins.PluginDto
 import eu.geekhome.rest.settinggroup.SettingGroupDtoMapper
 import org.pf4j.PluginWrapper
 import org.pf4j.PluginState

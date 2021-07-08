@@ -1,5 +1,6 @@
 package eu.geekhome.rest.automation
 
+import eu.geekhome.data.automation.EvaluationResultDto
 import kotlin.Throws
 import eu.geekhome.rest.MappingException
 import eu.geekhome.domain.automation.EvaluationResult

@@ -1,5 +1,6 @@
 package eu.geekhome.rest.automationhistory
 
+import eu.geekhome.data.automationhistory.AutomationHistoryDto
 import eu.geekhome.domain.events.AutomationStateEventData
 import eu.geekhome.domain.events.AutomationUpdateEventData
 import eu.geekhome.domain.events.EventsSink

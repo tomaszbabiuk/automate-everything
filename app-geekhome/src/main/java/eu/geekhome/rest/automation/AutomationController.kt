@@ -1,5 +1,6 @@
 package eu.geekhome.rest.automation
 
+import eu.geekhome.data.automation.AutomationDto
 import eu.geekhome.domain.automation.AutomationConductor
 import javax.inject.Inject
 import javax.ws.rs.GET

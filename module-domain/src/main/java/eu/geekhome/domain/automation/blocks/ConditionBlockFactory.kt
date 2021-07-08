@@ -1,9 +1,10 @@
 package eu.geekhome.domain.automation.blocks
 
+import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.configurable.ConditionConfigurable
-import eu.geekhome.domain.localization.Resource
+import eu.geekhome.data.localization.Resource
 
 class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : EvaluatorBlockFactory {
 

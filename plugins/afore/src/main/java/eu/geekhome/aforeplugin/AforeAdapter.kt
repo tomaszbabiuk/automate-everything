@@ -1,11 +1,11 @@
 package eu.geekhome.aforeplugin
 
+import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.DiscoveryEventData
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
 import eu.geekhome.domain.hardware.PortIdBuilder
-import eu.geekhome.domain.repository.SettingsDto
 import eu.geekhome.domain.langateway.LanGateway
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import io.ktor.client.*
