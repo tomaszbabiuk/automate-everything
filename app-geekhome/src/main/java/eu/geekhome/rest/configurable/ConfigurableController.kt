@@ -1,6 +1,6 @@
 package eu.geekhome.rest.configurable
 
-import eu.geekhome.PluginsCoordinator
+import eu.geekhome.domain.extensibility.PluginsCoordinator
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Produces

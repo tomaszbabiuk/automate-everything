@@ -1,7 +1,8 @@
 package eu.geekhome.rest.blocks
 
-import eu.geekhome.PluginsCoordinator
-import eu.geekhome.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.domain.extensibility.PluginsCoordinator
+import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.domain.automation.RawJson
 import eu.geekhome.rest.*
 import javax.inject.Inject
 import javax.ws.rs.GET

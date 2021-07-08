@@ -1,12 +1,15 @@
 package eu.geekhome
 
-import eu.geekhome.automation.AutomationConductor
-import eu.geekhome.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.domain.automation.AutomationConductor
+import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
+import eu.geekhome.domain.extensibility.PluginsCoordinator
+import eu.geekhome.domain.extensibility.SingletonExtensionsPluginsCoordinator
+import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
-import eu.geekhome.heartbeat.Pulser
+import eu.geekhome.domain.heartbeat.Pulser
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository

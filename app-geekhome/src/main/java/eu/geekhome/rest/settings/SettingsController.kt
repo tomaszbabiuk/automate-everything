@@ -1,6 +1,6 @@
 package eu.geekhome.rest.settings
 
-import eu.geekhome.PluginsCoordinator
+import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.domain.configurable.FieldValidationResult
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.extensibility.PluginMetadata

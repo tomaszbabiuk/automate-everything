@@ -3,6 +3,7 @@ package eu.geekhome.rest;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import eu.geekhome.domain.automation.RawJson;
 import eu.geekhome.domain.localization.Language;
 import eu.geekhome.domain.localization.Resource;
 

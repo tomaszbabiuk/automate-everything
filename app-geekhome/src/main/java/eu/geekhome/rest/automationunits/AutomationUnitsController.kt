@@ -1,6 +1,6 @@
 package eu.geekhome.rest.automationunits
 
-import eu.geekhome.automation.AutomationConductor
+import eu.geekhome.domain.automation.AutomationConductor
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.rest.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper

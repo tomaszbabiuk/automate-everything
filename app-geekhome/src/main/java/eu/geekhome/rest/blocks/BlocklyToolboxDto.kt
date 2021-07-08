@@ -1,6 +1,6 @@
 package eu.geekhome.rest.blocks
 
-import eu.geekhome.rest.RawJson
+import eu.geekhome.domain.automation.RawJson
 
 data class BlocklyToolboxDto(
     val kind: ToolboxKind = ToolboxKind.categoryToolbox,

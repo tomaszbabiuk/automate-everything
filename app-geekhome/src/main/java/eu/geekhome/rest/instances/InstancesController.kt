@@ -1,6 +1,6 @@
 package eu.geekhome.rest.instances
 
-import eu.geekhome.PluginsCoordinator
+import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.rest.settings.ValidationResultMap
 import eu.geekhome.domain.configurable.ConfigurableWithFields
 import eu.geekhome.domain.configurable.FieldValidationResult

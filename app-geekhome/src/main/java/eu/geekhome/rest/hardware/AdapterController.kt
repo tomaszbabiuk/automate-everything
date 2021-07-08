@@ -1,6 +1,6 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.HardwareManager
+import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.events.EventsSink
 import javax.inject.Inject
 import eu.geekhome.domain.hardware.HardwareAdapterDto

@@ -1,6 +1,6 @@
 package eu.geekhome.rest.hardware
 
-import eu.geekhome.HardwareManager
+import eu.geekhome.domain.hardware.HardwareManager
 import javax.inject.Inject
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.domain.hardware.*

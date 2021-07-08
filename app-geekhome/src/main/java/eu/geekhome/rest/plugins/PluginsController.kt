@@ -1,6 +1,6 @@
 package eu.geekhome.rest.plugins
 
-import eu.geekhome.PluginsCoordinator
+import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.rest.ResourceNotFoundException
 import org.pf4j.PluginWrapper
 import javax.inject.Inject
