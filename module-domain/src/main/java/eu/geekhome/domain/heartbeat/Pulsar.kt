@@ -7,7 +7,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 
-class Pulser(val eventsSink: EventsSink) : WithStartStopScope() {
+class Pulsar(val eventsSink: EventsSink) : WithStartStopScope() {
     override fun start() {
         super.start()
         startStopScope.launch {

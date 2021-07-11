@@ -20,7 +20,7 @@ class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
     private val pluginsCoordinator: PluginsCoordinator,
-    private val liveEvents: NumberedEventsSink,
+    private val liveEvents: EventsSink,
     private val repository: Repository
 ) : WithStartStopScope(), LiveEventsListener {
 

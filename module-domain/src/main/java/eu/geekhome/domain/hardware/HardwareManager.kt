@@ -2,11 +2,11 @@ package eu.geekhome.domain.hardware
 
 import eu.geekhome.domain.WithStartStopScope
 import eu.geekhome.domain.automation.PortNotFoundException
-import eu.geekhome.domain.events.NumberedEventsSink
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.data.Repository
 import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.settings.SettingsDto
+import eu.geekhome.domain.events.EventsSink
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -17,7 +17,7 @@ import org.pf4j.PluginStateListener
 
 class HardwareManager(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val liveEvents: NumberedEventsSink,
+    private val eventsSink: EventsSink,
     private val repository: Repository,
 ) : WithStartStopScope(), PluginStateListener, IPortFinder {
 
@@ -53,22 +53,22 @@ class HardwareManager(
             .filter { factory.owningPluginId == it.key.owningPluginId }
             .flatMap { it.value }
             .forEach { bundle ->
-                bundle.adapter.start(liveEvents, extractPluginSettings(bundle.owningPluginId))
+                bundle.adapter.start(eventsSink, extractPluginSettings(bundle.owningPluginId))
                 discover(bundle)
             }
     }
 
     private suspend fun discover(bundle: AdapterBundle) = coroutineScope {
         if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
-            liveEvents.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
+            eventsSink.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
         } else {
             bundle.discoveryJob = async {
-                bundle.adapter.discover(liveEvents)
+                bundle.adapter.discover(eventsSink)
                 bundle.adapter.ports.values.forEach {
                     val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
                         null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                     repository.updatePort(portSnapshot)
-                    liveEvents.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
+                    eventsSink.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
                 }
             }
         }
