@@ -1,10 +1,12 @@
 package eu.geekhome.sqldelightplugin
 
+import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import eu.geekhome.data.Repository
 import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.icons.IconCategoryDto
 import eu.geekhome.data.icons.IconDto
+import eu.geekhome.data.inbox.InboxItemDto
 import eu.geekhome.data.instances.InstanceBriefDto
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.settings.SettingsDto
@@ -21,7 +23,12 @@ class SqlDelightRepository : Repository {
         val driver = JdbcSqliteDriver("jdbc:sqlite:repository.sqlite")
         Database.Schema.create(driver)
         driver.execute(null, "PRAGMA foreign_keys=ON", 0)
-        database = Database(driver)
+        database = Database(
+            driver,
+            inboxItemAdapter = InboxItem.Adapter(
+                kindAdapter = EnumColumnAdapter()
+            )
+        )
     }
 
     private val portSnapshotToPortDtoMapper: Mapper<PortSnapshot, PortDto> =
@@ -41,6 +48,9 @@ class SqlDelightRepository : Repository {
 
     private val tagToTagDtoMapper : Mapper<Tag, TagDto> =
         TagToTagDtoMapper()
+
+    private val inboxItemToInboxItemDtoMapper : Mapper<InboxItem, InboxItemDto> =
+        InboxItemToInboxDtoMapper()
 
     private val settingsFieldInstanceListToSettingsDtoList:  Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
         SettingsFieldInstanceListToSettingsDtoListMapper()
@@ -285,5 +295,32 @@ class SqlDelightRepository : Repository {
         return settingsFieldInstanceListToSettingsDtoList
             .map(result)
             .firstOrNull()
+    }
+
+    override fun getAllInboxItems(): List<InboxItemDto> {
+        return database
+            .inboxQueries
+            .selectAll()
+            .executeAsList()
+            .map(inboxItemToInboxItemDtoMapper::map)
+    }
+
+    override fun saveInboxItem(inboxItemDto: InboxItemDto): Long {
+        database.transaction {
+            database.inboxQueries.insert(
+                inboxItemDto.timestamp,
+                inboxItemDto.kind,
+                inboxItemDto.message)
+        }
+
+        return database.generalQueries.lastInsertRowId().executeAsOne()
+    }
+
+    override fun markInboxItemAsRead(id: Long) {
+        database.inboxQueries.markRead(id)
+    }
+
+    override fun deleteInboxItem(id: Long) {
+        database.inboxQueries.delete(id)
     }
 }

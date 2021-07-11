@@ -3,6 +3,8 @@ package eu.geekhome.sqldelightplugin
 import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.icons.IconCategoryDto
 import eu.geekhome.data.icons.IconDto
+import eu.geekhome.data.inbox.InboxItemDto
+import eu.geekhome.data.inbox.InboxItemKind
 import eu.geekhome.data.instances.InstanceBriefDto
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.settings.SettingsDto
@@ -28,6 +30,7 @@ class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
         )
     }
 }
+
 class IconToIconDtoMapper: Mapper<Icon, IconDto> {
     override fun map(from: Icon): IconDto {
         return IconDto(from.id, from.icon_category_id, from.raw)
@@ -86,6 +89,17 @@ class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFie
 
                 SettingsDto(it.key.first, it.key.second, fields)
             }
+    }
+}
+
+class InboxItemToInboxDtoMapper : Mapper<InboxItem, InboxItemDto> {
+    override fun map(from: InboxItem): InboxItemDto {
+        return InboxItemDto(
+            from.message,
+            from.timestamp,
+            from.kind,
+            from.port_id,
+            from.read == 1L)
     }
 }
 

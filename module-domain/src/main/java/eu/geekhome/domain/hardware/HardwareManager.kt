@@ -2,8 +2,6 @@ package eu.geekhome.domain.hardware
 
 import eu.geekhome.domain.WithStartStopScope
 import eu.geekhome.domain.automation.PortNotFoundException
-import eu.geekhome.domain.events.LiveEventsHelper.broadcastDiscoveryEvent
-import eu.geekhome.domain.events.LiveEventsHelper.broadcastPortUpdateEvent
 import eu.geekhome.domain.events.NumberedEventsSink
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.data.Repository
@@ -62,7 +60,7 @@ class HardwareManager(
 
     private suspend fun discover(bundle: AdapterBundle) = coroutineScope {
         if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
-            broadcastDiscoveryEvent(liveEvents, bundle.owningPluginId, "Previous discovery is still pending, try again later")
+            liveEvents.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
         } else {
             bundle.discoveryJob = async {
                 bundle.adapter.discover(liveEvents)
@@ -70,7 +68,7 @@ class HardwareManager(
                     val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
                         null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                     repository.updatePort(portSnapshot)
-                    broadcastPortUpdateEvent(liveEvents, bundle.owningPluginId, bundle.adapter.id, it)
+                    liveEvents.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
                 }
             }
         }

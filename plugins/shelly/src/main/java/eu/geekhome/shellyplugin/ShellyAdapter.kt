@@ -2,7 +2,6 @@ package eu.geekhome.shellyplugin
 
 import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.EventsSink
-import eu.geekhome.domain.events.LiveEventsHelper
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.domain.mqtt.MqttBrokerService
@@ -53,16 +52,14 @@ class ShellyAdapter(owningPluginId: String,
         val result = ArrayList<ShellyPort<*>>()
 
         if (lanGateways.isEmpty()) {
-            LiveEventsHelper.broadcastDiscoveryEvent(
-                eventsSink,
+            eventsSink.broadcastDiscoveryEvent(
                 ShellyPlugin.PLUGIN_ID_SHELLY,
                 "The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting"
             )
         } else {
             val defaultLanGateway = lanGateways.first()
             if (lanGateways.size > 1) {
-                LiveEventsHelper.broadcastDiscoveryEvent(
-                    eventsSink,
+                eventsSink.broadcastDiscoveryEvent(
                     ShellyPlugin.PLUGIN_ID_SHELLY,
                     "WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}"
                 )

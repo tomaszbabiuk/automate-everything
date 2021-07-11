@@ -3,6 +3,7 @@ package eu.geekhome.data
 import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.icons.IconCategoryDto
 import eu.geekhome.data.icons.IconDto
+import eu.geekhome.data.inbox.InboxItemDto
 import eu.geekhome.data.instances.InstanceBriefDto
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.settings.SettingsDto
@@ -44,4 +45,9 @@ interface Repository {
     fun updateSettings(settingsDtos: List<SettingsDto>)
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
+
+    fun getAllInboxItems(): List<InboxItemDto>
+    fun saveInboxItem(message: InboxItemDto) : Long
+    fun markInboxItemAsRead(id: Long)
+    fun deleteInboxItem(id: Long)
 }

@@ -1,5 +1,6 @@
 package eu.geekhome.domain.events
 
+import eu.geekhome.data.inbox.InboxItemDto
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.localization.Language
 import eu.geekhome.domain.automation.DeviceAutomationUnit
@@ -54,6 +55,12 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
 class HeartbeatEventData(val timestamp: Long) : LiveEventData() {
     override fun toString(): String {
         return "Heartbeat at $timestamp"
+    }
+}
+
+class InboxEventData(val inboxItemDto: InboxItemDto) : LiveEventData() {
+    override fun toString(): String {
+        return "Inbox message $inboxItemDto"
     }
 }
 

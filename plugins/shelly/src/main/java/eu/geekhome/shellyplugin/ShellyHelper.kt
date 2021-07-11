@@ -1,7 +1,6 @@
 package eu.geekhome.shellyplugin
 
 import eu.geekhome.domain.events.EventsSink
-import eu.geekhome.domain.events.LiveEventsHelper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -14,13 +13,10 @@ object ShellyHelper {
     suspend fun checkIfShelly(client: HttpClient, ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            if (eventsSink != null) {
-                LiveEventsHelper.broadcastDiscoveryEvent(
-                    eventsSink,
-                    ShellyPlugin.PLUGIN_ID_SHELLY,
-                    "Shelly found! Ip address: $ipToCheck"
-                )
-            }
+            eventsSink?.broadcastDiscoveryEvent(
+                ShellyPlugin.PLUGIN_ID_SHELLY,
+                "Shelly found! Ip address: $ipToCheck"
+            )
             Pair(ipToCheck,response)
         } catch (e: Exception) {
             null
@@ -42,8 +38,7 @@ object ShellyHelper {
             )
         )
 
-        LiveEventsHelper.broadcastDiscoveryEvent(
-            eventsSink,
+        eventsSink.broadcastDiscoveryEvent(
             ShellyPlugin.PLUGIN_ID_SHELLY,
             "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
@@ -70,8 +65,7 @@ object ShellyHelper {
             .filterNotNull()
             .toList()
 
-        LiveEventsHelper.broadcastDiscoveryEvent(
-            eventsSink,
+        eventsSink.broadcastDiscoveryEvent(
             ShellyPlugin.PLUGIN_ID_SHELLY,
             "Done looking for shellies, found: ${result.size}"
         )
@@ -89,7 +83,6 @@ object ShellyHelper {
             enableMQTT(client, brokerIP, shellyIP)
         }
     }
-
 
     private suspend fun enableMQTT(client: HttpClient, brokerIP: InetAddress, shellyIP: InetAddress) {
         client.get<String>("""http://$shellyIP/settings/mqtt?mqtt_enable=1&mqtt_server=${brokerIP.hostAddress}%3A1883""")

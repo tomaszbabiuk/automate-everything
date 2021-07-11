@@ -92,6 +92,11 @@ class LiveController @Inject constructor(
                 val mapped = heartbeatDtoMapper.map(payload)
                 broadcast(mapped.javaClass, mapped)
             }
+            is InboxEventData -> {
+                val payload = event.data as InboxEventData
+                val mapped = payload.inboxItemDto
+                broadcast(mapped.javaClass, mapped)
+            }
         }
 
 

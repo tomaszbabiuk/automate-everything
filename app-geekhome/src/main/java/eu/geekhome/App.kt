@@ -1,5 +1,6 @@
 package eu.geekhome
 
+import eu.geekhome.data.Repository
 import eu.geekhome.domain.automation.AutomationConductor
 import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.rest.*
@@ -10,6 +11,7 @@ import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.heartbeat.Pulser
+import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
@@ -17,20 +19,22 @@ import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {
     init {
-        val liveEvents = NumberedEventsSink()
-        val pulser = Pulser(liveEvents)
-        val repository = SqlDelightRepository()
-        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(liveEvents)
+        //manual injection of common service
+        val eventsSink = NumberedEventsSink()
+        val repository : Repository = SqlDelightRepository()
+        val inbox = Inbox(eventsSink, repository)
+        val pulser = Pulser(eventsSink)
+        val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(eventsSink)
         pluginsCoordinator.loadPlugins()
 
-        val hardwareManager = HardwareManager(pluginsCoordinator, liveEvents, repository)
+        val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, repository)
         val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
         val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-            liveEvents, repository)
+            eventsSink, repository)
 
         //Dependency injection of REST controllers
         packages("eu.geekhome.rest")
-        register(DependencyInjectionBinder(liveEvents, repository, pluginsCoordinator, hardwareManager,
+        register(DependencyInjectionBinder(eventsSink, repository, pluginsCoordinator, hardwareManager,
             automationConductor, blockFactoriesCoordinator))
         register(GsonMessageBodyHandler())
         register(CORSFilter())
@@ -46,5 +50,7 @@ open class App : ResourceConfig() {
         hardwareManager.start()
         mqttBrokerService.start()
         pulser.start()
+
+        inbox.broadcastAppStarted()
     }
 }

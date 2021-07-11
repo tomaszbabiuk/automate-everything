@@ -2,7 +2,6 @@ package eu.geekhome.aforeplugin
 
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.DiscoveryEventData
-import eu.geekhome.domain.events.LiveEventsHelper
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -61,8 +60,7 @@ class AforeFinder(
                 255.toByte())
         )
 
-        LiveEventsHelper.broadcastDiscoveryEvent(
-            eventsSink,
+        eventsSink.broadcastDiscoveryEvent(
             AforePlugin.PLUGIN_ID_AFORE,
             "Looking for afore devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
