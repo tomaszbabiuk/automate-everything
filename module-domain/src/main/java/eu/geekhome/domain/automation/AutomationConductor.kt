@@ -13,6 +13,7 @@ import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SensorConfigurable
 import eu.geekhome.domain.configurable.StateDeviceConfigurable
 import eu.geekhome.domain.events.*
+import eu.geekhome.domain.inbox.Inbox
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -21,6 +22,7 @@ class AutomationConductor(
     private val blockFactoriesCollector: BlockFactoriesCollector,
     private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: EventsSink,
+    private val inbox: Inbox,
     private val repository: Repository
 ) : WithStartStopScope(), LiveEventsListener {
 
@@ -41,6 +43,11 @@ class AutomationConductor(
 
     private fun broadcastAutomationUpdate() {
         liveEvents.broadcastEvent(AutomationStateEventData(enabled))
+        if (enabled) {
+            inbox.sendAutomationStarted()
+        } else {
+            inbox.sendAutomationStopped()
+        }
     }
 
     fun enable() {

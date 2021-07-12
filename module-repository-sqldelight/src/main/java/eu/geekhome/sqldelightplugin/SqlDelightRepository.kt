@@ -49,7 +49,7 @@ class SqlDelightRepository : Repository {
     private val tagToTagDtoMapper : Mapper<Tag, TagDto> =
         TagToTagDtoMapper()
 
-    private val _inboxItemToInboxItemDtoMapper : Mapper<InboxItem, InboxItemDto> =
+    private val inboxItemToInboxItemDtoMapper : Mapper<InboxItem, InboxItemDto> =
         InboxItemToInboxDtoMapper()
 
     private val settingsFieldInstanceListToSettingsDtoList:  Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
@@ -302,7 +302,7 @@ class SqlDelightRepository : Repository {
             .inboxQueries
             .selectAll()
             .executeAsList()
-            .map(_inboxItemToInboxItemDtoMapper::map)
+            .map(inboxItemToInboxItemDtoMapper::map)
     }
 
     override fun saveInboxItem(inboxItemDto: InboxItemDto): Long {
@@ -316,8 +316,10 @@ class SqlDelightRepository : Repository {
         return database.generalQueries.lastInsertRowId().executeAsOne()
     }
 
-    override fun markInboxItemAsRead(id: Long) {
+    override fun markInboxItemAsRead(id: Long) : InboxItemDto {
         database.inboxQueries.markRead(id)
+        val inboxItem = database.inboxQueries.selectById(id).executeAsOne()
+        return inboxItemToInboxItemDtoMapper.map(inboxItem)
     }
 
     override fun deleteInboxItem(id: Long) {

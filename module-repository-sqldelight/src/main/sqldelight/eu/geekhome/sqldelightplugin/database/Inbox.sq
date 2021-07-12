@@ -14,6 +14,11 @@ selectAll:
 SELECT *
 FROM inboxItem;
 
+selectById:
+SELECT *
+FROM inboxItem
+WHERE id = ?;
+
 insert:
 INSERT INTO inboxItem(timestamp, kind, message)
 VALUES (?, ?, ?);

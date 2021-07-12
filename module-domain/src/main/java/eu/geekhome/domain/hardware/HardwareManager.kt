@@ -7,6 +7,7 @@ import eu.geekhome.data.Repository
 import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.EventsSink
+import eu.geekhome.domain.inbox.Inbox
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -18,6 +19,7 @@ import org.pf4j.PluginStateListener
 class HardwareManager(
     private val pluginsCoordinator: PluginsCoordinator,
     private val eventsSink: EventsSink,
+    private val inbox: Inbox,
     private val repository: Repository,
 ) : WithStartStopScope(), PluginStateListener, IPortFinder {
 
@@ -69,6 +71,7 @@ class HardwareManager(
                         null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                     repository.updatePort(portSnapshot)
                     eventsSink.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
+                    inbox.sendNewPortDiscovered(it.id)
                 }
             }
         }

@@ -14,7 +14,7 @@ import store, {
   UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
   ADD_AUTOMATION_HISTORY,
   SET_SETTINGS, SET_SETTINGS_VALIDATION,
-  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE
+  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE
 } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
@@ -395,6 +395,15 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.delete("rest/inbox/" + id),
       () => store.commit(REMOVE_INBOX_MESSAGE, id)
+    )
+  },
+
+  markInboxMessageAsRead: async function (messageId) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/inbox/" + messageId + "/read", true),
+      (response) => {
+        store.commit(UPDATE_INBOX_MESSAGE, response.data)
+      }
     )
   },
 }

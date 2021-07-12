@@ -30,10 +30,10 @@ open class App : ResourceConfig() {
     private val inbox: Inbox = BroadcastingInbox(eventsSink, repository)
     private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(eventsSink)
     private val pulsar = Pulsar(eventsSink)
-    private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, repository)
+    private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-        eventsSink, repository)
+        eventsSink, inbox, repository)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 

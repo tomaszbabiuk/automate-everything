@@ -1,4 +1,4 @@
-import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR } from './plugins/vuex'
+import store, { ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR, ADD_INBOX_MESSAGE } from './plugins/vuex'
 import { UPDATE_PLUGIN, UPDATE_AUTOMATION_UNIT } from './plugins/vuex'
 import { ADD_AUTOMATION_HISTORY } from './plugins/vuex'
 import vuetify from './plugins/vuetify'
@@ -67,6 +67,8 @@ function createSseClient() {
 
       this.liveMsgServer.addEventListener("InboxMessageDto", function(e) {
         console.log(e)
+        var inboxMessageDto = JSON.parse(e.data)
+        store.commit(ADD_INBOX_MESSAGE, inboxMessageDto)
       })
   
   

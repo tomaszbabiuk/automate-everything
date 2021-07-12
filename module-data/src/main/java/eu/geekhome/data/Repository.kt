@@ -48,6 +48,6 @@ interface Repository {
 
     fun getAllInboxItems(): List<InboxItemDto>
     fun saveInboxItem(message: InboxItemDto) : Long
-    fun markInboxItemAsRead(id: Long)
+    fun markInboxItemAsRead(id: Long) : InboxItemDto
     fun deleteInboxItem(id: Long)
 }

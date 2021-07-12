@@ -2,6 +2,7 @@ package eu.geekhome.rest.inbox
 
 import eu.geekhome.data.Repository
 import eu.geekhome.data.inbox.InboxMessageDto
+import eu.geekhome.rest.ResourceNotFoundException
 import javax.inject.Inject
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
@@ -21,8 +22,23 @@ class InboxController @Inject constructor(
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun deleteIcon(@PathParam("id") id: Long) {
+    fun deleteIcon(@PathParam("id") id: Long?) {
+        if (id == null) {
+            throw ResourceNotFoundException()
+        }
+
         repository
             .deleteInboxItem(id)
+    }
+
+    @PUT
+    @Path("/{id}/read")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    fun updateRead(@PathParam("id") id: Long?, read: Boolean): InboxMessageDto {
+        if (id == null) {
+            throw ResourceNotFoundException()
+        }
+
+        return mapper.map(repository.markInboxItemAsRead(id))
     }
 }

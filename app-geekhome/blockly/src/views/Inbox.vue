@@ -8,11 +8,15 @@
       :key="message.id"
       v-else
     >
-      <v-list-item-content>
-        <v-list-item-title class="text-wrap">{{ message.subject }}</v-list-item-title>
+      <v-list-item-content v-if="message.read">
+        <v-list-item-title  class="text-wrap">{{ message.subject }}</v-list-item-title>
         <v-list-item-subtitle class="text-wrap">{{ message.body }}</v-list-item-subtitle>
       </v-list-item-content>
-      <v-list-item-avatar>
+      <v-list-item-content v-else>
+        <v-list-item-title  class="text-wrap font-weight-bold">{{ message.subject }}</v-list-item-title>
+        <v-list-item-subtitle class="text-wrap font-weight-bold">{{ message.body }}</v-list-item-subtitle>
+      </v-list-item-content>
+      <v-list-item-avatar v-if="message.read">
           <v-icon
             class="grey lighten-1"
             dark
@@ -21,6 +25,16 @@
             mdi-delete
           </v-icon>
         </v-list-item-avatar>
+        <v-list-item-avatar v-else>
+          <v-icon
+            class="grey lighten-1"
+            dark
+            @click="markMessageAsRead(message)"
+          >
+            mdi-check
+          </v-icon>
+      </v-list-item-avatar>
+
     </v-list-item>
   </v-card>
       <v-dialog v-model="deleteMessageDialog.show" max-width="500px">
@@ -73,6 +87,10 @@ export default {
     deleteMessage: function(messageId) {
       client.deleteInboxMessage(messageId)
       this.closeDeleteMessageDialog()
+    },
+
+    markMessageAsRead: function(inboxMessageDto) {
+      client.markInboxMessageAsRead(inboxMessageDto.id)
     }
 
   },
@@ -84,7 +102,6 @@ export default {
   },
 
   mounted: async function () {
-    console.log("dupa");
     var that = this;
     await client.getInboxMessages().then(function () {
       that.loading = false;

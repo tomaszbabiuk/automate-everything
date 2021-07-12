@@ -66,7 +66,7 @@ export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD'
 export const CLEAR_INBOX_MESSAGES = 'CLEAR_INBOX_MESSAGES'
 export const ADD_INBOX_MESSAGE = 'ADD_INBOX_MESSAGE'
 export const REMOVE_INBOX_MESSAGE = 'REMOVE_INBOX_MESSAGE'
-export const MARK_INBOX_MESSAGE_READ = 'MARK_INBOX_MESSAGE_READ'
+export const UPDATE_INBOX_MESSAGE = 'UPDATE_INBOX_MESSAGE'
 
 
 function mapTagDtoToTagVM(tagDto) {
@@ -457,6 +457,14 @@ export default new Vuex.Store({
       state.inboxMessages.forEach( (element, i) => {
         if (element.id === messageId) {
           Vue.delete(state.inboxMessages, i)
+        }
+      })
+    },
+
+    [UPDATE_INBOX_MESSAGE](state, message) {
+      state.inboxMessages.forEach(element => {
+        if (element.id === message.id) {
+          element.read = message.read
         }
       })
     },

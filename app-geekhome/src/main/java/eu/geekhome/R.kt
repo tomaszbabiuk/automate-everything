@@ -39,8 +39,8 @@ object R {
     )
 
     val inbox_message_welcome_description_body = Resource(
-        "What are you going to automate today? A smart home, a green house, a plant watering system? Start from enabling best plugins for the job.",
-        "Co zamierzasz dzisiaj zautomatyzować? Inteligentny dom, szklarnię, a może system podlewania roślin? Zacznij od włączenia pluginów najbardziej pasujących do wykonania zadania."
+        "What are you going to automate today? A smart home... a green house... or maybe a plant watering system? Start from enabling best plugins for the job.",
+        "Co zamierzasz dzisiaj zautomatyzować? Inteligentny dom... szklarnię... a może system podlewania roślin? Zacznij od włączenia pluginów najbardziej pasujących do wykonania zadania."
     )
 
     val inbox_message_automation_enabled_subject = Resource(
