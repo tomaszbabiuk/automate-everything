@@ -3,7 +3,6 @@ import Vuetify from 'vuetify/lib';
 import pl from '../locale/pl'
 import en from '../locale/en'
 
-import IconBell from '../components/icons/IconBell'
 import IconButton from '../components/icons/IconButton'
 import IconCrosshair from '../components/icons/IconCrosshair'
 import IconEmpty from '../components/icons/IconEmpty'
@@ -35,9 +34,6 @@ export default new Vuetify({
       },
       flag_uk: {
         component: IconUK
-      },
-      bell: {
-        component: IconBell
       },
       button: {
         component: IconButton

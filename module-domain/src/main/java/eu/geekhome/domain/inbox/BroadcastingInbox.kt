@@ -18,8 +18,8 @@ class BroadcastingInbox(
             message = message
         )
 
+        inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        repository.saveInboxItem(inboxItem)
     }
 
     override fun sendAppStarted() {
@@ -28,8 +28,8 @@ class BroadcastingInbox(
             kind = InboxItemKind.WelcomeMessage
         )
 
+        inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        repository.saveInboxItem(inboxItem)
     }
 
     override fun sendNewPortDiscovered(newPortId: String) {
@@ -39,28 +39,28 @@ class BroadcastingInbox(
             newPortId = newPortId
         )
 
+        inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        repository.saveInboxItem(inboxItem)
     }
 
     override fun sendAutomationStarted() {
         val inboxItem = InboxItemDto(
             timestamp = calculateNow(),
-            kind = InboxItemKind.AutomationStarted
+            kind = InboxItemKind.AutomationEnabled
         )
 
+        inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        repository.saveInboxItem(inboxItem)
     }
 
     override fun sendAutomationStopped() {
         val inboxItem = InboxItemDto(
             timestamp = calculateNow(),
-            kind = InboxItemKind.AutomationStopped
+            kind = InboxItemKind.AutomationDisabled
         )
 
+        inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        repository.saveInboxItem(inboxItem)
     }
 
     private fun calculateNow(): Long {

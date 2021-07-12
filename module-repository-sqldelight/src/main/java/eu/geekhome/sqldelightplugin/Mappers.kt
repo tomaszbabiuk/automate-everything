@@ -4,7 +4,6 @@ import eu.geekhome.data.hardware.PortDto
 import eu.geekhome.data.icons.IconCategoryDto
 import eu.geekhome.data.icons.IconDto
 import eu.geekhome.data.inbox.InboxItemDto
-import eu.geekhome.data.inbox.InboxItemKind
 import eu.geekhome.data.instances.InstanceBriefDto
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.settings.SettingsDto
@@ -95,6 +94,7 @@ class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFie
 class InboxItemToInboxDtoMapper : Mapper<InboxItem, InboxItemDto> {
     override fun map(from: InboxItem): InboxItemDto {
         return InboxItemDto(
+            from.id,
             from.message,
             from.timestamp,
             from.kind,

@@ -6,7 +6,6 @@ export default {
     navigation: {
         inbox:      "Inbox",
         timeline:   "Timeline",
-        alerts:     "Alerts",
         control:    "Control",
         objects:    "Objects",
         tags:       "Tags",
@@ -108,5 +107,8 @@ export default {
         m: "{0}m ago",
         h: "{0}h {1}m ago",
         d: "{0}d {1}h ago"
-    }
+    },
+    inbox: {
+        delete_message_question: "Are you sure to remove this message?"
+    },
 }

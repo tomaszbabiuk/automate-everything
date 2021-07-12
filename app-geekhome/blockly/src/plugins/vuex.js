@@ -63,6 +63,12 @@ export const SET_SETTINGS_VALIDATION = 'SET_SETTINGS_VALIDATION'
 export const CLEAR_SETTINGS_VALIDATION = 'CLEAR_SETTINGS_VALIDATION'
 export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD' 
 
+export const CLEAR_INBOX_MESSAGES = 'CLEAR_INBOX_MESSAGES'
+export const ADD_INBOX_MESSAGE = 'ADD_INBOX_MESSAGE'
+export const REMOVE_INBOX_MESSAGE = 'REMOVE_INBOX_MESSAGE'
+export const MARK_INBOX_MESSAGE_READ = 'MARK_INBOX_MESSAGE_READ'
+
+
 function mapTagDtoToTagVM(tagDto) {
   var result = JSON.parse(JSON.stringify(tagDto))
   if (!Object.prototype.hasOwnProperty.call(result, 'children')) {
@@ -107,7 +113,8 @@ export default new Vuex.Store({
     },
     counter: 0,
     settingsValidation: [],
-    settings: []
+    settings: [],
+    inboxMessages: []
   },
 
   mutations: {
@@ -436,6 +443,22 @@ export default new Vuex.Store({
 
     [SET_SETTINGS](state, payload) {
       state.settings = payload
+    },
+
+    [CLEAR_INBOX_MESSAGES](state) {
+      state.inboxMessages = []
+    },
+
+    [ADD_INBOX_MESSAGE](state, inboxMessageDto) {
+      state.inboxMessages.push(inboxMessageDto)
+    },
+
+    [REMOVE_INBOX_MESSAGE](state, messageId) {
+      state.inboxMessages.forEach( (element, i) => {
+        if (element.id === messageId) {
+          Vue.delete(state.inboxMessages, i)
+        }
+      })
     },
   }
 })

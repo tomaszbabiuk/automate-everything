@@ -64,6 +64,10 @@ function createSseClient() {
       this.liveMsgServer.addEventListener("HeartbeatDto", function(e) {
         console.log(e)
       })
+
+      this.liveMsgServer.addEventListener("InboxMessageDto", function(e) {
+        console.log(e)
+      })
   
   
       this.liveMsgServer.onerror = innerException => {

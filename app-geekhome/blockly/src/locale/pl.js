@@ -6,7 +6,6 @@ export default {
     navigation: {
         inbox:      "Skrzynka odbiorcza",
         timeline:   "Oś czasu",
-        alerts:     "Alarmy",
         control:    "Sterowanie",
         objects:    "Obiekty",
         tags:       "Tagi",
@@ -108,5 +107,8 @@ export default {
         m: "{0}m temu",
         h: "{0}g {1}m temu",
         d: "{0}d {1}g temu"
-    }
+    },
+    inbox: {
+        delete_message_question: "Czy na pewno chcesz usunąć tą wiadomość?"
+    },
 }

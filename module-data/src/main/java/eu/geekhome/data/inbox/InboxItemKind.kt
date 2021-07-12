@@ -4,6 +4,6 @@ enum class InboxItemKind {
     CustomMessage,
     WelcomeMessage,
     NewPortFound,
-    AutomationStarted,
-    AutomationStopped,
+    AutomationEnabled,
+    AutomationDisabled,
 }

@@ -13,16 +13,16 @@ class IconCategoryController @Inject constructor(
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun postIconCategory(iconCategoryDto: IconCategoryDto?): Long {
+    fun postIconCategory(iconCategoryDto: IconCategoryDto): Long {
         return repository
-                    .saveIconCategory(iconCategoryDto!!)
+                    .saveIconCategory(iconCategoryDto)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun putIconCategory(iconCategoryDto: IconCategoryDto?) {
+    fun putIconCategory(iconCategoryDto: IconCategoryDto) {
         repository
-            .updateIconCategory(iconCategoryDto!!)
+            .updateIconCategory(iconCategoryDto)
     }
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

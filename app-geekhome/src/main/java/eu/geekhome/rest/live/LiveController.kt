@@ -6,6 +6,7 @@ import eu.geekhome.rest.hardware.NumberedHardwareEventToEventDtoMapper
 import eu.geekhome.rest.hardware.PortDtoMapper
 import eu.geekhome.rest.plugins.PluginDtoMapper
 import eu.geekhome.domain.events.*
+import eu.geekhome.rest.inbox.InboxMessageDtoMapper
 import javax.inject.Inject
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -25,6 +26,7 @@ class LiveController @Inject constructor(
     private val automationUnitMapper: AutomationUnitDtoMapper,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val heartbeatDtoMapper: HeartbeatDtoMapper,
+    private val inboxMessageDtoMapper: InboxMessageDtoMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
@@ -94,7 +96,7 @@ class LiveController @Inject constructor(
             }
             is InboxEventData -> {
                 val payload = event.data as InboxEventData
-                val mapped = payload.inboxItemDto
+                val mapped = inboxMessageDtoMapper.map(payload.inboxItemDto)
                 broadcast(mapped.javaClass, mapped)
             }
         }

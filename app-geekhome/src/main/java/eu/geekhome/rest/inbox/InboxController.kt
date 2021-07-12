@@ -1,18 +1,22 @@
 package eu.geekhome.rest.inbox
 
 import eu.geekhome.data.Repository
-import eu.geekhome.data.inbox.InboxItemDto
+import eu.geekhome.data.inbox.InboxMessageDto
 import javax.inject.Inject
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
 @Path("inbox")
-class InboxController @Inject constructor(private val repository: Repository) {
+class InboxController @Inject constructor(
+    private val repository: Repository,
+    private val mapper: InboxMessageDtoMapper) {
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @get:GET
-    val allInboxItems: List<InboxItemDto>
-        get() = repository.getAllInboxItems()
+    val allInboxItems: List<InboxMessageDto>
+        get() = repository
+            .getAllInboxItems()
+            .map(mapper::map)
 
     @DELETE
     @Path("/{id}")

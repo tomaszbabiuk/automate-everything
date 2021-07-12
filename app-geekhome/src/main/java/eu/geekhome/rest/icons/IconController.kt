@@ -11,16 +11,16 @@ class IconController @Inject constructor(private val repository: Repository) {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun postIcon(iconDto: IconDto?): Long {
+    fun postIcon(iconDto: IconDto): Long {
         return repository
-                    .saveIcon(iconDto!!)
+                    .saveIcon(iconDto)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun putIcon(iconDto: IconDto?) {
+    fun putIcon(iconDto: IconDto) {
         repository
-            .updateIcon(iconDto!!)
+            .updateIcon(iconDto)
     }
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

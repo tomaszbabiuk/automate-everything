@@ -131,11 +131,6 @@ export default {
           icon: "timeline",
         },
         {
-          title: "$vuetify.navigation.alerts",
-          route: "/alerts",
-          icon: "bell",
-        },
-        {
           title: "$vuetify.navigation.control",
           route: "/control",
           icon: "button",

@@ -1,6 +1,7 @@
 package eu.geekhome.data.inbox
 
 data class InboxItemDto(
+    var id: Long = 0L,
     val message: String? = null,
     val timestamp: Long,
     val kind: InboxItemKind,
