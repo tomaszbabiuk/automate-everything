@@ -305,12 +305,22 @@ class SqlDelightRepository : Repository {
             .map(inboxItemToInboxItemDtoMapper::map)
     }
 
+    override fun getUnreadInboxItems() : List<InboxItemDto> {
+        return database
+            .inboxQueries
+            .selectUnread()
+            .executeAsList()
+            .map(inboxItemToInboxItemDtoMapper::map)
+    }
+
     override fun saveInboxItem(inboxItemDto: InboxItemDto): Long {
         database.transaction {
             database.inboxQueries.insert(
                 inboxItemDto.timestamp,
                 inboxItemDto.kind,
-                inboxItemDto.message)
+                inboxItemDto.message,
+                if (inboxItemDto.read) 1 else 0,
+                inboxItemDto.newPortId)
         }
 
         return database.generalQueries.lastInsertRowId().executeAsOne()

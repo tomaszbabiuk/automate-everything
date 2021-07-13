@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS inboxItem (
   timestamp INTEGER NOT NULL,
   kind TEXT AS InboxItemKind NOT NULL,
   message TEXT,
-  read INTEGER,
+  read INTEGER NOT NULL,
   port_id TEXT,
   FOREIGN KEY(port_id) REFERENCES portSnapshot(id) ON DELETE SET NULL
 );
@@ -14,14 +14,19 @@ selectAll:
 SELECT *
 FROM inboxItem;
 
+selectUnread:
+SELECT *
+FROM inboxItem
+WHERE read == 0;
+
 selectById:
 SELECT *
 FROM inboxItem
 WHERE id = ?;
 
 insert:
-INSERT INTO inboxItem(timestamp, kind, message)
-VALUES (?, ?, ?);
+INSERT INTO inboxItem(timestamp, kind, message, read, port_id)
+VALUES (?, ?, ?, ?, ?);
 
 delete:
 DELETE FROM inboxItem

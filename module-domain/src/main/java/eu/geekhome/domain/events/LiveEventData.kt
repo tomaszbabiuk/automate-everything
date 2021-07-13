@@ -52,9 +52,14 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
     }
 }
 
-class HeartbeatEventData(val timestamp: Long) : LiveEventData() {
+class HeartbeatEventData(
+    val timestamp: Long,
+    val unreadMessagesCount: Int,
+    val isAutomationEnabled: Boolean
+) : LiveEventData() {
+
     override fun toString(): String {
-        return "Heartbeat at $timestamp"
+        return "Heartbeat at $timestamp (unread: $unreadMessagesCount, automation: $isAutomationEnabled)"
     }
 }
 

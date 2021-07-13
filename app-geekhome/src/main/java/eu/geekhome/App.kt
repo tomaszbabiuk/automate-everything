@@ -29,11 +29,11 @@ open class App : ResourceConfig() {
     private val repository: Repository = SqlDelightRepository()
     private val inbox: Inbox = BroadcastingInbox(eventsSink, repository)
     private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(eventsSink)
-    private val pulsar = Pulsar(eventsSink)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
         eventsSink, inbox, repository)
+    private val pulsar = Pulsar(eventsSink, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 
@@ -71,7 +71,7 @@ open class App : ResourceConfig() {
         register(
             DependencyInjectionBinder(
                 eventsSink, repository, pluginsCoordinator, hardwareManager,
-                automationConductor, blockFactoriesCoordinator
+                automationConductor, blockFactoriesCoordinator, inbox
             )
         )
         register(GsonMessageBodyHandler())

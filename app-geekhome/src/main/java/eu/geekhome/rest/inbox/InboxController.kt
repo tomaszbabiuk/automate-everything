@@ -2,6 +2,7 @@ package eu.geekhome.rest.inbox
 
 import eu.geekhome.data.Repository
 import eu.geekhome.data.inbox.InboxMessageDto
+import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.rest.ResourceNotFoundException
 import javax.inject.Inject
 import javax.ws.rs.*
@@ -10,6 +11,7 @@ import javax.ws.rs.core.MediaType
 @Path("inbox")
 class InboxController @Inject constructor(
     private val repository: Repository,
+    private val inbox: Inbox,
     private val mapper: InboxMessageDtoMapper) {
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -39,6 +41,8 @@ class InboxController @Inject constructor(
             throw ResourceNotFoundException()
         }
 
-        return mapper.map(repository.markInboxItemAsRead(id))
+        val x = repository.markInboxItemAsRead(id)
+        inbox.refreshUnreadMessages()
+        return mapper.map(x)
     }
 }

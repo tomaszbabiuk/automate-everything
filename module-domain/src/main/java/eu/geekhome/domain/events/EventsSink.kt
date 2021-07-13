@@ -27,8 +27,8 @@ interface EventsSink {
         broadcastEvent(event)
     }
 
-    fun broadcastHeartbeatEvent(timestamp: Long) {
-        val event = HeartbeatEventData(timestamp)
+    fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean) {
+        val event = HeartbeatEventData(timestamp, unreadMessagesCount, isAutomationEnabled)
         broadcastEvent(event)
     }
 

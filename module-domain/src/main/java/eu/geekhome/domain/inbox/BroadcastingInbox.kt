@@ -11,6 +11,10 @@ class BroadcastingInbox(
     val repository: Repository
 ) : Inbox {
 
+    init {
+        refreshUnreadMessages()
+    }
+
     override fun sendCustomMessage(message: String) {
         val inboxItem = InboxItemDto(
             timestamp = calculateNow(),
@@ -20,6 +24,7 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
+        unreadMessagesCount++
     }
 
     override fun sendAppStarted() {
@@ -30,6 +35,7 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
+        unreadMessagesCount++
     }
 
     override fun sendNewPortDiscovered(newPortId: String) {
@@ -41,6 +47,7 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
+        unreadMessagesCount++
     }
 
     override fun sendAutomationStarted() {
@@ -51,6 +58,7 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
+        unreadMessagesCount++
     }
 
     override fun sendAutomationStopped() {
@@ -61,6 +69,13 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
+        unreadMessagesCount++
+    }
+
+    override var unreadMessagesCount : Int = 0
+
+    override fun refreshUnreadMessages() {
+        unreadMessagesCount = repository.getUnreadInboxItems().size
     }
 
     private fun calculateNow(): Long {

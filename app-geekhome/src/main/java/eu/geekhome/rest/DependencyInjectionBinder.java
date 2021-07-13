@@ -7,6 +7,7 @@ import eu.geekhome.domain.automation.AutomationConductor;
 import eu.geekhome.domain.automation.BlocklyParser;
 import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector;
 import eu.geekhome.domain.events.EventsSink;
+import eu.geekhome.domain.inbox.Inbox;
 import eu.geekhome.rest.inbox.InboxMessageDtoMapper;
 import eu.geekhome.rest.live.HeartbeatDtoMapper;
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper;
@@ -32,6 +33,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
     private final HardwareManager _hardwareManager;
     private final AutomationConductor _automationConductor;
     private final BlockFactoriesCollector _blockFactoriesCollector;
+    private Inbox _inbox;
 
     public DependencyInjectionBinder(
             EventsSink eventsSink,
@@ -39,7 +41,8 @@ public class DependencyInjectionBinder extends AbstractBinder {
             PluginsCoordinator pluginsCoordinator,
             HardwareManager hardwareManager,
             AutomationConductor automationConductor,
-            BlockFactoriesCollector blockFactoriesCollector
+            BlockFactoriesCollector blockFactoriesCollector,
+            Inbox inbox
     ) {
         _eventsSink = eventsSink;
         _repository = repository;
@@ -47,6 +50,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         _hardwareManager = hardwareManager;
         _automationConductor = automationConductor;
         _blockFactoriesCollector = blockFactoriesCollector;
+        _inbox = inbox;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class DependencyInjectionBinder extends AbstractBinder {
         bindFactory(new SingletonFactory<>(_repository)).to(Repository.class).in(Singleton.class);
         bindFactory(new SingletonFactory<>(_eventsSink)).to(EventsSink.class).in(Singleton.class);
         bindFactory(new SingletonFactory<>(_blockFactoriesCollector)).to(BlockFactoriesCollector.class).in(Singleton.class);
+        bindFactory(new SingletonFactory<>(_inbox)).to(Inbox.class).in(Singleton.class);
 
         //blocks
         bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);

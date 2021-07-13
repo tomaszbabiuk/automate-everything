@@ -68,7 +68,12 @@
           :key="item.title"
           :to="item.route"
         >
-          <v-list-item-action>
+          <v-list-item-action v-if="item.hasBadge && unreadMessagesCount > 0">
+            <v-badge color="red" dot>
+              <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
+            </v-badge>
+          </v-list-item-action>
+          <v-list-item-action v-else>
             <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
@@ -124,41 +129,53 @@ export default {
       tab: null,
       drawer: false,
       navigationItems: [
-        { title: "$vuetify.navigation.inbox", route: "/inbox", icon: "inbox" },
+        { 
+          title: "$vuetify.navigation.inbox", 
+          route: "/inbox", 
+          icon: "inbox",
+          hasBadge: true 
+        },
         {
           title: "$vuetify.navigation.timeline",
           route: "/timeline",
           icon: "timeline",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.control",
           route: "/control",
           icon: "button",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.objects",
           route: "/configurables/null",
           icon: "objects",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.tags",
           route: "/tags",
           icon: "tag",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.icons",
           route: "/icons",
           icon: "icons",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover/null",
           icon: "crosshair",
+          hasBadge: false
         },
         {
           title: "$vuetify.navigation.plugins",
           route: "/plugins",
           icon: "plugin",
+          hasBadge: false
         },
       ],
       languageSelectorItems: [
@@ -186,6 +203,9 @@ export default {
     automation() {
       return this.$store.state.automation;
     },
+    unreadMessagesCount() {
+      return this.$store.state.unreadMessagesCount
+    },
     factories() {
       return this.$store.state.plugins.filter((element) => {
         return element.enabled && element.isHardwareFactory;
@@ -201,6 +221,7 @@ export default {
       return this.$route.name === "discover" && this.factories.length > 0;
     },
   },
+
   watch: {
     factories(factories) {
       if (factories.length > 0) {
@@ -210,6 +231,7 @@ export default {
       }
     },
   },
+
   beforeMount: function () {
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;

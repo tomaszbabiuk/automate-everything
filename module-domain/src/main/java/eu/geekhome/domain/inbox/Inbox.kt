@@ -7,5 +7,8 @@ interface Inbox {
     fun sendNewPortDiscovered(newPortId: String)
     fun sendAutomationStarted()
     fun sendAutomationStopped()
+
+    val unreadMessagesCount : Int
+    fun refreshUnreadMessages()
 }
 
