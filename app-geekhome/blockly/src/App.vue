@@ -69,7 +69,7 @@
           :to="item.route"
         >
           <v-list-item-action v-if="item.hasBadge && unreadMessagesCount > 0">
-            <v-badge color="red" dot>
+            <v-badge color="red" :content="unreadMessagesCount">
               <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
             </v-badge>
           </v-list-item-action>
