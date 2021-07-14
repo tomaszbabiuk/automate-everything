@@ -67,7 +67,8 @@ export const CLEAR_INBOX_MESSAGES = 'CLEAR_INBOX_MESSAGES'
 export const ADD_INBOX_MESSAGE = 'ADD_INBOX_MESSAGE'
 export const REMOVE_INBOX_MESSAGE = 'REMOVE_INBOX_MESSAGE'
 export const UPDATE_INBOX_MESSAGE = 'UPDATE_INBOX_MESSAGE'
-export const SET_UNREAD_MESSAGES_COUNT = 'SET_UNREAD_MESSAGES_COUNT'
+export const SET_INBOX_UNREAD_COUNT = 'SET_INBOX_UNREAD_COUNT'
+export const SET_INBOX_TOTAL_COUNT = 'SET_INBOX_TOTAL_COUNT'
 
 
 function mapTagDtoToTagVM(tagDto) {
@@ -116,7 +117,8 @@ export default new Vuex.Store({
     settingsValidation: [],
     settings: [],
     inboxMessages: [],
-    unreadMessagesCount: 0
+    inboxUnreadCount: 0,
+    inboxTotalCount: 0
   },
 
   mutations: {
@@ -471,8 +473,12 @@ export default new Vuex.Store({
       })
     },
 
-    [SET_UNREAD_MESSAGES_COUNT](state, count) {
-      state.unreadMessagesCount = count
+    [SET_INBOX_UNREAD_COUNT](state, count) {
+      state.inboxUnreadCount = count
+    },
+
+    [SET_INBOX_TOTAL_COUNT](state, count) {
+      state.inboxTotalCount = count
     },
   }
 })

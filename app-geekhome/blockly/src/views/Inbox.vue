@@ -54,6 +54,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+      <v-pagination
+      v-model="page"
+      :length="pageCount"
+      :total-visible="pageLimit"
+    ></v-pagination>
+    {{inboxCount}}
 </div>
 </template>
 
@@ -63,6 +70,9 @@ import { client } from "../rest.js";
 export default {
   data: function () {
     return {
+      pageCount: 1,
+      pageLimit: 10,
+      page: 1,
       loading: true,
       deleteMessageDialog: {
         messageId: null,
@@ -99,11 +109,20 @@ export default {
     inboxMessages() {
       return this.$store.state.inboxMessages;
     },
+    inboxCount() {
+      return this.$store.state.inboxTotalCount;
+    }
+  },
+
+  watch: {
+    inboxCount(value) {
+      this.pageCount = value/this.pageLimit
+    }
   },
 
   mounted: async function () {
     var that = this;
-    await client.getInboxMessages().then(function () {
+    await client.getInboxMessages(this.pageLimit, (this.page-1)*this.pageLimit).then(function () {
       that.loading = false;
     });
   },

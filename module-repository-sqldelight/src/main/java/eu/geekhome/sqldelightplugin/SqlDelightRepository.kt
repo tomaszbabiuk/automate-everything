@@ -297,10 +297,10 @@ class SqlDelightRepository : Repository {
             .firstOrNull()
     }
 
-    override fun getAllInboxItems(): List<InboxItemDto> {
+    override fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto> {
         return database
             .inboxQueries
-            .selectAll()
+            .selectByPage(limit, offset)
             .executeAsList()
             .map(inboxItemToInboxItemDtoMapper::map)
     }
@@ -313,14 +313,14 @@ class SqlDelightRepository : Repository {
             .map(inboxItemToInboxItemDtoMapper::map)
     }
 
-    override fun saveInboxItem(inboxItemDto: InboxItemDto): Long {
+    override fun saveInboxItem(message: InboxItemDto): Long {
         database.transaction {
             database.inboxQueries.insert(
-                inboxItemDto.timestamp,
-                inboxItemDto.kind,
-                inboxItemDto.message,
-                if (inboxItemDto.read) 1 else 0,
-                inboxItemDto.newPortId)
+                message.timestamp,
+                message.kind,
+                message.message,
+                if (message.read) 1 else 0,
+                message.newPortId)
         }
 
         return database.generalQueries.lastInsertRowId().executeAsOne()
@@ -334,5 +334,9 @@ class SqlDelightRepository : Repository {
 
     override fun deleteInboxItem(id: Long) {
         database.inboxQueries.delete(id)
+    }
+
+    override fun countInboxItems(): Long {
+        return database.inboxQueries.countItems().executeAsOne()
     }
 }

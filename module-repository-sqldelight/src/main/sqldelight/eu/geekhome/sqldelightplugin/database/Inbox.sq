@@ -10,9 +10,17 @@ CREATE TABLE IF NOT EXISTS inboxItem (
   FOREIGN KEY(port_id) REFERENCES portSnapshot(id) ON DELETE SET NULL
 );
 
+countItems:
+SELECT count(*) FROM inboxItem;
+
 selectAll:
 SELECT *
 FROM inboxItem;
+
+selectByPage:
+SELECT *
+FROM inboxItem
+LIMIT :limit OFFSET :offset;
 
 selectUnread:
 SELECT *

@@ -20,7 +20,7 @@ class PluginsController @Inject constructor(
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun getPlugins(@Context request: HttpServletRequest?): List<PluginDto> {
+    fun getPlugins(): List<PluginDto> {
         return pluginsCoordinator
             .plugins
             .map { pluginWrapper: PluginWrapper -> pluginDtoMapper.map(pluginWrapper) }

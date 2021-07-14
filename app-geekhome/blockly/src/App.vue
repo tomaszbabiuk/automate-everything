@@ -68,8 +68,8 @@
           :key="item.title"
           :to="item.route"
         >
-          <v-list-item-action v-if="item.hasBadge && unreadMessagesCount > 0">
-            <v-badge color="red" :content="unreadMessagesCount">
+          <v-list-item-action v-if="item.hasBadge && inboxUnreadCount > 0">
+            <v-badge color="red" :content="inboxUnreadCount">
               <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
             </v-badge>
           </v-list-item-action>
@@ -203,8 +203,8 @@ export default {
     automation() {
       return this.$store.state.automation;
     },
-    unreadMessagesCount() {
-      return this.$store.state.unreadMessagesCount
+    inboxUnreadCount() {
+      return this.$store.state.inboxUnreadCount
     },
     factories() {
       return this.$store.state.plugins.filter((element) => {

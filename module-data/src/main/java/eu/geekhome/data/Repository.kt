@@ -46,9 +46,10 @@ interface Repository {
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
 
-    fun getAllInboxItems(): List<InboxItemDto>
+    fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto>
     fun getUnreadInboxItems() : List<InboxItemDto>
     fun saveInboxItem(message: InboxItemDto) : Long
     fun markInboxItemAsRead(id: Long) : InboxItemDto
     fun deleteInboxItem(id: Long)
+    fun countInboxItems(): Long
 }

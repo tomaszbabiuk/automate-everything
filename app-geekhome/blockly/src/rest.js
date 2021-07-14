@@ -14,7 +14,7 @@ import store, {
   UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
   ADD_AUTOMATION_HISTORY,
   SET_SETTINGS, SET_SETTINGS_VALIDATION,
-  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE
+  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE, SET_INBOX_TOTAL_COUNT
 } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
@@ -379,11 +379,15 @@ export const client = {
     )
   },
 
-  getInboxMessages: async function () {
+  getInboxMessages: async function (limit, offset) {
     await this.handleRestError(
-      () => axiosInstance.get("rest/inbox"),
+      () => axiosInstance.get("rest/inbox?limit=" + limit +"&offset=" + offset),
       (response) => {
         store.commit(CLEAR_INBOX_MESSAGES)
+        
+        var totalCount = response.headers['x-total-count'];
+        store.commit(SET_INBOX_TOTAL_COUNT, totalCount)
+
         response.data.forEach(element => {
           store.commit(ADD_INBOX_MESSAGE, element)
         })

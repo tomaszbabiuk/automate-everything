@@ -5,7 +5,10 @@ import eu.geekhome.data.inbox.InboxMessageDto
 import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.rest.ResourceNotFoundException
 import javax.inject.Inject
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.*
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
 
 @Path("inbox")
@@ -14,12 +17,20 @@ class InboxController @Inject constructor(
     private val inbox: Inbox,
     private val mapper: InboxMessageDtoMapper) {
 
-    @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @get:GET
-    val allInboxItems: List<InboxMessageDto>
-        get() = repository
-            .getAllInboxItems()
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun allInboxItems(@QueryParam("limit") limit: Long,
+                      @QueryParam("offset") offset: Long,
+                      @Context response: HttpServletResponse
+    ): List<InboxMessageDto> {
+
+        response.addHeader("X-Total-Count", repository.countInboxItems().toString())
+
+        return repository
+            .getInboxItems(if (limit == 0L) 20 else limit, offset)
             .map(mapper::map)
+    }
 
     @DELETE
     @Path("/{id}")
