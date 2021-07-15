@@ -9,8 +9,8 @@
         v-else
       >
         <v-list-item-content v-if="message.read">
-          <v-list-item-title class="text-wrap">{{ message.id }}  {{
-            message.subject
+          <v-list-item-title class="text-wrap">{{ 
+            message.subject 
           }}</v-list-item-title>
           <v-list-item-subtitle class="text-wrap">{{
             message.body
@@ -68,13 +68,19 @@
       </v-card>
     </v-dialog>
 
-    <v-pagination
-      v-if="inboxCount > 0"
-      v-model="page"
-      :length="pageCount"
-      :total-visible="pageLimit"
-    ></v-pagination>
-    <div v-else>{{ $vuetify.lang.t("$vuetify.noDataText") }}</div>
+    <div class="text-center">
+      <v-btn
+        class="mt-5"
+        color="primary"
+        @click="loadMore()"
+        v-if="hasMoreItems"
+        >{{ $vuetify.lang.t("$vuetify.common.load_more") }}</v-btn
+      >
+    </div>
+
+    <div class="text-center" v-if="inboxMessages.length == 0">
+      {{ $vuetify.lang.t("$vuetify.noDataText") }}
+    </div>
   </div>
 </template>
 
@@ -84,8 +90,8 @@ import { client } from "../rest.js";
 export default {
   data: function () {
     return {
-      pageLimit: 3,
-      page: 1,
+      hasMoreItems: false,
+      pageLimit: 10,
       loading: true,
       deleteMessageDialog: {
         messageId: null,
@@ -102,6 +108,11 @@ export default {
       };
     },
 
+    loadMore: function () {
+      var offset = this.inboxMessages.length;
+      this.loadPage(false, offset);
+    },
+
     closeDeleteMessageDialog: function () {
       this.deleteMessageDialog.show = false;
     },
@@ -109,19 +120,23 @@ export default {
     deleteMessage: function (messageId) {
       client.deleteInboxMessage(messageId);
       this.closeDeleteMessageDialog();
-      this.loadPage();
     },
 
     markMessageAsRead: function (inboxMessageDto) {
       client.markInboxMessageAsRead(inboxMessageDto.id);
     },
 
-    loadPage: async function () {
+    checkIfHasMoreItems: function () {
+      this.hasMoreItems = this.inboxMessages.length < this.inboxCount;
+    },
+
+    loadPage: async function (clear, offset) {
       var that = this;
       await client
-        .getInboxMessages(this.pageLimit, (this.page - 1) * this.pageLimit)
+        .getInboxMessages(clear, this.pageLimit, offset)
         .then(function () {
           that.loading = false;
+          that.checkIfHasMoreItems();
         });
     },
   },
@@ -134,27 +149,10 @@ export default {
     inboxCount() {
       return this.$store.state.inboxTotalCount;
     },
-
-    pageCount() {
-      return Math.ceil(this.inboxCount / this.pageLimit);
-    },
-  },
-
-  watch: {
-    pageCount(value) {
-      console.log("page count updated to " + value);
-      if (this.page > this.pageCount) {
-        this.page--;
-      }
-    },
-
-    page() {
-      this.loadPage();
-    },
   },
 
   mounted: function () {
-    this.loadPage();
+    this.loadPage(true, 0);
   },
 };
 </script>

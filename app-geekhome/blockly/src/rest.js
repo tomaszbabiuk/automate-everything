@@ -379,11 +379,13 @@ export const client = {
     )
   },
 
-  getInboxMessages: async function (limit, offset) {
+  getInboxMessages: async function (clear, limit, offset) {
     await this.handleRestError(
       () => axiosInstance.get("rest/inbox?limit=" + limit +"&offset=" + offset),
       (response) => {
-        store.commit(CLEAR_INBOX_MESSAGES)
+        if (clear) {
+          store.commit(CLEAR_INBOX_MESSAGES)
+        }
         
         var totalCount = response.headers['x-total-count'];
         store.commit(SET_INBOX_TOTAL_COUNT, totalCount)

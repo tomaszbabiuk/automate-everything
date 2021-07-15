@@ -5,7 +5,6 @@ import store, {
 
 import vuetify from './plugins/vuetify'
 
-
 import { EventSourcePolyfill } from 'event-source-polyfill';
 
 export const lang = vuetify.framework.lang

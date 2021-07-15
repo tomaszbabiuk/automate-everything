@@ -37,7 +37,8 @@ export default {
         ok: "OK",
         dismiss: "Odsuń",
         nA: "n/d",
-        refresh_page: "Odśwież stronę"
+        refresh_page: "Odśwież stronę",
+        load_more: "Załaduj więcej"
     },
     app: {
         enable: "Włącz",
