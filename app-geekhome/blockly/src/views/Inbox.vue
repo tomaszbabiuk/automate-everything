@@ -24,6 +24,10 @@
             message.body
           }}</v-list-item-subtitle>
         </v-list-item-content>
+        <v-list-item-action>
+          <v-list-item-action-text v-if="message.read" v-text="formatTimeAgoProxy(message.timestamp)"></v-list-item-action-text>
+          <v-list-item-action-text v-else class="font-weight-bold" v-text="formatTimeAgoProxy(message.timestamp)"></v-list-item-action-text>
+        </v-list-item-action>
         <v-list-item-avatar v-if="message.read">
           <v-icon
             class="grey lighten-1"
@@ -86,10 +90,12 @@
 
 <script>
 import { client } from "../rest.js";
+import { formatTimeAgo } from "../elapsed.js";
 
 export default {
   data: function () {
     return {
+      now: 0,
       hasMoreItems: false,
       pageLimit: 10,
       loading: true,
@@ -139,6 +145,10 @@ export default {
           that.checkIfHasMoreItems();
         });
     },
+
+    formatTimeAgoProxy: function(timestamp) {
+      return formatTimeAgo(this.now, timestamp)
+    }
   },
 
   computed: {
@@ -149,6 +159,19 @@ export default {
     inboxCount() {
       return this.$store.state.inboxTotalCount;
     },
+  },
+
+  watch: {
+    now: {
+        handler() {
+          setTimeout(() => {
+              var now = (new Date).getTime()
+              this.now = now;
+              this.$forceUpdate();
+          }, 1000);
+        },
+        immediate: true
+    }
   },
 
   mounted: function () {
