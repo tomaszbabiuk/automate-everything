@@ -65,6 +65,7 @@ export const UPDATE_SETTINGS_FIELD = 'UPDATE_SETTINGS_FIELD'
 
 export const CLEAR_INBOX_MESSAGES = 'CLEAR_INBOX_MESSAGES'
 export const ADD_INBOX_MESSAGE = 'ADD_INBOX_MESSAGE'
+export const PREPEND_INBOX_MESSAGE = 'PREPEND_INBOX_MESSAGE'
 export const REMOVE_INBOX_MESSAGE = 'REMOVE_INBOX_MESSAGE'
 export const UPDATE_INBOX_MESSAGE = 'UPDATE_INBOX_MESSAGE'
 export const SET_INBOX_UNREAD_COUNT = 'SET_INBOX_UNREAD_COUNT'
@@ -457,12 +458,21 @@ export default new Vuex.Store({
       state.inboxMessages.push(inboxMessageDto)
     },
 
+    [PREPEND_INBOX_MESSAGE](state, inboxMessageDto) {
+      state.inboxMessages.unshift(inboxMessageDto)
+    },
+
     [REMOVE_INBOX_MESSAGE](state, messageId) {
       state.inboxMessages.forEach( (element, i) => {
         if (element.id === messageId) {
+          if (!element.read) {
+            state.inboxUnreadCount--;
+          }
           Vue.delete(state.inboxMessages, i)
         }
       })
+
+      state.inboxTotalCount--
     },
 
     [UPDATE_INBOX_MESSAGE](state, message) {
