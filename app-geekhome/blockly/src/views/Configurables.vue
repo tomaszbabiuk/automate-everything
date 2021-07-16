@@ -8,7 +8,11 @@
       ></v-skeleton-loader>
     </div>
     <div v-else>
-      <v-breadcrumbs :items="breadcrumbs">
+      <div v-if="configurables.length == 0" class="text-center">
+        {{ $vuetify.lang.t("$vuetify.noDataText") }}
+      </div>
+
+      <v-breadcrumbs :items="breadcrumbs" v-if="breadcrumbs.length > 1">
         <template v-slot:divider>
           <v-icon>mdi-forward</v-icon>
         </template>
