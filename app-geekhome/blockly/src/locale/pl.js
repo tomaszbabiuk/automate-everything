@@ -38,7 +38,8 @@ export default {
         dismiss: "Odsuń",
         nA: "n/d",
         refresh_page: "Odśwież stronę",
-        load_more: "Załaduj więcej"
+        load_more: "Załaduj więcej",
+        browse: "Przeglądaj"
     },
     app: {
         enable: "Włącz",

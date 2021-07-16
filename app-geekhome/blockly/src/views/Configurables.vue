@@ -65,7 +65,7 @@
     </v-dialog>
 
     <div>
-        <v-card class="mx-auto float-left ml-5 mt-5" max-width="344" v-for="configurable in configurables" :key="configurable.clazz">
+        <v-card class="mx-auto float-left ml-5 mt-5 d-flex flex-column" max-width="344" min-width="344" min-height="240" v-for="configurable in configurables" :key="configurable.clazz">
           <v-card-title class="headline">
             <div
               style="transform: scale(0.5)"
@@ -78,9 +78,10 @@
             configurable.descriptionRes
           }}</v-card-subtitle>
 
+          <v-spacer></v-spacer>
           <v-card-actions>
             <v-btn text @click="browse(configurable)">
-              Browse
+              {{ $vuetify.lang.t("$vuetify.common.browse") }}
             </v-btn>
           </v-card-actions>
         </v-card>

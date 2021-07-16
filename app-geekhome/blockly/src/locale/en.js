@@ -38,7 +38,8 @@ export default {
         dismiss: "Dismiss",
         nA: "n/A",
         refresh_page: "Refresh page",
-        load_more: "Load more"
+        load_more: "Load more",
+        browse: "Browse"
     },
     app: {
         enable: "Enable",
