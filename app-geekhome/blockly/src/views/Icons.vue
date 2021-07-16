@@ -1,166 +1,190 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    item-key="id"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>{{ $vuetify.lang.t("$vuetify.icons.icons") }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          right
-          color="primary"
-          dark
-          class="mb-2"
-          @click.stop="openAddCategoryDialog()"
-        >
-          {{ $vuetify.lang.t("$vuetify.icons.add_category") }}
-        </v-btn>
+  <div>
+    <v-skeleton-loader v-if="loading" type="table"></v-skeleton-loader>
+    <v-data-table
+      v-else
+      :headers="headers"
+      :items="items"
+      item-key="id"
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>{{
+            $vuetify.lang.t("$vuetify.icons.icons")
+          }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            right
+            color="primary"
+            dark
+            class="mb-2"
+            @click.stop="openAddCategoryDialog()"
+          >
+            {{ $vuetify.lang.t("$vuetify.icons.add_category") }}
+          </v-btn>
 
-        <v-dialog
-          v-model="categoryDialog.show"
-          persistent
-          transition="dialog-bottom-transition"
-          width="500"
-        >
-          <v-card>
-            <v-toolbar dark color="primary">
-              <v-btn icon dark @click="closeCategoryDialog()">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{ categoryDialog.titleText }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-toolbar-items>
-                <v-btn dark text @click="categoryDialog.action()">
-                  {{ categoryDialog.actionText }}
+          <v-dialog
+            v-model="categoryDialog.show"
+            persistent
+            transition="dialog-bottom-transition"
+            width="500"
+          >
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-btn icon dark @click="closeCategoryDialog()">
+                  <v-icon>mdi-close</v-icon>
                 </v-btn>
-              </v-toolbar-items>
-            </v-toolbar>
+                <v-toolbar-title>{{
+                  categoryDialog.titleText
+                }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn dark text @click="categoryDialog.action()">
+                    {{ categoryDialog.actionText }}
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
 
-            <v-container>
-              <v-form
-                v-model="categoryDialog.valid"
-                ref="categoryForm"
-                lazy-validation
-              >
-                <v-text-field
-                  :rules="[
-                    (v) =>
-                      !!v ||
-                      $vuetify.lang.t('$vuetify.validation.field_required'),
-                    (v) =>
-                      (v && v.length <= 50) ||
-                      $vuetify.lang.t('$vuetify.validation.field_lessThan50'),
-                  ]"
-                  ref="name"
-                  v-model="categoryDialog.name"
-                  :label="$vuetify.lang.t('$vuetify.common.name')"
-                  required="true"
-                  counter="50"
-                  validate-on-blur
-                ></v-text-field>
-              </v-form>
-            </v-container>
-          </v-card>
-        </v-dialog>
+              <v-container>
+                <v-form
+                  v-model="categoryDialog.valid"
+                  ref="categoryForm"
+                  lazy-validation
+                >
+                  <v-text-field
+                    :rules="[
+                      (v) =>
+                        !!v ||
+                        $vuetify.lang.t('$vuetify.validation.field_required'),
+                      (v) =>
+                        (v && v.length <= 50) ||
+                        $vuetify.lang.t('$vuetify.validation.field_lessThan50'),
+                    ]"
+                    ref="name"
+                    v-model="categoryDialog.name"
+                    :label="$vuetify.lang.t('$vuetify.common.name')"
+                    required="true"
+                    counter="50"
+                    validate-on-blur
+                  ></v-text-field>
+                </v-form>
+              </v-container>
+            </v-card>
+          </v-dialog>
 
-        <v-dialog
-          v-model="iconDialog.show"
-          persistent
-          transition="dialog-bottom-transition"
-          width="500"
-        >
-          <v-card>
-            <v-toolbar dark color="primary">
-              <v-btn icon dark @click="closeIconDialog()">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{ iconDialog.titleText }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-toolbar-items>
-                <v-btn dark text @click="iconDialog.action()">
-                  {{ iconDialog.actionText }}
+          <v-dialog
+            v-model="iconDialog.show"
+            persistent
+            transition="dialog-bottom-transition"
+            width="500"
+          >
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-btn icon dark @click="closeIconDialog()">
+                  <v-icon>mdi-close</v-icon>
                 </v-btn>
-              </v-toolbar-items>
-            </v-toolbar>
+                <v-toolbar-title>{{ iconDialog.titleText }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn dark text @click="iconDialog.action()">
+                    {{ iconDialog.actionText }}
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
 
-            <v-container>
-              <v-form v-model="iconDialog.valid" ref="iconForm" lazy-validation>
-                <v-textarea
-                  :rules="[
-                    (v) =>
-                      !!v ||
-                      $vuetify.lang.t('$vuetify.validation.field_required'),
-                    (v) =>
-                      (v && v.length <= 10000) ||
-                      $vuetify.lang.t(
-                        '$vuetify.validation.field_lessThan10000'
-                      ),
-                  ]"
-                  ref="raw"
-                  v-model="iconDialog.raw"
-                  :label="$vuetify.lang.t('$vuetify.icons.raw')"
-                  required="true"
-                  counter="10000"
-                  validate-on-blur
-                ></v-textarea>
-              </v-form>
-            </v-container>
-          </v-card>
-        </v-dialog>
+              <v-container>
+                <v-form
+                  v-model="iconDialog.valid"
+                  ref="iconForm"
+                  lazy-validation
+                >
+                  <v-textarea
+                    :rules="[
+                      (v) =>
+                        !!v ||
+                        $vuetify.lang.t('$vuetify.validation.field_required'),
+                      (v) =>
+                        (v && v.length <= 10000) ||
+                        $vuetify.lang.t(
+                          '$vuetify.validation.field_lessThan10000'
+                        ),
+                    ]"
+                    ref="raw"
+                    v-model="iconDialog.raw"
+                    :label="$vuetify.lang.t('$vuetify.icons.raw')"
+                    required="true"
+                    counter="10000"
+                    validate-on-blur
+                  ></v-textarea>
+                </v-form>
+              </v-container>
+            </v-card>
+          </v-dialog>
 
-        <v-dialog v-model="deleteDialog.show" max-width="500px">
-          <v-card>
-            <v-card-title class="headline"
-              >{{ $vuetify.lang.t("$vuetify.common.delete_question") }}</v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDeleteDialog()"
-                >{{ $vuetify.lang.t("$vuetify.common.cancel") }}</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="deleteDialog.action()"
-                >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:[`item.iconIds`]="{ item }">
-      <v-chip
-        v-for="iconId in item.iconIds"
-        :key="iconId"
-        class="ma-2"
-        x-large
-        @click:close="openDeleteIconDialog(iconId)"
-        @click="openEditIconDialog({iconId: iconId, iconCategoryId: item.id})"
-        close
-        label
-        outlined
-      >
-        <img
-          left
-          :src="'/rest/icons/' + iconId + '/raw?' + item.refreshCounter"
-          width="50"
-          height="50"
-        />
-      </v-chip>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }" }>
-      <nobr>
-        <v-icon class="mr-2" @click="openAddIconDialog(item)">mdi-plus</v-icon>
-        <v-icon class="mr-2" @click="openEditCategoryDialog(item)">mdi-pencil</v-icon>
-        <v-icon @click="openDeleteCategoryDialog(item)"> mdi-delete </v-icon>
-      </nobr>
-    </template>
-    <template v-slot:no-data>
-      {{ $vuetify.lang.t("$vuetify.noDataText") }}
-    </template>
-  </v-data-table>
+          <v-dialog v-model="deleteDialog.show" max-width="500px">
+            <v-card>
+              <v-card-title class="headline">{{
+                $vuetify.lang.t("$vuetify.common.delete_question")
+              }}</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="closeDeleteDialog()"
+                  >{{ $vuetify.lang.t("$vuetify.common.cancel") }}</v-btn
+                >
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="deleteDialog.action()"
+                  >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:[`item.iconIds`]="{ item }">
+        <v-chip
+          v-for="iconId in item.iconIds"
+          :key="iconId"
+          class="ma-2"
+          x-large
+          @click:close="openDeleteIconDialog(iconId)"
+          @click="
+            openEditIconDialog({ iconId: iconId, iconCategoryId: item.id })
+          "
+          close
+          label
+          outlined
+        >
+          <img
+            left
+            :src="'/rest/icons/' + iconId + '/raw?' + item.refreshCounter"
+            width="50"
+            height="50"
+          />
+        </v-chip>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }" }>
+        <nobr>
+          <v-icon class="mr-2" @click="openAddIconDialog(item)"
+            >mdi-plus</v-icon
+          >
+          <v-icon class="mr-2" @click="openEditCategoryDialog(item)"
+            >mdi-pencil</v-icon
+          >
+          <v-icon @click="openDeleteCategoryDialog(item)"> mdi-delete </v-icon>
+        </nobr>
+      </template>
+      <template v-slot:no-data>
+        {{ $vuetify.lang.t("$vuetify.noDataText") }}
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
@@ -168,6 +192,7 @@ import { client } from "../rest.js";
 
 export default {
   data: () => ({
+    loading: true,
     categoryDialog: {
       iconCategoryId: -1,
       valid: true,
@@ -187,9 +212,9 @@ export default {
       raw: "",
       action: function () {},
     },
-    deleteDialog:  {
+    deleteDialog: {
       show: false,
-      action: function() {},
+      action: function () {},
       iconId: -1,
       iconCategoryId: -1,
     },
@@ -210,23 +235,28 @@ export default {
   methods: {
     focusOnNameLazy: function () {
       setTimeout(() => {
-        this.$refs.name.focus()
+        this.$refs.name.focus();
       }, 200);
     },
+
     focusOnRawLazy: function () {
       setTimeout(() => {
-        this.$refs.raw.focus()
+        this.$refs.raw.focus();
       }, 200);
     },
+
     closeCategoryDialog: function () {
-      this.categoryDialog.show = false
+      this.categoryDialog.show = false;
     },
+
     closeIconDialog: function () {
-      this.iconDialog.show = false
+      this.iconDialog.show = false;
     },
-    closeDeleteDialog: function() {
-      this.deleteDialog.show = false
+
+    closeDeleteDialog: function () {
+      this.deleteDialog.show = false;
     },
+
     openAddCategoryDialog: function () {
       this.categoryDialog = {
         name: "",
@@ -237,17 +267,19 @@ export default {
       };
       this.focusOnNameLazy();
     },
+
     addNewCategory: function () {
       if (this.$refs.categoryForm.validate()) {
         let categoryDto = {
           id: null,
           name: this.categoryDialog.name,
-          iconIds: []
+          iconIds: [],
         };
         client.postIconCategory(categoryDto);
         this.closeCategoryDialog();
       }
     },
+
     openEditCategoryDialog: function (categoryDto) {
       this.categoryDialog = {
         name: categoryDto.name,
@@ -259,6 +291,7 @@ export default {
       };
       this.focusOnNameLazy();
     },
+
     editCategory: function () {
       if (this.$refs.categoryForm.validate()) {
         let categoryDto = {
@@ -269,18 +302,21 @@ export default {
         this.closeCategoryDialog();
       }
     },
-    openDeleteCategoryDialog: function(categoryDto) {
+
+    openDeleteCategoryDialog: function (categoryDto) {
       this.deleteDialog = {
         action: this.deleteCategory,
         iconCategoryId: categoryDto.id,
         show: true,
       };
     },
+
     deleteCategory: function () {
-      let id = this.deleteDialog.iconCategoryId
-      client.deleteIconCategory(id)
+      let id = this.deleteDialog.iconCategoryId;
+      client.deleteIconCategory(id);
       this.closeDeleteDialog();
     },
+
     openAddIconDialog: function (categoryDto) {
       this.iconDialog = {
         iconCategoryId: categoryDto.id,
@@ -290,8 +326,9 @@ export default {
         action: this.addNewIcon,
         show: true,
       };
-      this.focusOnRawLazy()
+      this.focusOnRawLazy();
     },
+
     addNewIcon: function () {
       if (this.$refs.iconForm.validate()) {
         let iconDto = {
@@ -302,6 +339,7 @@ export default {
         this.closeIconDialog();
       }
     },
+
     openEditIconDialog: async function (ids) {
       this.iconDialog = {
         iconId: ids.iconId,
@@ -313,12 +351,13 @@ export default {
         show: true,
       };
 
-      await client.getIconRawWithCallback(ids.iconId,(response) => { 
-        this.iconDialog.raw = response
-      })
+      await client.getIconRawWithCallback(ids.iconId, (response) => {
+        this.iconDialog.raw = response;
+      });
 
-      this.focusOnRawLazy()
+      this.focusOnRawLazy();
     },
+
     editIcon: function () {
       if (this.$refs.iconForm.validate()) {
         let iconDto = {
@@ -327,24 +366,27 @@ export default {
           raw: this.iconDialog.raw,
         };
         client.putIcon(iconDto);
-        this.componentKey++
-        this.closeIconDialog()
+        this.componentKey++;
+        this.closeIconDialog();
       }
     },
-    openDeleteIconDialog: function(iconId) {
+
+    openDeleteIconDialog: function (iconId) {
       this.deleteDialog = {
         action: this.deleteIcon,
         iconId: iconId,
         show: true,
       };
     },
-    deleteIcon: function() {
-      let id = this.deleteDialog.iconId
-      client.deleteIcon(id)
-      this.closeDeleteDialog()
+
+    deleteIcon: function () {
+      let id = this.deleteDialog.iconId;
+      client.deleteIcon(id);
+      this.closeDeleteDialog();
     },
   },
-  mounted: function () {
+
+  mounted: async function () {
     this.headers = [
       {
         text: this.$vuetify.lang.t("$vuetify.common.name"),
@@ -365,7 +407,10 @@ export default {
       },
     ];
 
-    client.getIconCategories()
+    var that = this;
+    await client.getIconCategories().then(function () {
+      that.loading = false;
+    });
   },
 };
 </script>
