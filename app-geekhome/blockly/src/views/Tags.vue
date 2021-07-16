@@ -1,114 +1,124 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="items"
-    item-key="id"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>{{ $vuetify.lang.t("$vuetify.tags.tags") }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          right
-          color="primary"
-          dark
-          class="mb-2"
-          @click.stop="openAddCategoryDialog()"
-        >
-          {{ $vuetify.lang.t("$vuetify.tags.add_category") }}
-        </v-btn>
+  <div>
+    <v-skeleton-loader v-if="loading" type="table"></v-skeleton-loader>
+    <v-data-table
+      v-else
+      :headers="headers"
+      :items="items"
+      item-key="id"
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>{{
+            $vuetify.lang.t("$vuetify.tags.tags")
+          }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            right
+            color="primary"
+            dark
+            class="mb-2"
+            @click.stop="openAddCategoryDialog()"
+          >
+            {{ $vuetify.lang.t("$vuetify.tags.add_category") }}
+          </v-btn>
 
-        <v-dialog
-          v-model="tagDialog.show"
-          persistent
-          transition="dialog-bottom-transition"
-          width="500"
-        >
-          <v-card>
-            <v-toolbar dark color="primary">
-              <v-btn icon dark @click="closeTagDialog()">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-              <v-toolbar-title>{{ tagDialog.titleText }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-toolbar-items>
-                <v-btn dark text @click="tagDialog.action()">
-                  {{ tagDialog.actionText }}
+          <v-dialog
+            v-model="tagDialog.show"
+            persistent
+            transition="dialog-bottom-transition"
+            width="500"
+          >
+            <v-card>
+              <v-toolbar dark color="primary">
+                <v-btn icon dark @click="closeTagDialog()">
+                  <v-icon>mdi-close</v-icon>
                 </v-btn>
-              </v-toolbar-items>
-            </v-toolbar>
+                <v-toolbar-title>{{ tagDialog.titleText }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items>
+                  <v-btn dark text @click="tagDialog.action()">
+                    {{ tagDialog.actionText }}
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
 
-            <v-container>
-              <v-form
-                v-model="tagDialog.valid"
-                ref="tagForm"
-                lazy-validation
-              >
-                <v-text-field
-                  :rules="[
-                    (v) =>
-                      !!v ||
-                      $vuetify.lang.t('$vuetify.validation.field_required'),
-                    (v) =>
-                      (v && v.length <= 50) ||
-                      $vuetify.lang.t('$vuetify.validation.field_lessThan50'),
-                  ]"
-                  ref="name"
-                  v-model="tagDialog.name"
-                  :label="$vuetify.lang.t('$vuetify.common.name')"
-                  required="true"
-                  counter="50"
-                  validate-on-blur
-                ></v-text-field>
-              </v-form>
-            </v-container>
-          </v-card>
-        </v-dialog>
+              <v-container>
+                <v-form v-model="tagDialog.valid" ref="tagForm" lazy-validation>
+                  <v-text-field
+                    :rules="[
+                      (v) =>
+                        !!v ||
+                        $vuetify.lang.t('$vuetify.validation.field_required'),
+                      (v) =>
+                        (v && v.length <= 50) ||
+                        $vuetify.lang.t('$vuetify.validation.field_lessThan50'),
+                    ]"
+                    ref="name"
+                    v-model="tagDialog.name"
+                    :label="$vuetify.lang.t('$vuetify.common.name')"
+                    required="true"
+                    counter="50"
+                    validate-on-blur
+                  ></v-text-field>
+                </v-form>
+              </v-container>
+            </v-card>
+          </v-dialog>
 
-        <v-dialog v-model="deleteDialog.show" max-width="500px">
-          <v-card>
-            <v-card-title class="headline"
-              >{{ $vuetify.lang.t("$vuetify.common.delete_question") }}</v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDeleteDialog()"
-                >{{ $vuetify.lang.t("$vuetify.common.cancel") }}</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="deleteDialog.action()"
-                >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:[`item.children`]="{ item }">
-      <v-chip
-        v-for="tag in item.children"
-        :key="tag.id"
-        class="ma-2"
-        @click:close="openDeleteTagDialog(tag.id)"
-        @click="openEditTagDialog(item.id, tag)"
-        close
-        outlined
-      >
-        {{tag.name}}
-      </v-chip>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }" }>
-      <nobr>
-        <v-icon class="mr-2" @click="openAddTagDialog(item)">mdi-plus</v-icon>
-        <v-icon class="mr-2" @click="openEditCategoryDialog(item)">mdi-pencil</v-icon>
-        <v-icon @click="openDeleteCategoryDialog(item)"> mdi-delete </v-icon>
-      </nobr>
-    </template>
-    <template v-slot:no-data>
-      {{ $vuetify.lang.t("$vuetify.noDataText") }}
-    </template>
-  </v-data-table>
+          <v-dialog v-model="deleteDialog.show" max-width="500px">
+            <v-card>
+              <v-card-title class="headline">{{
+                $vuetify.lang.t("$vuetify.common.delete_question")
+              }}</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="closeDeleteDialog()"
+                  >{{ $vuetify.lang.t("$vuetify.common.cancel") }}</v-btn
+                >
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="deleteDialog.action()"
+                  >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:[`item.children`]="{ item }">
+        <v-chip
+          v-for="tag in item.children"
+          :key="tag.id"
+          class="ma-2"
+          @click:close="openDeleteTagDialog(tag.id)"
+          @click="openEditTagDialog(item.id, tag)"
+          close
+          outlined
+        >
+          {{ tag.name }}
+        </v-chip>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }" }>
+        <nobr>
+          <v-icon class="mr-2" @click="openAddTagDialog(item)">mdi-plus</v-icon>
+          <v-icon class="mr-2" @click="openEditCategoryDialog(item)"
+            >mdi-pencil</v-icon
+          >
+          <v-icon @click="openDeleteCategoryDialog(item)"> mdi-delete </v-icon>
+        </nobr>
+      </template>
+      <template v-slot:no-data>
+        {{ $vuetify.lang.t("$vuetify.noDataText") }}
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
@@ -116,6 +126,7 @@ import { client } from "../rest.js";
 
 export default {
   data: () => ({
+    loading: true,
     tagDialog: {
       iconCategoryId: -1,
       valid: true,
@@ -135,9 +146,9 @@ export default {
       raw: "",
       action: function () {},
     },
-    deleteDialog:  {
+    deleteDialog: {
       show: false,
-      action: function() {},
+      action: function () {},
       iconId: -1,
       iconCategoryId: -1,
     },
@@ -158,18 +169,22 @@ export default {
   methods: {
     focusOnNameLazy: function () {
       setTimeout(() => {
-        this.$refs.name.focus()
+        this.$refs.name.focus();
       }, 200);
     },
+
     closeTagDialog: function () {
-      this.tagDialog.show = false
+      this.tagDialog.show = false;
     },
+
     closeIconDialog: function () {
-      this.iconDialog.show = false
+      this.iconDialog.show = false;
     },
-    closeDeleteDialog: function() {
-      this.deleteDialog.show = false
+
+    closeDeleteDialog: function () {
+      this.deleteDialog.show = false;
     },
+
     openAddCategoryDialog: function () {
       this.tagDialog = {
         name: "",
@@ -180,6 +195,7 @@ export default {
       };
       this.focusOnNameLazy();
     },
+
     addNewCategory: function () {
       if (this.$refs.tagForm.validate()) {
         let tagDto = {
@@ -191,6 +207,7 @@ export default {
         this.closeTagDialog();
       }
     },
+
     openEditCategoryDialog: function (tagDto) {
       this.tagDialog = {
         tagId: tagDto.id,
@@ -202,29 +219,33 @@ export default {
       };
       this.focusOnNameLazy();
     },
+
     editCategory: function () {
       if (this.$refs.tagForm.validate()) {
         let tagDto = {
           id: this.tagDialog.tagId,
           name: this.tagDialog.name,
-          parentId: null
+          parentId: null,
         };
         client.putTag(tagDto);
         this.closeTagDialog();
       }
     },
-    openDeleteCategoryDialog: function(tagDto) {
+
+    openDeleteCategoryDialog: function (tagDto) {
       this.deleteDialog = {
         action: this.deleteCategory,
         tagId: tagDto.id,
         show: true,
       };
     },
+
     deleteCategory: function () {
-      let id = this.deleteDialog.tagId
-      client.deleteTag(id)
+      let id = this.deleteDialog.tagId;
+      client.deleteTag(id);
       this.closeDeleteDialog();
     },
+
     openAddTagDialog: function (tagDto) {
       this.tagDialog = {
         tagId: tagDto.id,
@@ -234,8 +255,9 @@ export default {
         action: this.addNewTag,
         show: true,
       };
-      this.focusOnNameLazy()
+      this.focusOnNameLazy();
     },
+
     addNewTag: function () {
       if (this.$refs.tagForm.validate()) {
         let tagDto = {
@@ -247,6 +269,7 @@ export default {
         this.closeTagDialog();
       }
     },
+
     openEditTagDialog: async function (parentId, tagDto) {
       this.tagDialog = {
         tagId: tagDto.id,
@@ -258,8 +281,9 @@ export default {
         show: true,
       };
 
-      this.focusOnNameLazy()
+      this.focusOnNameLazy();
     },
+
     editTag: function () {
       if (this.$refs.tagForm.validate()) {
         let tagDto = {
@@ -268,23 +292,26 @@ export default {
           name: this.tagDialog.name,
         };
         client.putTag(tagDto);
-        this.closeTagDialog()
+        this.closeTagDialog();
       }
     },
-    openDeleteTagDialog: function(tagId) {
+
+    openDeleteTagDialog: function (tagId) {
       this.deleteDialog = {
         action: this.deleteTag,
         tagId: tagId,
         show: true,
       };
     },
-    deleteTag: function() {
-      let id = this.deleteDialog.tagId
-      client.deleteTag(id)
-      this.closeDeleteDialog()
+
+    deleteTag: function () {
+      let id = this.deleteDialog.tagId;
+      client.deleteTag(id);
+      this.closeDeleteDialog();
     },
   },
-  mounted: function () {
+
+  mounted: async function () {
     this.headers = [
       {
         text: this.$vuetify.lang.t("$vuetify.common.name"),
@@ -305,7 +332,10 @@ export default {
       },
     ];
 
-    client.getTags()
+    var that = this;
+    await client.getTags().then(function () {
+      that.loading = false;
+    });
   },
 };
 </script>
