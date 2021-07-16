@@ -78,7 +78,7 @@
             <v-list>
               <v-list-item v-for="event in discoveryEvents" :key="event.no">
                 <v-list-item-content>
-                  <v-list-item-title>{{ event.message }}</v-list-item-title>
+                  <v-list-item-title class="text-wrap">{{ event.message }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
