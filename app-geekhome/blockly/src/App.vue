@@ -225,9 +225,9 @@ export default {
   watch: {
     factories(factories) {
       if (factories.length > 0) {
-        this.navigationItems[7].route = "/discover/" + factories[0].id;
+        this.navigationItems[6].route = "/discover/" + factories[0].id;
       } else {
-        this.navigationItems[7].route = "/discover/null";
+        this.navigationItems[6].route = "/discover/null";
       }
     },
   },

@@ -82,7 +82,7 @@
       >
     </div>
 
-    <div class="text-center" v-if="inboxMessages.length == 0">
+    <div class="text-center" v-if="inboxMessages.length == 0 && !loading">
       {{ $vuetify.lang.t("$vuetify.noDataText") }}
     </div>
   </div>
