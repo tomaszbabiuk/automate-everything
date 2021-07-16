@@ -4,9 +4,11 @@ import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PluginEventData
+import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.plugininjection.AllFeaturesInjectedListener
+import eu.geekhome.domain.plugininjection.RequiresInbox
 import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.domain.plugininjection.RequiresMqtt
 import org.pf4j.*
@@ -40,7 +42,11 @@ class SingletonExtensionsPluginsCoordinator(
         return metadata.settingGroups
     }
 
-    override fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver) {
+    override fun injectPlugins(
+        mqttBrokerService: MqttBrokerService,
+        lanGatewayResolver: LanGatewayResolver,
+        inbox: Inbox
+    ) {
         plugins
             .map { it.plugin }
             .forEach {
@@ -50,6 +56,10 @@ class SingletonExtensionsPluginsCoordinator(
 
                 if (it is RequiresMqtt) {
                     it.injectMqttBrokerService(mqttBrokerService)
+                }
+
+                if (it is RequiresInbox) {
+                    it.injectInbox(inbox)
                 }
 
                 if (it is AllFeaturesInjectedListener) {

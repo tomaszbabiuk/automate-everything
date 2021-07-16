@@ -2,6 +2,7 @@ package eu.geekhome.domain.extensibility
 
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
+import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import org.pf4j.PluginStateListener
@@ -15,7 +16,7 @@ interface PluginsCoordinator {
     fun addPluginStateListener(listener: PluginStateListener)
     fun getPluginWrapper(pluginId: String): PluginWrapper?
     fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
-    fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver)
+    fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver, inbox: Inbox)
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
 }

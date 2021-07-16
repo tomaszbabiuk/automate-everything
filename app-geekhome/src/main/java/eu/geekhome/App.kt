@@ -63,7 +63,7 @@ open class App : ResourceConfig() {
 
     private fun preparePlugins() {
         pluginsCoordinator.loadPlugins()
-        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver)
+        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver, inbox)
     }
 
     private fun dependencyInjectionOfRest() {
