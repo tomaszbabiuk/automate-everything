@@ -1,7 +1,6 @@
 package eu.geekhome.aforeplugin
 
 import eu.geekhome.data.settings.SettingsDto
-import eu.geekhome.domain.events.DiscoveryEventData
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
@@ -52,19 +51,19 @@ class AforeAdapter(
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<AforeWattageInputPort> = coroutineScope {
         val result = ArrayList<AforeWattageInputPort>()
-        broadcastEvent(eventsSink, "Starting AFORE discovery")
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, "Starting AFORE discovery")
 
         val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
         val lanGateway: LanGateway? = when (lanGateways.size) {
             0 -> {
-                broadcastEvent(eventsSink, "Cannot resolve LAN gateway... aborting!")
+                eventsSink.broadcastDiscoveryEvent(owningPluginId, "Cannot resolve LAN gateway... aborting!")
                 null
             }
             1 -> {
                 lanGateways.first()
             }
             else -> {
-                broadcastEvent(eventsSink, "There's more than one LAN gateways. Using the first one: ${lanGateways.first().interfaceName}!")
+                eventsSink.broadcastDiscoveryEvent(owningPluginId,"There's more than one LAN gateways. Using the first one: ${lanGateways.first().interfaceName}!")
                 lanGateways.first()
             }
         }
@@ -76,21 +75,16 @@ class AforeAdapter(
             val aforeDevices = discoveryJob.await()
 
             aforeDevices.forEach {
-                broadcastEvent(eventsSink, "AFORE inverter found, IP:${it.first}, s/n:${it.second}")
+                eventsSink.broadcastDiscoveryEvent(owningPluginId,"AFORE inverter found, IP:${it.first}, s/n:${it.second}")
                 val portId = idBuilder.buildPortId(it.second, 0, "W")
                 val inverterPort = AforeWattageInputPort(portId, httpClient, it.first)
                 result.add(inverterPort)
             }
         }
 
-        broadcastEvent(eventsSink, "AFORE discovery has finished")
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, "AFORE discovery has finished")
 
         result
-    }
-
-    private fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        val event = DiscoveryEventData(owningPluginId, message)
-        eventsSink.broadcastEvent(event)
     }
 
     private suspend fun maintenanceLoop(now: Calendar) {
@@ -119,11 +113,9 @@ class AforeAdapter(
 
     override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
         this.operationSink = operationSink
-        this.operationScope = CoroutineScope(Dispatchers.IO)
 
         if (operationScope != null) {
             operationScope!!.cancel("Adapter already started")
-            operationScope = null
         }
 
         operationScope = CoroutineScope(Dispatchers.IO)

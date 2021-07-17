@@ -5,18 +5,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
 abstract  class WithStartStopScope {
-    var startStopScope = restartScope()
+    var startStopScope = createNewScope()
 
     open fun start() {
-        startStopScope.cancel("Restarting...")
-        startStopScope = restartScope()
+        startStopScope = createNewScope()
     }
 
     open fun stop() {
-        startStopScope.cancel("Stopping ${this.javaClass.name}")
+        startStopScope?.cancel("Stopping ${this.javaClass.name}")
     }
 
-    private fun restartScope() : CoroutineScope {
+    private fun createNewScope() : CoroutineScope {
         return CoroutineScope(Dispatchers.IO)
     }
 }

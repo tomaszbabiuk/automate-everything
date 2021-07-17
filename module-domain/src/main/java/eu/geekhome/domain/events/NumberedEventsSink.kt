@@ -26,6 +26,8 @@ class NumberedEventsSink : EventsSink {
             target.removeAt(0)
         }
 
+        println(payload)
+
         eventCounter++
         val now = Calendar.getInstance().timeInMillis
         val event = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
@@ -37,8 +39,8 @@ class NumberedEventsSink : EventsSink {
         enqueue(payload, events, MAX_EVENTS_SIZE)
     }
 
-    override fun broadcastMessage(message: LiveEventData) {
-        enqueue(message, messages, MAX_INBOX_SIZE)
+    override fun broadcastMessage(payload: LiveEventData) {
+        enqueue(payload, messages, MAX_INBOX_SIZE)
     }
 
     override fun reset() {
