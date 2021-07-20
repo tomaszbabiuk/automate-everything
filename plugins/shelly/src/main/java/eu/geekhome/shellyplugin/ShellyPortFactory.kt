@@ -42,6 +42,12 @@ class ShellyPortFactory {
             }
         }
 
+        if (statusResponse.inputs != null) {
+            for (i in statusResponse.inputs.indices) {
+                result.add(constructBooleanReadPort(idBuilder, shellyId, i, statusResponse.inputs[i], sleepInterval))
+            }
+        }
+
         if (statusResponse.tmp != null) {
             result.add(constructTemperatureReadPort(idBuilder, shellyId, statusResponse.tmp, sleepInterval))
         }
@@ -55,6 +61,20 @@ class ShellyPortFactory {
         }
 
         return result
+    }
+
+    private fun constructBooleanReadPort(
+        idBuilder: PortIdBuilder,
+        shellyId: String,
+        channel: Int,
+        inputBriefDto: InputBriefDto,
+        sleepInterval: Long
+    ): ShellyPort<*> {
+        val id = idBuilder.buildPortId(shellyId, channel, "I")
+        val port = ShellyBinaryInputPort(id, shellyId, channel, sleepInterval)
+        port.setValueFromInputResponse(inputBriefDto)
+
+        return port
     }
 
     private fun constructBatteryReadPort(

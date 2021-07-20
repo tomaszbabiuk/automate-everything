@@ -7,7 +7,7 @@ data class ShellyStatusResponse(
     val tmp: TemperatureBriefDto?,
     val hum: HumidityBriefDto?,
     val bat: BatteryBriefDto?,
-    val inputs: List<InputBriefFDto>?,
+    val inputs: List<InputBriefDto>?,
     val adcs: AdcBriefDto?,
     val mac: String,
     val ext_temperature: Map<String, ExtraTemperatureBrief>?,
@@ -50,7 +50,7 @@ data class BatteryBriefDto(
     val voltage: Double
 )
 
-data class InputBriefFDto(
+data class InputBriefDto(
     val input:Int
 )
 
