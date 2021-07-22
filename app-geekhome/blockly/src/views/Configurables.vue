@@ -8,10 +8,6 @@
       ></v-skeleton-loader>
     </div>
     <div v-else>
-      <div v-if="configurables.length == 0" class="text-center">
-        {{ $vuetify.lang.t("$vuetify.noDataText") }}
-      </div>
-
       <v-breadcrumbs :items="breadcrumbs" v-if="breadcrumbs.length > 1">
         <template v-slot:divider>
           <v-icon>mdi-forward</v-icon>
@@ -340,13 +336,29 @@ export default {
       await this.refresh();
     },
 
+    refreshConfigurables: async function() {
+      return client.getConfigurables();
+    },
+
+    refreshInstances: async function() {
+      return client.getInstancesOfClazz(this.getConfigurableClazz());
+    },
+
+    refreshTags: async function() {
+      return client.getTags();
+    },
+
+    refreshPorts: async function() {
+      return client.getPorts();
+    },
+
     refresh: async function () {
       var that = this;
       await Promise.all([
-        client.getConfigurables(),
-        client.getInstancesOfClazz(this.getConfigurableClazz()),
-        client.getTags(),
-        client.getPorts(),
+        this.refreshConfigurables(),
+        this.refreshInstances(),
+        this.refreshTags(),
+        this.refreshPorts(),
       ]).then(() => (that.loading = false));
     },
 
@@ -412,7 +424,7 @@ export default {
       }
     },
 
-    handleValidationResult: function (validationResult) {
+    handleValidationResult: async function (validationResult) {
       var isFormValid = true;
       for (const field in validationResult) {
         if (!validationResult[field].valid) {
@@ -422,7 +434,9 @@ export default {
 
       if (isFormValid) {
         this.instanceDialog.show = false;
-        this.refreshInstances();
+        this.loading = true;
+        await this.refreshInstances();
+        this.loading = false;
       } else {
         this.instanceDialog.activeTab = 0;
       }

@@ -1,7 +1,7 @@
 package eu.geekhome.coreplugin
 
 import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.configurable.TemperatureReadPortField
+import eu.geekhome.domain.configurable.TemperatureInputPortField
 import eu.geekhome.domain.hardware.Temperature
 import eu.geekhome.data.localization.Resource
 import org.pf4j.Extension
@@ -9,7 +9,7 @@ import org.pf4j.Extension
 @Extension
 class ThermometerConfigurable : SinglePortSensorConfigurable<Temperature>(
     Temperature::class.java,
-    TemperatureReadPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+    TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 ) {
     override val addNewRes: Resource
         get() = R.configurable_thermometer_add

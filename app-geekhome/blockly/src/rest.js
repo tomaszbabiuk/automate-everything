@@ -52,6 +52,7 @@ export const client = {
         postResponseFunction(response)
       }
     } catch (innerException) {
+      console.log(innerException)
       var errorData = {
         message: "$vuetify.rest.error",
         actionTitle: "$vuetify.common.retry",

@@ -115,7 +115,27 @@ object R {
 
     val configurable_onoffdevices_description = Resource(
         "A very simple to automate on/off devices",
-        "Proste w autmatyzowaniu urządzenia typu: włącz/wyłącz"
+        "Proste w automatyzowaniu urządzenia typu: włącz/wyłącz"
+    )
+
+    val configurable_powerdevice_add = Resource(
+        "Add power regulated device",
+        "Dodaj urządzenie z regulacją mocy"
+    )
+
+    val configurable_powerdevice_edit = Resource(
+        "Edit power regulated device",
+        "Edytuj urządzenie z regulacją mocy"
+    )
+
+    val configurable_powerdevice_title = Resource(
+        "Power regulated devices",
+        "Urządzenia z regulacją mocy"
+    )
+
+    val configurable_powerdevices_description = Resource(
+        "A devices which power can be regulated from 0-100%",
+        "Urządzenie, których moc może być regulowana w zakresie od 0-100%"
     )
 
     val configurable_twilightcondition_add = Resource(
