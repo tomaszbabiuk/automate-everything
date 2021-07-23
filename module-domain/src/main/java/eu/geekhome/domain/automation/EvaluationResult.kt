@@ -1,6 +1,7 @@
 package eu.geekhome.domain.automation
 
 import eu.geekhome.data.automation.ControlMode
+import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.localization.Resource
 
@@ -11,7 +12,7 @@ class EvaluationResult<T> (
     val descriptions: List<Resource> = ArrayList(),
     val controlMode: ControlMode = ControlMode.Auto,
     val error: Exception? = null,
-    val nextStates: List<State>? = null
+    val nextStates: NextStatesDto? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -3,26 +3,6 @@ package eu.geekhome.coreplugin
 import eu.geekhome.data.localization.Resource
 
 object R {
-    val field_ip_from = Resource(
-        "Starting IPv4 address",
-        "Adres startowy IPv4"
-    )
-
-    val field_ip_to = Resource(
-        "Ending IPv4 address",
-        "Adres końcowy IPv4"
-    )
-
-    val settings_lan_discovery_title = Resource(
-      "LAN discovery",
-      "Wykrywanie urządzeń w sieci LAN"
-    )
-
-    val settings_lan_discovery_description = Resource(
-      "Local IP address range that will be checked for being a smart device during discovery process",
-      "Zakres adresów IP w sieci lokalnej, które będą odpytywane w czasie procesu wyszukiwania inteligentnych urządzeń"
-    )
-
     val plugin_description = Resource(
         "Core definitions of devices and conditions",
         "Główne definicje urządzeń i warunków"
@@ -36,6 +16,26 @@ object R {
     val field_port_hint = Resource(
         "Port",
         "Port"
+    )
+
+    val field_preset1_hint = Resource(
+        "Preset 1 (% of power)",
+        "Ustawienie 1 (% mocy)"
+    )
+
+    val field_preset2_hint = Resource(
+        "Preset 2 (% of power)",
+        "Ustawienie 2 (% mocy)"
+    )
+
+    val field_preset3_hint = Resource(
+        "Preset 3 (% of power)",
+        "Ustawienie 3 (% mocy)"
+    )
+
+    val field_preset4_hint = Resource(
+        "Preset 4 (% of power)",
+        "Ustawienie 4 (% mocy)"
     )
 
     val field_longitude_hint = Resource(
@@ -227,4 +227,30 @@ object R {
         "Off",
         "Wył"
     )
+
+    val state_preset1 = Resource(
+        "Preset 1",
+        "Ustawienie 1"
+    )
+
+    val state_preset2 = Resource(
+        "Preset 2",
+        "Ustawienie 2"
+    )
+
+    val state_preset3 = Resource(
+        "Preset 3",
+        "Ustawienie 3"
+    )
+
+    val state_preset4 = Resource(
+        "Preset 4",
+        "Ustawienie 4"
+    )
+
+    val state_manual = Resource(
+        "Manual",
+        "Manual"
+    )
+
 }

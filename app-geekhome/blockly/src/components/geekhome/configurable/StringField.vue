@@ -48,6 +48,10 @@ export default {
         value: value
       })
     }
+  },
+
+  mounted: function() {
+    this.text = this.storeFieldData
   }
 };
 </script>

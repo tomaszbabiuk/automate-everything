@@ -1,5 +1,6 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.State
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import eu.geekhome.domain.hardware.OutputPort
@@ -19,20 +20,14 @@ class OnOffDeviceAutomationUnit(
         setCurrentState("off")
     }
 
-    override fun buildNextStates(state: State): List<State> {
-        if (state.id == "on") {
-            return listOf(states["off"]!!)
-        }
-
-        return listOf(states["on"]!!)
-    }
+    override val requiresExtendedWidth = false
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (currentState.id == "on") {
-            changeOutputPortStateIfNeeded<Any>(controlPort, Relay(true))
+            changeRelayStateIfNeeded(controlPort, Relay(true))
         } else if (currentState.id == "off") {
-            changeOutputPortStateIfNeeded<Any>(controlPort, Relay(false))
+            changeRelayStateIfNeeded(controlPort, Relay(false))
         }
     }
 
@@ -41,9 +36,9 @@ class OnOffDeviceAutomationUnit(
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {
-            changeState("on", eu.geekhome.data.automation.ControlMode.Manual, null, null)
+            changeState("on", ControlMode.Manual, null, null)
         } else {
-            changeState("off", eu.geekhome.data.automation.ControlMode.Manual, null, null)
+            changeState("off", ControlMode.Manual, null, null)
         }
     }
 

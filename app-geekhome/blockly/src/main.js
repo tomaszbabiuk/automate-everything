@@ -6,6 +6,7 @@ import store from './plugins/vuex'
 
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
+import ConfigurablePowerLevelField from './components/geekhome/configurable/PowerLevelField'
 import ConfigurableDoubleField from './components/geekhome/configurable/DoubleField'
 import ConfigurableGenericPortField from './components/geekhome/configurable/GenericPortField'
 import ConfigurableRelayOutputPortField from './components/geekhome/configurable/RelayOutputPortField'
@@ -25,6 +26,7 @@ import PortControl from './components/geekhome/PortControl'
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
+Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)
 Vue.component('configurable-genericportfield', ConfigurableGenericPortField)
 Vue.component('configurable-relayoutputportfield', ConfigurableRelayOutputPortField)

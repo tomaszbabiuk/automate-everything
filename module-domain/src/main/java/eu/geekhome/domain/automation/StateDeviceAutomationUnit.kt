@@ -1,18 +1,23 @@
 package eu.geekhome.domain.automation
 
 import eu.geekhome.data.automation.ControlMode
+import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
+import eu.geekhome.data.automation.StateType
 import eu.geekhome.domain.hardware.OutputPort
+import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnit(
     name: String?,
-    protected val states: Map<String, State>,
+    private val states: Map<String, State>,
     initialStateId: String) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
     var currentState: State
     override var controlMode: ControlMode = ControlMode.Auto
+
+    abstract val requiresExtendedWidth: Boolean
 
     protected fun setCurrentState(stateId: String) {
         this.currentState = states[stateId]!!
@@ -28,7 +33,7 @@ abstract class StateDeviceAutomationUnit(
         }
     }
 
-    fun buildEvaluationResult(initialStateId: String, states: Map<String, State>, controlMode: ControlMode) : EvaluationResult<State> {
+    private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>, controlMode: ControlMode) : EvaluationResult<State> {
         val state = states[initialStateId]!!
         return EvaluationResult(
             interfaceValue = state.name,
@@ -39,20 +44,36 @@ abstract class StateDeviceAutomationUnit(
         )
     }
 
-    abstract fun buildNextStates(state: State): List<State>
+    open fun buildNextStates(state: State): NextStatesDto {
+        val nextStates = states
+            .filter { it.value.type != StateType.ReadOnly }
+            .map { it.value }
+        return NextStatesDto(nextStates, state.id, requiresExtendedWidth)
+    }
 
     abstract fun applyNewState(state: String)
 
     companion object {
         @Throws(Exception::class)
         @JvmStatic
-        protected fun <T> changeOutputPortStateIfNeeded(
+        protected fun changeRelayStateIfNeeded(
             port: OutputPort<Relay>,
-            state: Relay?,
+            state: Relay,
             invalidate: Boolean = false
         ) {
-            if (state != null &&
-                (invalidate || state != port.read())) {
+            if (invalidate || state.value != port.read().value) {
+                port.write(state)
+            }
+        }
+
+        @Throws(Exception::class)
+        @JvmStatic
+        protected fun changePowerLevelIfNeeded(
+            port: OutputPort<PowerLevel>,
+            state: PowerLevel,
+            invalidate: Boolean = false
+        ) {
+            if (invalidate || state.value != port.read().value) {
                 port.write(state)
             }
         }

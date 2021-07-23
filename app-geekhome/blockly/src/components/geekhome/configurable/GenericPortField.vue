@@ -26,14 +26,18 @@ data: function() {
       items: []
     };
   },
+
   props: ["id", "hint", "required", "counter", "portFilter"],
+
   computed: {
     validation() {
       return this.$store.state.instanceValidation[this.id]
     },
+
     storeFieldData() {
       return this.$store.state.newInstance.fields[this.id]
     },  
+
     ports() {
       var portFilter = this.portFilter
       return this.$store.state.ports.filter((port) => {
@@ -43,17 +47,20 @@ data: function() {
       })
     }
   },
+
   watch: {
     validation(val) {
       this.error = !val.valid
       this.errorMessages = val.reasons
     },
+
     storeFieldData(value) {
       console.log('store: ' + value)
       if (this.selected != value) {
         this.selected = value
       }
     },
+
     selected(value) {
       console.log('text: ' + value)
       this.$store.commit(UPDATE_INSTANCE_FIELD, { 
@@ -61,6 +68,10 @@ data: function() {
         value: value
       })
     }
+  },
+
+  mounted: function() {
+    this.selected = this.storeFieldData
   }
 };
 </script>

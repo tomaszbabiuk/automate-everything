@@ -12,7 +12,8 @@
     <v-card
       v-else
       class="mx-auto float-left ml-5 mt-5"
-      max-width="344"
+      :min-width="matchMinWidth(automationUnit)"
+      min-height="164"
       v-for="automationUnit in automationUnits"
       :key="automationUnit.id"
       :color="matchColor(automationUnit)"
@@ -44,14 +45,32 @@
         </v-list-item-avatar>
       </v-list-item>
       <v-card-actions>
+        <!-- <div>
+<v-select
+          :items="automationUnit.evaluationResult.nextStates"
+          item-text="name"
+          label="Change state..."
+          outlined
+          dense
+          solo
+        ></v-select>
+</div> -->
+
         <div v-if="automationUnit.evaluationResult.nextStates != null">
-          <v-btn
-            v-for="state in automationUnit.evaluationResult.nextStates"
-            :key="state.id"
-            @click="changeState(automationUnit.instance, state)"
-            >{{ state.name }}</v-btn
+          <v-btn-toggle
+            dense
+            v-model="selectedStates['instance_' + automationUnit.instance.id]"
           >
+            <v-btn
+              v-for="state in automationUnit.evaluationResult.nextStates.states"
+              :key="state.name"
+              :elevated="state.id == 'on'"
+              @click="changeState(automationUnit.instance, state)"
+              >{{ state.name }}</v-btn
+            >
+          </v-btn-toggle>
         </div>
+
         <v-spacer></v-spacer>
         <v-btn
           icon
@@ -89,14 +108,16 @@
 
 <script>
 import { client } from "../rest.js";
+import Vue from "vue";
 
 export default {
   data: function () {
     return {
       loading: true,
+      selectedStates: {},
     };
   },
-  
+
   computed: {
     automationUnits() {
       return this.$store.state.automationUnits;
@@ -116,22 +137,58 @@ export default {
       }
 
       if (automationUnit.evaluationResult.isSignaled) {
-        return "blue";
+        return "blue lighten-1";
       }
 
       return "white";
+    },
+
+    matchMinWidth(automationUnit) {
+      if (
+        automationUnit.evaluationResult.nextStates != null &&
+        automationUnit.evaluationResult.nextStates.extendedWidth
+      ) {
+        return "708";
+      }
+
+      return "344";
     },
 
     changeState(instance, state) {
       console.log("Changing state " + instance.id + " " + state.id);
       client.changeState(instance.id, state.id);
     },
+
+    findStateIndex(automationUnit, stateId) {
+      var index = 0;
+      var result = -1;
+      automationUnit.evaluationResult.nextStates.states.forEach((element) => {
+        if (element.id == stateId) {
+          result = index;
+          return
+        }
+
+        index++;
+      })
+
+      return result;
+    }
   },
 
   mounted: async function () {
     var that = this;
     await client.getAutomationUnits().then(function () {
       that.loading = false;
+    });
+
+    this.automationUnits.forEach((element) => {
+      if (element.evaluationResult.nextStates != null) {
+        var stateId = element.evaluationResult.nextStates.current;
+        var stateIndex = this.findStateIndex(element, stateId);
+        Vue.set(that.selectedStates, "instance_" + element.instance.id, stateIndex);
+      } else {
+        Vue.set(that.selectedStates, "instance_" + element.instance.id, -1);
+      }
     });
   },
 };

@@ -417,7 +417,7 @@ export default {
       setTimeout(() => {
         store.commit(RESET_INSTANCE, this.configurable);
         store.commit(EDIT_INSTANCE, instance);
-      }, 200);
+      }, 500);
 
       if (this.$refs.blockly != null) {
         this.$refs.blockly.reloadBlocks(instance.automation);

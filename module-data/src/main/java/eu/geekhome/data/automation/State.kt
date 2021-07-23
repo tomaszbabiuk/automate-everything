@@ -2,7 +2,7 @@ package eu.geekhome.data.automation
 
 import eu.geekhome.data.localization.Resource
 
-data class State(
+data class  State(
     val id: String,
     val name: Resource,
     val type: StateType,

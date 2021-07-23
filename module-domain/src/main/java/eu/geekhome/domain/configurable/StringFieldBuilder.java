@@ -11,16 +11,3 @@ public class StringFieldBuilder implements FieldBuilder<String> {
         return value;
     }
 }
-
-/*
-class StringFieldBuilder : FieldBuilder<String> {
-
-    override fun fromPersistableString(value: String): String {
-        return value
-    }
-
-    override fun toPersistableString(value: String): String {
-        return value
-    }
-}
- */
