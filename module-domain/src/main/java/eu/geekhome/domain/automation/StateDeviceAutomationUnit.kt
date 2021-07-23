@@ -9,24 +9,24 @@ import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnit(
-    name: String?,
+    name: String,
     private val states: Map<String, State>,
-    initialStateId: String) :
+    initialStateId: String,
+    private val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
-    var currentState: State
+    var currentState: State = states[initialStateId]!!
+        protected set(value) {
+            field = value
+            changeState(value.id, ControlMode.Manual, null, null)
+        }
+
     override var controlMode: ControlMode = ControlMode.Auto
-
-    abstract val requiresExtendedWidth: Boolean
-
-    protected fun setCurrentState(stateId: String) {
-        this.currentState = states[stateId]!!
-    }
 
     override fun changeState(state: String, controlMode: ControlMode, code: String?, actor: String?) {
         if (currentState.id != state || controlMode != controlMode) {
-            setCurrentState(state)
-            this.controlMode = controlMode
+            currentState = states[state]!!
+            this@StateDeviceAutomationUnit.controlMode = controlMode
             applyNewState(state)
 
             lastEvaluation = buildEvaluationResult(currentState.id, states, controlMode)
@@ -80,8 +80,4 @@ abstract class StateDeviceAutomationUnit(
     }
 
     override var lastEvaluation = buildEvaluationResult(initialStateId, states, ControlMode.Auto)
-
-    init {
-        currentState = states[initialStateId]!!
-    }
 }

@@ -83,42 +83,42 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_PRESET1] = State(
                 STATE_PRESET1,
                 R.state_preset1,
-                StateType.NonSignaledAction,
+                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_PRESET2] = State(
                 STATE_PRESET2,
                 R.state_preset2,
-                StateType.NonSignaledAction,
+                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_PRESET3] = State(
                 STATE_PRESET3,
                 R.state_preset3,
-                StateType.NonSignaledAction,
+                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_PRESET4] = State(
                 STATE_PRESET4,
                 R.state_preset4,
-                StateType.NonSignaledAction,
+                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_OFF] = State(
                 STATE_OFF,
                 R.state_off,
-                StateType.SignaledAction,
+                StateType.Control,
                 isSignaled = false,
                 codeRequired = false
             )
             states[STATE_MANUAL] = State(
                 STATE_MANUAL,
                 R.state_manual,
-                StateType.NonSignaledAction,
+                StateType.ReadOnly,
                 isSignaled = true,
                 codeRequired = false
             )

@@ -1,5 +1,7 @@
 package eu.geekhome.coreplugin
 
+import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
+import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
 import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.State
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
@@ -10,23 +12,17 @@ import kotlin.Throws
 import java.util.Calendar
 
 class OnOffDeviceAutomationUnit(
-    name: String?,
+    name: String,
     states: Map<String, State>,
-    initialState: String,
+    initialStateId: String,
     private val controlPort: OutputPort<Relay>,
-) : StateDeviceAutomationUnit(name, states, initialState) {
-
-    init {
-        setCurrentState("off")
-    }
-
-    override val requiresExtendedWidth = false
+) : StateDeviceAutomationUnit(name, states, initialStateId, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
-        if (currentState.id == "on") {
+        if (currentState.id == STATE_ON) {
             changeRelayStateIfNeeded(controlPort, Relay(true))
-        } else if (currentState.id == "off") {
+        } else if (currentState.id == STATE_OFF) {
             changeRelayStateIfNeeded(controlPort, Relay(false))
         }
     }
@@ -36,9 +32,9 @@ class OnOffDeviceAutomationUnit(
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {
-            changeState("on", ControlMode.Manual, null, null)
+            changeState(STATE_ON, ControlMode.Manual, null, null)
         } else {
-            changeState("off", ControlMode.Manual, null, null)
+            changeState(STATE_OFF, ControlMode.Manual, null, null)
         }
     }
 

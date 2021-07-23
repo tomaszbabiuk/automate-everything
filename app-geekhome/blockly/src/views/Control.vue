@@ -45,30 +45,16 @@
         </v-list-item-avatar>
       </v-list-item>
       <v-card-actions>
-        <!-- <div>
-<v-select
-          :items="automationUnit.evaluationResult.nextStates"
-          item-text="name"
-          label="Change state..."
-          outlined
-          dense
-          solo
-        ></v-select>
-</div> -->
 
         <div v-if="automationUnit.evaluationResult.nextStates != null">
-          <v-btn-toggle
-            dense
-            v-model="selectedStates['instance_' + automationUnit.instance.id]"
-          >
             <v-btn
               v-for="state in automationUnit.evaluationResult.nextStates.states"
               :key="state.name"
-              :elevated="state.id == 'on'"
+              text
+              :color="automationUnit.evaluationResult.isSignaled ? 'black' : 'primary'"
+              :disabled="state.id == automationUnit.evaluationResult.nextStates.current"
               @click="changeState(automationUnit.instance, state)"
-              >{{ state.name }}</v-btn
-            >
-          </v-btn-toggle>
+              >{{ state.name }}</v-btn>
         </div>
 
         <v-spacer></v-spacer>
@@ -108,7 +94,6 @@
 
 <script>
 import { client } from "../rest.js";
-import Vue from "vue";
 
 export default {
   data: function () {
@@ -158,37 +143,12 @@ export default {
       console.log("Changing state " + instance.id + " " + state.id);
       client.changeState(instance.id, state.id);
     },
-
-    findStateIndex(automationUnit, stateId) {
-      var index = 0;
-      var result = -1;
-      automationUnit.evaluationResult.nextStates.states.forEach((element) => {
-        if (element.id == stateId) {
-          result = index;
-          return
-        }
-
-        index++;
-      })
-
-      return result;
-    }
   },
 
   mounted: async function () {
     var that = this;
     await client.getAutomationUnits().then(function () {
       that.loading = false;
-    });
-
-    this.automationUnits.forEach((element) => {
-      if (element.evaluationResult.nextStates != null) {
-        var stateId = element.evaluationResult.nextStates.current;
-        var stateIndex = this.findStateIndex(element, stateId);
-        Vue.set(that.selectedStates, "instance_" + element.instance.id, stateIndex);
-      } else {
-        Vue.set(that.selectedStates, "instance_" + element.instance.id, -1);
-      }
     });
   },
 };

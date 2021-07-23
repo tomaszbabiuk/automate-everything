@@ -24,13 +24,7 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     states: Map<String, State>,
     initialState: String,
     private val controlPort: OutputPort<PowerLevel>,
-) : StateDeviceAutomationUnit(name, states, initialState) {
-
-    init {
-        setCurrentState(STATE_OFF)
-    }
-
-    override val requiresExtendedWidth = true
+) : StateDeviceAutomationUnit(name, states, initialState, true) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
@@ -57,10 +51,25 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
         get() = arrayOf(controlPort.id)
 
     override fun calculateInternal(now: Calendar) {
-        val value = controlPort.read().value
-
-        if (value != preset1 || value != preset2 || value != preset3 || value != preset4 || value != 0) {
-            changeState(STATE_MANUAL, ControlMode.Manual, null, null)
+        when (controlPort.read().value) {
+            preset1 -> {
+                changeState(STATE_PRESET1, ControlMode.Manual, null, null)
+            }
+            preset2 -> {
+                changeState(STATE_PRESET2, ControlMode.Manual, null, null)
+            }
+            preset3 -> {
+                changeState(STATE_PRESET3, ControlMode.Manual, null, null)
+            }
+            preset4 -> {
+                changeState(STATE_PRESET4, ControlMode.Manual, null, null)
+            }
+            0 -> {
+                changeState(STATE_OFF, ControlMode.Manual, null, null)
+            }
+            else -> {
+                changeState(STATE_MANUAL, ControlMode.Manual, null, null)
+            }
         }
     }
 
