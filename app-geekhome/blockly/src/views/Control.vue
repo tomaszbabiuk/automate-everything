@@ -107,16 +107,20 @@ export default {
     automationUnits() {
       return this.$store.state.automationUnits;
     },
+
+    automation() {
+      return this.$store.state.automation;
+    },
   },
 
   methods: {
-    extractFieldDefinition: function (fieldName) {
+    extractFieldDefinition: function(fieldName) {
       return this.configurable.fields.filter((element) => {
         return element.name === fieldName;
       });
     },
 
-    matchColor(automationUnit) {
+    matchColor: function(automationUnit) {
       if (automationUnit.evaluationResult.error != null) {
         return "orange";
       }
@@ -128,7 +132,7 @@ export default {
       return "white";
     },
 
-    matchMinWidth(automationUnit) {
+    matchMinWidth: function(automationUnit) {
       if (
         automationUnit.evaluationResult.nextStates != null &&
         automationUnit.evaluationResult.nextStates.extendedWidth
@@ -139,17 +143,27 @@ export default {
       return "344";
     },
 
-    changeState(instance, state) {
+    changeState: function(instance, state) {
       console.log("Changing state " + instance.id + " " + state.id);
       client.changeState(instance.id, state.id);
     },
+
+    refresh: async function () {
+      var that = this;
+      await client.getAutomationUnits().then(function () {
+        that.loading = false;
+      });
+    },
+  },
+
+  watch: {
+    automation: async function() {
+        await this.refresh();
+    }
   },
 
   mounted: async function () {
-    var that = this;
-    await client.getAutomationUnits().then(function () {
-      that.loading = false;
-    });
+    await this.refresh();
   },
 };
 </script>
