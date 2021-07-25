@@ -72,8 +72,8 @@ class HardwareManager(
                     repository.updatePort(portSnapshot)
                     eventsSink.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
 
-                    val portAlreadyReported = repository.getPortById(it.id) == null
-                    if (!portAlreadyReported) {
+                    val portNotReported = repository.getPortById(it.id) == null
+                    if (portNotReported) {
                         inbox.sendNewPortDiscovered(it.id)
                     }
                 }
