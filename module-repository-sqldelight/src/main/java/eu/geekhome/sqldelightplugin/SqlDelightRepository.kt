@@ -240,6 +240,19 @@ class SqlDelightRepository : Repository {
             .map(portSnapshotToPortDtoMapper::map)
     }
 
+    override fun getPortById(id: String): PortDto? {
+        val portSnapshot = database
+            .portQueries
+            .selectById(id)
+            .executeAsOneOrNull()
+
+        return if (portSnapshot != null) {
+            portSnapshotToPortDtoMapper.map(portSnapshot)
+        } else {
+            null
+        }
+    }
+
     override fun updatePort(port: PortDto): Long {
         var id: Long = 0
         database.transaction {

@@ -11,6 +11,11 @@ selectAll:
 SELECT *
 FROM portSnapshot;
 
+selectById:
+SELECT *
+FROM portSnapshot
+WHERE id = ?;
+
 insert:
 INSERT INTO portSnapshot(id, factoryId, adapterId, valueType, canRead, canWrite)
 VALUES (?,?,?,?,?,?);

@@ -71,7 +71,11 @@ class HardwareManager(
                         null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
                     repository.updatePort(portSnapshot)
                     eventsSink.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
-                    inbox.sendNewPortDiscovered(it.id)
+
+                    val portAlreadyReported = repository.getPortById(it.id) == null
+                    if (!portAlreadyReported) {
+                        inbox.sendNewPortDiscovered(it.id)
+                    }
                 }
             }
         }

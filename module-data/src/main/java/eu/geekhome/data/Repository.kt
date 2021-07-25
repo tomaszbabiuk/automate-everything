@@ -38,14 +38,15 @@ interface Repository {
     fun updateIcon(iconDto: IconDto)
 
     fun getAllPorts(): List<PortDto>
+    fun getPortById(id: String): PortDto?
     fun updatePort(port: PortDto): Long
-    fun deletePort(id: String)
 
+    fun deletePort(id: String)
     fun deletePortSnapshot(id: String)
     fun updateSettings(settingsDtos: List<SettingsDto>)
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
-    fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
 
+    fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
     fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto>
     fun getUnreadInboxItems() : List<InboxItemDto>
     fun saveInboxItem(message: InboxItemDto) : Long
