@@ -6,6 +6,7 @@ import eu.geekhome.domain.automation.EvaluableAutomationUnit
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.StateChangeReporter
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
@@ -32,7 +33,7 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 }
 
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<State>
+    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State>
     abstract val states: Map<String, State>
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true

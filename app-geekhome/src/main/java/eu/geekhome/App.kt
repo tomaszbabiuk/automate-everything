@@ -2,6 +2,8 @@ package eu.geekhome
 
 import eu.geekhome.data.Repository
 import eu.geekhome.domain.automation.AutomationConductor
+import eu.geekhome.domain.automation.BroadcastingStateChangeReporter
+import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.rest.*
@@ -31,8 +33,9 @@ open class App : ResourceConfig() {
     private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(eventsSink)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
+    private val stateChangeReporter: StateChangeReporter = BroadcastingStateChangeReporter(eventsSink)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-        eventsSink, inbox, repository)
+        eventsSink, inbox, repository, stateChangeReporter)
     private val pulsar = Pulsar(eventsSink, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()

@@ -8,6 +8,8 @@ import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Compan
 import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Companion.STATE_PRESET4
 import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.State
+import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.PowerLevel
@@ -16,6 +18,8 @@ import kotlin.Throws
 import java.util.Calendar
 
 class RegulatedPowerWithPresetsDeviceAutomationUnit(
+    stateChangeReporter: StateChangeReporter,
+    instanceDto: InstanceDto,
     name: String,
     private val preset1: Int,
     private val preset2: Int,
@@ -24,7 +28,7 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     states: Map<String, State>,
     initialState: String,
     private val controlPort: OutputPort<PowerLevel>,
-) : StateDeviceAutomationUnit(name, states, initialState, true) {
+) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, initialState, true) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {

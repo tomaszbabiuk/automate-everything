@@ -10,14 +10,5 @@ class AutomationContext(
     val thisDevice: Configurable?,
     val automationUnitsCache: Map<Long, DeviceAutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
-    val blocksCache: List<BlockFactory<*>>,
-    private val liveEvents: EventsSink
-) {
-    fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto, deviceUnit.lastEvaluation)
-        liveEvents.broadcastEvent(eventData)
-
-        //TODO:
-        //send this change to other change state triggers
-    }
-}
+    val blocksCache: List<BlockFactory<*>>
+)

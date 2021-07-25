@@ -7,9 +7,9 @@ import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.hardware.IPortFinder
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.hardware.PowerLevel
 import org.pf4j.Extension
-import java.util.*
 import kotlin.collections.LinkedHashMap
 
 @Extension
@@ -61,7 +61,11 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
     private val preset3Field = PowerLevelField(FIELD_PRESET3, R.field_preset3_hint)
     private val preset4Field = PowerLevelField(FIELD_PRESET4, R.field_preset4_hint)
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(
+        instance: InstanceDto,
+        portFinder: IPortFinder,
+        stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
+
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields["name"]!!
@@ -69,7 +73,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
         val preset2 = instance.fields["preset2"]!!.toInt()
         val preset3 = instance.fields["preset3"]!!.toInt()
         val preset4 = instance.fields["preset4"]!!.toInt()
-        return RegulatedPowerWithPresetsDeviceAutomationUnit(name, preset1, preset2, preset3, preset4, states, STATE_OFF, port)
+        return RegulatedPowerWithPresetsDeviceAutomationUnit(stateChangeReporter, instance, name, preset1, preset2, preset3, preset4, states, STATE_OFF, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {

@@ -4,11 +4,14 @@ import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnit(
+    private val stateChangeReporter: StateChangeReporter,
+    private val instanceDto: InstanceDto,
     name: String,
     private val states: Map<String, State>,
     initialStateId: String,
@@ -30,6 +33,7 @@ abstract class StateDeviceAutomationUnit(
             applyNewState(state)
 
             lastEvaluation = buildEvaluationResult(currentState.id, states, controlMode)
+            stateChangeReporter.reportDeviceStateChange(this, instanceDto)
         }
     }
 

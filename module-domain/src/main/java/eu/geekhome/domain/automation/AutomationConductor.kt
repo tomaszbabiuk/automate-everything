@@ -23,7 +23,8 @@ class AutomationConductor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val liveEvents: EventsSink,
     private val inbox: Inbox,
-    private val repository: Repository
+    private val repository: Repository,
+    private val stateChangeReporter: StateChangeReporter
 ) : WithStartStopScope(), LiveEventsListener {
 
     init {
@@ -105,8 +106,7 @@ class AutomationConductor(
                         instanceDto, thisDevice,
                         automationUnitsCache.mapValues { it.value.second },
                         evaluationUnitsCache,
-                        blocksCache,
-                        liveEvents
+                        blocksCache
                     )
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
@@ -117,7 +117,7 @@ class AutomationConductor(
     private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): DeviceAutomationUnit<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                configurable.buildAutomationUnit(instance, hardwareManager)
+                configurable.buildAutomationUnit(instance, hardwareManager, stateChangeReporter)
             }
 
             is SensorConfigurable<*> -> {
