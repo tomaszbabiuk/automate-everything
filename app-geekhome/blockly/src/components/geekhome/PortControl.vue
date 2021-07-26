@@ -15,7 +15,9 @@ export default {
       powerLevelThrottlingTimeout: null,
     };
   },
-  props: ["valueType", "portId", "disabled"],
+
+  props: ["valueType", "portId", "disabled", "initialValue"],
+
   computed: {
     port: function() {
       return this.$store.state.ports.filter(element => {
@@ -23,12 +25,14 @@ export default {
       })
     }
   },
+
   watch: {
     powerLevel() {
       clearTimeout(this.powerLevelThrottlingTimeout)
       this.powerLevelThrottlingTimeout = setTimeout(this.controlPowerLevel, 200)
     }
   },
+
   methods: {
     togglePort: function() {
       this.$store.state.ports.forEach(element => {
@@ -49,6 +53,11 @@ export default {
         }
       })
     }
+  },
+
+  mounted: function() {
+    console.log(this.initialValue)
+    this.powerLevel = this.initialValue
   }
 };
 </script>

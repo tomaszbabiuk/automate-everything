@@ -43,6 +43,7 @@
                   :valueType="item.valueType"
                   :portId="item.id"
                   :disabled="!item.connected"
+                  :initialValue="item.integerValue"
                 ></portcontrol>
               </div>
               <div v-else>
