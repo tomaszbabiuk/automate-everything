@@ -140,6 +140,11 @@ class HardwareManager(
         return null
     }
 
+    fun executeAllPendingChanges() {
+        bundles()
+            .forEach { it.adapter.executePendingChanges() }
+    }
+
     override fun <T : PortValue> searchForAnyPort(
         valueType: Class<T>,
         id: String

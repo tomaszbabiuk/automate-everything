@@ -6,6 +6,7 @@ import eu.geekhome.data.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
 import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
+import eu.geekhome.domain.hardware.HardwareManager
 import java.lang.Exception
 import javax.inject.Inject
 import javax.ws.rs.*
@@ -14,8 +15,9 @@ import javax.ws.rs.core.MediaType
 @Path("automationunits")
 class AutomationUnitsController @Inject constructor(
     private val automationConductor: AutomationConductor,
-    private val mapper: AutomationUnitDtoMapper
-) {
+    private val mapper: AutomationUnitDtoMapper,
+    private val hardwareManager: HardwareManager,
+    ) {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -42,6 +44,7 @@ class AutomationUnitsController @Inject constructor(
         val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnit
         if (unit != null) {
             unit.changeState(state, ControlMode.Manual)
+            hardwareManager.executeAllPendingChanges()
         } else {
             throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnit::class.java.simpleName} expected")
         }
