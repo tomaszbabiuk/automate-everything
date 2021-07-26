@@ -138,7 +138,7 @@ class AutomationConductor(
                 AutomationUnitWrapper(originName, configurable.valueType, ex)
             }
 
-            else -> throw Exception("Unsupported configurable type, can this configurable be automated")
+            else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
         }
     }
 

@@ -44,6 +44,7 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
         result.addAll(collectStaticBlocks())
         result.addAll(collectConditionBlocks())
         result.addAll(collectSensorBlocks())
+        result.addAll(collectChangeStateTriggerBlocks())
 
         if (thisDevice != null) {
             result.addAll(collectChangeStateBlocks(thisDevice))
@@ -144,5 +145,27 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
         }
 
         return listOf()
+    }
+
+    private fun collectChangeStateTriggerBlocks(): List<BlockFactory<*>> {
+        val instanceBriefs = repository.getAllInstanceBriefs()
+        val allConfigurables = pluginsCoordinator.configurables
+
+        return instanceBriefs
+            .filter { briefDto ->
+                val configurable = allConfigurables.find { it.javaClass.name == briefDto.clazz }
+                configurable is StateDeviceConfigurable
+            }
+            .map { briefDto ->
+                val instanceId = briefDto.id
+                val deviceName = briefDto.name ?: "---"
+                val configurableClazz = allConfigurables.find { it.javaClass.name == briefDto.clazz } as StateDeviceConfigurable
+                StateDeviceTriggerBlockFactory(
+                    CategoryConstants.CategoryTriggers.color,
+                    instanceId,
+                    deviceName,
+                    configurableClazz.states)
+            }
+            .toList()
     }
 }

@@ -2,7 +2,7 @@ package eu.geekhome.domain.automation
 
 import java.util.*
 
-class TimeTriggerBlock(
+class TimeTriggerNode(
     private val seconds: Int,
     override val next: IStatementNode?
     ) : IStatementNode {

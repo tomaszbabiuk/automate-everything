@@ -62,6 +62,6 @@ class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory 
 
         val seconds = block.fields[0].value!!.toInt()
 
-        return TimeTriggerBlock(seconds, next)
+        return TimeTriggerNode(seconds, next)
     }
 }

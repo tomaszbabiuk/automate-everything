@@ -65,6 +65,11 @@ object R {
         "Powtarzaj co %1"
     )
 
+    val block_label_change_state = Resource(
+        "%1 changes state to %2",
+        "%1 zmienia stan na %2"
+    )
+
     val second = Resource(
         "second",
         "sekundę"
