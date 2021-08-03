@@ -66,6 +66,7 @@ class AutomationConductor(
     }
 
     private fun rebuildAutomations(): Map<Long, List<IStatementNode>> {
+        stateChangeReporter.removeAllListeners()
 
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
@@ -106,7 +107,8 @@ class AutomationConductor(
                         instanceDto, thisDevice,
                         automationUnitsCache.mapValues { it.value.second },
                         evaluationUnitsCache,
-                        blocksCache
+                        blocksCache,
+                        stateChangeReporter
                     )
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)

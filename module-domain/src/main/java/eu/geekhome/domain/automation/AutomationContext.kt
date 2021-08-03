@@ -10,5 +10,6 @@ class AutomationContext(
     val thisDevice: Configurable?,
     val automationUnitsCache: Map<Long, DeviceAutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, IEvaluableAutomationUnit>,
-    val blocksCache: List<BlockFactory<*>>
+    val blocksCache: List<BlockFactory<*>>,
+    val stateChangeReporter: StateChangeReporter
 )

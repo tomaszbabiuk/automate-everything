@@ -44,7 +44,7 @@ class StateDeviceTriggerBlockFactory(
             """
                {
                "type": "$type",
-               "message0": "\"$deviceName\" ${R.block_label_change_state.getValue(it)}",
+               "message0": "\"$deviceName\" ${R.block_label_state.getValue(it)}",
                "args0": [
                 {
                   "type": "input_dummy",
@@ -95,6 +95,6 @@ class StateDeviceTriggerBlockFactory(
         val instanceId = instanceIdRaw.toLong()
         val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnit
 
-        return StateDeviceTriggerNode(triggerUnit, stateId, next)
+        return StateDeviceTriggerNode(context, instanceId, triggerUnit, stateId, next)
     }
 }

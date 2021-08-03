@@ -1,7 +1,9 @@
 <template>
   <div class="mb-16">
     <div v-if="loading">
-      <v-skeleton-loader v-for="i in [0,1,2]" :key="i"
+      <v-skeleton-loader
+        v-for="i in [0, 1, 2]"
+        :key="i"
         class="mx-auto float-left ml-5 mt-5"
         min-width="300"
         type="card"
@@ -92,11 +94,13 @@
         >
           <v-card-title class="headline">
             <div
-              style="transform: scale(0.5)"
+              style="transform: scale(0.7)"
               v-html="configurable.iconRaw"
             ></div>
-            {{ configurable.titleRes }}
           </v-card-title>
+          <v-card-subtitle class="headline">
+            {{ configurable.titleRes }}
+          </v-card-subtitle>
 
           <v-card-subtitle>{{ configurable.descriptionRes }}</v-card-subtitle>
 
@@ -336,19 +340,19 @@ export default {
       await this.refresh();
     },
 
-    refreshConfigurables: async function() {
+    refreshConfigurables: async function () {
       return client.getConfigurables();
     },
 
-    refreshInstances: async function() {
+    refreshInstances: async function () {
       return client.getInstancesOfClazz(this.getConfigurableClazz());
     },
 
-    refreshTags: async function() {
+    refreshTags: async function () {
       return client.getTags();
     },
 
-    refreshPorts: async function() {
+    refreshPorts: async function () {
       return client.getPorts();
     },
 
