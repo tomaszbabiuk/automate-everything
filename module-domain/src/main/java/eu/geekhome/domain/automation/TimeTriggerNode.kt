@@ -9,13 +9,13 @@ class TimeTriggerNode(
 
     private var lastProcessed: Long = 0
 
-    override fun process(now: Calendar) {
+    override fun process(now: Calendar, firstLoop: Boolean) {
         val timeInMillis = now.timeInMillis
 
         if (lastProcessed + seconds * 1000 < timeInMillis) {
             lastProcessed = timeInMillis
 
-            next?.process(now)
+            next?.process(now, firstLoop)
         }
     }
 }

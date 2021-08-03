@@ -38,6 +38,10 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
+
+    companion object {
+        const val STATE_UNKNOWN = "unknown"
+    }
 }
 
 abstract class SensorConfigurable<V: PortValue>(val valueType: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {

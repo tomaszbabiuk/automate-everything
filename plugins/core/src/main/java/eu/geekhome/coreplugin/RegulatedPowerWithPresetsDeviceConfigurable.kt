@@ -73,7 +73,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
         val preset2 = instance.fields["preset2"]!!.toInt()
         val preset3 = instance.fields["preset3"]!!.toInt()
         val preset4 = instance.fields["preset4"]!!.toInt()
-        return RegulatedPowerWithPresetsDeviceAutomationUnit(stateChangeReporter, instance, name, preset1, preset2, preset3, preset4, states, STATE_OFF, port)
+        return RegulatedPowerWithPresetsDeviceAutomationUnit(stateChangeReporter, instance, name, preset1, preset2, preset3, preset4, states, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {
@@ -84,6 +84,13 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
     override val states: Map<String, State>
         get() {
             val states: LinkedHashMap<String, State> = LinkedHashMap()
+            states[STATE_UNKNOWN] = State(
+                STATE_UNKNOWN,
+                R.state_unknown,
+                StateType.ReadOnly,
+                isSignaled = true,
+                codeRequired = false
+            )
             states[STATE_PRESET1] = State(
                 STATE_PRESET1,
                 R.state_preset1,

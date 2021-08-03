@@ -6,7 +6,6 @@ import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Compan
 import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Companion.STATE_PRESET2
 import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Companion.STATE_PRESET3
 import eu.geekhome.coreplugin.RegulatedPowerWithPresetsDeviceConfigurable.Companion.STATE_PRESET4
-import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.StateChangeReporter
@@ -26,9 +25,8 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     private val preset3: Int,
     private val preset4: Int,
     states: Map<String, State>,
-    initialState: String,
     private val controlPort: OutputPort<PowerLevel>,
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, initialState, true) {
+) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, true) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
@@ -57,24 +55,28 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     override fun calculateInternal(now: Calendar) {
         when (controlPort.read().value) {
             preset1 -> {
-                changeState(STATE_PRESET1, ControlMode.Manual, null, null)
+                changeState(STATE_PRESET1, null, null)
             }
             preset2 -> {
-                changeState(STATE_PRESET2, ControlMode.Manual, null, null)
+                changeState(STATE_PRESET2, null, null)
             }
             preset3 -> {
-                changeState(STATE_PRESET3, ControlMode.Manual, null, null)
+                changeState(STATE_PRESET3, null, null)
             }
             preset4 -> {
-                changeState(STATE_PRESET4, ControlMode.Manual, null, null)
+                changeState(STATE_PRESET4, null, null)
             }
             0 -> {
-                changeState(STATE_OFF, ControlMode.Manual, null, null)
+                changeState(STATE_OFF, null, null)
             }
             else -> {
-                changeState(STATE_MANUAL, ControlMode.Manual, null, null)
+                changeState(STATE_MANUAL, null, null)
             }
         }
+    }
+
+    init {
+        calculateInternal(Calendar.getInstance())
     }
 
     override val recalculateOnTimeChange = false

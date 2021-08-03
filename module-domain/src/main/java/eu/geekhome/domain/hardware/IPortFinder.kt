@@ -5,4 +5,5 @@ interface IPortFinder {
     fun <T : PortValue> searchForInputPort(valueType: Class<T>, id:String): InputPort<T>
     fun <T : PortValue> searchForOutputPort(valueType: Class<T>, id:String): OutputPort<T>
     fun checkNewPorts(): Boolean
+    fun clearNewPortsFlag()
 }

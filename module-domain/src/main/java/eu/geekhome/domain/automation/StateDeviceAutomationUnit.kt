@@ -1,10 +1,10 @@
 package eu.geekhome.domain.automation
 
-import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.PowerLevel
 import eu.geekhome.domain.hardware.Relay
@@ -14,36 +14,31 @@ abstract class StateDeviceAutomationUnit(
     private val instanceDto: InstanceDto,
     name: String,
     private val states: Map<String, State>,
-    initialStateId: String,
     private val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
-    var currentState: State = states[initialStateId]!!
+    var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
             field = value
-            changeState(value.id, ControlMode.Manual, null, null)
+            changeState(value.id, null, null)
         }
 
-    override var controlMode: ControlMode = ControlMode.Auto
-
-    override fun changeState(state: String, controlMode: ControlMode, code: String?, actor: String?) {
-        if (currentState.id != state || controlMode != controlMode) {
+    override fun changeState(state: String, code: String?, actor: String?) {
+        if (currentState.id != state) {
             currentState = states[state]!!
-            this@StateDeviceAutomationUnit.controlMode = controlMode
             applyNewState(state)
 
-            lastEvaluation = buildEvaluationResult(currentState.id, states, controlMode)
+            lastEvaluation = buildEvaluationResult(currentState.id, states)
             stateChangeReporter.reportDeviceStateChange(this, instanceDto)
         }
     }
 
-    private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>, controlMode: ControlMode) : EvaluationResult<State> {
+    private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {
         val state = states[initialStateId]!!
         return EvaluationResult(
             interfaceValue = state.name,
             value = state,
             isSignaled = state.isSignaled,
-            controlMode = controlMode,
             nextStates = buildNextStates(state)
         )
     }
@@ -83,5 +78,5 @@ abstract class StateDeviceAutomationUnit(
         }
     }
 
-    override var lastEvaluation = buildEvaluationResult(initialStateId, states, ControlMode.Auto)
+    override var lastEvaluation = buildEvaluationResult(STATE_UNKNOWN, states)
 }

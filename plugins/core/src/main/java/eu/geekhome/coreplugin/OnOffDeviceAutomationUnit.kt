@@ -2,7 +2,6 @@ package eu.geekhome.coreplugin
 
 import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
 import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
-import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.StateChangeReporter
@@ -18,9 +17,8 @@ class OnOffDeviceAutomationUnit(
     instanceDto: InstanceDto,
     name: String,
     states: Map<String, State>,
-    initialStateId: String,
     private val controlPort: OutputPort<Relay>,
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, initialStateId, false) {
+) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
@@ -36,10 +34,14 @@ class OnOffDeviceAutomationUnit(
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {
-            changeState(STATE_ON, ControlMode.Manual, null, null)
+            changeState(STATE_ON, null, null)
         } else {
-            changeState(STATE_OFF, ControlMode.Manual, null, null)
+            changeState(STATE_OFF, null, null)
         }
+    }
+
+    init {
+        calculateInternal(Calendar.getInstance())
     }
 
     override val recalculateOnTimeChange = false

@@ -8,7 +8,7 @@ interface IAutomationNode
 
 interface IStatementNode : IAutomationNode {
     val next: IStatementNode?
-    fun process(now: Calendar)
+    fun process(now: Calendar, firstLoop: Boolean)
 }
 
 interface IEvaluatorNode: IAutomationNode {

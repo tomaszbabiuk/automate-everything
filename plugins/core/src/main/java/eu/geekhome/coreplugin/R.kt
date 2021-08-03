@@ -218,6 +218,11 @@ object R {
         "Mierniki poboru prądu"
     )
 
+    val state_unknown = Resource(
+        "Unknown",
+        "Nieznany"
+    )
+
     val state_on = Resource(
         "On",
         "Wł"

@@ -185,12 +185,18 @@ class HardwareManager(
             .forEach { bundle ->
                 val hasNewPorts = bundle.adapter.hasNewPorts()
                 if (hasNewPorts) {
-                    bundle.adapter.clearNewPortsFlag()
                     result = true
                 }
             }
 
         return result
+    }
+
+    override fun clearNewPortsFlag() {
+        bundles()
+            .forEach {
+                it.adapter.clearNewPortsFlag()
+            }
     }
 
     fun scheduleDiscovery(factoryId: String) {

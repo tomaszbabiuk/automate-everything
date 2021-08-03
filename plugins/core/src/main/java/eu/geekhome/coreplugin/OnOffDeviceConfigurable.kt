@@ -1,6 +1,7 @@
 package eu.geekhome.coreplugin
 
 import eu.geekhome.data.automation.State
+import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
@@ -51,7 +52,7 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields["name"]!!
-        return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, STATE_ON, port)
+        return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port)
     }
 
     private fun readPortId(instance: InstanceDto): String {
@@ -62,17 +63,24 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
+            states[STATE_UNKNOWN] = State(
+                STATE_UNKNOWN,
+                R.state_unknown,
+                StateType.ReadOnly,
+                isSignaled = true,
+                codeRequired = false
+            )
             states[STATE_ON] = State(
                 STATE_ON,
                 R.state_on,
-                eu.geekhome.data.automation.StateType.Control,
+                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
             states[STATE_OFF] = State(
                 STATE_OFF,
                 R.state_off,
-                eu.geekhome.data.automation.StateType.Control,
+                StateType.Control,
                 isSignaled = false,
                 codeRequired = false
             )

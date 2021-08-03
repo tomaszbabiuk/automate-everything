@@ -1,6 +1,5 @@
 package eu.geekhome.domain.automation
 
-import eu.geekhome.data.automation.ControlMode
 import java.util.*
 
 class ChangeStateAutomationNode(
@@ -9,8 +8,8 @@ class ChangeStateAutomationNode(
     override val next: IStatementNode?
 ) : IStatementNode {
 
-    override fun process(now: Calendar) {
-        deviceUnit.changeState(state, ControlMode.Manual, null, "Blockly")
-        next?.process(now)
+    override fun process(now: Calendar, firstLoop: Boolean) {
+        deviceUnit.changeState(state, null, "Blockly")
+        next?.process(now, firstLoop)
     }
 }

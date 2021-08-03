@@ -4,7 +4,6 @@ import eu.geekhome.domain.automation.AutomationConductor
 import eu.geekhome.rest.ResourceNotFoundException
 import eu.geekhome.data.automation.AutomationUnitDto
 import eu.geekhome.rest.automation.AutomationUnitDtoMapper
-import eu.geekhome.data.automation.ControlMode
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import eu.geekhome.domain.hardware.HardwareManager
 import java.lang.Exception
@@ -43,7 +42,7 @@ class AutomationUnitsController @Inject constructor(
         val instance = instanceAndUnitPair.first
         val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnit
         if (unit != null) {
-            unit.changeState(state, ControlMode.Manual)
+            unit.changeState(state)
             hardwareManager.executeAllPendingChanges()
         } else {
             throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnit::class.java.simpleName} expected")

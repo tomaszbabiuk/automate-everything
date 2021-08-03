@@ -11,7 +11,6 @@ class EvaluationResultDtoMapper {
     fun map(source: EvaluationResult<*>): EvaluationResultDto {
         return EvaluationResultDto(
             source.interfaceValue,
-            source.controlMode,
             source.isSignaled,
             source.descriptions,
             if (source.error != null) {

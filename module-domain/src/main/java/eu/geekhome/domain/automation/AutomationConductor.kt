@@ -33,6 +33,7 @@ class AutomationConductor(
 
     private var automationJob: Job? = null
     private var enabled: Boolean = false
+    private var firstLoop: Boolean = false
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
     val automationUnitsCache = HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>()
@@ -66,6 +67,8 @@ class AutomationConductor(
     }
 
     private fun rebuildAutomations(): Map<Long, List<IStatementNode>> {
+        firstLoop = true
+
         stateChangeReporter.removeAllListeners()
 
         val allInstances = repository.getAllInstances()
@@ -160,10 +163,12 @@ class AutomationConductor(
                 if (hasNewPorts || hasUpdatedInstance) {
                     if (hasNewPorts) {
                         println("Hardware manager has new ports... rebuilding automation")
+                        hardwareManager.clearNewPortsFlag()
                     }
 
                     if (hasUpdatedInstance) {
                         println("Repository has updated instance... rebuilding automation")
+                        repository.clearInstanceUpdatedFlag()
                     }
 
                     automations = rebuildAutomations()
@@ -175,17 +180,19 @@ class AutomationConductor(
                         .forEach { (instanceId,automationList) ->
                             automationList.forEach {
                                 try {
-                                    it.process(now)
+                                    it.process(now, firstLoop)
                                 } catch (ex: AutomationErrorException) {
                                     println("Exception during automation $instanceId")
                                     automationUnitsCache[instanceId]!!.second.markExternalError(ex)
                                 }
                             }
                         }
+
+                    firstLoop = false
+                    hardwareManager.executeAllPendingChanges()
                 } else {
                     println("Processing maintenance loop")
                 }
-
 
                 hardwareManager.afterAutomationLoop()
                 delay(1000)

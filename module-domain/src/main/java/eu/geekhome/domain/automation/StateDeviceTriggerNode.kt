@@ -15,14 +15,16 @@ class StateDeviceTriggerNode(
         stateChangeReporter.stateChangeReporter.addListener(this)
     }
 
-    override fun process(now: Calendar) {
-        //nothing to do here
+    override fun process(now: Calendar, firstLoop: Boolean) {
+        if (firstLoop && unit.currentState.id == observedStateId) {
+            next?.process(now, firstLoop)
+        }
     }
 
     override fun onChanged(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto) {
         if (instanceDto.id == instanceId) {
             if (deviceUnit.currentState.id == observedStateId) {
-                next?.process(Calendar.getInstance())
+                next?.process(Calendar.getInstance(), false)
             }
         }
     }
