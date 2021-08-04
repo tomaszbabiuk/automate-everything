@@ -1,15 +1,12 @@
 package eu.geekhome.domain.automation.blocks
 
 import eu.geekhome.data.automation.State
-import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.blocks.RawJson
-import eu.geekhome.data.localization.Language
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
 import eu.geekhome.data.localization.Resource
-import java.lang.StringBuilder
 
-class StateDeviceTriggerBlockFactory(
+class StateChangeTriggerBlockFactory(
     private val color: Int,
     instanceId: Long,
     private val deviceName: String,
@@ -20,31 +17,13 @@ class StateDeviceTriggerBlockFactory(
     private val typePrefix = "trigger_statedevice_"
     override val type: String = typePrefix + instanceId
 
-    private fun buildStateOption(state: State, language: Language): String {
-        return """["${state.name.getValue(language)}", "${state.id}"]"""
-    }
-
-    private fun buildStateOptions(states: Map<String, State>, language: Language): String {
-        val result = StringBuilder()
-        states
-            .filter { it.value.type == StateType.Control }
-            .forEach{
-            if (result.isNotEmpty()) {
-                result.append(",")
-            }
-            result.append(buildStateOption(it.value, language))
-        }
-
-        return result.toString()
-    }
-
     override fun buildBlock(): RawJson {
 
         return RawJson {
             """
                {
                "type": "$type",
-               "message0": "\"$deviceName\" ${R.block_label_state.getValue(it)}",
+               "message0": "\"$deviceName\" ${R.block_label_changes_state.getValue(it)}",
                "args0": [
                 {
                   "type": "input_dummy",

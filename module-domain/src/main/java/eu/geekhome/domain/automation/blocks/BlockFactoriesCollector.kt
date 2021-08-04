@@ -21,11 +21,12 @@ enum class CategoryConstants(
     val categoryName: Resource,
     val color: Int
 ) {
-    CategoryTriggers(Nothing::class.java, R.category_triggers, 315),
-    CategoryLogic(Nothing::class.java, R.category_logic, 120),
-    CategoryTemperature(Temperature::class.java, R.category_temperature, 160),
-    CategoryWattage(Wattage::class.java, R.category_wattage, 65),
-    CategoryHumidity(Humidity::class.java, R.category_humidity, 210);
+    Triggers(Nothing::class.java, R.category_triggers, 315),
+    Logic(Nothing::class.java, R.category_logic, 120),
+    Temperature(eu.geekhome.domain.hardware.Temperature::class.java, R.category_temperature, 160),
+    Wattage(eu.geekhome.domain.hardware.Wattage::class.java, R.category_wattage, 65),
+    Humidity(eu.geekhome.domain.hardware.Humidity::class.java, R.category_humidity, 210),
+    State(Nothing::class.java, R.category_state, 100);
 
     companion object {
         fun fromType(type: Class<out PortValue>): CategoryConstants {
@@ -45,6 +46,7 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
         result.addAll(collectConditionBlocks())
         result.addAll(collectSensorBlocks())
         result.addAll(collectChangeStateTriggerBlocks())
+        result.addAll(collectStateValuesBlocks())
 
         if (thisDevice != null) {
             result.addAll(collectChangeStateBlocks(thisDevice))
@@ -56,41 +58,41 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
     private fun collectStaticBlocks(): List<BlockFactory<*>> {
         return listOf(
             //logic
-            LogicAndBlockFactory(CategoryConstants.CategoryLogic.color),
-            LogicOrBlockFactory(CategoryConstants.CategoryLogic.color),
-            LogicNotBlockFactory(CategoryConstants.CategoryLogic.color),
-            LogicIfElseBlockFactory(CategoryConstants.CategoryLogic.color),
+            LogicAndBlockFactory(CategoryConstants.Logic.color),
+            LogicOrBlockFactory(CategoryConstants.Logic.color),
+            LogicNotBlockFactory(CategoryConstants.Logic.color),
+            LogicIfElseBlockFactory(CategoryConstants.Logic.color),
 
             //triggers
-            TimeloopTriggerBlockFactory(CategoryConstants.CategoryTriggers.color),
+            TimeloopTriggerBlockFactory(CategoryConstants.Triggers.color),
 
             //temperature
             ComparisonBlockFactory(Temperature::class.java,
-                CategoryConstants.CategoryTemperature.categoryName,
-                CategoryConstants.CategoryTemperature.color),
+                CategoryConstants.Temperature.categoryName,
+                CategoryConstants.Temperature.color),
             EquationBlockFactory(Temperature::class.java,
-                CategoryConstants.CategoryTemperature.categoryName,
-                CategoryConstants.CategoryTemperature.color),
-            TemperatureValueInCBlockFactory(CategoryConstants.CategoryTemperature.color),
-            TemperatureValueInKBlockFactory(CategoryConstants.CategoryTemperature.color),
-            TemperatureValueInFBlockFactory(CategoryConstants.CategoryTemperature.color),
+                CategoryConstants.Temperature.categoryName,
+                CategoryConstants.Temperature.color),
+            TemperatureValueInCBlockFactory(CategoryConstants.Temperature.color),
+            TemperatureValueInKBlockFactory(CategoryConstants.Temperature.color),
+            TemperatureValueInFBlockFactory(CategoryConstants.Temperature.color),
 
             //humidity
             ComparisonBlockFactory(Humidity::class.java,
-                CategoryConstants.CategoryHumidity.categoryName,
-                CategoryConstants.CategoryHumidity.color),
+                CategoryConstants.Humidity.categoryName,
+                CategoryConstants.Humidity.color),
             EquationBlockFactory(Humidity::class.java,
-                CategoryConstants.CategoryHumidity.categoryName,
-                CategoryConstants.CategoryHumidity.color),
-            HumidityValueBlockFactory(CategoryConstants.CategoryHumidity.color),
+                CategoryConstants.Humidity.categoryName,
+                CategoryConstants.Humidity.color),
+            HumidityValueBlockFactory(CategoryConstants.Humidity.color),
 
             //wattage
             ComparisonBlockFactory(Wattage::class.java,
-                CategoryConstants.CategoryWattage.categoryName,
-                CategoryConstants.CategoryWattage.color),
+                CategoryConstants.Wattage.categoryName,
+                CategoryConstants.Wattage.color),
             EquationBlockFactory(Wattage::class.java,
-                CategoryConstants.CategoryWattage.categoryName, CategoryConstants.CategoryWattage.color),
-            WattageValueBlockFactory(CategoryConstants.CategoryWattage.color)
+                CategoryConstants.Wattage.categoryName, CategoryConstants.Wattage.color),
+            WattageValueBlockFactory(CategoryConstants.Wattage.color)
         )
     }
 
@@ -160,11 +162,33 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
                 val instanceId = briefDto.id
                 val deviceName = briefDto.name ?: "---"
                 val configurableClazz = allConfigurables.find { it.javaClass.name == briefDto.clazz } as StateDeviceConfigurable
-                StateDeviceTriggerBlockFactory(
-                    CategoryConstants.CategoryTriggers.color,
+                StateChangeTriggerBlockFactory(
+                    CategoryConstants.Triggers.color,
                     instanceId,
                     deviceName,
                     configurableClazz.states)
+            }
+            .toList()
+    }
+
+    private fun collectStateValuesBlocks(): List<BlockFactory<*>> {
+        val instanceBriefs = repository.getAllInstanceBriefs()
+        val allConfigurables = pluginsCoordinator.configurables
+
+        return instanceBriefs
+            .filter { briefDto ->
+                val configurable = allConfigurables.find { it.javaClass.name == briefDto.clazz }
+                configurable is StateDeviceConfigurable
+            }
+            .map { briefDto ->
+                val instanceId = briefDto.id
+                val deviceName = briefDto.name ?: "---"
+                val configurableClazz = allConfigurables.find { it.javaClass.name == briefDto.clazz } as StateDeviceConfigurable
+                StateValueBlockFactory(
+                    deviceName,
+                    instanceId,
+                    configurableClazz.states,
+                )
             }
             .toList()
     }

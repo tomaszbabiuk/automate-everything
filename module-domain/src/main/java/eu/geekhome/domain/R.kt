@@ -30,6 +30,11 @@ object R {
         "Temperatura"
     )
 
+    val category_state = Resource(
+        "State",
+        "Stan"
+    )
+
     val category_wattage = Resource(
         "Wattage",
         "Moc"
@@ -65,9 +70,14 @@ object R {
         "Powtarzaj co %1"
     )
 
-    val block_label_state = Resource(
+    val block_label_changes_state = Resource(
         "%1 changes state to %2",
         "%1 zmienia stan na %2"
+    )
+
+    val block_label_in_state = Resource(
+        "%1 is in state %2",
+        "%1 is in state %2"
     )
 
     val second = Resource(
