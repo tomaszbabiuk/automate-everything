@@ -77,24 +77,25 @@ class AutomationConductor(
         allInstances.forEach { instance ->
             val configurable = allConfigurables.find { instance.clazz == it.javaClass.name }
             if (configurable != null) {
-                try {
-                    val physicalUnit = buildPhysicalUnit(configurable, instance)
-                    automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
-                } catch (ex: AutomationErrorException) {
-                    val originName = instance.fields["name"]
-                    val wrapper = buildWrappedUnit(originName, configurable, ex)
-                    automationUnitsCache[instance.id] = Pair(instance, wrapper)
-                } catch (ex: Exception) {
-                    val originName = instance.fields["name"]
-                    val aex = AutomationErrorException(R.error_automation, ex)
-                    val wrapper = buildWrappedUnit(originName, configurable, aex)
-                    automationUnitsCache[instance.id] = Pair(instance, wrapper)
-                }
-            }
 
-            if (configurable is ConditionConfigurable) {
-                val evaluator = configurable.buildEvaluator(instance)
-                evaluationUnitsCache[instance.id] = evaluator
+                if (configurable is ConditionConfigurable) {
+                    val evaluator = configurable.buildEvaluator(instance)
+                    evaluationUnitsCache[instance.id] = evaluator
+                } else {
+                    try {
+                        val physicalUnit = buildPhysicalUnit(configurable, instance)
+                        automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
+                    } catch (ex: AutomationErrorException) {
+                        val originName = instance.fields["name"]
+                        val wrapper = buildWrappedUnit(originName, configurable, ex)
+                        automationUnitsCache[instance.id] = Pair(instance, wrapper)
+                    } catch (ex: Exception) {
+                        val originName = instance.fields["name"]
+                        val aex = AutomationErrorException(R.error_automation, ex)
+                        val wrapper = buildWrappedUnit(originName, configurable, aex)
+                        automationUnitsCache[instance.id] = Pair(instance, wrapper)
+                    }
+                }
             }
         }
 
