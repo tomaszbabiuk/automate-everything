@@ -55,7 +55,7 @@ data class Value(
 data class BLocklyXml(
 
     @XStreamImplicit(itemFieldName="block")
-    val blocks: List<Block>
+    val blocks: List<Block>?
 )
 
 @XStreamAlias("field")

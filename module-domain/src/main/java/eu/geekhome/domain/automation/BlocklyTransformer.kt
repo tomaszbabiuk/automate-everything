@@ -35,11 +35,11 @@ interface IBlocklyTransformer {
 
 class BlocklyTransformer : IBlocklyTransformer {
 
-    fun transform(bLocklyXml: BLocklyXml, context: AutomationContext) : List<IStatementNode> {
+    fun transform(blocks: List<Block>, context: AutomationContext) : List<IStatementNode> {
 
         val masterNodes = ArrayList<IStatementNode>()
 
-        bLocklyXml.blocks.forEach {
+        blocks.forEach {
             val masterNode = transformTrigger(it, context)
             masterNodes.add(masterNode)
         }

@@ -115,7 +115,11 @@ class AutomationConductor(
                     )
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
-                blocklyTransformer.transform(blocklyXml, context)
+                if (blocklyXml.blocks != null) {
+                    blocklyTransformer.transform(blocklyXml.blocks, context)
+                } else {
+                    listOf()
+                }
             })
     }
 
