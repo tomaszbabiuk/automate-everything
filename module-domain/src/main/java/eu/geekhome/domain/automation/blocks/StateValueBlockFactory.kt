@@ -11,9 +11,11 @@ open class StateValueBlockFactory(
     private val deviceName: String,
     instanceId: Long,
     private val states: Map<String, State>,
-) : ValueBlockFactory {
+) : EvaluatorBlockFactory {
 
-    override val type: String = "state_value_$instanceId"
+    private val typePrefix = "state_value_"
+
+    override val type: String = typePrefix + instanceId
 
     override val category: Resource = CategoryConstants.State.categoryName
 
@@ -50,8 +52,26 @@ open class StateValueBlockFactory(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IValueNode {
+    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
 
-        throw MalformedBlockException(block.type, "cannot extract temperature value")
+        if (block.fields == null) {
+            throw MalformedBlockException(block.type, "should have <field> defined")
+        }
+
+        if (block.fields.size != 1) {
+            throw MalformedBlockException(block.type, "should have only one field")
+        }
+
+        if (block.fields[0].value == null) {
+            throw MalformedBlockException(block.type, "should have <field/value> with content")
+        }
+
+        val stateId = block.fields[0].value!!
+
+        val instanceIdRaw = block.type.replace(typePrefix, "")
+        val instanceId = instanceIdRaw.toLong()
+        val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnit
+
+        return IsInStateAutomationNode(triggerUnit, stateId)
     }
 }

@@ -4,7 +4,7 @@ import eu.geekhome.data.instances.InstanceDto
 import java.util.Calendar
 
 class StateDeviceTriggerNode(
-    stateChangeReporter: AutomationContext,
+    context: AutomationContext,
     private val instanceId: Long,
     private val unit: StateDeviceAutomationUnit,
     private val observedStateId: String,
@@ -12,7 +12,7 @@ class StateDeviceTriggerNode(
 ) : IStatementNode, StateChangedListener {
 
     init {
-        stateChangeReporter.stateChangeReporter.addListener(this)
+        context.stateChangeReporter.addListener(this)
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {
