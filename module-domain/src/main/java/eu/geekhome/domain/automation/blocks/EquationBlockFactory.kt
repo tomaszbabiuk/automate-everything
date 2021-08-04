@@ -12,10 +12,6 @@ class EquationBlockFactory<T: PortValue>(
 
     override val type: String = "${valueType.simpleName.lowercase()}_equation"
 
-    override fun match(type: String) : Boolean {
-        return type == this.type
-    }
-
     override fun buildBlock(): RawJson {
         return RawJson {
             """

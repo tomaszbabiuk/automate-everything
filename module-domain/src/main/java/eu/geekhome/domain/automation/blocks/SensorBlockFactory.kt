@@ -28,10 +28,6 @@ class SensorBlockFactory<T: PortValue>(
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type.startsWith("temperature_sensor_")
-    }
-
     override fun transform(
         block: Block,
         next: IStatementNode?,

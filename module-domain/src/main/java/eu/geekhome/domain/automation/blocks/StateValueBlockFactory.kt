@@ -19,10 +19,6 @@ open class StateValueBlockFactory(
 
     override val category: Resource = CategoryConstants.State.categoryName
 
-    override fun match(type: String) : Boolean {
-        return type == this.type
-    }
-
     override fun buildBlock(): RawJson {
         return RawJson {
             """

@@ -7,7 +7,6 @@ interface BlockFactory<N: IAutomationNode> {
     val category: Resource
     val type:String
     fun buildBlock() : RawJson
-    fun match(type: String): Boolean
     fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer) : N
 }
 

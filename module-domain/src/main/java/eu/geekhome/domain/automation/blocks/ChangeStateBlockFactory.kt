@@ -27,10 +27,6 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type.startsWith(this.type)
-    }
-
     override fun transform(
         block: Block,
         next: IStatementNode?,

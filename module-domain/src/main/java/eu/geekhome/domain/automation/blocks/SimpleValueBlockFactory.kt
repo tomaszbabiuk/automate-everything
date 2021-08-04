@@ -21,10 +21,6 @@ open class SimpleValueBlockFactory<T: PortValue>(
 
     override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
-    override fun match(type: String) : Boolean {
-        return type == this.type
-    }
-
     override fun buildBlock(): RawJson {
         return RawJson {
             """

@@ -49,10 +49,6 @@ class StateChangeTriggerBlockFactory(
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type.startsWith(this.type)
-    }
-
     override fun transform(
         block: Block,
         next: IStatementNode?,

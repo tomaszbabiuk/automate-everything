@@ -37,10 +37,6 @@ class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory 
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type == this.type
-    }
-
     override fun transform(
         block: Block,
         next: IStatementNode?,

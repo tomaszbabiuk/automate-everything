@@ -37,10 +37,6 @@ class LogicNotBlockFactory(private val color: Int) : EvaluatorBlockFactory {
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type == this.type
-    }
-
     override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")

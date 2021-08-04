@@ -11,10 +11,6 @@ class LogicOrBlockFactory(private val color: Int) : EvaluatorBlockFactory {
 
     override val type: String = "logic_or"
 
-    override fun match(type: String) : Boolean {
-        return type == this.type
-    }
-
     override fun buildBlock(): RawJson {
         return RawJson {
             """

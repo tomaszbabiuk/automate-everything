@@ -25,10 +25,6 @@ class ConditionBlockFactory(private val conditionId: Long, private val label: Re
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type.startsWith("condition_")
-    }
-
     override fun transform(
         block: Block,
         next: IStatementNode?,

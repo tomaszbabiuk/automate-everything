@@ -45,10 +45,6 @@ class LogicIfElseBlockFactory(private val color: Int) : StatementBlockFactory {
         }
     }
 
-    override fun match(type: String): Boolean {
-        return type == this.type
-    }
-
     override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IStatementNode {
         var ifNode: IStatementNode? = null
         var elseNode: IStatementNode? = null

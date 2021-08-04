@@ -51,7 +51,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<EvaluatorBlockFactory>()
-            .find { it.match(block.type) }
+            .find { it.type == block.type }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, null, context, this)
@@ -64,7 +64,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<ValueBlockFactory>()
-            .find { it.match(block.type) }
+            .find { it.type == block.type }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, null, context, this)
@@ -82,7 +82,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<TriggerBlockFactory>()
-            .find { it.match(block.type) }
+            .find { it.type == block.type }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, next, context, this)
@@ -100,7 +100,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<StatementBlockFactory>()
-            .find { it.match(block.type) }
+            .find { it.type == block.type }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, next, context, this)
