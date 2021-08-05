@@ -3,12 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
-import eu.geekhome.data.localization.Resource
 
 class EquationBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: Resource,
-    private val color: Int) : ValueBlockFactory {
+    override val category: CategoryConstants) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_equation"
 
@@ -51,7 +49,7 @@ class EquationBlockFactory<T: PortValue>(
                   ],
                   "inputsInline": true,
                   "output": "${valueType.simpleName}",
-                  "colour": $color,
+                  "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
                 }

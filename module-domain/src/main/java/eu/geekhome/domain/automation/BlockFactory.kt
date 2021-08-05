@@ -2,9 +2,10 @@ package eu.geekhome.domain.automation
 
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.blocks.CategoryConstants
 
 interface BlockFactory<N: IAutomationNode> {
-    val category: Resource
+    val category: CategoryConstants
     val type:String
     fun buildBlock() : RawJson
     fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer) : N

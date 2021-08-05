@@ -3,11 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 
-class LogicIfElseBlockFactory(private val color: Int) : StatementBlockFactory {
+class LogicIfElseBlockFactory : StatementBlockFactory {
 
-    override val category: Resource = R.category_logic
+    override val category = CategoryConstants.Logic
 
     override val type: String = "logic_if_than_else"
 
@@ -37,7 +36,7 @@ class LogicIfElseBlockFactory(private val color: Int) : StatementBlockFactory {
                   ],
                   "previousStatement": null,
                   "nextStatement": null,
-                  "colour": $color,
+                  "colour": ${category.color},
                   "tooltip": null,
                   "helpUrl": null
                 }

@@ -26,7 +26,9 @@ enum class CategoryConstants(
     Temperature(eu.geekhome.domain.hardware.Temperature::class.java, R.category_temperature, 160),
     Wattage(eu.geekhome.domain.hardware.Wattage::class.java, R.category_wattage, 65),
     Humidity(eu.geekhome.domain.hardware.Humidity::class.java, R.category_humidity, 210),
-    State(Nothing::class.java, R.category_state, 100);
+    State(Nothing::class.java, R.category_state, 100),
+    ThisDevice(Nothing::class.java, R.category_this_device, 230),
+    Conditions(Nothing::class.java, R.category_triggers_conditions, 120);
 
     companion object {
         fun fromType(type: Class<out PortValue>): CategoryConstants {
@@ -58,40 +60,30 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
     private fun collectStaticBlocks(): List<BlockFactory<*>> {
         return listOf(
             //logic
-            LogicAndBlockFactory(CategoryConstants.Logic.color),
-            LogicOrBlockFactory(CategoryConstants.Logic.color),
-            LogicNotBlockFactory(CategoryConstants.Logic.color),
-            LogicIfElseBlockFactory(CategoryConstants.Logic.color),
+            LogicAndBlockFactory(),
+            LogicOrBlockFactory(),
+            LogicNotBlockFactory(),
+            LogicIfElseBlockFactory(),
+            LogicDelayBlockFactory(),
 
             //triggers
-            TimeloopTriggerBlockFactory(CategoryConstants.Triggers.color),
+            TimeloopTriggerBlockFactory(),
 
             //temperature
-            ComparisonBlockFactory(Temperature::class.java,
-                CategoryConstants.Temperature.categoryName,
-                CategoryConstants.Temperature.color),
-            EquationBlockFactory(Temperature::class.java,
-                CategoryConstants.Temperature.categoryName,
-                CategoryConstants.Temperature.color),
+            ComparisonBlockFactory(Temperature::class.java, CategoryConstants.Temperature),
+            EquationBlockFactory(Temperature::class.java, CategoryConstants.Temperature),
             TemperatureValueInCBlockFactory(CategoryConstants.Temperature.color),
             TemperatureValueInKBlockFactory(CategoryConstants.Temperature.color),
             TemperatureValueInFBlockFactory(CategoryConstants.Temperature.color),
 
             //humidity
-            ComparisonBlockFactory(Humidity::class.java,
-                CategoryConstants.Humidity.categoryName,
-                CategoryConstants.Humidity.color),
-            EquationBlockFactory(Humidity::class.java,
-                CategoryConstants.Humidity.categoryName,
-                CategoryConstants.Humidity.color),
+            ComparisonBlockFactory(Humidity::class.java, CategoryConstants.Humidity),
+            EquationBlockFactory(Humidity::class.java, CategoryConstants.Humidity),
             HumidityValueBlockFactory(CategoryConstants.Humidity.color),
 
             //wattage
-            ComparisonBlockFactory(Wattage::class.java,
-                CategoryConstants.Wattage.categoryName,
-                CategoryConstants.Wattage.color),
-            EquationBlockFactory(Wattage::class.java,
-                CategoryConstants.Wattage.categoryName, CategoryConstants.Wattage.color),
+            ComparisonBlockFactory(Wattage::class.java, CategoryConstants.Wattage),
+            EquationBlockFactory(Wattage::class.java, CategoryConstants.Wattage),
             WattageValueBlockFactory(CategoryConstants.Wattage.color)
         )
     }
@@ -130,7 +122,7 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
                 val sensorConfigurable = configurable as SensorConfigurable<*>
                 val label = Resource.createUniResource(briefDto.name)
                 val category = CategoryConstants.fromType(sensorConfigurable.valueType)
-                SensorBlockFactory(sensorConfigurable.valueType, category.categoryName, category.color, id, label)
+                SensorBlockFactory(sensorConfigurable.valueType, category, id, label)
             }
             .toList()
     }
@@ -163,7 +155,6 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
                 val deviceName = briefDto.name ?: "---"
                 val configurableClazz = allConfigurables.find { it.javaClass.name == briefDto.clazz } as StateDeviceConfigurable
                 StateChangeTriggerBlockFactory(
-                    CategoryConstants.Triggers.color,
                     instanceId,
                     deviceName,
                     configurableClazz.states)

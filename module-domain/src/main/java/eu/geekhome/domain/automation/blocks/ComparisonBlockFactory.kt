@@ -3,12 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
-import eu.geekhome.data.localization.Resource
 
 class ComparisonBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: Resource,
-    private val color: Int) : EvaluatorBlockFactory {
+    override val category: CategoryConstants) : EvaluatorBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_comparison"
 
@@ -65,7 +63,7 @@ class ComparisonBlockFactory<T: PortValue>(
                   ],
                   "inputsInline": true,
                   "output": "Boolean",
-                  "colour": $color,
+                  "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
                 }

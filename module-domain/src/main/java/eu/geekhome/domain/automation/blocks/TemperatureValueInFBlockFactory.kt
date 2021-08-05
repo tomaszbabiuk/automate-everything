@@ -1,6 +1,5 @@
 package eu.geekhome.domain.automation.blocks
 
-import eu.geekhome.domain.R
 import eu.geekhome.domain.hardware.Temperature
 
 class TemperatureValueInFBlockFactory(val color: Int) : SimpleValueBlockFactory<Temperature>(
@@ -11,6 +10,5 @@ class TemperatureValueInFBlockFactory(val color: Int) : SimpleValueBlockFactory<
     "°F",
     "_f",
     FahrenheitToKelvinValueConverter(),
-    R.category_temperature,
-    color
+    CategoryConstants.Temperature
 )

@@ -3,11 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 
-class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory {
+class TimeloopTriggerBlockFactory : TriggerBlockFactory {
 
-    override val category: Resource = R.category_triggers
+    override val category = CategoryConstants.Triggers
 
     override val type: String = "trigger_timeloop"
 
@@ -29,7 +28,7 @@ class TimeloopTriggerBlockFactory(private val color: Int) : TriggerBlockFactory 
                      }
                    ],
                    "nextStatement": "Boolean",
-                   "colour": $color,
+                   "colour": ${category.color},
                    "tooltip": null,
                    "helpUrl": null
                 }

@@ -1,6 +1,5 @@
 package eu.geekhome.domain.automation.blocks
 
-import eu.geekhome.domain.R
 import eu.geekhome.domain.hardware.Wattage
 
 class WattageValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Wattage>(
@@ -11,6 +10,5 @@ class WattageValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Wattage
     "W",
     "",
     null,
-    R.category_wattage,
-    color
+    CategoryConstants.Wattage
 )

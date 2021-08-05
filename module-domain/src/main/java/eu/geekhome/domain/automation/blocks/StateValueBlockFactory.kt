@@ -17,7 +17,7 @@ open class StateValueBlockFactory(
 
     override val type: String = typePrefix + instanceId
 
-    override val category: Resource = CategoryConstants.State.categoryName
+    override val category = CategoryConstants.State
 
     override fun buildBlock(): RawJson {
         return RawJson {
@@ -40,7 +40,7 @@ open class StateValueBlockFactory(
                   ],
                   "inputsInline": true,
                   "output": "Boolean",
-                  "colour": ${CategoryConstants.State.color},
+                  "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
                 }

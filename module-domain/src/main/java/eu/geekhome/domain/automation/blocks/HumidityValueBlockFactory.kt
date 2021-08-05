@@ -1,6 +1,5 @@
 package eu.geekhome.domain.automation.blocks
 
-import eu.geekhome.domain.R
 import eu.geekhome.domain.hardware.Humidity
 
 class HumidityValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Humidity>(
@@ -11,6 +10,5 @@ class HumidityValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Humidi
     "%",
     "",
     null,
-    R.category_humidity,
-    color
+    CategoryConstants.Humidity
 )

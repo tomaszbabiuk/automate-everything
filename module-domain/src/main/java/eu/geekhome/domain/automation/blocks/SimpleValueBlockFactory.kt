@@ -16,8 +16,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
     private val unit: String,
     typeSuffix: String,
     private val valueConverter: IValueConverter?,
-    override val category: Resource,
-    private val color: Int) : ValueBlockFactory {
+    override val category: CategoryConstants) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
@@ -44,7 +43,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
                   ],
                   "inputsInline": true,
                   "output": "${valueType.simpleName}",
-                  "colour": $color,
+                  "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
                 }

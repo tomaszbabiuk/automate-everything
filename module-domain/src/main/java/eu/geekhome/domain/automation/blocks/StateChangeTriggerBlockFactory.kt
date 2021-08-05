@@ -8,12 +8,11 @@ import eu.geekhome.domain.automation.*
 import eu.geekhome.data.localization.Resource
 
 class StateChangeTriggerBlockFactory(
-    private val color: Int,
     instanceId: Long,
     private val deviceName: String,
     states: Map<String, State>) : TriggerBlockFactory {
 
-    override val category: Resource = R.category_triggers
+    override val category = CategoryConstants.Triggers
 
     private val statesToControl = states.filter { it.value.type == StateType.Control }
 
@@ -41,7 +40,7 @@ class StateChangeTriggerBlockFactory(
                  }
                ],
                "nextStatement": "Boolean",
-               "colour": $color,
+               "colour": ${category.color},
                "tooltip": null,
                "helpUrl": null
             }

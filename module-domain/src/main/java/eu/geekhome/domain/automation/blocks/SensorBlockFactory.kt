@@ -8,8 +8,7 @@ import eu.geekhome.data.localization.Resource
 
 class SensorBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: Resource,
-    private val color: Int,
+    override val category: CategoryConstants,
     private val sensorId: Long,
     private val label: Resource) : ValueBlockFactory {
 
@@ -19,7 +18,7 @@ class SensorBlockFactory<T: PortValue>(
         return RawJson {
             """
                    { "type":  "$type",
-                     "colour": $color,
+                     "colour": ${category.color},
                      "tooltip": null,
                      "helpUrl": null,
                      "message0": "${label.getValue(it)}",

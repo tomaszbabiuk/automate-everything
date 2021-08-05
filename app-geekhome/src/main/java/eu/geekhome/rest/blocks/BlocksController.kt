@@ -33,9 +33,9 @@ class BlocksController @Inject constructor(
             val blockImplementations = ArrayList<RawJson>()
 
             blockFactories.forEach { blockFactory ->
-                var category = blockCategories.find { it.name == blockFactory.category}
+                var category = blockCategories.find { it.name == blockFactory.category.categoryName}
                 if (category == null) {
-                    category = BlocklyToolboxItemCategoryDto(blockFactory.category, ToolboxItemKind.category, ArrayList())
+                    category = BlocklyToolboxItemCategoryDto(blockFactory.category.categoryName, ToolboxItemKind.category, ArrayList())
                     blockCategories.add(category)
                 }
                 category.contents.add(BLocklyToolboxItemBlockDto(ToolboxItemKind.block, blockFactory.type))

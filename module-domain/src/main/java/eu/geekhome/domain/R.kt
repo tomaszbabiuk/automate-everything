@@ -45,6 +45,11 @@ object R {
         "Wilgotność"
     )
 
+    val block_label_delay = Resource(
+        "Wait for %1 seconds %2 and than: %3",
+        "Poczekaj %1 sekund %2 potem: %4"
+    )
+
     val block_label_if_than_else = Resource(
         "If %1 than %2 else %3",
         "Jeżeli %1 to %2 inaczej %3"

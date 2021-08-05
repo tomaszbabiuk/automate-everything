@@ -11,6 +11,5 @@ class TemperatureValueInKBlockFactory(val color: Int) : SimpleValueBlockFactory<
     "K",
     "_k",
     null,
-    R.category_temperature,
-    color
+    CategoryConstants.Temperature
 )

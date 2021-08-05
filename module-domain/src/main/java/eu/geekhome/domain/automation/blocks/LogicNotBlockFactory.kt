@@ -3,11 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 
-class LogicNotBlockFactory(private val color: Int) : EvaluatorBlockFactory {
+class LogicNotBlockFactory : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_logic
+    override val category = CategoryConstants.Logic
 
     override val type: String = "logic_not"
 
@@ -29,7 +28,7 @@ class LogicNotBlockFactory(private val color: Int) : EvaluatorBlockFactory {
                       ],
                       "inputsInline": true,
                       "output": "Boolean",
-                      "colour": $color,
+                      "colour": ${category.color},
                       "tooltip": "",
                       "helpUrl": ""
                     }

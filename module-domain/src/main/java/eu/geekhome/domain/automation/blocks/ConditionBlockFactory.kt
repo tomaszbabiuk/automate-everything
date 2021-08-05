@@ -1,14 +1,15 @@
 package eu.geekhome.domain.automation.blocks
 
 import eu.geekhome.data.blocks.RawJson
-import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.configurable.ConditionConfigurable
 import eu.geekhome.data.localization.Resource
 
-class ConditionBlockFactory(private val conditionId: Long, private val label: Resource) : EvaluatorBlockFactory {
+class ConditionBlockFactory(
+    private val conditionId: Long,
+    private val label: Resource) : EvaluatorBlockFactory {
 
-    override val category: Resource = R.category_triggers_conditions
+    override val category = CategoryConstants.Conditions
 
     override val type: String = "condition_$conditionId"
 
@@ -16,7 +17,7 @@ class ConditionBlockFactory(private val conditionId: Long, private val label: Re
         return RawJson {
             """
                    { "type":  "$type",
-                     "colour": 120,
+                     "colour": ${category.color},
                      "tooltip": null,
                      "helpUrl": null,
                      "message0": "${label.getValue(it)}",

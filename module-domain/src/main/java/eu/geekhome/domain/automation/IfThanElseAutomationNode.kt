@@ -12,10 +12,8 @@ class IfThanElseAutomationNode(
 
     override fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>) {
         if (evaluatorNode!= null && evaluatorNode.evaluate(now)) {
-            notes.add(Resource.createUniResource("If node"))
             ifNode?.process(now, firstLoop, notes)
         } else {
-            notes.add(Resource.createUniResource("Else node " + Calendar.getInstance().timeInMillis))
             elseNode?.process(now, firstLoop, notes)
         }
 

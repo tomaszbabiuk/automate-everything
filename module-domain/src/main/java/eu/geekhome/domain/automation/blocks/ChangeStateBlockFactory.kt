@@ -2,14 +2,12 @@ package eu.geekhome.domain.automation.blocks
 
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.blocks.RawJson
-import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.configurable.StateDeviceConfigurable
-import eu.geekhome.data.localization.Resource
 
 class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory {
 
-    override val category: Resource = R.category_this_device
+    override val category = CategoryConstants.ThisDevice
 
     override val type: String = "change_state_${state.id}"
 
@@ -17,7 +15,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         return RawJson {
             """
                    { "type":  "$type",
-                     "colour": 230,
+                     "colour": ${category.color},
                      "tooltip": null,
                      "helpUrl": null,
                      "message0": "${state.name.getValue(it)}",
