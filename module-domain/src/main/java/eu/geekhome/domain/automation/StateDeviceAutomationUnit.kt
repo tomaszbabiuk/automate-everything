@@ -4,6 +4,7 @@ import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.geekhome.domain.hardware.OutputPort
 import eu.geekhome.domain.hardware.PowerLevel
@@ -17,6 +18,8 @@ abstract class StateDeviceAutomationUnit(
     private val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
+    private var lastNotes: List<Resource>? = null
+
     var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
             field = value
@@ -27,10 +30,20 @@ abstract class StateDeviceAutomationUnit(
         if (currentState.id != state) {
             currentState = states[state]!!
             applyNewState(state)
-
-            lastEvaluation = buildEvaluationResult(currentState.id, states)
-            stateChangeReporter.reportDeviceStateChange(this, instanceDto)
+            evaluateAndReport()
         }
+    }
+
+    override fun updateNotes(notes: List<Resource>) {
+        if (notes != lastNotes) {
+            lastNotes = notes
+            evaluateAndReport()
+        }
+    }
+
+    private fun evaluateAndReport() {
+        lastEvaluation = buildEvaluationResult(currentState.id, states)
+        stateChangeReporter.reportDeviceStateChange(this, instanceDto)
     }
 
     private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {
@@ -39,7 +52,12 @@ abstract class StateDeviceAutomationUnit(
             interfaceValue = state.name,
             value = state,
             isSignaled = state.isSignaled,
-            nextStates = buildNextStates(state)
+            nextStates = buildNextStates(state),
+            descriptions = if (lastNotes != null) {
+                lastNotes!!
+            } else {
+                listOf()
+            }
         )
     }
 

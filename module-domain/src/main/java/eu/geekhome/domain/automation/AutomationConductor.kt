@@ -185,7 +185,7 @@ class AutomationConductor(
                         .forEach { (instanceId,automationList) ->
                             automationList.forEach {
                                 try {
-                                    it.process(now, firstLoop)
+                                    it.process(now, firstLoop, mutableListOf())
                                 } catch (ex: AutomationErrorException) {
                                     println("Exception during automation $instanceId")
                                     automationUnitsCache[instanceId]!!.second.markExternalError(ex)

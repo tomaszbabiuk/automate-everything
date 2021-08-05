@@ -1,5 +1,6 @@
 package eu.geekhome.domain.automation
 
+import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 import kotlin.collections.ArrayList
@@ -8,7 +9,7 @@ interface IAutomationNode
 
 interface IStatementNode : IAutomationNode {
     val next: IStatementNode?
-    fun process(now: Calendar, firstLoop: Boolean)
+    fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>)
 }
 
 interface IEvaluatorNode: IAutomationNode {
