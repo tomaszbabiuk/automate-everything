@@ -7,13 +7,11 @@ import java.util.*
 class DelayAutomationNode(
     override val next: IStatementNode?,
     private val doNode: IStatementNode?,
-    private val seconds: Int) : IStatementNode {
+    private val seconds: Int) : StatementNodeBase() {
 
     private var scope: CoroutineScope? = null
 
-    override fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>) {
-        notes.add(Resource.createUniResource("dupa"))
-
+    override fun process(now: Calendar, firstLoop: Boolean) {
         if (scope != null) {
             scope!!.cancel("Clearing old scope of delay automation node")
         }
@@ -25,13 +23,13 @@ class DelayAutomationNode(
                 while (isActive && secondsTillEnd >= 0) {
                     delay(1000)
                     secondsTillEnd--
+                    doNode.modifyNote("DUPA", Resource.createUniResource(secondsTillEnd.toString()))
                 }
 
                 if (isActive) {
-                    doNode.process(Calendar.getInstance(), firstLoop, notes)
+                    doNode.process(Calendar.getInstance(), firstLoop)
                 }
             }
         }
     }
-
 }

@@ -1,8 +1,7 @@
 package eu.geekhome.domain.automation
 
 import eu.geekhome.data.instances.InstanceDto
-import eu.geekhome.data.localization.Resource
-import java.util.Calendar
+import java.util.*
 
 class StateDeviceTriggerNode(
     context: AutomationContext,
@@ -10,25 +9,22 @@ class StateDeviceTriggerNode(
     private val unit: StateDeviceAutomationUnit,
     private val observedStateId: String,
     override val next: IStatementNode?
-) : IStatementNode, StateChangedListener {
+) : StatementNodeBase(), StateChangedListener {
 
     init {
         context.stateChangeReporter.addListener(this)
     }
 
-    private var notesFromProcessing = mutableListOf<Resource>()
-
-    override fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>) {
-        notesFromProcessing = notes
+    override fun process(now: Calendar, firstLoop: Boolean) {
         if (firstLoop && unit.currentState.id == observedStateId) {
-            next?.process(now, firstLoop, notes)
+            next?.process(now, firstLoop)
         }
     }
 
     override fun onChanged(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto) {
         if (instanceDto.id == instanceId) {
             if (deviceUnit.currentState.id == observedStateId) {
-                next?.process(Calendar.getInstance(), false, notesFromProcessing)
+                next?.process(Calendar.getInstance(), false)
             }
         }
     }

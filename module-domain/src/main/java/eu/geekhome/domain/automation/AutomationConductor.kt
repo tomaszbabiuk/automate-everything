@@ -3,6 +3,7 @@ package eu.geekhome.domain.automation
 import eu.geekhome.data.Repository
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.automation.State
+import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.domain.WithStartStopScope
@@ -185,7 +186,7 @@ class AutomationConductor(
                         .forEach { (instanceId,automationList) ->
                             automationList.forEach {
                                 try {
-                                    it.process(now, firstLoop, mutableListOf())
+                                    it.process(now, firstLoop)
                                 } catch (ex: AutomationErrorException) {
                                     println("Exception during automation $instanceId")
                                     automationUnitsCache[instanceId]!!.second.markExternalError(ex)

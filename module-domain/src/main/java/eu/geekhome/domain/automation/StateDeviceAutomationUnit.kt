@@ -30,20 +30,25 @@ abstract class StateDeviceAutomationUnit(
         if (currentState.id != state) {
             currentState = states[state]!!
             applyNewState(state)
-            evaluateAndReport()
+            evaluateAndReportStateChange()
         }
     }
 
     override fun updateNotes(notes: List<Resource>) {
         if (notes != lastNotes) {
             lastNotes = notes
-            evaluateAndReport()
+            evaluateAndReportStateUpdate()
         }
     }
 
-    private fun evaluateAndReport() {
+    private fun evaluateAndReportStateChange() {
         lastEvaluation = buildEvaluationResult(currentState.id, states)
         stateChangeReporter.reportDeviceStateChange(this, instanceDto)
+    }
+
+    private fun evaluateAndReportStateUpdate() {
+        lastEvaluation = buildEvaluationResult(currentState.id, states)
+        stateChangeReporter.reportDeviceStateUpdated(this, instanceDto)
     }
 
     private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {

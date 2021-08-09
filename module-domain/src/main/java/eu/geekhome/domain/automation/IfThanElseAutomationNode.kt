@@ -8,15 +8,15 @@ class IfThanElseAutomationNode(
     private val evaluatorNode: IEvaluatorNode?,
     private val ifNode: IStatementNode?,
     private val elseNode: IStatementNode?
-    ) : IStatementNode {
+    ) : StatementNodeBase() {
 
-    override fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>) {
+    override fun process(now: Calendar, firstLoop: Boolean) {
         if (evaluatorNode!= null && evaluatorNode.evaluate(now)) {
-            ifNode?.process(now, firstLoop, notes)
+            ifNode?.process(now, firstLoop)
         } else {
-            elseNode?.process(now, firstLoop, notes)
+            elseNode?.process(now, firstLoop)
         }
 
-        next?.process(now, firstLoop, notes)
+        next?.process(now, firstLoop)
     }
 }

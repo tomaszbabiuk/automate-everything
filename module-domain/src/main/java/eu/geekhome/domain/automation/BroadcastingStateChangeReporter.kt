@@ -15,8 +15,11 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
         listeners.forEach {
             it.onChanged(deviceUnit, instanceDto)
         }
+    }
 
-        println("Emitting Event ${instanceDto.fields["name"]} -> ${deviceUnit.currentState}}")
+    override fun reportDeviceStateUpdated(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto) {
+        val eventData = AutomationUpdateEventData(deviceUnit, instanceDto, deviceUnit.lastEvaluation)
+        liveEvents.broadcastEvent(eventData)
     }
 
     override fun addListener(listener: StateChangedListener) {

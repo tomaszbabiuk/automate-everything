@@ -7,11 +7,15 @@ class ChangeStateAutomationNode(
     private val state: String,
     private val deviceUnit: StateDeviceAutomationUnit,
     override val next: IStatementNode?
-) : IStatementNode {
+) : StatementNodeBase() {
 
-    override fun process(now: Calendar, firstLoop: Boolean, notes: MutableList<Resource>) {
-        deviceUnit.changeState(state, null, "Blockly")
-        deviceUnit.updateNotes(notes)
-        next?.process(now, firstLoop, notes)
+    override fun process(now: Calendar, firstLoop: Boolean) {
+        deviceUnit.changeState(state)
+        next?.process(now, firstLoop)
+    }
+
+    override fun modifyNote(noteId: String, note: Resource) {
+        super.modifyNote(noteId, note)
+        deviceUnit.updateNotes(notes.values.toList())
     }
 }

@@ -4,6 +4,7 @@ import eu.geekhome.data.instances.InstanceDto
 
 interface StateChangeReporter {
     fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto)
+    fun reportDeviceStateUpdated(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto)
     fun addListener(listener: StateChangedListener)
     fun removeAllListeners()
 }
