@@ -19,12 +19,13 @@
 <script>
 export default {
   props: ["clazz"],
+
   computed: {
     configurable: function () {
-      console.log(this.clazz)
       return this.getConfigurableByClazz(this.clazz);
     },
   },
+
   methods: {
     configurableClassToFormComponent: function (clazz) {
       return "configurable-" + clazz.toLowerCase();

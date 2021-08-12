@@ -18,6 +18,21 @@ object R {
         "Port"
     )
 
+    val field_min_working_time = Resource(
+        "Minimum working time",
+        "Minimalny czas pracy "
+    )
+
+    val field_max_working_time = Resource(
+        "Maximum working time (0 = infinity)",
+        "Maksymalny czas pracy (0 = nieskończoność)"
+    )
+
+    val field_backoff_time = Resource(
+        "Backoff time (after max. time elapses)",
+        "Czas odczekania (po upłynięciu maksymalnego czasu)"
+    )
+
     val field_preset1_hint = Resource(
         "Preset 1 (% of power)",
         "Ustawienie 1 (% mocy)"

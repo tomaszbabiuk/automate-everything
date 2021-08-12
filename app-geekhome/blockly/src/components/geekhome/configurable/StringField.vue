@@ -35,14 +35,12 @@ export default {
     },
 
     storeFieldData(value) {
-      console.log('store: ' + value)
       if (this.text != value) {
         this.text = value
       }
     },
 
     text(value) {
-      console.log('text: ' + value)
       this.$store.commit(UPDATE_INSTANCE_FIELD, { 
         name: this.id,
         value: value

@@ -55,14 +55,12 @@ data: function() {
     },
 
     storeFieldData(value) {
-      console.log('store: ' + value)
       if (this.selected != value) {
         this.selected = value
       }
     },
 
     selected(value) {
-      console.log('text: ' + value)
       this.$store.commit(UPDATE_INSTANCE_FIELD, { 
         name: this.id,
         value: value

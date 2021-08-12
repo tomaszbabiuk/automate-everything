@@ -22,7 +22,6 @@ class InstancesController @Inject constructor(
             .configurables
             .filter { x -> x.javaClass.name.equals(clazz) }
             .filterIsInstance<ConfigurableWithFields>()
-            .map { x -> x }
             .firstOrNull()
     }
 

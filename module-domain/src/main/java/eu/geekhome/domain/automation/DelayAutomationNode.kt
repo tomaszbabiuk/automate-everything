@@ -23,7 +23,7 @@ class DelayAutomationNode(
                 while (isActive && secondsTillEnd >= 0) {
                     delay(1000)
                     secondsTillEnd--
-                    doNode.modifyNote("DUPA", Resource.createUniResource(secondsTillEnd.toString()))
+                    doNode.modifyNote("TILL_END", Resource.createUniResource(secondsTillEnd.toString()))
                 }
 
                 if (isActive) {

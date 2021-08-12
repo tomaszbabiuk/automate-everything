@@ -423,6 +423,7 @@ export default {
         store.commit(EDIT_INSTANCE, instance);
       }, 500);
 
+
       if (this.$refs.blockly != null) {
         this.$refs.blockly.reloadBlocks(instance.automation);
       }

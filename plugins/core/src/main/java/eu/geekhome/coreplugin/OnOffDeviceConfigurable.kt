@@ -17,8 +17,11 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
-            val result: MutableMap<String, FieldDefinition<*>> = HashMap(super.fieldDefinitions)
+            val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_PORT] = portField
+            result[FIELD_MIN_TIME] = minTimeField
+            result[FIELD_MAX_TIME] = maxTimeField
+            result[FIELD_BACKOFF_TIME] = backoffTimeField
             return result
         }
 
@@ -47,11 +50,14 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
                 </svg>"""
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+    private val minTimeField = DurationField(FIELD_MIN_TIME, R.field_min_working_time)
+    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time)
+    private val backoffTimeField = DurationField(FIELD_BACKOFF_TIME, R.field_backoff_time)
 
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
-        val name = instance.fields["name"]!!
+        val name = instance.fields[FIELD_NAME]!!
         return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port)
     }
 
@@ -88,6 +94,9 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
         }
 
     companion object {
+        const val FIELD_MIN_TIME = "minTime"
+        const val FIELD_MAX_TIME = "maxTime"
+        const val FIELD_BACKOFF_TIME = "backoffTime"
         const val FIELD_PORT = "portId"
         const val STATE_ON = "on"
         const val STATE_OFF = "off"

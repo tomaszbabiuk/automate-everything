@@ -169,7 +169,7 @@ export default new Vuex.Store({
       state.newInstance.automation = null
 
       configurable.fields.forEach(element => {
-        Vue.set(state.newInstance.fields, element.name, '')
+        Vue.set(state.newInstance.fields, element.name, '00:00:00')
       })
     },
 
