@@ -13,4 +13,13 @@ class DurationFieldBuilder : FieldBuilder<Duration> {
         val totalSeconds = hours * 3600 + minutes * 60 + seconds
         return Duration(totalSeconds)
     }
+
+    override fun toPersistableString(value: Duration): String {
+        val seconds = value.seconds % 60
+        val totalMinutes = value.seconds / 60
+        val minutes = totalMinutes % 60
+        val hours: Int = totalMinutes / 60
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
 }

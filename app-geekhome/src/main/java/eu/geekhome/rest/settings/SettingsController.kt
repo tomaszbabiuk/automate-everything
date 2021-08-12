@@ -57,7 +57,7 @@ class SettingsController @Inject constructor(
         settingsDtos.forEach { settingsDto ->
             val validation = validate(settingsDto)
             validation.entries.forEach {
-                if (!it.value.isValid) {
+                if (!it.value.valid) {
                     hasErrors = true
                 }
             }

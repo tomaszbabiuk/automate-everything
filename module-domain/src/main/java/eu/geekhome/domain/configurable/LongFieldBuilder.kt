@@ -12,4 +12,8 @@ class LongFieldBuilder : FieldBuilder<Long?> {
             0L
         }
     }
+
+    override fun toPersistableString(value: Long?): String {
+        return value.toString()
+    }
 }

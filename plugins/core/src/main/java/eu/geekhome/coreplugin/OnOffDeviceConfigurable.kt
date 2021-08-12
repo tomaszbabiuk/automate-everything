@@ -50,9 +50,9 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
                 </svg>"""
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val minTimeField = DurationField(FIELD_MIN_TIME, R.field_min_working_time)
-    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time)
-    private val backoffTimeField = DurationField(FIELD_BACKOFF_TIME, R.field_backoff_time)
+    private val minTimeField = DurationField(FIELD_MIN_TIME, R.field_min_working_time, Duration(0))
+    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time, Duration(0))
+    private val backoffTimeField = DurationField(FIELD_BACKOFF_TIME, R.field_backoff_time, Duration(0))
 
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)

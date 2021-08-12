@@ -1,10 +1,12 @@
-package eu.geekhome.domain.configurable;
+package eu.geekhome.domain.configurable
 
-import eu.geekhome.data.localization.Resource;
+import eu.geekhome.data.localization.Resource
 
-public class StringField extends FieldDefinition<String> {
-
-    public StringField(String name, Resource hint, int maxSize, Validator<String>... validators) {
-        super(name, hint, maxSize, String.class, new StringFieldBuilder(), validators);
-    }
-}
+class StringField(
+    name: String,
+    hint: Resource,
+    maxSize: Int,
+    initialValue: String,
+    vararg validators: Validator<String?>
+) : FieldDefinition<String>(name, hint, maxSize, initialValue, String::class.java,
+    StringFieldBuilder(), *validators)

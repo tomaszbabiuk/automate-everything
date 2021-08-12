@@ -3,7 +3,7 @@ package eu.geekhome.domain.configurable
 import eu.geekhome.domain.R
 import eu.geekhome.data.localization.Resource
 
-class RequiredStringValidator : Validator<String> {
+class RequiredStringValidator : Validator<String?> {
 
     override fun validate(fieldValue: String?): Boolean {
         if (fieldValue == null) {

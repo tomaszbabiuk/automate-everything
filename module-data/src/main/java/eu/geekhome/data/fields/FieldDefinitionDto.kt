@@ -6,5 +6,6 @@ class FieldDefinitionDto(
     private val clazz: String,
     private val name: String,
     private val hint: Resource,
-    private val maxSize: Int
+    private val maxSize: Int,
+    private val initialValue: String
 )

@@ -24,8 +24,8 @@ object R {
     )
 
     val field_max_working_time = Resource(
-        "Maximum working time (0 = infinity)",
-        "Maksymalny czas pracy (0 = nieskończoność)"
+        "Maximum working time (00:00:00 = infinity)",
+        "Maksymalny czas pracy (00:00:00 = nieskończoność)"
     )
 
     val field_backoff_time = Resource(

@@ -42,9 +42,9 @@ class TwilightConditionConfigurable : ConditionConfigurable() {
             return result
         }
 
-    private val longitudeField = DoubleField(FIELD_LONGITUDE, R.field_longitude_hint, 0, RequiredDoubleValidator())
+    private val longitudeField = DoubleField(FIELD_LONGITUDE, R.field_longitude_hint, 0, 0.0, RequiredDoubleValidator())
 
-    private val latitudeField = DoubleField(FIELD_LATITUDE, R.field_latitude_hint, 0, RequiredDoubleValidator())
+    private val latitudeField = DoubleField(FIELD_LATITUDE, R.field_latitude_hint, 0, 0.0, RequiredDoubleValidator())
 
     override fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnit {
         val longitude = extractLongitude(instance)

@@ -6,8 +6,11 @@ import eu.geekhome.data.fields.FieldDefinitionDto
 class FieldDefinitionDtoMapper {
     fun map(field: FieldDefinition<*>): FieldDefinitionDto {
         return FieldDefinitionDto(
-            field.javaClass.simpleName, field.name, field.hint,
-            field.maxSize
+            field.javaClass.simpleName,
+            field.name,
+            field.hint,
+            field.maxSize,
+            field.initialValueAsString()
         )
     }
 }

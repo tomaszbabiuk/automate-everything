@@ -14,12 +14,12 @@ abstract class NameDescriptionConfigurable : ConfigurableWithFields {
         }
 
     private val nameField = StringField(
-        FIELD_NAME, R.field_name_hint, 50,
+        FIELD_NAME, R.field_name_hint, 50, "",
         RequiredStringValidator(), MaxStringLengthValidator(50)
     )
 
     private val descriptionField = StringField(
-        FIELD_DESCRIPTION, R.field_description_hint, 200,
+        FIELD_DESCRIPTION, R.field_description_hint, 200, "",
         MaxStringLengthValidator(200)
     )
 

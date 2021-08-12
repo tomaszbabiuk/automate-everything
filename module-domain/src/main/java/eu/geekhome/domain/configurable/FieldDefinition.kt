@@ -1,93 +1,32 @@
-package eu.geekhome.domain.configurable;
+package eu.geekhome.domain.configurable
 
+import eu.geekhome.data.localization.Resource
+import java.util.ArrayList
 
-import eu.geekhome.data.localization.Resource;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class FieldDefinition<T> {
-    private final String _name;
-    private final Resource _hint;
-    private final int _maxSize;
-    private final Class<T> _valueClazz;
-    private final FieldBuilder<T> _builder;
-    private final Validator<T>[] _validators;
-
-    public String getName() {
-        return _name;
-    }
-
-    public Resource getHint() {
-        return _hint;
-    }
-
-    public Class<T> getValueClazz() {
-        return _valueClazz;
-    }
-
-    public Validator<T>[] getValidators() {
-        return _validators;
-    }
-
-    public FieldBuilder<T> getBuilder() {
-        return _builder;
-    }
-
-    public int getMaxSize() {
-        return _maxSize;
-    }
-
-    protected FieldDefinition(String name, Resource hint, int maxSize, Class<T> valueClazz, FieldBuilder<T> builder, Validator<T>... validators) {
-        _name = name;
-        _hint = hint;
-        _maxSize = maxSize;
-        _valueClazz = valueClazz;
-        _builder = builder;
-        _validators = validators;
-    }
-
-    public FieldValidationResult validate(String valueAsString) {
-        boolean isFieldValid = true;
-        List<Resource> failingReasons = new ArrayList<>();
-        T value = _builder.fromPersistableString(valueAsString);
-
-        for (Validator<T> validator : _validators) {
-            boolean isValid = validator.validate(value);
+abstract class FieldDefinition<T> protected constructor(
+    val name: String,
+    val hint: Resource,
+    val maxSize: Int,
+    val initialValue: T,
+    val valueClazz: Class<T>,
+    val builder: FieldBuilder<T>,
+    private vararg val validators: Validator<T?>
+) {
+    fun validate(valueAsString: String?): FieldValidationResult {
+        var isFieldValid = true
+        val failingReasons: MutableList<Resource> = ArrayList()
+        val value = builder.fromPersistableString(valueAsString)
+        for (validator in validators) {
+            val isValid = validator.validate(value)
             if (!isValid) {
-                isFieldValid = false;
-                failingReasons.add(validator.getReason());
+                isFieldValid = false
+                failingReasons.add(validator.reason)
             }
         }
+        return FieldValidationResult(isFieldValid, failingReasons)
+    }
 
-        return new FieldValidationResult(isFieldValid, failingReasons);
+    fun initialValueAsString() : String {
+        return builder.toPersistableString(initialValue)
     }
 }
-
-/*
-abstract class Field<T : Any>(
-    val name: String,
-    @StringRes val hint: Int,
-    val clazz: KClass<T>,
-    private val builder: FieldBuilder<T>,
-    val validator: Validator<T>? = null
-) {
-    var value : T? = null
-
-    fun toPersistableString() : String? {
-        if (value == null) {
-            return null
-        }
-
-        return builder.toPersistableString(value!!)
-    }
-
-    fun setValueFromString(valueAsString: String?) {
-        value = if (valueAsString == null) {
-            null
-        } else {
-            builder.fromPersistableString(valueAsString)
-        }
-    }
-}
- */
