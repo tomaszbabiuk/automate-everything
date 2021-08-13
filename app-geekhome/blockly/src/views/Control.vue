@@ -49,12 +49,12 @@
         <div v-if="automationUnit.evaluationResult.nextStates != null">
             <v-btn
               v-for="state in automationUnit.evaluationResult.nextStates.states"
-              :key="state.name"
+              :key="state.id"
               text
               :color="automationUnit.evaluationResult.isSignaled ? 'black' : 'primary'"
               :disabled="state.id == automationUnit.evaluationResult.nextStates.current"
               @click="changeState(automationUnit.instance, state)"
-              >{{ state.name }}</v-btn>
+              >{{ state.action }}</v-btn>
         </div>
 
         <v-spacer></v-spacer>

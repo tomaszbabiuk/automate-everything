@@ -28,9 +28,9 @@ object R {
         "Maksymalny czas pracy (00:00:00 = nieskończoność)"
     )
 
-    val field_backoff_time = Resource(
-        "Backoff time (after max. time elapses)",
-        "Czas odczekania (po upłynięciu maksymalnego czasu)"
+    val field_break_time = Resource(
+        "Break time (after max. time elapses)",
+        "Czas przerwy (po upłynięciu maksymalnego czasu)"
     )
 
     val field_preset1_hint = Resource(
@@ -131,6 +131,26 @@ object R {
     val configurable_onoffdevices_description = Resource(
         "A very simple to automate on/off devices",
         "Proste w automatyzowaniu urządzenia typu: włącz/wyłącz"
+    )
+
+    val configurable_timedonoffdevice_add = Resource(
+        "Add timed on/off device",
+        "Dodaj czasowe urządzenie wł/wył"
+    )
+
+    val configurable_timedonoffdevice_edit = Resource(
+        "Edit timed on/off device",
+        "Edytuj czasowe urządzenie wł/wył"
+    )
+
+    val configurable_timedonoffdevice_title = Resource(
+        "Timed On/Off devices",
+        "Urządzenia wł/wył z funkcją czasu"
+    )
+
+    val configurable_timedonoffdevices_description = Resource(
+        "More advanvced on/off devices with the possibility of setting min/max/brake times",
+        "Bardziej zaawansowane urządzenia z możliwością zdefiniowania czasów minimalnej i maksymalnej pracy oraz przerwy"
     )
 
     val configurable_powerdevice_add = Resource(
@@ -243,9 +263,24 @@ object R {
         "Wł"
     )
 
+    val state_on_counting = Resource(
+        "On (counting)",
+        "Wł (odliczanie)"
+    )
+
     val state_off = Resource(
         "Off",
         "Wył"
+    )
+
+    val state_forced_off = Resource(
+        "Forced off",
+        "Wymuszone wył"
+    )
+
+    val state_off_break = Resource(
+        "Off (break)",
+        "Wył (przerwa)"
     )
 
     val state_preset1 = Resource(

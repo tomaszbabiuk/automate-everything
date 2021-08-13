@@ -87,6 +87,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_UNKNOWN] = State(
                 STATE_UNKNOWN,
                 R.state_unknown,
+                R.state_unknown,
                 StateType.ReadOnly,
                 isSignaled = true,
                 codeRequired = false
@@ -94,6 +95,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_PRESET1] = State(
                 STATE_PRESET1,
                 R.state_preset1,
+                Resource.createUniResource("1"),
                 StateType.Control,
                 isSignaled = true,
                 codeRequired = false
@@ -101,6 +103,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_PRESET2] = State(
                 STATE_PRESET2,
                 R.state_preset2,
+                Resource.createUniResource("2"),
                 StateType.Control,
                 isSignaled = true,
                 codeRequired = false
@@ -108,6 +111,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_PRESET3] = State(
                 STATE_PRESET3,
                 R.state_preset3,
+                Resource.createUniResource("3"),
                 StateType.Control,
                 isSignaled = true,
                 codeRequired = false
@@ -115,6 +119,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_PRESET4] = State(
                 STATE_PRESET4,
                 R.state_preset4,
+                Resource.createUniResource("4"),
                 StateType.Control,
                 isSignaled = true,
                 codeRequired = false
@@ -122,12 +127,14 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
             states[STATE_OFF] = State(
                 STATE_OFF,
                 R.state_off,
+                R.state_off,
                 StateType.Control,
                 isSignaled = false,
                 codeRequired = false
             )
             states[STATE_MANUAL] = State(
                 STATE_MANUAL,
+                R.state_manual,
                 R.state_manual,
                 StateType.ReadOnly,
                 isSignaled = true,

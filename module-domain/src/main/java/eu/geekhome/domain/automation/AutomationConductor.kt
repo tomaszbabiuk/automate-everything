@@ -180,8 +180,14 @@ class AutomationConductor(
                     automations = rebuildAutomations()
                 }
 
+                automationUnitsCache
+                    .map { it.value.second }
+                    .filter { it.recalculateOnTimeChange }
+                    .forEach { it.calculate(now) }
+
                 if (hasAutomations) {
                     println("Processing maintenance + automation loop")
+
                     automations
                         .forEach { (instanceId,automationList) ->
                             automationList.forEach {

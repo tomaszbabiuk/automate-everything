@@ -6,7 +6,6 @@
       :return-value.sync="time"
       persistent
       width="290px"
-      v-on:dupa="dupaCalled"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
@@ -65,10 +64,6 @@ export default {
   },
 
   methods: {
-    dupaCalled: function() {
-      console.log("dupa called")
-    },
-
     storeTime: function(val) {
       this.$store.commit(UPDATE_INSTANCE_FIELD, {
         name: this.id,
@@ -95,12 +90,7 @@ export default {
   },
 
   mounted: function () {
-    console.log("mounted")
     this.time = this.storeFieldData;
-    if (this.time == "") {
-      this.time = "00:00:00"
-      this.storeTime(this.time);
-    }
   },
 };
 </script>

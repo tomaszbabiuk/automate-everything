@@ -14,8 +14,8 @@ abstract class StateDeviceAutomationUnit(
     private val stateChangeReporter: StateChangeReporter,
     private val instanceDto: InstanceDto,
     name: String,
-    private val states: Map<String, State>,
-    private val requiresExtendedWidth: Boolean) :
+    protected val states: Map<String, State>,
+    protected val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
     private var lastNotes: List<Resource>? = null

@@ -13,12 +13,15 @@ import org.pf4j.Extension
 import java.util.*
 
 @Extension
-class OnOffDeviceConfigurable : StateDeviceConfigurable() {
+class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_PORT] = portField
+            result[FIELD_MIN_TIME] = minTimeField
+            result[FIELD_MAX_TIME] = maxTimeField
+            result[FIELD_BREAK_TIME] = breakTimeField
             return result
         }
 
@@ -26,16 +29,16 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
         get() = DevicesConfigurable::class.java
 
     override val addNewRes: Resource
-        get() = R.configurable_onoffdevice_add
+        get() = R.configurable_timedonoffdevice_add
 
     override val editRes: Resource
-        get() = R.configurable_onoffdevice_edit
+        get() = R.configurable_timedonoffdevice_edit
 
     override val titleRes: Resource
-        get() = R.configurable_onoffdevice_title
+        get() = R.configurable_timedonoffdevice_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_onoffdevices_description
+        get() = R.configurable_timedonoffdevices_description
 
     override val iconRaw: String
         get() = """<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -47,12 +50,26 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
                 </svg>"""
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+    private val minTimeField = DurationField(FIELD_MIN_TIME, R.field_min_working_time, Duration(0))
+    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time, Duration(0))
+    private val breakTimeField = DurationField(FIELD_BREAK_TIME, R.field_break_time, Duration(0))
 
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
-        return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port)
+        val minWorkingTime = minTimeField.builder.fromPersistableString(instance.fields[FIELD_MIN_TIME])
+        val maxWorkingTime = maxTimeField.builder.fromPersistableString(instance.fields[FIELD_MAX_TIME])
+        val breakTime = breakTimeField.builder.fromPersistableString(instance.fields[FIELD_BREAK_TIME])
+        return TimedOnOffDeviceAutomationUnit(
+            stateChangeReporter,
+            instance,
+            name,
+            minWorkingTime,
+            maxWorkingTime,
+            breakTime,
+            states,
+            port)
     }
 
     private fun readPortId(instance: InstanceDto): String {
@@ -79,9 +96,25 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
                 isSignaled = true,
                 codeRequired = false
             )
+            states[STATE_ON_COUNTING] = State(
+                STATE_ON_COUNTING,
+                R.state_on_counting,
+                R.state_on,
+                StateType.Control,
+                isSignaled = true,
+                codeRequired = false
+            )
+            states[STATE_OFF_BREAK] = State(
+                STATE_OFF_BREAK,
+                R.state_off_break,
+                R.state_off_break,
+                StateType.ReadOnly,
+                isSignaled = true,
+                codeRequired = false
+            )
             states[STATE_OFF] = State(
                 STATE_OFF,
-                R.state_off,
+                R.state_forced_off,
                 R.state_off,
                 StateType.Control,
                 isSignaled = false,
@@ -91,8 +124,13 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
         }
 
     companion object {
+        const val FIELD_MIN_TIME = "minTime"
+        const val FIELD_MAX_TIME = "maxTime"
+        const val FIELD_BREAK_TIME = "breakTime"
         const val FIELD_PORT = "portId"
         const val STATE_ON = "on"
+        const val STATE_ON_COUNTING = "on_counting"
         const val STATE_OFF = "off"
+        const val STATE_OFF_BREAK = "off_break"
     }
 }

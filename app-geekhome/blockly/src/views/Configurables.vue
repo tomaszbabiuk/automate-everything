@@ -409,7 +409,6 @@ export default {
     },
 
     showEditInstanceDialog: function (instance) {
-      this.instanceDialog.show = true;
       this.instanceDialog.title = this.configurable.editRes;
       this.instanceDialog.actionText = this.$vuetify.lang.t(
         "$vuetify.configurables.edit"
@@ -418,15 +417,15 @@ export default {
       this.instanceDialog.activeTab = 0;
       this.instanceDialog.instance = instance;
 
-      setTimeout(() => {
-        store.commit(RESET_INSTANCE, this.configurable);
-        store.commit(EDIT_INSTANCE, instance);
-      }, 500);
 
+      store.commit(RESET_INSTANCE, this.configurable);
+      store.commit(EDIT_INSTANCE, instance);
 
       if (this.$refs.blockly != null) {
         this.$refs.blockly.reloadBlocks(instance.automation);
       }
+      
+      this.instanceDialog.show = true;
     },
 
     handleValidationResult: async function (validationResult) {
