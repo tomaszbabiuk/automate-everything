@@ -44,5 +44,6 @@ interface InputPort<V : PortValue> : Port<V> {
 
 interface OutputPort<V : PortValue> : InputPort<V> {
     fun write(value : V)
+    val requestedValue : V?
     fun reset()
 }

@@ -10,7 +10,7 @@ import eu.geekhome.domain.hardware.Relay
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import org.pf4j.Extension
-import java.util.*
+import kotlin.collections.LinkedHashMap
 
 @Extension
 class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
@@ -79,7 +79,7 @@ class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     override val states: Map<String, State>
         get() {
-            val states: MutableMap<String, State> = HashMap()
+            val states: MutableMap<String, State> = LinkedHashMap()
             states[STATE_UNKNOWN] = State(
                 STATE_UNKNOWN,
                 R.state_unknown,

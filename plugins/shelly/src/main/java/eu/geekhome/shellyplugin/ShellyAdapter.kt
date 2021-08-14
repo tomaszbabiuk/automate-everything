@@ -97,7 +97,7 @@ class ShellyAdapter(owningPluginId: String,
         if (mqttPayload != null) {
             val topic = shellyOutput.writeTopic
             mqttBroker.publish(topic, mqttPayload)
-            shellyOutput.reset()
+//            shellyOutput.reset()
         }
     }
 

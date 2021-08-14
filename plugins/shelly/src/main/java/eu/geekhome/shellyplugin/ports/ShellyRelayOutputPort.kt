@@ -11,7 +11,7 @@ class ShellyRelayOutputPort(
 ) : ShellyOutputPort<Relay>(id, Relay::class.java, sleepInterval) {
 
     private val readValue = Relay(false)
-    private var requestedValue : Relay? = null
+    override var requestedValue : Relay? = null
     override val readTopic = "shellies/$shellyId/relay/$channel"
     override val writeTopic = "shellies/$shellyId/relay/$channel/command"
 

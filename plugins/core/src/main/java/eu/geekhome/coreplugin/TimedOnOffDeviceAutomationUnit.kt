@@ -90,7 +90,8 @@ class TimedOnOffDeviceAutomationUnit(
             }
         }
 
-        val portReading = controlPort.read().value
+        val portReading = controlPort.requestedValue?.value ?: controlPort.read().value
+
         val onTime = if (portReading) {
                 now.timeInMillis - onSince
             } else {
@@ -144,7 +145,8 @@ class TimedOnOffDeviceAutomationUnit(
             }
         }
 
-        if (portReading) {
+        val newPortReading = controlPort.requestedValue?.value ?: controlPort.read().value
+        if (newPortReading) {
             when (currentState.id) {
                 STATE_OFF_BREAK, STATE_OFF -> {
                     changeStateToOnOrOnCounting()

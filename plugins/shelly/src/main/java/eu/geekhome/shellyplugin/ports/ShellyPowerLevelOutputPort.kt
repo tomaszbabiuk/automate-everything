@@ -14,7 +14,7 @@ class ShellyPowerLevelOutputPort(
 
     private val gson = Gson()
     private val readValue = PowerLevel(0)
-    private var requestedValue : PowerLevel? = null
+    override var requestedValue : PowerLevel? = null
     override val readTopic = "shellies/$shellyId/light/$channel/status"
     override val writeTopic = "shellies/$shellyId/light/$channel/set"
 
