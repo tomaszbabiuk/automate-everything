@@ -9,7 +9,7 @@ class MaxStringLengthValidator(val maxLength: Int) : Validator<String?> {
             "Maksymalna długość to $maxLength znaków"
         )
 
-    override fun validate(fieldValue: String?): Boolean {
+    override fun validate(fieldValue: String?, fields: Map<String, String?>): Boolean {
         return if (fieldValue == null) {
             true
         } else fieldValue.length <= maxLength

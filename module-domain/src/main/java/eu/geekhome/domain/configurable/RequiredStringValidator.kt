@@ -5,7 +5,7 @@ import eu.geekhome.data.localization.Resource
 
 class RequiredStringValidator : Validator<String?> {
 
-    override fun validate(fieldValue: String?): Boolean {
+    override fun validate(fieldValue: String?, fields: Map<String, String?>): Boolean {
         if (fieldValue == null) {
             return false
         }

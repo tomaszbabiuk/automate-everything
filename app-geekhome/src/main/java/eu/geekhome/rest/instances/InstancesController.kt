@@ -73,7 +73,7 @@ class InstancesController @Inject constructor(
             var isObjectValid = true
             for (fieldDefinition in configurable.fieldDefinitions.values) {
                 val fieldValue = instanceDto.fields[fieldDefinition.name]
-                val isValid = fieldDefinition.validate(fieldValue)
+                val isValid = fieldDefinition.validate(fieldValue, instanceDto.fields)
                 validationResult[fieldDefinition.name] = isValid
                 if (!isValid.valid) {
                     isObjectValid = false

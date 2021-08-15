@@ -79,7 +79,7 @@ class SettingsController @Inject constructor(
             val validationResult: MutableMap<String, FieldValidationResult> = HashMap()
             for (fieldDefinition in category.fieldDefinitions.values) {
                 val fieldValue = settingsDto.fields[fieldDefinition.name]
-                val isValid = fieldDefinition.validate(fieldValue)
+                val isValid = fieldDefinition.validate(fieldValue, settingsDto.fields)
                 validationResult[fieldDefinition.name] = isValid
             }
             validationResult

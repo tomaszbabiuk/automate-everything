@@ -3,6 +3,16 @@ package eu.geekhome.coreplugin
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val validator_max_should_exceed_min_time = Resource(
+        "Maximum working time should be greater than minimum working time",
+        "Maksymalny czas pracy powinien być większy niż minimalny czas pracy"
+    )
+
+    val validator_break_invalid_if_no_max_time = Resource(
+        "Break time is not effective when max working time is zero",
+        "Czas przerwy jest nieskuteczny jeśli maksymalny czas pracy jest zerowy"
+    )
+
     val plugin_description = Resource(
         "Core definitions of devices and conditions",
         "Główne definicje urządzeń i warunków"
