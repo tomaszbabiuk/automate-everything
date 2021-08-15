@@ -9,7 +9,7 @@ class RequiredDoubleValidator : Validator<Double?> {
             "To pole jest wymagane"
         )
 
-    override fun validate(fieldValue: Double?, fields: Map<String, String?>): Boolean {
-        return fieldValue != null
+    override fun validate(validatedFieldValue: Double?, allFields: Map<String, String?>): Boolean {
+        return validatedFieldValue != null
     }
 }

@@ -85,14 +85,19 @@ class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
         override val reason: Resource
             get() = R.validator_max_should_exceed_min_time
 
-        override fun validate(fieldValue: Duration?, fields: Map<String, String?>): Boolean {
-            if (fieldValue == null) {
+        override fun validate(validatedFieldValue: Duration?, allFields: Map<String, String?>): Boolean {
+            if (validatedFieldValue == null) {
                 return true
             }
 
-            val minTimeFieldValueRaw = fields[FIELD_MIN_TIME]
+            val minTimeFieldValueRaw = allFields[FIELD_MIN_TIME]
             val minTimeFieldValue = minTimeField.builder.fromPersistableString(minTimeFieldValueRaw)
-            return (fieldValue.seconds > minTimeFieldValue.seconds)
+
+            if (minTimeFieldValue.seconds == 0) {
+                return true
+            }
+
+            return (validatedFieldValue.seconds > minTimeFieldValue.seconds)
         }
     })
 
@@ -100,18 +105,18 @@ class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
         override val reason: Resource
             get() = R.validator_break_invalid_if_no_max_time
 
-        override fun validate(fieldValue: Duration?, fields: Map<String, String?>): Boolean {
-            if (fieldValue == null) {
+        override fun validate(validatedFieldValue: Duration?, allFields: Map<String, String?>): Boolean {
+            if (validatedFieldValue == null) {
                 return true
             }
 
-            if (fieldValue.seconds == 0) {
+            if (validatedFieldValue.seconds == 0) {
                 return true
             }
 
-            val maxTimeFieldValueRaw = fields[FIELD_MAX_TIME]
+            val maxTimeFieldValueRaw = allFields[FIELD_MAX_TIME]
             val maxTimeFieldValue = maxTimeField.builder.fromPersistableString(maxTimeFieldValueRaw)
-            return (maxTimeFieldValue.seconds > 0 && fieldValue.seconds > 0)
+            return (maxTimeFieldValue.seconds > 0 && validatedFieldValue.seconds > 0)
         }
     })
 

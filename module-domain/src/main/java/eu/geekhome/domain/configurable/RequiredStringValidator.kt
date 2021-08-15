@@ -5,12 +5,12 @@ import eu.geekhome.data.localization.Resource
 
 class RequiredStringValidator : Validator<String?> {
 
-    override fun validate(fieldValue: String?, fields: Map<String, String?>): Boolean {
-        if (fieldValue == null) {
+    override fun validate(validatedFieldValue: String?, allFields: Map<String, String?>): Boolean {
+        if (validatedFieldValue == null) {
             return false
         }
 
-        return fieldValue.isNotEmpty()
+        return validatedFieldValue.isNotEmpty()
     }
 
     override val reason: Resource = R.validator_required_field
