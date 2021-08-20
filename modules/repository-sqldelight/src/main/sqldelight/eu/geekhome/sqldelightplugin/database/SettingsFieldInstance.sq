@@ -1,0 +1,23 @@
+
+
+CREATE TABLE IF NOT EXISTS settingsFieldInstance (
+  pluginId TEXT NOT NULL,
+  clazz TEXT NOT NULL,
+  name TEXT NOT NULL,
+  value TEXT,
+  PRIMARY KEY(pluginId, name, clazz)
+);
+
+selectByPluginIdAndClazz:
+SELECT *
+FROM settingsFieldInstance
+WHERE pluginId = ? AND clazz = ?;
+
+selectByPluginId:
+SELECT *
+FROM settingsFieldInstance
+WHERE pluginId = ?;
+
+insertOrReplace:
+INSERT OR REPLACE INTO settingsFieldInstance(pluginId, clazz, name, value)
+VALUES (?, ?, ?, ?);

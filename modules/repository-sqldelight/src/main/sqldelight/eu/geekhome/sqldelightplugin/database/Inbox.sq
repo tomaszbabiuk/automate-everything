@@ -1,0 +1,44 @@
+import eu.geekhome.data.inbox.InboxItemKind;
+
+CREATE TABLE IF NOT EXISTS inboxItem (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp INTEGER NOT NULL,
+  kind TEXT AS InboxItemKind NOT NULL,
+  message TEXT,
+  read INTEGER NOT NULL,
+  port_id TEXT,
+  FOREIGN KEY(port_id) REFERENCES portSnapshot(id) ON DELETE SET NULL
+);
+
+countItems:
+SELECT count(*) FROM inboxItem;
+
+selectByPage:
+SELECT *
+FROM inboxItem
+ORDER BY id DESC
+LIMIT :limit OFFSET :offset;
+
+selectUnread:
+SELECT *
+FROM inboxItem
+WHERE read == 0;
+
+selectById:
+SELECT *
+FROM inboxItem
+WHERE id = ?;
+
+insert:
+INSERT INTO inboxItem(timestamp, kind, message, read, port_id)
+VALUES (?, ?, ?, ?, ?);
+
+delete:
+DELETE FROM inboxItem
+WHERE id == ?;
+
+markRead:
+UPDATE inboxItem
+SET read = 1
+WHERE
+    id= ?;

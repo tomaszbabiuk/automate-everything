@@ -1,0 +1,26 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'com.squareup.sqldelight'   version "$sqlDelightVersion"
+}
+
+dependencies {
+    //project
+    implementation project(":modules:module-data")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    //plugin specific
+    implementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+sqldelight {
+    Database {
+        packageName = "eu.geekhome.sqldelightplugin.database"
+        dialect = "sqlite:3.24"
+    }
+}
