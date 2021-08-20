@@ -10,9 +10,9 @@ run {
 
 dependencies {
     //common
-    implementation project(":module-data")
-    implementation project(":module-domain")
-    implementation project(":module-repository-sqldelight")
+    implementation project(":modules:data")
+    implementation project(":modules:domain")
+    implementation project(":modules:repository-sqldelight")
     implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
 

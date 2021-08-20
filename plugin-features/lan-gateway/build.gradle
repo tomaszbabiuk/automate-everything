@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    implementation project(":module-domain")
+    implementation project(":modules:domain")
 }

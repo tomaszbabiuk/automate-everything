@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     //project
-    implementation project(":modules:module-data")
+    implementation project(":modules:data")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 

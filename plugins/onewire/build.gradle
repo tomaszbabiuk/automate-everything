@@ -5,21 +5,16 @@ plugins {
 
 dependencies {
     //common
-    shadow project(':module-data')
-    shadow project(':module-domain')
+    shadow project(':modules:data')
+    shadow project(':modules:domain')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"
     kapt "org.pf4j:pf4j:$pf4jVersion"
     annotationProcessor "org.pf4j:pf4j:$pf4jVersion"
 
-    //ktor
-    shadow "io.ktor:ktor-client-core:$ktorVersion"
-    shadow "io.ktor:ktor-client-cio:$ktorVersion"
-    shadow "io.ktor:ktor-client-gson:$ktorVersion"
-
-    //gson
-    shadow "com.google.code.gson:gson:$gsonVersion"
+    //rxtx
+    implementation 'org.bidib.jbidib.org.qbang.rxtx:rxtxcomm:2.2'
 
     //kotlin
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

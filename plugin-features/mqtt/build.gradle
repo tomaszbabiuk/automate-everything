@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     //common
-    implementation project(':module-domain')
+    implementation project(':modules:domain')
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

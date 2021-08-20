@@ -2,15 +2,17 @@ rootProject.name = 'geekhome-server2'
 
 include "app-geekhome"
 
-include "module-domain"
-include "module-data"
-include "module-repository-sqldelight"
+include "modules:domain"
+include "modules:data"
+include "modules:repository-sqldelight"
 
 include 'plugins'
 
 include 'plugins:core'
 include 'plugins:shelly'
 include 'plugins:afore'
+include 'plugins:onewire'
 
 include 'plugin-features:lan-gateway'
 include 'plugin-features:mqtt'
+include "plugin-features:rxtx"
