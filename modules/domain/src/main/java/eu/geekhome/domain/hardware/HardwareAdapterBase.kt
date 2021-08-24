@@ -21,7 +21,7 @@ abstract class HardwareAdapterBase<T : Port<*>> : HardwareAdapter<T> {
     override fun hasNewPorts(): Boolean {
         return hasNewPorts
     }
-    abstract suspend fun internalDiscovery(eventsSink: EventsSink) : ArrayList<T>
+    abstract suspend fun internalDiscovery(eventsSink: EventsSink) : List<T>
 
     override suspend fun discover(discoverySink: EventsSink) {
         lastDiscoveryTime = Calendar.getInstance().timeInMillis

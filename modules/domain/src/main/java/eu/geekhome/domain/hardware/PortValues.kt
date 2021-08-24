@@ -61,7 +61,7 @@ class PowerLevel(var value: Int) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "$value %"
-        return Resource(multilingualValue, multilingualValue)
+        return Resource.createUniResource(multilingualValue)
     }
 
     override fun asInteger(): Int {
@@ -105,7 +105,7 @@ class Temperature(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f °C".format(value - 273.15)
-        return Resource(multilingualValue, multilingualValue)
+        return Resource.createUniResource(multilingualValue)
     }
 
     override fun asInteger(): Int {
@@ -127,7 +127,7 @@ class Humidity(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f %%".format(value)
-        return Resource(multilingualValue, multilingualValue)
+        return Resource.createUniResource(multilingualValue)
     }
 
     override fun asInteger(): Int {
@@ -149,7 +149,7 @@ class Wattage(var value: Double) : PortValue() {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f W".format(value)
-        return Resource(multilingualValue, multilingualValue)
+        return Resource.createUniResource(multilingualValue)
     }
 
     override fun asInteger(): Int {
@@ -164,6 +164,21 @@ class Wattage(var value: Double) : PortValue() {
         fun fromDouble(from: Double): Wattage {
             return Wattage(from)
         }
+    }
+}
+
+class Generic(val value: Double, val unit: String) : PortValue() {
+    override fun toFormattedString(): Resource {
+        val multilingualValue = "%.2f %s".format(value, unit)
+        return Resource.createUniResource(multilingualValue)
+    }
+
+    override fun asInteger(): Int {
+        return ((value * 100).roundToInt())
+    }
+
+    override fun asDouble(): Double {
+        return value
     }
 }
 

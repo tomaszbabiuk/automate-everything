@@ -1,7 +1,9 @@
-package eu.automateeverything.crypto
+package eu.automateeverything.crypto.binance
 
+import eu.automateeverything.crypto.R
 import eu.geekhome.domain.configurable.FieldDefinition
 import eu.geekhome.domain.configurable.SettingGroup
+import eu.geekhome.domain.configurable.StringField
 
 class BinanceApiSettingGroup : SettingGroup {
 
@@ -20,6 +22,7 @@ class BinanceApiSettingGroup : SettingGroup {
         </svg>
     """.trimIndent()
 
-    override val fieldDefinitions: Map<String, FieldDefinition<*>>
-        get() = TODO("Not yet implemented")
+    override val fieldDefinitions: Map<String, FieldDefinition<*>> = mapOf(
+        Pair("xxx", StringField("xxx", R.plugin_name, 0, ""))
+    )
 }
