@@ -7,6 +7,5 @@ data class SettingGroupDto(
     val clazz: String,
     val titleRes: Resource,
     val descriptionRes: Resource,
-    val fields: List<FieldDefinitionDto>?,
-    val iconRaw: String,
+    val fields: List<FieldDefinitionDto>?
 )

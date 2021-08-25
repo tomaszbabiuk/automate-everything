@@ -11,7 +11,6 @@ include 'plugins'
 include 'plugins:core'
 include 'plugins:shelly'
 include 'plugins:afore'
-include 'plugins:onewire'
 include 'plugins:crypto-trading'
 
 include 'plugin-features:lan-gateway'

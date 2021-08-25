@@ -3,13 +3,13 @@ package eu.geekhome.domain.hardware
 import eu.geekhome.data.localization.Resource
 import kotlin.math.roundToInt
 
-sealed class PortValue {
-    abstract fun toFormattedString() : Resource
-    abstract fun asInteger() : Int
-    abstract fun asDouble() : Double
+interface PortValue {
+    fun toFormattedString() : Resource
+    fun asInteger() : Int
+    fun asDouble() : Double
 }
 
-class BinaryInput(var value: Boolean) : PortValue() {
+class BinaryInput(var value: Boolean) : PortValue {
     private val on = Resource("High", "Wysoki")
     private val off = Resource("Low", "Niski")
 
@@ -26,7 +26,7 @@ class BinaryInput(var value: Boolean) : PortValue() {
     }
 }
 
-class Relay(var value: Boolean) : PortValue() {
+class Relay(var value: Boolean) : PortValue {
     private val on = Resource("On", "Wł")
     private val off = Resource("Off", "Wył")
 
@@ -57,7 +57,7 @@ class Relay(var value: Boolean) : PortValue() {
     }
 }
 
-class PowerLevel(var value: Int) : PortValue() {
+class PowerLevel(var value: Int) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "$value %"
@@ -79,7 +79,7 @@ class PowerLevel(var value: Int) : PortValue() {
     }
 }
 
-class BatteryCharge(var value: Double) : PortValue() {
+class BatteryCharge(var value: Double) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f %%".format(value)
@@ -101,7 +101,7 @@ class BatteryCharge(var value: Double) : PortValue() {
     }
 }
 
-class Temperature(var value: Double) : PortValue() {
+class Temperature(var value: Double) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f °C".format(value - 273.15)
@@ -123,7 +123,7 @@ class Temperature(var value: Double) : PortValue() {
     }
 }
 
-class Humidity(var value: Double) : PortValue() {
+class Humidity(var value: Double) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f %%".format(value)
@@ -145,7 +145,7 @@ class Humidity(var value: Double) : PortValue() {
     }
 }
 
-class Wattage(var value: Double) : PortValue() {
+class Wattage(var value: Double) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f W".format(value)
@@ -164,21 +164,6 @@ class Wattage(var value: Double) : PortValue() {
         fun fromDouble(from: Double): Wattage {
             return Wattage(from)
         }
-    }
-}
-
-class Generic(val value: Double, val unit: String) : PortValue() {
-    override fun toFormattedString(): Resource {
-        val multilingualValue = "%.2f %s".format(value, unit)
-        return Resource.createUniResource(multilingualValue)
-    }
-
-    override fun asInteger(): Int {
-        return ((value * 100).roundToInt())
-    }
-
-    override fun asDouble(): Double {
-        return value
     }
 }
 

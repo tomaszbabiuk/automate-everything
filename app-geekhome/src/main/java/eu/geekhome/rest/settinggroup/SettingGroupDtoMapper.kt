@@ -24,8 +24,7 @@ class SettingGroupDtoMapper @Inject constructor(
             category.javaClass.name,
             category.titleRes,
             category.descriptionRes,
-            fields,
-            category.iconRaw
+            fields
         )
     }
 }

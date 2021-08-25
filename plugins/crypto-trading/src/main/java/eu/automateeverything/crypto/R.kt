@@ -3,6 +3,20 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val field_currencies = Resource(
+        "Currencies",
+        "Waluty"
+    )
+    val market_pairs_description = Resource(
+        "Enter the market pairs you are interested in (comma separated), like: BTC/USD, BTC/USDT, etc...",
+        "Wprowadź pary kryptowalut, którymi jesteś zainteresowany (oddzielone przecinkiem), np: BTC/USD, BTC/USDT..."
+    )
+
+    val market_pairs_title = Resource(
+        "Market pairs",
+        "Pary walutowe"
+    )
+
     val binance_settings_title = Resource(
         "Binance",
         "Binance"
