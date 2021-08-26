@@ -5,7 +5,7 @@ import org.knowm.xchange.currency.CurrencyPair
 
 class MarketPort(
     override val id: String,
-    private val currencyPair: CurrencyPair,
+    val pair: CurrencyPair,
     initialValue: Double,
     override var connectionValidUntil: Long) :  InputPort<Ticker> {
 
@@ -13,7 +13,11 @@ class MarketPort(
     var lastValue = initialValue
 
     override fun read(): Ticker {
-        return Ticker(lastValue, currencyPair.base.currencyCode, currencyPair.counter.currencyCode)
+        return Ticker(lastValue, pair)
+    }
+
+    fun updateValue(newValue: Double) {
+        lastValue = newValue
     }
 
     //TODO:Add function for returning candle data

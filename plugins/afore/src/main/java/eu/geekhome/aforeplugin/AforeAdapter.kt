@@ -19,6 +19,7 @@ class AforeAdapter(
     private val owningPluginId: String,
     private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<AforeWattageInputPort>() {
 
+    override val id  = ADAPTER_ID
     var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
     private val httpClient = createHttpClient()

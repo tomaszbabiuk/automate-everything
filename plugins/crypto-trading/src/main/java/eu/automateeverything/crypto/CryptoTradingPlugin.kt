@@ -12,13 +12,6 @@ import org.pf4j.PluginWrapper
 class CryptoTradingPlugin(wrapper: PluginWrapper): HardwarePlugin(wrapper), PluginMetadata {
 
     override fun start() {
-//        val bitfinex: Exchange = ExchangeFactory.INSTANCE.createExchange(BitfinexExchange::class.java)
-//        val marketDataService = bitfinex.marketDataService
-//        val ticker: Ticker = marketDataService.getTicker(CurrencyPair.BTC_USD)
-//        val now = Calendar.getInstance().timeInMillis
-//        val nowMinus21Days = now - (3600 * 1000 * 24 * 21)
-//        val candles = (marketDataService as BitfinexMarketDataService).getHistoricCandles("1D", CurrencyPair.BTC_USD, 100, nowMinus21Days, now,0)
-//        println(candles)
     }
 
     override fun stop() {
@@ -37,6 +30,6 @@ class CryptoTradingPlugin(wrapper: PluginWrapper): HardwarePlugin(wrapper), Plug
     )
 
     companion object {
-        const val PLUGIN_ID_CRYPTO_TRADING = "cryptotrading"
+        const val PLUGIN_ID = "cryptotrading"
     }
 }

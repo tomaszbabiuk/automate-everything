@@ -9,7 +9,6 @@ abstract class HardwareAdapterBase<T : Port<*>> : HardwareAdapter<T> {
 
     override var state = AdapterState.Initialized
     override var lastDiscoveryTime = 0L
-    override val id = "0"
     override var lastError: Throwable? = null
     override val ports: HashMap<String, T> = HashMap()
     private var hasNewPorts: Boolean = false

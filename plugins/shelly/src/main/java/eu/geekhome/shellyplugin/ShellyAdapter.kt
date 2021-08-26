@@ -22,7 +22,7 @@ import java.util.*
 class ShellyAdapter(owningPluginId: String,
                     private val mqttBroker: MqttBrokerService,
                     lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
-
+    override val id = ADAPTER_ID
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId, id)
     private var updateSink: EventsSink? = null
@@ -155,5 +155,9 @@ class ShellyAdapter(owningPluginId: String,
 
             addPotentialNewPorts(portsFromDevice)
         }
+    }
+
+    companion object {
+        const val ADAPTER_ID = "0"
     }
 }
