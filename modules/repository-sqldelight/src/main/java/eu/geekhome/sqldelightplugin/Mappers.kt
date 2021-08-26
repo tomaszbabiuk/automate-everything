@@ -22,7 +22,7 @@ class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
             from.adapterId,
             null,
             null,
-            from.valueType,
+            from.valueClazz,
             from.canRead == 1L,
             from.canWrite == 1L,
             false

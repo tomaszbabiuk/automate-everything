@@ -3,7 +3,6 @@ package eu.geekhome.domain.automation
 import eu.geekhome.data.Repository
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.automation.State
-import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.hardware.HardwareManager
 import eu.geekhome.domain.extensibility.PluginsCoordinator
 import eu.geekhome.domain.WithStartStopScope
@@ -146,7 +145,7 @@ class AutomationConductor(
             }
 
             is SensorConfigurable<*> -> {
-                AutomationUnitWrapper(originName, configurable.valueType, ex)
+                AutomationUnitWrapper(originName, configurable.valueClazz, ex)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")

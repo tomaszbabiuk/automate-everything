@@ -121,8 +121,8 @@ class BlockFactoriesCollector(private val pluginsCoordinator: PluginsCoordinator
                 val id = briefDto.id
                 val sensorConfigurable = configurable as SensorConfigurable<*>
                 val label = Resource.createUniResource(briefDto.name)
-                val category = CategoryConstants.fromType(sensorConfigurable.valueType)
-                SensorBlockFactory(sensorConfigurable.valueType, category, id, label)
+                val category = CategoryConstants.fromType(sensorConfigurable.valueClazz)
+                SensorBlockFactory(sensorConfigurable.valueClazz, category, id, label)
             }
             .toList()
     }

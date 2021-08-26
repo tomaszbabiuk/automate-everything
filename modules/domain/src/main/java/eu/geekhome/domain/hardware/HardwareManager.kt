@@ -146,7 +146,7 @@ class HardwareManager(
     }
 
     override fun <T : PortValue> searchForAnyPort(
-        valueType: Class<T>,
+        valueClazz: Class<T>,
         id: String
     ): Port<T> {
         val port = factories
@@ -154,15 +154,15 @@ class HardwareManager(
             .flatMap { it.adapter.ports.values }
             .find { it.id == id }
 
-        if (port != null && port.valueClazz == valueType) {
+        if (port != null && port.valueClazz == valueClazz) {
             return port as Port<T>
         }
 
         throw PortNotFoundException(id)
     }
 
-    override fun <T : PortValue> searchForInputPort(valueType: Class<T>, id: String): InputPort<T> {
-        val anyPort = searchForAnyPort(valueType, id)
+    override fun <T : PortValue> searchForInputPort(valueClazz: Class<T>, id: String): InputPort<T> {
+        val anyPort = searchForAnyPort(valueClazz, id)
         if (anyPort is InputPort<T>) {
             return anyPort
         }
@@ -170,8 +170,8 @@ class HardwareManager(
         throw PortNotFoundException(id)
     }
 
-    override fun <T : PortValue> searchForOutputPort(valueType: Class<T>, id: String): OutputPort<T> {
-        val anyPort = searchForAnyPort(valueType, id)
+    override fun <T : PortValue> searchForOutputPort(valueClazz: Class<T>, id: String): OutputPort<T> {
+        val anyPort = searchForAnyPort(valueClazz, id)
         if (anyPort is OutputPort<T>) {
             return anyPort
         }

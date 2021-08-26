@@ -8,7 +8,7 @@ data class PortDto(
     val adapterId: String,
     val integerValue: Int?,
     val interfaceValue: Resource?,
-    val valueType: String,
+    val valueClazz: String,
     val canRead: Boolean,
     val canWrite: Boolean,
     val connected: Boolean

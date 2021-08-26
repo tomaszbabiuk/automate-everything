@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn v-if="valueType == 'Relay'" @click="togglePort()" :disabled="disabled">Toggle</v-btn>
-    <v-slider v-model="powerLevel" v-if="valueType == 'PowerLevel'" hint="Changing" max="100" min="0"
+    <v-btn v-if="valueClazz == 'eu.geekhome.domain.hardware.Relay'" @click="togglePort()" :disabled="disabled">Toggle</v-btn>
+    <v-slider v-model="powerLevel" v-if="valueClazz == 'eu.geekhome.domain.hardware.PowerLevel'" hint="Changing" max="100" min="0"
        thumb-label @click="controlPowerLevel()" :disabled="disabled"></v-slider>
   </div>
 </template>
@@ -16,7 +16,7 @@ export default {
     };
   },
 
-  props: ["valueType", "portId", "disabled", "initialValue"],
+  props: ["valueClazz", "portId", "disabled", "initialValue"],
 
   computed: {
     port: function() {

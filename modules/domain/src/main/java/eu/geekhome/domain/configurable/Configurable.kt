@@ -44,7 +44,7 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
     }
 }
 
-abstract class SensorConfigurable<V: PortValue>(val valueType: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
+abstract class SensorConfigurable<V: PortValue>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<V>
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true

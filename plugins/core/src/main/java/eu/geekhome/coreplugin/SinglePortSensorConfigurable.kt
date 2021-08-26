@@ -8,16 +8,16 @@ import eu.geekhome.domain.hardware.PortValue
 import java.util.*
 
 abstract class SinglePortSensorConfigurable<T: PortValue>(
-    valueType: Class<T>,
+    valueClazz: Class<T>,
     private val portField: FieldDefinition<String>
-) : SensorConfigurable<T>(valueType) {
+) : SensorConfigurable<T>(valueClazz) {
 
     override val parent: Class<out Configurable?>
         get() = MetersConfigurable::class.java
 
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
-        val port = portFinder.searchForInputPort(valueType, portId)
+        val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields["name"]
         return SensorAutomationUnit(name, port)
     }

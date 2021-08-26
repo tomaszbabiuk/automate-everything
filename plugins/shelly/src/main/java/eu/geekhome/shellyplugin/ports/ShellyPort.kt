@@ -18,8 +18,8 @@ open class ShellyPort<V: PortValue>(
 
 abstract class ShellyInputPort<V: PortValue>(
     id : String,
-    valueType: Class<V>,
-    sleepInterval: Long) : ShellyPort<V>(id, valueType, sleepInterval), InputPort<V> {
+    valueClazz: Class<V>,
+    sleepInterval: Long) : ShellyPort<V>(id, valueClazz, sleepInterval), InputPort<V> {
 
     abstract val readTopic: String
     abstract fun setValueFromMqttPayload(payload: String)
@@ -27,8 +27,8 @@ abstract class ShellyInputPort<V: PortValue>(
 
 abstract class ShellyOutputPort<V: PortValue>(
     id : String,
-    valueType: Class<V>,
-    sleepInterval: Long) : ShellyInputPort<V>(id, valueType, sleepInterval), OutputPort<V> {
+    valueClazz: Class<V>,
+    sleepInterval: Long) : ShellyInputPort<V>(id, valueClazz, sleepInterval), OutputPort<V> {
 
     abstract val writeTopic: String
     abstract fun getExecutePayload(): String?
