@@ -6,7 +6,7 @@ import eu.geekhome.domain.automation.*
 
 class LogicNotBlockFactory : EvaluatorBlockFactory {
 
-    override val category = CategoryConstants.Logic
+    override val category = CommonBlockCategories.Logic
 
     override val type: String = "logic_not"
 

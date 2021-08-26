@@ -10,5 +10,5 @@ class TemperatureValueInCBlockFactory(val color: Int) : SimpleValueBlockFactory<
     "°C",
     "_c",
     CelsiusToKelvinValueConverter(),
-    CategoryConstants.Temperature
+    CommonBlockCategories.Temperature
 )

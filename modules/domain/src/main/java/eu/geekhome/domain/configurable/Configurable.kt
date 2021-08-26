@@ -7,6 +7,7 @@ import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.hardware.*
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
+import eu.geekhome.domain.automation.blocks.BlockCategory
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
@@ -49,6 +50,7 @@ abstract class SensorConfigurable<V: PortValue>(val valueClazz: Class<V>) : Name
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
+    abstract val blocksCategory: BlockCategory
 }
 
 abstract class CategoryConfigurable : Configurable {

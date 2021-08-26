@@ -10,5 +10,5 @@ class HumidityValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Humidi
     "%",
     "",
     null,
-    CategoryConstants.Humidity
+    CommonBlockCategories.Humidity
 )

@@ -8,7 +8,7 @@ import eu.geekhome.data.localization.Resource
 
 class SensorBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: CategoryConstants,
+    override val category: BlockCategory,
     private val sensorId: Long,
     private val label: Resource) : ValueBlockFactory {
 

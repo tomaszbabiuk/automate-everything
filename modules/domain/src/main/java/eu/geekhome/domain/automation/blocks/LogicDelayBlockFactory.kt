@@ -3,11 +3,10 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 
 class LogicDelayBlockFactory : StatementBlockFactory {
 
-    override val category = CategoryConstants.Logic
+    override val category = CommonBlockCategories.Logic
 
     override val type: String = "logic_delay"
 

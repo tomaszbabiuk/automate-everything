@@ -3,6 +3,7 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.fields.Reference
 import eu.geekhome.data.fields.ReferenceType
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.blocks.BlockCategory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.ReferenceField
 import eu.geekhome.domain.configurable.RequiredStringValidator
@@ -51,4 +52,7 @@ class TickerConfigurable(
     companion object {
         const val FIELD_PORT = "portId"
     }
+
+    override val blocksCategory: BlockCategory
+        get() = CryptoBlockCategories.Crypto
 }

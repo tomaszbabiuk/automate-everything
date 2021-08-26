@@ -1,5 +1,6 @@
 package eu.geekhome.domain.extensibility
 
+import eu.geekhome.domain.automation.BlockFactory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.inbox.Inbox
@@ -19,4 +20,5 @@ interface PluginsCoordinator {
     fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver, inbox: Inbox)
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
+    val blockFactories: List<BlockFactory<*>>
 }

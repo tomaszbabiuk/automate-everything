@@ -4,6 +4,8 @@ import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.configurable.TemperatureInputPortField
 import eu.geekhome.domain.hardware.Temperature
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.blocks.CommonBlockCategories
+import eu.geekhome.domain.automation.blocks.BlockCategory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import org.pf4j.Extension
@@ -37,4 +39,7 @@ class ThermometerConfigurable : SinglePortSensorConfigurable<Temperature>(
               </g>
             </svg>
         """.trimIndent()
+
+    override val blocksCategory: BlockCategory
+        get() = CommonBlockCategories.Temperature
 }

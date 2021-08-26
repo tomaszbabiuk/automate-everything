@@ -4,6 +4,8 @@ import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.configurable.WattageInputPortField
 import eu.geekhome.domain.hardware.Wattage
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.automation.blocks.CommonBlockCategories
+import eu.geekhome.domain.automation.blocks.BlockCategory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import org.pf4j.Extension
@@ -45,4 +47,7 @@ class WattmeterConfigurable : SinglePortSensorConfigurable<Wattage>(
              </g>
             </svg>
         """.trimIndent()
+
+    override val blocksCategory: BlockCategory
+        get() = CommonBlockCategories.Wattage
 }

@@ -4,9 +4,9 @@ import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
 
-class EquationBlockFactory<T: PortValue>(
+open class EquationBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: CategoryConstants) : ValueBlockFactory {
+    override val category: BlockCategory) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_equation"
 

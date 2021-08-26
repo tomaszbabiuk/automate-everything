@@ -4,9 +4,9 @@ import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
 
-class ComparisonBlockFactory<T: PortValue>(
+open class ComparisonBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
-    override val category: CategoryConstants) : EvaluatorBlockFactory {
+    override val category: BlockCategory) : EvaluatorBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_comparison"
 

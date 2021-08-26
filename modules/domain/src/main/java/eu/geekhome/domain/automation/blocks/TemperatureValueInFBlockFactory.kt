@@ -10,5 +10,5 @@ class TemperatureValueInFBlockFactory(val color: Int) : SimpleValueBlockFactory<
     "°F",
     "_f",
     FahrenheitToKelvinValueConverter(),
-    CategoryConstants.Temperature
+    CommonBlockCategories.Temperature
 )

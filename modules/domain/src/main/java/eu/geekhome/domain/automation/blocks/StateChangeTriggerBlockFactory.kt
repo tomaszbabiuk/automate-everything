@@ -5,14 +5,13 @@ import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 
 class StateChangeTriggerBlockFactory(
     instanceId: Long,
     private val deviceName: String,
     states: Map<String, State>) : TriggerBlockFactory {
 
-    override val category = CategoryConstants.Triggers
+    override val category = CommonBlockCategories.Triggers
 
     private val statesToControl = states.filter { it.value.type == StateType.Control }
 

@@ -9,7 +9,7 @@ class ConditionBlockFactory(
     private val conditionId: Long,
     private val label: Resource) : EvaluatorBlockFactory {
 
-    override val category = CategoryConstants.Conditions
+    override val category = CommonBlockCategories.Conditions
 
     override val type: String = "condition_$conditionId"
 

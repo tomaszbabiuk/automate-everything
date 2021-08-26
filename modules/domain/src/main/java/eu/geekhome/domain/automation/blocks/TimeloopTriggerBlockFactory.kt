@@ -6,7 +6,7 @@ import eu.geekhome.domain.automation.*
 
 class TimeloopTriggerBlockFactory : TriggerBlockFactory {
 
-    override val category = CategoryConstants.Triggers
+    override val category = CommonBlockCategories.Triggers
 
     override val type: String = "trigger_timeloop"
 

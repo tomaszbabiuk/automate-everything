@@ -21,7 +21,6 @@ class CryptoTradingPlugin(wrapper: PluginWrapper): HardwarePlugin(wrapper), Plug
         return CryptoTradingHardwareAdapterFactory()
     }
 
-
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
     override val settingGroups: List<SettingGroup> = listOf(

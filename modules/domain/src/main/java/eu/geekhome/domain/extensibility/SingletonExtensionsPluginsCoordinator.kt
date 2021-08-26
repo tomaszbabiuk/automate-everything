@@ -1,5 +1,6 @@
 package eu.geekhome.domain.extensibility
 
+import eu.geekhome.domain.automation.BlockFactory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
@@ -99,6 +100,9 @@ class SingletonExtensionsPluginsCoordinator(
 
     override val configurables: List<Configurable>
         get() = wrapped.getExtensions(Configurable::class.java)
+
+    override val blockFactories: List<BlockFactory<*>>
+        get() = wrapped.getExtensions(BlockFactory::class.java)
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins

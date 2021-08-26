@@ -10,5 +10,5 @@ class WattageValueBlockFactory(val color: Int) : SimpleValueBlockFactory<Wattage
     "W",
     "",
     null,
-    CategoryConstants.Wattage
+    CommonBlockCategories.Wattage
 )

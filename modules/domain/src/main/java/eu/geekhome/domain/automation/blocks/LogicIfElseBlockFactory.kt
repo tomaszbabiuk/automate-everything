@@ -6,7 +6,7 @@ import eu.geekhome.domain.automation.*
 
 class LogicIfElseBlockFactory : StatementBlockFactory {
 
-    override val category = CategoryConstants.Logic
+    override val category = CommonBlockCategories.Logic
 
     override val type: String = "logic_if_than_else"
 

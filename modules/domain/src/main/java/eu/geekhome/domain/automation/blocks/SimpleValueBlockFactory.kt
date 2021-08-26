@@ -4,22 +4,27 @@ import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.PortValue
 import eu.geekhome.domain.hardware.PortValueBuilder
-import eu.geekhome.data.localization.Resource
-
 
 
 open class SimpleValueBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
     private val minValue: Double,
-    private val maxValue: Double,
+    private val maxValue: Double?,
     private val initialValue: Double,
     private val unit: String,
     typeSuffix: String,
     private val valueConverter: IValueConverter?,
-    override val category: CategoryConstants) : ValueBlockFactory {
+    override val category: BlockCategory) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
+    fun buildMaxValueAttribute(maxValue: Double?): String {
+        return if (maxValue != null) {
+            "\"max\": $maxValue,"
+        } else {
+            ""
+        }
+    }
     override fun buildBlock(): RawJson {
         return RawJson {
             """
@@ -32,7 +37,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
                       "name": "VALUE",
                       "value": $initialValue,
                       "min": $minValue,
-                      "max": $maxValue,
+                      ${buildMaxValueAttribute(maxValue)}
                       "precision": 0.01
                     },
                     {

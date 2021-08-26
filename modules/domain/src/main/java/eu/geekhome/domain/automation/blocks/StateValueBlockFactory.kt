@@ -3,7 +3,6 @@ package eu.geekhome.domain.automation.blocks
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
-import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.R
 
 
@@ -17,7 +16,7 @@ open class StateValueBlockFactory(
 
     override val type: String = typePrefix + instanceId
 
-    override val category = CategoryConstants.State
+    override val category = CommonBlockCategories.State
 
     override fun buildBlock(): RawJson {
         return RawJson {

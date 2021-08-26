@@ -3,6 +3,11 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val category_crypto = Resource(
+        "Cryptocurrencies",
+        "Kryptowaluty"
+    )
+
     val field_port_hint = Resource(
         "Port",
         "Port"

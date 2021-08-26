@@ -16,7 +16,7 @@ import org.knowm.xchange.bitfinex.service.BitfinexAdapters
 import org.knowm.xchange.bitfinex.service.BitfinexMarketDataService
 import kotlin.collections.ArrayList
 
-class BitfinexCryptoHardwareAdapter() : HardwareAdapterBase<MarketPort>() {
+class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
 
     private var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
@@ -81,7 +81,7 @@ class BitfinexCryptoHardwareAdapter() : HardwareAdapterBase<MarketPort>() {
         return result
     }
 
-    private suspend fun maintenanceLoop() {
+    private fun maintenanceLoop() {
         val pairs = ports.values.map { it.pair }
         val tickers = marketDataService.getBitfinexTickers(pairs)
         tickers.forEach { ticker ->
@@ -114,8 +114,7 @@ class BitfinexCryptoHardwareAdapter() : HardwareAdapterBase<MarketPort>() {
             .split(",")
     }
 
-    override val id: String
-        get() = TODO("Not yet implemented")
+    override val id = ADAPTER_ID
 
     companion object {
         const val ADAPTER_ID = "bitfinex"
