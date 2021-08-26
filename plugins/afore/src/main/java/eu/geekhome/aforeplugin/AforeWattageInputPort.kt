@@ -14,7 +14,7 @@ class AforeWattageInputPort(
     private val inetAddress: InetAddress
 ) : Port<Wattage>, InputPort<Wattage> {
 
-    override val valueType = Wattage::class.java
+    override val valueClazz = Wattage::class.java
     override var connectionValidUntil: Long = 0L
 
     init {

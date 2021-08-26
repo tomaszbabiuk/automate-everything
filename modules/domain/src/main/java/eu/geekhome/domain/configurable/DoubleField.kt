@@ -1,5 +1,6 @@
 package eu.geekhome.domain.configurable
 
+import eu.geekhome.data.fields.FieldType
 import eu.geekhome.data.localization.Resource
 
 class DoubleField(
@@ -9,5 +10,5 @@ class DoubleField(
     initialValue: Double,
     vararg validators: Validator<Double?>) :
     FieldDefinition<Double>(
-        name, hint, maxSize, initialValue, Double::class.java, DoubleFieldBuilder(), *validators
+        FieldType.Double, name, hint, maxSize, initialValue, Double::class.java, DoubleFieldBuilder(), null, *validators
     )

@@ -1,16 +1,18 @@
 package eu.geekhome.domain.configurable
 
-import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.data.fields.FieldType
+import eu.geekhome.data.fields.Reference
 import eu.geekhome.data.localization.Resource
-import java.util.ArrayList
 
 abstract class FieldDefinition<T> protected constructor(
+    val type: FieldType,
     val name: String,
     val hint: Resource,
     val maxSize: Int,
     private val initialValue: T,
     val valueClazz: Class<T>,
     val builder: FieldBuilder<T>,
+    val reference: Reference? = null,
     private vararg val validators: Validator<T?>
 ) {
     fun validate(valueAsString: String?, fields: Map<String, String?>): FieldValidationResult {

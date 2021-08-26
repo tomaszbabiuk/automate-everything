@@ -68,7 +68,7 @@ class HardwareManager(
                 bundle.adapter.discover(eventsSink)
                 bundle.adapter.ports.values.forEach {
                     val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
-                        null, null, it.valueType.simpleName, it.canRead, it.canWrite, false)
+                        null, null, it.valueClazz.name, it.canRead, it.canWrite, false)
                     repository.updatePort(portSnapshot)
                     eventsSink.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
 
@@ -154,7 +154,7 @@ class HardwareManager(
             .flatMap { it.adapter.ports.values }
             .find { it.id == id }
 
-        if (port != null && port.valueType == valueType) {
+        if (port != null && port.valueClazz == valueType) {
             return port as Port<T>
         }
 

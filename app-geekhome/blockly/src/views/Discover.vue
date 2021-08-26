@@ -40,7 +40,7 @@
             <template v-slot:[`item.control`]="{ item }" }>
               <div v-if="item.canWrite">
                 <portcontrol
-                  :valueType="item.valueType"
+                  :valueClazz="item.valueClazz"
                   :portId="item.id"
                   :disabled="!item.connected"
                   :initialValue="item.integerValue"

@@ -21,7 +21,7 @@ interface IConnectible {
 interface Port<V: PortValue> : IConnectible {
     val id: String
 
-    val valueType: Class<V>
+    val valueClazz: Class<V>
 
     val canRead: Boolean
         get() = this is InputPort<V>

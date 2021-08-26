@@ -17,7 +17,7 @@ class PortDtoMapper {
             adapterId,
             integerValue,
             interfaceValue,
-            port.valueType.simpleName,
+            port.valueClazz.name,
             port.canRead,
             port.canWrite,
             connected

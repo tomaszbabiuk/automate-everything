@@ -9,7 +9,8 @@
         :counter="field.maxSize"
         :required="field.required"
         :id="field.name"
-        v-bind:is="configurableClassToFormComponent(field.clazz)"
+        :fieldRef="field.ref"
+        v-bind:is="configurableClassToFormComponent(field.type)"
       >
       </component>
     </v-form>
@@ -27,8 +28,8 @@ export default {
   },
 
   methods: {
-    configurableClassToFormComponent: function (clazz) {
-      return "configurable-" + clazz.toLowerCase();
+    configurableClassToFormComponent: function (type) {
+      return "configurable-" + type.toLowerCase() + "field";
     },
 
     getConfigurableByClazz: function (clazz) {

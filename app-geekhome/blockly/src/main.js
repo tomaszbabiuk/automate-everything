@@ -9,12 +9,7 @@ import ConfigurableStringField from './components/geekhome/configurable/StringFi
 import ConfigurablePowerLevelField from './components/geekhome/configurable/PowerLevelField'
 import ConfigurableDurationField from './components/geekhome/configurable/DurationField'
 import ConfigurableDoubleField from './components/geekhome/configurable/DoubleField'
-import ConfigurableGenericPortField from './components/geekhome/configurable/GenericPortField'
-import ConfigurableRelayOutputPortField from './components/geekhome/configurable/RelayOutputPortField'
-import ConfigurablePowerLevelOutputPortField from './components/geekhome/configurable/PowerLevelOutputPortField'
-import ConfigurableTemperatureInputPortField from './components/geekhome/configurable/TemperatureInputPortField'
-import ConfigurableHumidityInputPortField from './components/geekhome/configurable/HumidityInputPortField'
-import ConfigurableWattageInputPortField from './components/geekhome/configurable/WattageInputPortField'
+import ConfigurableReferenceField from './components/geekhome/configurable/ReferenceField'
 import ConfigurableIconSelector from './components/geekhome/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/geekhome/configurable/TagsSelector'
 import ConfigurableBlockConfigurator from './components/geekhome/configurable/BlockConfigurator'
@@ -30,12 +25,7 @@ Vue.component('configurable-stringfield', ConfigurableStringField)
 Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
 Vue.component('configurable-durationfield', ConfigurableDurationField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)
-Vue.component('configurable-genericportfield', ConfigurableGenericPortField)
-Vue.component('configurable-relayoutputportfield', ConfigurableRelayOutputPortField)
-Vue.component('configurable-powerleveloutputportfield', ConfigurablePowerLevelOutputPortField)
-Vue.component('configurable-temperatureinputportfield', ConfigurableTemperatureInputPortField)
-Vue.component('configurable-humidityinputportfield', ConfigurableHumidityInputPortField)
-Vue.component('configurable-wattageinputportfield', ConfigurableWattageInputPortField)
+Vue.component('configurable-referencefield', ConfigurableReferenceField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)

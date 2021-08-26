@@ -39,7 +39,7 @@ class PortsController @Inject constructor(
 
         portsInRepo.addAll(portsInHardware)
 
-        return portsInRepo;
+        return portsInRepo
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -52,10 +52,10 @@ class PortsController @Inject constructor(
             val port = findings.first
             val bundle = findings.second
 
-            if (port.valueType.name == Relay::class.java.name) {
+            if (port.valueClazz.name == Relay::class.java.name) {
                 val newValue = Relay.fromInteger(value)
                 (port as OutputPort<Relay>).write(newValue)
-            } else if (port.valueType.name == PowerLevel::class.java.name) {
+            } else if (port.valueClazz.name == PowerLevel::class.java.name) {
                 val newValue = PowerLevel.fromInteger(value)
                 (port as OutputPort<PowerLevel>).write(newValue)
             } else {

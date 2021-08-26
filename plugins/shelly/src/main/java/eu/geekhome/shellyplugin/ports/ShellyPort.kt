@@ -5,7 +5,7 @@ import java.util.*
 
 open class ShellyPort<V: PortValue>(
     override val id : String,
-    override val valueType: Class<V>,
+    override val valueClazz: Class<V>,
     val sleepInterval: Long
 ) : IConnectible, Port<V> {
     final override var connectionValidUntil: Long = 0

@@ -1,5 +1,6 @@
 package eu.geekhome.domain.configurable
 
+import eu.geekhome.data.fields.FieldType
 import eu.geekhome.data.localization.Resource
 
 class StringField(
@@ -8,5 +9,6 @@ class StringField(
     maxSize: Int,
     initialValue: String,
     vararg validators: Validator<String?>
-) : FieldDefinition<String>(name, hint, maxSize, initialValue, String::class.java,
-    StringFieldBuilder(), *validators)
+) : FieldDefinition<String>(
+    FieldType.String, name, hint, maxSize, initialValue, String::class.java,
+    StringFieldBuilder(), null, *validators)

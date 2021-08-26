@@ -9,7 +9,7 @@ class MarketPort(
     initialValue: Double,
     override var connectionValidUntil: Long) :  InputPort<Ticker> {
 
-    override val valueType = Ticker::class.java
+    override val valueClazz = Ticker::class.java
     var lastValue = initialValue
 
     override fun read(): Ticker {

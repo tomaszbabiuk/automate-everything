@@ -1,6 +1,7 @@
 package eu.automateeverything.crypto.binance
 
 import eu.automateeverything.crypto.MarketPairsSettingGroup
+import eu.automateeverything.crypto.MarketPairsSettingGroup.Companion.FIELD_MARKET_PAIRS_IV
 import eu.automateeverything.crypto.MarketPort
 import eu.automateeverything.crypto.Ticker
 import eu.geekhome.data.settings.SettingsDto
@@ -16,7 +17,7 @@ import org.knowm.xchange.bitfinex.service.BitfinexMarketDataService
 class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<Port<Ticker>>() {
 
     private var currencyFilter: List<String>? = null
-    private var currencyFilterDefaults = listOf("btc/usd","xrp/usd", "eth/usd")
+    private var currencyFilterDefaults = marketPairsStringToList(FIELD_MARKET_PAIRS_IV)
 
     override fun executePendingChanges() {
     }
@@ -29,11 +30,7 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<Port<Ticker>>() {
             .filter{it.clazz == MarketPairsSettingGroup::class.java.name}
             .forEach {
                 val currencyFilterRaw = it.fields[MarketPairsSettingGroup.FIELD_MARKET_PAIRS]
-                currencyFilter = currencyFilterRaw
-                    ?.lowercase()
-                    ?.replace(";",",")
-                    ?.replace(" ", "")
-                    ?.split(",")
+                currencyFilter = marketPairsStringToList(currencyFilterRaw)
             }
     }
 
@@ -41,16 +38,15 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<Port<Ticker>>() {
         val result = ArrayList<Port<Ticker>>()
         val bitfinex: Exchange = ExchangeFactory.INSTANCE.createExchange(BitfinexExchange::class.java)
         val marketDataService: BitfinexMarketDataService = bitfinex.marketDataService as BitfinexMarketDataService
+        val filter = if (currencyFilter == null) {
+            currencyFilterDefaults
+        } else {
+            currencyFilter!!
+        }
 
         val selectedPairs = marketDataService
             .exchangeSymbols
             .filter{
-                val filter = if (currencyFilter == null) {
-                    currencyFilterDefaults
-                } else {
-                    currencyFilter!!
-                }
-
                 val matchedMarket = "${it.base.currencyCode.lowercase()}/${it.counter.currencyCode.lowercase()}"
                 filter.contains(matchedMarket)
             }
@@ -67,5 +63,17 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<Port<Ticker>>() {
         println(marketDataService.exchangeSymbols)
 
         return result
+    }
+
+    private fun marketPairsStringToList(raw: String?) : List<String> {
+        if (raw == null) {
+            return listOf()
+        }
+
+        return raw
+            .lowercase()
+            .replace(";",",")
+            .replace(" ", "")
+            .split(",")
     }
 }

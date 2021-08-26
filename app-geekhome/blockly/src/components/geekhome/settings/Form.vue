@@ -11,7 +11,7 @@
         :id="field.name"
         :clazz="settingGroup.clazz"
         :disabled="disabled"
-        v-bind:is="fieldClassToFormComponent(field.clazz)"
+        v-bind:is="fieldClassToFormComponent(field.type)"
       >
       </component>
     </v-form>
@@ -22,8 +22,8 @@
 export default {
   props: ["settingGroup", "disabled"],
   methods: {
-    fieldClassToFormComponent: function (clazz) {
-      return "settings-" + clazz.toLowerCase();
+    fieldClassToFormComponent: function (type) {
+      return "settings-" + type.toLowerCase() + "field";
     },
   },
 };
