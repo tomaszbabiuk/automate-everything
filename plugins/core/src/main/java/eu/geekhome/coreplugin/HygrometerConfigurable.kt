@@ -4,6 +4,8 @@ import eu.geekhome.domain.configurable.HumidityInputPortField
 import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.hardware.Humidity
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import org.pf4j.Extension
 
 @Extension
@@ -11,6 +13,8 @@ class HygrometerConfigurable : SinglePortSensorConfigurable<Humidity>(
     Humidity::class.java,
     HumidityInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 ) {
+    override val parent: Class<out Configurable?>
+        get() = MetersConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_hygrometer_add

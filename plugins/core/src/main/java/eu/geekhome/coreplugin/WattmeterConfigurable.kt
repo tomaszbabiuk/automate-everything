@@ -4,6 +4,8 @@ import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.configurable.WattageInputPortField
 import eu.geekhome.domain.hardware.Wattage
 import eu.geekhome.data.localization.Resource
+import eu.geekhome.domain.configurable.Configurable
+import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import org.pf4j.Extension
 
 @Extension
@@ -11,6 +13,8 @@ class WattmeterConfigurable : SinglePortSensorConfigurable<Wattage>(
     Wattage::class.java,
     WattageInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 ) {
+    override val parent: Class<out Configurable?>
+        get() = MetersConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_wattmeter_add

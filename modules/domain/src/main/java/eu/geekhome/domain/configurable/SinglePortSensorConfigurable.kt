@@ -1,10 +1,11 @@
-package eu.geekhome.coreplugin
+package eu.geekhome.domain.configurable
 
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.hardware.IPortFinder
 import eu.geekhome.domain.hardware.PortValue
+import eu.geekhome.domain.automation.SensorAutomationUnit
 import java.util.*
 
 abstract class SinglePortSensorConfigurable<T: PortValue>(
@@ -12,13 +13,10 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
     private val portField: FieldDefinition<String>
 ) : SensorConfigurable<T>(valueClazz) {
 
-    override val parent: Class<out Configurable?>
-        get() = MetersConfigurable::class.java
-
     override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForInputPort(valueClazz, portId)
-        val name = instance.fields["name"]
+        val name = instance.fields[FIELD_NAME]
         return SensorAutomationUnit(name, port)
     }
 

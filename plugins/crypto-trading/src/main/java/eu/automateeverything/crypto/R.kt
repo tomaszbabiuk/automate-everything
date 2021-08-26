@@ -3,6 +3,31 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val field_port_hint = Resource(
+        "Port",
+        "Port"
+    )
+
+    val configurable_ticker_description = Resource(
+        "Crypto tickers data (from different markets)",
+        "Kursy kryptowalut (z różnych rynków)"
+    )
+
+    val configurable_ticker_title = Resource(
+        "Crypto tickers",
+        "Kursy kryptowalut"
+    )
+
+    val configurable_ticker_edit = Resource(
+        "Edit ticker",
+        "Edytuj tiker"
+    )
+
+    val configurable_ticker_add = Resource(
+        "Add ticker",
+        "Dodaj tiker"
+    )
+
     val field_currencies = Resource(
         "Currencies",
         "Waluty"

@@ -1,7 +1,5 @@
-package eu.geekhome.coreplugin
+package eu.geekhome.domain.automation
 
-import eu.geekhome.domain.automation.EvaluationResult
-import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.hardware.InputPort
 import eu.geekhome.domain.hardware.PortValue
 import java.util.*
