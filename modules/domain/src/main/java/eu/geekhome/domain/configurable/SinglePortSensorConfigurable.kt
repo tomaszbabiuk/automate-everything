@@ -9,10 +9,11 @@ import java.util.*
 
 abstract class SinglePortSensorConfigurable<T: PortValue>(
     valueClazz: Class<T>,
-    private val portField: FieldDefinition<String>
+    private val portField: FieldDefinition<String>,
+    private val portFinder: PortFinder
 ) : SensorConfigurable<T>(valueClazz) {
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder): DeviceAutomationUnit<T> {
+    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields[FIELD_NAME]

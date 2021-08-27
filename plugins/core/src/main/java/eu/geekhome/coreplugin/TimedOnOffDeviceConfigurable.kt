@@ -13,7 +13,10 @@ import org.pf4j.Extension
 import kotlin.collections.LinkedHashMap
 
 @Extension
-class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
+class TimedOnOffDeviceConfigurable(
+    private val portFinder: PortFinder,
+    private val stateChangeReporter: StateChangeReporter
+) : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -120,7 +123,7 @@ class TimedOnOffDeviceConfigurable : StateDeviceConfigurable() {
         }
     })
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!

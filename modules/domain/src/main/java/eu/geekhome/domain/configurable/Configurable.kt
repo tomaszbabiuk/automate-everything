@@ -34,7 +34,7 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 }
 
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State>
+    abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State>
     abstract val states: Map<String, State>
     override val hasAutomation: Boolean = true
     override val taggable: Boolean = true
@@ -46,7 +46,7 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
 }
 
 abstract class SensorConfigurable<V: PortValue>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder): DeviceAutomationUnit<V>
+    abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<V>
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true

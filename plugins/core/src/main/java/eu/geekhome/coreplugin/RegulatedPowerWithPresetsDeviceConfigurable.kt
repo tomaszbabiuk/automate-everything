@@ -13,7 +13,10 @@ import org.pf4j.Extension
 import kotlin.collections.LinkedHashMap
 
 @Extension
-class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
+class RegulatedPowerWithPresetsDeviceConfigurable(
+    private val portFinder: PortFinder,
+    private val stateChangeReporter: StateChangeReporter
+) : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -61,10 +64,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
     private val preset3Field = PowerLevelField(FIELD_PRESET3, R.field_preset3_hint, 75)
     private val preset4Field = PowerLevelField(FIELD_PRESET4, R.field_preset4_hint, 100)
 
-    override fun buildAutomationUnit(
-        instance: InstanceDto,
-        portFinder: PortFinder,
-        stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
 
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)

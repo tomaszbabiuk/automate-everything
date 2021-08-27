@@ -127,11 +127,11 @@ class AutomationConductor(
     private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): DeviceAutomationUnit<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                configurable.buildAutomationUnit(instance, hardwareManager, stateChangeReporter)
+                configurable.buildAutomationUnit(instance)
             }
 
             is SensorConfigurable<*> -> {
-                configurable.buildAutomationUnit(instance, hardwareManager)
+                configurable.buildAutomationUnit(instance)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")

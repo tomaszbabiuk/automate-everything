@@ -8,12 +8,14 @@ import eu.geekhome.domain.automation.blocks.CommonBlockCategories
 import eu.geekhome.domain.automation.blocks.BlockCategory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
+import eu.geekhome.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class ThermometerConfigurable : SinglePortSensorConfigurable<Temperature>(
+class ThermometerConfigurable(portFinder: PortFinder) : SinglePortSensorConfigurable<Temperature>(
     Temperature::class.java,
-    TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
+    TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
+    portFinder
 ) {
     override val parent: Class<out Configurable?>
         get() = MetersConfigurable::class.java

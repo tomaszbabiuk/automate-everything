@@ -8,19 +8,21 @@ import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.ReferenceField
 import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
+import eu.geekhome.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class TickerConfigurable(
-    override val hasAutomation: Boolean = true,
-    override val editableIcon: Boolean = true,
-    override val taggable: Boolean = false
-) : SinglePortSensorConfigurable<Ticker>(
+class TickerConfigurable(portFinder: PortFinder) : SinglePortSensorConfigurable<Ticker>(
     Ticker::class.java,
-    ReferenceField(FIELD_PORT, R.field_port_hint, Reference(Ticker::class.java, ReferenceType.InputPort),RequiredStringValidator())
+    ReferenceField(FIELD_PORT, R.field_port_hint, Reference(Ticker::class.java, ReferenceType.InputPort),RequiredStringValidator()),
+    portFinder
 ) {
 
-    override val parent: Class<out Configurable?>?
+    override val hasAutomation: Boolean = true
+    override val editableIcon: Boolean = true
+    override val taggable: Boolean = false
+
+    override val parent: Class<out Configurable>?
         get() = null
 
     override val addNewRes: Resource
