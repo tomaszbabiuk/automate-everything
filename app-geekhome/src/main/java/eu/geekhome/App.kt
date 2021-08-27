@@ -9,15 +9,17 @@ import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
 import eu.geekhome.domain.extensibility.PluginsCoordinator
-import eu.geekhome.domain.extensibility.SingletonExtensionsPluginsCoordinator
+import eu.geekhome.domain.extensibility.SingletonExtensionPluginsCoordinator
 import eu.geekhome.domain.firstrun.FileCheckingFirstRunService
 import eu.geekhome.domain.firstrun.FirstRunService
 import eu.geekhome.domain.hardware.HardwareManager
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.heartbeat.Pulsar
 import eu.geekhome.domain.inbox.BroadcastingInbox
 import eu.geekhome.domain.inbox.Inbox
+import eu.geekhome.domain.plugininjection.InjectionRegistry
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
@@ -26,11 +28,12 @@ import org.glassfish.jersey.server.ResourceConfig
 open class App : ResourceConfig() {
 
     //manual injection of common services
+    private val injectionRegistry: InjectionRegistry = InjectionRegistry()
     private val firstRunService: FirstRunService = FileCheckingFirstRunService()
     private val eventsSink: EventsSink = NumberedEventsSink()
     private val repository: Repository = SqlDelightRepository()
     private val inbox: Inbox = BroadcastingInbox(eventsSink, repository)
-    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionsPluginsCoordinator(eventsSink)
+    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventsSink, injectionRegistry)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
     private val stateChangeReporter: StateChangeReporter = BroadcastingStateChangeReporter(eventsSink)
@@ -41,6 +44,8 @@ open class App : ResourceConfig() {
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 
     init {
+        fillInjectionRegistry()
+
         dependencyInjectionOfRest()
 
         preparePlugins()
@@ -48,6 +53,13 @@ open class App : ResourceConfig() {
         bootstrapProcedure()
 
         firstRunProcedure()
+    }
+
+    private fun fillInjectionRegistry() {
+        injectionRegistry.put(PortFinder::class.java, hardwareManager)
+        injectionRegistry.put(EventsSink::class.java, eventsSink)
+        injectionRegistry.put(Inbox::class.java, inbox)
+        injectionRegistry.put(StateChangeReporter::class.java, stateChangeReporter)
     }
 
     private fun firstRunProcedure() {
@@ -66,7 +78,7 @@ open class App : ResourceConfig() {
 
     private fun preparePlugins() {
         pluginsCoordinator.loadPlugins()
-        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver, inbox)
+        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver, inbox, hardwareManager)
     }
 
     private fun dependencyInjectionOfRest() {

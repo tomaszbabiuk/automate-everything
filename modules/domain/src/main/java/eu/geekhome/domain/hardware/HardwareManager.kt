@@ -21,7 +21,7 @@ class HardwareManager(
     private val eventsSink: EventsSink,
     private val inbox: Inbox,
     private val repository: Repository,
-) : WithStartStopScope(), PluginStateListener, IPortFinder {
+) : WithStartStopScope(), PluginStateListener, PortFinder {
 
     private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
 
@@ -145,6 +145,7 @@ class HardwareManager(
             .forEach { it.adapter.executePendingChanges() }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : PortValue> searchForAnyPort(
         valueClazz: Class<T>,
         id: String

@@ -5,21 +5,20 @@ import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PluginEventData
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
-import eu.geekhome.domain.plugininjection.AllFeaturesInjectedListener
-import eu.geekhome.domain.plugininjection.RequiresInbox
-import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
-import eu.geekhome.domain.plugininjection.RequiresMqtt
+import eu.geekhome.domain.plugininjection.*
 import org.pf4j.*
 
-class SingletonExtensionsPluginsCoordinator(
-    private val liveEvents: EventsSink) : PluginsCoordinator {
+class SingletonExtensionPluginsCoordinator(
+    private val liveEvents: EventsSink,
+    private val injectionRegistry: InjectionRegistry) : PluginsCoordinator {
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
-            return SingletonExtensionFactory()
+            return SingletonExtensionFactoryWithDI(injectionRegistry)
         }
 
         init {
@@ -46,7 +45,8 @@ class SingletonExtensionsPluginsCoordinator(
     override fun injectPlugins(
         mqttBrokerService: MqttBrokerService,
         lanGatewayResolver: LanGatewayResolver,
-        inbox: Inbox
+        inbox: Inbox,
+        portFinder: PortFinder
     ) {
         plugins
             .map { it.plugin }
@@ -61,6 +61,10 @@ class SingletonExtensionsPluginsCoordinator(
 
                 if (it is RequiresInbox) {
                     it.injectInbox(inbox)
+                }
+
+                if (it is RequiresPortFinder) {
+                    it.injectPortFinder(portFinder)
                 }
 
                 if (it is AllFeaturesInjectedListener) {

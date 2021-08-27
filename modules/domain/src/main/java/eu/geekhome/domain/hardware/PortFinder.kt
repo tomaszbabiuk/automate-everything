@@ -1,6 +1,6 @@
 package eu.geekhome.domain.hardware
 
-interface IPortFinder {
+interface PortFinder {
     fun <T : PortValue> searchForAnyPort(valueClazz: Class<T>, id:String): Port<*>
     fun <T : PortValue> searchForInputPort(valueClazz: Class<T>, id:String): InputPort<T>
     fun <T : PortValue> searchForOutputPort(valueClazz: Class<T>, id:String): OutputPort<T>

@@ -5,7 +5,7 @@ import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.hardware.IPortFinder
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.hardware.PowerLevel
@@ -63,7 +63,7 @@ class RegulatedPowerWithPresetsDeviceConfigurable : StateDeviceConfigurable() {
 
     override fun buildAutomationUnit(
         instance: InstanceDto,
-        portFinder: IPortFinder,
+        portFinder: PortFinder,
         stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
 
         val portId = readPortId(instance)

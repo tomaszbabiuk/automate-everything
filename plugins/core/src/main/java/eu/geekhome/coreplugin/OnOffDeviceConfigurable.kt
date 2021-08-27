@@ -5,7 +5,7 @@ import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.hardware.IPortFinder
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.domain.hardware.Relay
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
@@ -48,7 +48,7 @@ class OnOffDeviceConfigurable : StateDeviceConfigurable() {
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder, stateChangeReporter: StateChangeReporter): DeviceAutomationUnit<State> {
         val portId = readPortId(instance)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!

@@ -2,8 +2,7 @@ package eu.geekhome.domain.configurable
 
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.hardware.IPortFinder
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.domain.hardware.PortValue
 import eu.geekhome.domain.automation.SensorAutomationUnit
 import java.util.*
@@ -13,7 +12,7 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
     private val portField: FieldDefinition<String>
 ) : SensorConfigurable<T>(valueClazz) {
 
-    override fun buildAutomationUnit(instance: InstanceDto, portFinder: IPortFinder): DeviceAutomationUnit<T> {
+    override fun buildAutomationUnit(instance: InstanceDto, portFinder: PortFinder): DeviceAutomationUnit<T> {
         val portId = readPortId(instance)
         val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields[FIELD_NAME]

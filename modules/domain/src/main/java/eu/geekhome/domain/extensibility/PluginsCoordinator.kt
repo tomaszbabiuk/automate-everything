@@ -3,6 +3,7 @@ package eu.geekhome.domain.extensibility
 import eu.geekhome.domain.automation.BlockFactory
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
+import eu.geekhome.domain.hardware.PortFinder
 import eu.geekhome.domain.inbox.Inbox
 import eu.geekhome.domain.langateway.LanGatewayResolver
 import eu.geekhome.domain.mqtt.MqttBrokerService
@@ -17,7 +18,7 @@ interface PluginsCoordinator {
     fun addPluginStateListener(listener: PluginStateListener)
     fun getPluginWrapper(pluginId: String): PluginWrapper?
     fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
-    fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver, inbox: Inbox)
+    fun injectPlugins(mqttBrokerService: MqttBrokerService, lanGatewayResolver: LanGatewayResolver, inbox: Inbox, portFinder: PortFinder)
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val blockFactories: List<BlockFactory<*>>
