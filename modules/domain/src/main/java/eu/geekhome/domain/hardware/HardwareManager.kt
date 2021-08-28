@@ -113,13 +113,13 @@ class HardwareManager(
             val hardwarePlugin = event.plugin.plugin as HardwarePlugin
             if (event.pluginState == PluginState.STARTED) {
                 startStopScope.launch {
-                    addFactory(hardwarePlugin.factory)
+                    addFactory(hardwarePlugin)
                 }
             }
 
             if (event.pluginState == PluginState.STOPPED) {
                 startStopScope.launch {
-                    removeFactory(hardwarePlugin.factory)
+                    removeFactory(hardwarePlugin)
                 }
             }
         }
