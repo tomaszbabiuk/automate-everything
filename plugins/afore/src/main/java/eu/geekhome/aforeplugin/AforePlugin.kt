@@ -3,13 +3,13 @@ package eu.geekhome.aforeplugin
 import eu.geekhome.domain.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.geekhome.domain.hardware.HardwarePlugin
-import eu.geekhome.domain.hardware.HardwareAdapterFactory
 import eu.geekhome.domain.langateway.LanGatewayResolver
-import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.hardware.HardwareAdapter
 
-class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, RequiresLanGatewayResolver {
+class AforePlugin(
+    wrapper: PluginWrapper,
+    private val lanGatewayResolver: LanGatewayResolver) : HardwarePlugin(wrapper), PluginMetadata {
 
     companion object {
         const val PLUGIN_ID_AFORE = "afore"
@@ -35,12 +35,4 @@ class AforePlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetad
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
-    lateinit var lanGatewayResolver: LanGatewayResolver
-
-    override fun injectLanGatewayResolver(resolver: LanGatewayResolver) {
-        lanGatewayResolver = resolver
-    }
-
-    override fun allFeaturesInjected() {
-    }
 }

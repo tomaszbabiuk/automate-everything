@@ -1,6 +1,5 @@
 package eu.geekhome.domain.extensibility
 
-import eu.geekhome.domain.plugininjection.InjectionRegistry
 import org.pf4j.DefaultExtensionFactory
 import java.util.*
 
@@ -38,7 +37,7 @@ class SingletonExtensionFactoryWithDI(private val injectionRegistry: InjectionRe
                 .map {
                     val constructedType = it.type
                     val obj = injectionRegistry.resolve(constructedType)
-                        ?: throw Exception("Cannot inject ${extensionClass.name}, the constructor contains parameter of unknown type $constructedType")
+                        ?: throw CreationException("Cannot inject ${extensionClass.name}, the constructor contains parameter of unknown type $constructedType")
                     obj
                 }.toTypedArray()
 

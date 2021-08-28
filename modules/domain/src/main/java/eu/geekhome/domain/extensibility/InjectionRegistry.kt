@@ -1,4 +1,4 @@
-package eu.geekhome.domain.plugininjection
+package eu.geekhome.domain.extensibility
 
 class InjectionRegistry {
     private val objects = HashMap<Class<*>, Any>()

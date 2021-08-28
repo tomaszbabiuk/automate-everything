@@ -3,23 +3,21 @@ package eu.geekhome.shellyplugin
 import eu.geekhome.domain.extensibility.PluginMetadata
 import eu.geekhome.domain.hardware.HardwarePlugin
 import eu.geekhome.domain.langateway.LanGatewayResolver
-import eu.geekhome.domain.plugininjection.RequiresLanGatewayResolver
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.hardware.HardwareAdapter
 import eu.geekhome.domain.mqtt.MqttBrokerService
-import eu.geekhome.domain.plugininjection.RequiresMqtt
 import org.pf4j.PluginWrapper
 import java.util.ArrayList
 
-class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMetadata, RequiresMqtt,
-    RequiresLanGatewayResolver {
+class ShellyPlugin(
+    wrapper: PluginWrapper,
+    private val lanGatewayResolver: LanGatewayResolver,
+    private val mqttBroker: MqttBrokerService)
+    : HardwarePlugin(wrapper), PluginMetadata{
 
     companion object {
         const val PLUGIN_ID_SHELLY = "shelly"
     }
-
-    private lateinit var lanGatewayResolver: LanGatewayResolver
-    private lateinit var mqttBroker: MqttBrokerService
 
     override fun start() {
         println("Starting SHELLY plugin")
@@ -41,15 +39,4 @@ class ShellyPlugin(wrapper: PluginWrapper) : HardwarePlugin(wrapper), PluginMeta
 
     override val name: Resource =  R.plugin_name
     override val description: Resource = R.plugin_description
-
-    override fun injectMqttBrokerService(broker: MqttBrokerService) {
-        mqttBroker = broker
-    }
-
-    override fun injectLanGatewayResolver(resolver: LanGatewayResolver) {
-        lanGatewayResolver = resolver
-    }
-
-    override fun allFeaturesInjected() {
-    }
 }

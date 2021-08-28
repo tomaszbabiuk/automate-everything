@@ -19,7 +19,7 @@ import eu.geekhome.domain.mqtt.MqttBrokerService
 import eu.geekhome.domain.heartbeat.Pulsar
 import eu.geekhome.domain.inbox.BroadcastingInbox
 import eu.geekhome.domain.inbox.Inbox
-import eu.geekhome.domain.plugininjection.InjectionRegistry
+import eu.geekhome.domain.extensibility.InjectionRegistry
 import eu.geekhome.langateway.JavaLanGatewayResolver
 import eu.geekhome.pluginfeatures.mqtt.MoquetteBroker
 import eu.geekhome.sqldelightplugin.SqlDelightRepository
@@ -48,7 +48,7 @@ open class App : ResourceConfig() {
 
         dependencyInjectionOfRest()
 
-        preparePlugins()
+        loadPlugins()
 
         bootstrapProcedure()
 
@@ -60,6 +60,8 @@ open class App : ResourceConfig() {
         injectionRegistry.put(EventsSink::class.java, eventsSink)
         injectionRegistry.put(Inbox::class.java, inbox)
         injectionRegistry.put(StateChangeReporter::class.java, stateChangeReporter)
+        injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
+        injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
     }
 
     private fun firstRunProcedure() {
@@ -76,9 +78,8 @@ open class App : ResourceConfig() {
         pulsar.start()
     }
 
-    private fun preparePlugins() {
+    private fun loadPlugins() {
         pluginsCoordinator.loadPlugins()
-        pluginsCoordinator.injectPlugins(mqttBrokerService, lanGatewayResolver, inbox, hardwareManager)
     }
 
     private fun dependencyInjectionOfRest() {
