@@ -18,7 +18,6 @@ import java.util.*
 class AforeAdapter(
     private val owningPluginId: String,
     private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<AforeWattageInputPort>() {
-
     override val id  = ADAPTER_ID
     var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
@@ -32,8 +31,9 @@ class AforeAdapter(
 
         install(Auth) {
             basic {
-                password = "admin"
-                username = "admin"
+                credentials {
+                    BasicAuthCredentials(username = "admin", password = "admin")
+                }
             }
         }
 

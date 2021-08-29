@@ -21,9 +21,6 @@ class CryptoTradingPlugin(wrapper: PluginWrapper): HardwarePlugin(wrapper), Plug
         return listOf(BitfinexCryptoHardwareAdapter())
     }
 
-    override val owningPluginId: String
-        get() = PLUGIN_ID
-
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
     override val settingGroups: List<SettingGroup> = listOf(

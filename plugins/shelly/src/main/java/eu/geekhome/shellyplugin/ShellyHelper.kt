@@ -10,11 +10,11 @@ import java.net.InetAddress
 
 object ShellyHelper {
 
-    suspend fun checkIfShelly(client: HttpClient, ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
+    suspend fun checkIfShelly(owningPluginId: String, client: HttpClient, ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
             eventsSink?.broadcastDiscoveryEvent(
-                ShellyPlugin.PLUGIN_ID_SHELLY,
+                owningPluginId,
                 "Shelly found! Ip address: $ipToCheck"
             )
             Pair(ipToCheck,response)
@@ -24,7 +24,7 @@ object ShellyHelper {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun searchForShellies(client: HttpClient, brokerIP: InetAddress, eventsSink: EventsSink): List<Pair<InetAddress, ShellySettingsResponse>> = withContext(Dispatchers.IO) {
+    suspend fun searchForShellies(owningPluginId: String, client: HttpClient, brokerIP: InetAddress, eventsSink: EventsSink): List<Pair<InetAddress, ShellySettingsResponse>> = withContext(Dispatchers.IO) {
         val lookupAddressBegin = InetAddress.getByAddress(
             byteArrayOf(
                 brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
@@ -39,7 +39,7 @@ object ShellyHelper {
         )
 
         eventsSink.broadcastDiscoveryEvent(
-            ShellyPlugin.PLUGIN_ID_SHELLY,
+            owningPluginId,
             "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
 
@@ -56,7 +56,7 @@ object ShellyHelper {
             )
 
             val job = async(start = CoroutineStart.LAZY) {
-                checkIfShelly(client, ipToCheck, eventsSink)
+                checkIfShelly(owningPluginId, client, ipToCheck, eventsSink)
             }
             jobs.add(job)
         }
@@ -66,7 +66,7 @@ object ShellyHelper {
             .toList()
 
         eventsSink.broadcastDiscoveryEvent(
-            ShellyPlugin.PLUGIN_ID_SHELLY,
+            owningPluginId,
             "Done looking for shellies, found: ${result.size}"
         )
 

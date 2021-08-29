@@ -11,16 +11,9 @@ class AforePlugin(
     wrapper: PluginWrapper,
     private val lanGatewayResolver: LanGatewayResolver) : HardwarePlugin(wrapper), PluginMetadata {
 
-    companion object {
-        const val PLUGIN_ID_AFORE = "afore"
-    }
-
-    override val owningPluginId: String
-        get() = PLUGIN_ID_AFORE
-
     override fun createAdapters(): List<HardwareAdapter<*>> {
         val result = ArrayList<HardwareAdapter<*>>()
-        val adapter = AforeAdapter(owningPluginId, lanGatewayResolver)
+        val adapter = AforeAdapter(pluginId, lanGatewayResolver)
         result.add(adapter)
         return result
     }

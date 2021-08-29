@@ -19,7 +19,7 @@ import java.net.Inet4Address
 import java.net.InetAddress
 import java.util.*
 
-class ShellyAdapter(owningPluginId: String,
+class ShellyAdapter(private val owningPluginId: String,
                     private val mqttBroker: MqttBrokerService,
                     lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
     override val id = ADAPTER_ID
@@ -47,25 +47,24 @@ class ShellyAdapter(owningPluginId: String,
         }
     }
 
-    @ExperimentalCoroutinesApi
     override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<ShellyPort<*>> = coroutineScope {
         val result = ArrayList<ShellyPort<*>>()
 
         if (lanGateways.isEmpty()) {
             eventsSink.broadcastDiscoveryEvent(
-                ShellyPlugin.PLUGIN_ID_SHELLY,
+                owningPluginId,
                 "The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting"
             )
         } else {
             val defaultLanGateway = lanGateways.first()
             if (lanGateways.size > 1) {
                 eventsSink.broadcastDiscoveryEvent(
-                    ShellyPlugin.PLUGIN_ID_SHELLY,
+                    owningPluginId,
                     "WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}"
                 )
             }
             brokerIP = defaultLanGateway.inet4Address
-            val discoveryJob = async { ShellyHelper.searchForShellies(client, brokerIP!!, eventsSink) }
+            val discoveryJob = async { ShellyHelper.searchForShellies(owningPluginId, client, brokerIP!!, eventsSink) }
             val shellies = discoveryJob.await()
 
             shellies.forEach {
@@ -124,7 +123,7 @@ class ShellyAdapter(owningPluginId: String,
             .forEach {
                 (it as ShellyInputPort<*>?)?.setValueFromMqttPayload(msgAsString)
 
-                val updateEvent = PortUpdateEventData(ShellyPlugin.PLUGIN_ID_SHELLY, id, it)
+                val updateEvent = PortUpdateEventData(owningPluginId, id, it)
                 updateSink?.broadcastEvent(updateEvent)
             }
     }
@@ -141,7 +140,7 @@ class ShellyAdapter(owningPluginId: String,
     }
 
     override suspend fun onConnected(address: InetAddress) = withContext(Dispatchers.IO) {
-        val finderResponse = ShellyHelper.checkIfShelly(client, address, null)
+        val finderResponse = ShellyHelper.checkIfShelly(owningPluginId, client, address, null)
         if (finderResponse != null) {
             val statusResponse = ShellyHelper.callForStatus(client, address)
             val settingsResponse = ShellyHelper.callForSettings(client, address)

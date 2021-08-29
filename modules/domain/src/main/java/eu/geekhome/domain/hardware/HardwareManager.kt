@@ -23,7 +23,7 @@ class HardwareManager(
     private val repository: Repository,
 ) : WithStartStopScope(), PluginStateListener, PortFinder {
 
-    private val factories: MutableMap<HardwareAdapterFactory, List<AdapterBundle>> = HashMap()
+    private val factories: MutableMap<HardwarePlugin, List<AdapterBundle>> = HashMap()
 
     init {
         pluginsCoordinator.addPluginStateListener(this)
@@ -40,9 +40,9 @@ class HardwareManager(
             }
     }
 
-    private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwareAdapterFactory) {
+    private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwarePlugin) {
         factories
-            .filter { factory.owningPluginId == it.key.owningPluginId }
+            .filter { factory.pluginId == it.key.pluginId }
             .flatMap { it.value }
             .forEach {
                 it.discoveryJob?.cancelAndJoin()
@@ -50,9 +50,9 @@ class HardwareManager(
             }
     }
 
-    private suspend fun startAdaptersAndDiscover(factory: HardwareAdapterFactory) = coroutineScope {
+    private suspend fun startAdaptersAndDiscover(factory: HardwarePlugin) = coroutineScope {
         factories
-            .filter { factory.owningPluginId == it.key.owningPluginId }
+            .filter { factory.pluginId == it.key.pluginId }
             .flatMap { it.value }
             .forEach { bundle ->
                 bundle.adapter.start(eventsSink, extractPluginSettings(bundle.owningPluginId))
@@ -87,12 +87,12 @@ class HardwareManager(
             .mapNotNull { repository.getSettingsByPluginIdAndClazz(pluginId, it.javaClass.name) }
     }
 
-    private suspend fun removeFactory(factory: HardwareAdapterFactory) {
+    private suspend fun removeFactory(factory: HardwarePlugin) {
         cancelDiscoveryAndStopAdapters(factory)
         factories.remove(factory)
     }
 
-    private suspend fun addFactory(factory: HardwareAdapterFactory) {
+    private suspend fun addFactory(factory: HardwarePlugin) {
         if (factories.containsKey(factory)) {
             cancelDiscoveryAndStopAdapters(factory)
         }
@@ -100,7 +100,7 @@ class HardwareManager(
 
         val adaptersInFactory = factory.createAdapters()
         val adapterBundles = adaptersInFactory
-            .map { adapter -> AdapterBundle(factory.owningPluginId, adapter) }
+            .map { adapter -> AdapterBundle(factory.pluginId, adapter) }
             .toList()
         factories[factory] = adapterBundles
 
@@ -202,7 +202,7 @@ class HardwareManager(
 
     fun scheduleDiscovery(factoryId: String) {
         factories
-            .filter { it.key.owningPluginId == factoryId }
+            .filter { it.key.pluginId == factoryId }
             .flatMap { it.value }
             .forEach {
                 startStopScope.launch {

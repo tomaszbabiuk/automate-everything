@@ -15,10 +15,6 @@ class ShellyPlugin(
     private val mqttBroker: MqttBrokerService)
     : HardwarePlugin(wrapper), PluginMetadata{
 
-    companion object {
-        const val PLUGIN_ID_SHELLY = "shelly"
-    }
-
     override fun start() {
         println("Starting SHELLY plugin")
     }
@@ -29,13 +25,10 @@ class ShellyPlugin(
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
         val result = ArrayList<HardwareAdapter<*>>()
-        val adapter = ShellyAdapter(owningPluginId, mqttBroker, lanGatewayResolver)
+        val adapter = ShellyAdapter(pluginId, mqttBroker, lanGatewayResolver)
         result.add(adapter)
         return result
     }
-
-    override val owningPluginId: String
-        get() = PLUGIN_ID_SHELLY
 
     override val name: Resource =  R.plugin_name
     override val description: Resource = R.plugin_description
