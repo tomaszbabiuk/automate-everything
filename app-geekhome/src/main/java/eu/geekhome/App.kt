@@ -5,6 +5,7 @@ import eu.geekhome.domain.automation.AutomationConductor
 import eu.geekhome.domain.automation.BroadcastingStateChangeReporter
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
+import eu.geekhome.domain.automation.blocks.MasterBlockFactoriesCollector
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.rest.*
 import eu.geekhome.domain.events.NumberedEventsSink
@@ -35,7 +36,7 @@ open class App : ResourceConfig() {
     private val inbox: Inbox = BroadcastingInbox(eventsSink, repository)
     private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventsSink, injectionRegistry)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
-    private val blockFactoriesCoordinator = BlockFactoriesCollector(pluginsCoordinator, repository)
+    private val blockFactoriesCoordinator = MasterBlockFactoriesCollector(pluginsCoordinator, repository)
     private val stateChangeReporter: StateChangeReporter = BroadcastingStateChangeReporter(eventsSink)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
         eventsSink, inbox, repository, stateChangeReporter)

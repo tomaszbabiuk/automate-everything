@@ -1,6 +1,7 @@
 package eu.geekhome.domain.extensibility
 
 import eu.geekhome.domain.automation.BlockFactory
+import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import org.pf4j.PluginStateListener
@@ -17,4 +18,5 @@ interface PluginsCoordinator {
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val blockFactories: List<BlockFactory<*>>
+    val blockFactoriesCollectors: List<BlockFactoriesCollector>
 }

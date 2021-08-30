@@ -1,6 +1,7 @@
 package eu.geekhome.domain.extensibility
 
 import eu.geekhome.domain.automation.BlockFactory
+import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
 import eu.geekhome.domain.configurable.Configurable
 import eu.geekhome.domain.configurable.SettingGroup
 import eu.geekhome.domain.events.EventsSink
@@ -76,6 +77,9 @@ class SingletonExtensionPluginsCoordinator(
 
     override val blockFactories: List<BlockFactory<*>>
         get() = wrapped.getExtensions(BlockFactory::class.java)
+
+    override val blockFactoriesCollectors: List<BlockFactoriesCollector>
+        get() = wrapped.getExtensions(BlockFactoriesCollector::class.java)
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins

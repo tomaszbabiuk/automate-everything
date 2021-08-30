@@ -2,9 +2,8 @@ package eu.geekhome.domain.automation
 
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.blocks.BlockCategory
-import org.pf4j.ExtensionPoint
 
-interface BlockFactory<N: IAutomationNode> : ExtensionPoint {
+interface BlockFactory<N: IAutomationNode> {
     val category: BlockCategory
     val type:String
     fun buildBlock() : RawJson

@@ -12,7 +12,7 @@ class SensorBlockFactory<T: PortValue>(
     private val sensorId: Long,
     private val label: Resource) : ValueBlockFactory {
 
-    override val type: String = "temperature_sensor_$sensorId"
+    override val type: String = "${valueType.simpleName}_sensor_$sensorId"
 
     override fun buildBlock(): RawJson {
         return RawJson {

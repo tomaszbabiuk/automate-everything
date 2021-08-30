@@ -17,6 +17,10 @@ class PortValueBuilder {
                 return Wattage.fromDouble(x)
             }
 
+            if (valueClazz == Ticker::class.java) {
+                return Wattage.fromDouble(x)
+            }
+
             throw InvalidClassException("ValueClazz $valueClazz is not supported")
         }
     }

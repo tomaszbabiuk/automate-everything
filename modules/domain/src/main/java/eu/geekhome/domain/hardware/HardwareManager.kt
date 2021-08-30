@@ -146,6 +146,32 @@ class HardwareManager(
     }
 
     @Suppress("UNCHECKED_CAST")
+    override fun <T : PortValue> listAllOfAnyType(valueClass: Class<T>): List<Port<T>> {
+        return bundles()
+            .flatMap { it.adapter.ports.values }
+            .filter { it.valueClazz == valueClass}
+            .map { it as Port<T>}
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : PortValue> listAllOfInputType(valueClass: Class<T>): List<InputPort<T>> {
+        return bundles()
+            .flatMap { it.adapter.ports.values }
+            .filter { it.valueClazz == valueClass}
+            .filterIsInstance(InputPort::class.java)
+            .map { it as InputPort<T>}
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : PortValue> listAllOfOutputType(valueClass: Class<T>): List<OutputPort<T>> {
+        return bundles()
+            .flatMap { it.adapter.ports.values }
+            .filter { it.valueClazz == valueClass}
+            .filterIsInstance(OutputPort::class.java)
+            .map { it as OutputPort<T>}
+    }
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : PortValue> searchForAnyPort(
         valueClazz: Class<T>,
         id: String

@@ -3,6 +3,31 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val indicator_ema21 = Resource(
+        "EMA-21",
+        "EMA-21"
+    )
+
+    val indicator_rsi14 = Resource(
+        "RSI-14",
+        "RSI-14"
+    )
+
+    val interval_day = Resource(
+            "day",
+            "dzień"
+    )
+
+    val interval_week = Resource(
+            "week",
+            "tydzień"
+    )
+
+    val interval_hour = Resource(
+            "hour",
+            "godzina"
+    )
+
     val category_crypto = Resource(
         "Cryptocurrencies",
         "Kryptowaluty"
@@ -63,4 +88,9 @@ object R {
     )
 
     val plugin_name = Resource("Crypto trading", "Handel kryptowalutami")
+
+    fun block_indicator_label(pair: String) = Resource(
+        "%1 of $pair  %2",
+        "%1 od $pair  %2"
+    )
 }
