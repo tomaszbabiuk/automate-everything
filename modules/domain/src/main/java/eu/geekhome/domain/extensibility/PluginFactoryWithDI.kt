@@ -28,11 +28,11 @@ class PluginFactoryWithDI(private val injectionRegistry: InjectionRegistry) : Pl
             return null
         }
 
-        try {
-            return createWithDI(pluginClass, pluginWrapper)
+        return try {
+            createWithDI(pluginClass, pluginWrapper)
         } catch (ex: CreationException) {
             log.error("There's been a problem creating plugin class '{}' is not valid", pluginClassName, ex)
-            return null
+            null
         }
     }
 

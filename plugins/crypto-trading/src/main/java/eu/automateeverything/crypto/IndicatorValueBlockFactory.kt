@@ -3,21 +3,22 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.automation.*
 import eu.geekhome.domain.hardware.InputPort
+import org.knowm.xchange.currency.CurrencyPair
 
 open class IndicatorValueBlockFactory(
+    private val currencyPair: CurrencyPair,
     private val tickerPort: InputPort<Ticker>,
 ) : ValueBlockFactory {
-    private val pair = tickerPort.read().pair
     override val category = CryptoBlockCategories.Crypto
 
-    override val type: String = "crypto_indicator_${pair.base.currencyCode.lowercase()}_${pair.counter.currencyCode.lowercase()}"
+    override val type: String = "crypto_indicator_${currencyPair.base.currencyCode.lowercase()}_${currencyPair.counter.currencyCode.lowercase()}"
 
     override fun buildBlock(): RawJson {
         return RawJson { language ->
             """
                 {
                   "type": "$type",
-                  "message0": "${R.block_indicator_label(pair.toString()).getValue(language)}",
+                  "message0": "${R.block_indicator_label(currencyPair.toString()).getValue(language)}",
                   "args0": [
                     {
                       "type": "field_dropdown",

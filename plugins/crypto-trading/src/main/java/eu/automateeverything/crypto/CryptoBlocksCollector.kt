@@ -26,7 +26,8 @@ class CryptoBlocksCollector(private val portFinder: PortFinder) : BlockFactories
         val tickerPorts = portFinder.listAllOfInputType(Ticker::class.java)
 
         return tickerPorts
-            .map { IndicatorValueBlockFactory(it) }
+            .filterIsInstance(MarketPort::class.java)
+            .map { IndicatorValueBlockFactory(it.pair, it) }
     }
 }
 

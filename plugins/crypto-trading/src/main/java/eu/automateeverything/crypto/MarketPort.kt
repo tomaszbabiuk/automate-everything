@@ -13,7 +13,7 @@ class MarketPort(
     var lastValue = initialValue
 
     override fun read(): Ticker {
-        return Ticker(lastValue, pair)
+        return Ticker(lastValue)
     }
 
     fun updateValue(newValue: Double) {

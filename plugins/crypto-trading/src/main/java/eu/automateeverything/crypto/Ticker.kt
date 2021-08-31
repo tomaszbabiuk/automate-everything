@@ -6,11 +6,12 @@ import org.knowm.xchange.currency.CurrencyPair
 import kotlin.math.roundToInt
 
 class Ticker(
-    val price: Double,
-    val pair: CurrencyPair,
+    private val price: Double,
 ) : PortValue {
+
     override fun toFormattedString(): Resource {
-        return Resource.createUniResource("1 ${pair.base.currencyCode} = $price ${pair.counter.currencyCode}")
+        val multilingualValue = "%.2f".format(price)
+        return Resource.createUniResource(multilingualValue)
     }
 
     override fun asInteger(): Int {
