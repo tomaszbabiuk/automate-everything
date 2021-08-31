@@ -7,7 +7,7 @@ import org.knowm.xchange.currency.CurrencyPair
 
 open class IndicatorValueBlockFactory(
     private val currencyPair: CurrencyPair,
-    private val tickerPort: InputPort<Ticker>,
+    private val tickerPort: MarketPort,
 ) : ValueBlockFactory {
     override val category = CryptoBlockCategories.Crypto
 

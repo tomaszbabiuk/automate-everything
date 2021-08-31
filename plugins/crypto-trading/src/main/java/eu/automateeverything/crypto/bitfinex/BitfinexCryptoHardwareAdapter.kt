@@ -14,6 +14,10 @@ import org.knowm.xchange.ExchangeFactory
 import org.knowm.xchange.bitfinex.BitfinexExchange
 import org.knowm.xchange.bitfinex.service.BitfinexAdapters
 import org.knowm.xchange.bitfinex.service.BitfinexMarketDataService
+import org.knowm.xchange.currency.CurrencyPair
+import org.ta4j.core.BaseBar
+import java.time.Duration
+import java.util.*
 import kotlin.collections.ArrayList
 
 class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
@@ -51,7 +55,7 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
         operationScope?.launch {
             while (isActive) {
                 maintenanceLoop()
-                delay(30000)
+                delay(60000)
             }
         }
     }
@@ -82,8 +86,42 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
     }
 
     private fun maintenanceLoop() {
+        fun feedWeeklyData(pair: CurrencyPair): List<BaseBar> {
+            val calendar = Calendar.getInstance()
+            val now = calendar.timeInMillis
+            calendar.add(Calendar.YEAR, -1)
+            val nowMinusYear = calendar.timeInMillis
+            return marketDataService
+                .getHistoricCandles("7D", pair, 201, nowMinusYear, now,0)
+                .map { BaseBar(Duration.ofDays(7), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+        }
+
+        fun feedDailyData(pair: CurrencyPair): List<BaseBar> {
+            val calendar = Calendar.getInstance()
+            val now = calendar.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, -201)
+            val nowMinus201Days = calendar.timeInMillis
+            return marketDataService
+                .getHistoricCandles("1D", pair, 201, nowMinus201Days, now,0)
+                .map { BaseBar(Duration.ofDays(1), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+        }
+
+        fun feedHourlyData(pair: CurrencyPair): List<BaseBar> {
+            val calendar = Calendar.getInstance()
+            val now = calendar.timeInMillis
+            calendar.add(Calendar.HOUR, -201)
+            val nowMinus201Hours = calendar.timeInMillis
+            return marketDataService
+                .getHistoricCandles("1h", pair, 201, nowMinus201Hours, now, 0)
+                .map { BaseBar(Duration.ofHours(1), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+        }
+
         val pairs = ports.values.map { it.pair }
         val tickers = marketDataService.getBitfinexTickers(pairs)
+        val calendar = Calendar.getInstance()
+        val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
+        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
+
         tickers.forEach { ticker ->
             val pair = BitfinexAdapters.adaptCurrencyPair(ticker.symbol)
             ports
@@ -93,6 +131,18 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
                     val prevValue = port.lastValue
                     val newValue = ticker.lastPrice.toDouble()
                     val valueHasChanged = prevValue != newValue
+
+                    if (port.lastDailyDataFrom != dayOfYear) {
+                        port.dailyData = feedDailyData(port.pair)
+                        port.weeklyData = feedWeeklyData(port.pair)
+                        port.lastDailyDataFrom = dayOfYear
+                    }
+
+                    if (port.lastHourlyDataFrom != hourOfDay) {
+                        port.hourlyData = feedHourlyData(port.pair)
+                        port.lastHourlyDataFrom = hourOfDay
+                    }
+
                     if (valueHasChanged) {
                         port.updateValue(newValue)
                         val event = PortUpdateEventData(PLUGIN_ID, ADAPTER_ID, port)
