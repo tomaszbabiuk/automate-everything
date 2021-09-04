@@ -18,7 +18,7 @@ class TickerConfigurable(portFinder: PortFinder) : SinglePortSensorConfigurable<
     portFinder
 ) {
 
-    override val hasAutomation: Boolean = true
+    override val hasAutomation: Boolean = false
     override val editableIcon: Boolean = true
     override val taggable: Boolean = false
 

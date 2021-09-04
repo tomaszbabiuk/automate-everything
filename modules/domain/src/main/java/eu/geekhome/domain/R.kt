@@ -90,9 +90,39 @@ object R {
         "sekundę"
     )
 
+    val seconds15 = Resource(
+        "15 seconds",
+        "15 sekund"
+    )
+
+    val seconds30 = Resource(
+        "30 seconds",
+        "30 sekund"
+    )
+
     val minute = Resource(
         "minute",
         "minutę"
+    )
+
+    val minutes2 = Resource(
+        "2 minutes",
+        "2 minuty"
+    )
+
+    val minutes5 = Resource(
+        "5 minutes",
+        "5 minut"
+    )
+
+    val minutes10 = Resource(
+        "10 minutes",
+        "10 minut"
+    )
+
+    val minutes30 = Resource(
+        "30 minutes",
+        "30 minut"
     )
 
     val hour = Resource(
