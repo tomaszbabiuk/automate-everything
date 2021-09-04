@@ -1,6 +1,5 @@
 package eu.automateeverything.crypto
 
-import org.knowm.xchange.currency.CurrencyPair
 import org.ta4j.core.BaseBar
 
 interface MarketProxy {

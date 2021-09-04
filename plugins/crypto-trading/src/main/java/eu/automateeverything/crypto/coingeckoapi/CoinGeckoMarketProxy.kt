@@ -1,16 +1,9 @@
 package eu.automateeverything.crypto.coingeckoapi
 
+import eu.automateeverything.crypto.CurrencyPair
 import eu.automateeverything.crypto.MarketProxy
-import org.knowm.xchange.currency.CurrencyPair
 import org.ta4j.core.BaseBar
-import java.time.Duration
 import java.util.*
-
-enum class ChartRange(val duration: Duration, val calendarField: Int) {
-    Week(Duration.ofDays(7), Calendar.WEEK_OF_YEAR),
-    Day(Duration.ofDays(1), Calendar.DAY_OF_YEAR),
-    Hour(Duration.ofHours(1), Calendar.HOUR_OF_DAY)
-}
 
 class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
 
@@ -41,19 +34,19 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
     override suspend fun getTickers(currencyFilter: List<CurrencyPair>): List<Pair<CurrencyPair, Double>> {
         val geckoIdsOfBase =  currencyFilter
             .mapNotNull {
-                baseSymbolToGeckoId(it.base.currencyCode.lowercase())
+                baseSymbolToGeckoId(it.base.lowercase())
             }
 
         val counters = currencyFilter
             .map {
-                it.counter.currencyCode.lowercase()
+                it.counter.lowercase()
             }.distinct()
 
         return api
             .listTickers(geckoIdsOfBase, counters)
             .map { mainMap ->
                 mainMap.value.map {
-                    val pair = CurrencyPair(geckoIdToBaseSymbol(mainMap.key), it.key)
+                    val pair = CurrencyPair(geckoIdToBaseSymbol(mainMap.key)!!, it.key)
                     val value = it.value
                     Pair(pair, value)
                 }
@@ -74,11 +67,11 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
     }
 
     private suspend fun getChartData(pair: CurrencyPair, fromTimestamp: Long, toTimestamp: Long, chartRange: ChartRange): List<BaseBar> {
-        println("${pair.base.currencyCode}/${pair.counter.currencyCode}, $chartRange")
+        println("${pair.base}/${pair.counter}, $chartRange")
 
         val marketChart201d = api.marketChart(
-            baseSymbolToGeckoId(pair.base.currencyCode.lowercase())!!,
-            pair.counter.currencyCode.lowercase(),
+            baseSymbolToGeckoId(pair.base.lowercase())!!,
+            pair.counter.lowercase(),
             fromTimestamp/1000,
             toTimestamp/1000)
 

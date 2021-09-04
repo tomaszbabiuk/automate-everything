@@ -5,17 +5,6 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 
-data class Coin(
-    val id: String,
-    val symbol: String,
-    val name: String
-)
-
-data class MarketResponse(
-    val prices: Map<Long, Double>,
-    val total_volumes: Map<Long, Double>
-)
-
 class CoinGeckoApi {
     private val client = createHttpClient()
 

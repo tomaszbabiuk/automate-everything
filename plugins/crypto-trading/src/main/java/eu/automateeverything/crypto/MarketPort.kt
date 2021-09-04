@@ -1,7 +1,6 @@
 package eu.automateeverything.crypto
 
 import eu.geekhome.domain.hardware.InputPort
-import org.knowm.xchange.currency.CurrencyPair
 import org.ta4j.core.BaseBar
 
 class MarketPort(

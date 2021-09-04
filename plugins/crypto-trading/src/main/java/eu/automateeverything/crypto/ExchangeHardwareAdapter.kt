@@ -5,7 +5,6 @@ import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
-import org.knowm.xchange.currency.CurrencyPair
 import org.ta4j.core.BaseBar
 import java.util.*
 
