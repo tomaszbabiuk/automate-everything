@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package eu.automateeverything.crypto
 
 import eu.geekhome.data.localization.Resource
@@ -70,16 +72,6 @@ object R {
     val market_pairs_title = Resource(
         "Market pairs",
         "Pary walutowe"
-    )
-
-    val binance_settings_title = Resource(
-        "Binance",
-        "Binance"
-    )
-
-    val binance_settings_description = Resource(
-        "Binance API settings. Always inspect the code and install plugins from trusted source! Use at your own risk!",
-        "Binance API settings. Zawsze sprawdzaj kod i instaluj pluginy ze sprawdzonego źródła. Używaj na własną odpowiedzialność!"
     )
 
     val plugin_description = Resource(

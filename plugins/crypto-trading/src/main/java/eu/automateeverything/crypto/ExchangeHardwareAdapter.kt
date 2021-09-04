@@ -1,33 +1,23 @@
-package eu.automateeverything.crypto.bitfinex
+package eu.automateeverything.crypto
 
-import eu.automateeverything.crypto.CryptoTradingPlugin.Companion.PLUGIN_ID
-import eu.automateeverything.crypto.MarketPairsSettingGroup
-import eu.automateeverything.crypto.MarketPairsSettingGroup.Companion.FIELD_MARKET_PAIRS_IV
-import eu.automateeverything.crypto.MarketPort
 import eu.geekhome.data.settings.SettingsDto
 import eu.geekhome.domain.events.EventsSink
 import eu.geekhome.domain.events.PortUpdateEventData
 import eu.geekhome.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
-import org.knowm.xchange.Exchange
-import org.knowm.xchange.ExchangeFactory
-import org.knowm.xchange.bitfinex.BitfinexExchange
-import org.knowm.xchange.bitfinex.service.BitfinexAdapters
-import org.knowm.xchange.bitfinex.service.BitfinexMarketDataService
 import org.knowm.xchange.currency.CurrencyPair
 import org.ta4j.core.BaseBar
-import java.time.Duration
 import java.util.*
-import kotlin.collections.ArrayList
 
-class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
+class ExchangeHardwareAdapter(
+    override val id: String,
+    private val owningPluginId: String,
+    private val marketProxy: MarketProxy) : HardwareAdapterBase<MarketPort>() {
 
     private var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
     private var currencyFilter: List<String>? = null
-    private var currencyFilterDefaults = marketPairsStringToList(FIELD_MARKET_PAIRS_IV)
-    private val bitfinex: Exchange = ExchangeFactory.INSTANCE.createExchange(BitfinexExchange::class.java)
-    private val marketDataService: BitfinexMarketDataService = bitfinex.marketDataService as BitfinexMarketDataService
+    private var currencyFilterDefaults = marketPairsStringToList(MarketPairsSettingGroup.FIELD_MARKET_PAIRS_IV)
 
     override fun executePendingChanges() {
         //This adapter is read-only
@@ -55,81 +45,79 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
         operationScope?.launch {
             while (isActive) {
                 maintenanceLoop()
-                delay(60000)
+                delay(10000)
             }
         }
     }
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): List<MarketPort> {
         val result = ArrayList<MarketPort>()
-        val filter = if (currencyFilter == null) {
+        val filterRaw = if (currencyFilter == null) {
             currencyFilterDefaults
         } else {
             currencyFilter!!
         }
 
-        val selectedPairs = marketDataService
-            .exchangeSymbols
-            .filter{
-                val matchedMarket = "${it.base.currencyCode.lowercase()}/${it.counter.currencyCode.lowercase()}"
-                filter.contains(matchedMarket)
+        val currencyFilter = filterRaw.mapNotNull {
+            val baseAndCounter = it.split("/")
+            var pair: CurrencyPair? = null
+            if (baseAndCounter.size == 2) {
+                val base = baseAndCounter[0]
+                val counter = baseAndCounter[1]
+                pair = CurrencyPair(base, counter)
             }
 
-        val tickers = marketDataService.getBitfinexTickers(selectedPairs)
+            pair
+        }
+
+
+        val tickers = marketProxy.getTickers(currencyFilter)
         tickers.forEach {
-            val pair = BitfinexAdapters.adaptCurrencyPair(it.symbol)
-            val port = MarketPort("Bitfinex $pair", pair, it.lastPrice.toDouble(), 0L)
+            val port = MarketPort("$id ${it.first}", it.first, it.second, 0L)
             result.add(port)
         }
 
         return result
     }
 
-    private fun maintenanceLoop() {
-        fun feedWeeklyData(pair: CurrencyPair): List<BaseBar> {
+    private suspend fun maintenanceLoop() {
+        suspend fun feedWeeklyData(pair: CurrencyPair): List<BaseBar> {
             val calendar = Calendar.getInstance()
             val now = calendar.timeInMillis
             calendar.add(Calendar.YEAR, -1)
             val nowMinusYear = calendar.timeInMillis
-            return marketDataService
-                .getHistoricCandles("7D", pair, 201, nowMinusYear, now,0)
-                .map { BaseBar(Duration.ofDays(7), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+            return marketProxy.getWeeklyData(pair, nowMinusYear, now)
         }
 
-        fun feedDailyData(pair: CurrencyPair): List<BaseBar> {
+        suspend fun feedDailyData(pair: CurrencyPair): List<BaseBar> {
             val calendar = Calendar.getInstance()
             val now = calendar.timeInMillis
             calendar.add(Calendar.DAY_OF_YEAR, -201)
             val nowMinus201Days = calendar.timeInMillis
-            return marketDataService
-                .getHistoricCandles("1D", pair, 201, nowMinus201Days, now,0)
-                .map { BaseBar(Duration.ofDays(1), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+            return marketProxy.getDailyData(pair, nowMinus201Days, now)
         }
 
-        fun feedHourlyData(pair: CurrencyPair): List<BaseBar> {
+        suspend fun feedHourlyData(pair: CurrencyPair): List<BaseBar> {
             val calendar = Calendar.getInstance()
             val now = calendar.timeInMillis
             calendar.add(Calendar.HOUR, -201)
             val nowMinus201Hours = calendar.timeInMillis
-            return marketDataService
-                .getHistoricCandles("1h", pair, 201, nowMinus201Hours, now, 0)
-                .map { BaseBar(Duration.ofHours(1), it.candleDateTime, it.open, it.high, it.low, it.close, it.volume) }
+            return marketProxy.getHourlyData(pair, nowMinus201Hours, now)
         }
 
         val pairs = ports.values.map { it.pair }
-        val tickers = marketDataService.getBitfinexTickers(pairs)
+        val tickers = marketProxy.getTickers(pairs)
         val calendar = Calendar.getInstance()
         val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
 
         tickers.forEach { ticker ->
-            val pair = BitfinexAdapters.adaptCurrencyPair(ticker.symbol)
             ports
                 .values
-                .filter { port -> port.pair == pair }
+                .filter { port -> port.pair == ticker.first }
                 .forEach { port ->
                     val prevValue = port.lastValue
-                    val newValue = ticker.lastPrice.toDouble()
+                    val newValue = ticker.second
                     val valueHasChanged = prevValue != newValue
 
                     if (port.lastDailyDataFrom != dayOfYear) {
@@ -145,7 +133,7 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
 
                     if (valueHasChanged) {
                         port.updateValue(newValue)
-                        val event = PortUpdateEventData(PLUGIN_ID, ADAPTER_ID, port)
+                        val event = PortUpdateEventData(owningPluginId, id, port)
                         operationSink?.broadcastEvent(event)
                     }
                 }
@@ -162,11 +150,5 @@ class BitfinexCryptoHardwareAdapter : HardwareAdapterBase<MarketPort>() {
             .replace(";",",")
             .replace(" ", "")
             .split(",")
-    }
-
-    override val id = ADAPTER_ID
-
-    companion object {
-        const val ADAPTER_ID = "bitfinex"
     }
 }
