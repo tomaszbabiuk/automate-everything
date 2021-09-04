@@ -88,21 +88,29 @@
           class="mx-auto float-left ml-5 mt-5 d-flex flex-column"
           max-width="344"
           min-width="344"
-          min-height="240"
           v-for="configurable in configurables"
           :key="configurable.clazz"
         >
-          <v-card-title class="headline">
+        
+          <v-card-title class="headline d-flex flex-row justify-space-between align-stretch">
             <div
               style="transform: scale(0.7)"
               v-html="configurable.iconRaw"
             ></div>
+                        <v-tooltip bottom class="n5">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on" class="align-baseline">
+                  <v-icon>mdi-information-outline</v-icon>
+                </v-btn>
+              </template>
+              <span> {{ configurable.descriptionRes }}</span>
+            </v-tooltip>
           </v-card-title>
+          
           <v-card-subtitle class="headline">
             {{ configurable.titleRes }}
-          </v-card-subtitle>
 
-          <v-card-subtitle>{{ configurable.descriptionRes }}</v-card-subtitle>
+          </v-card-subtitle>
 
           <v-spacer></v-spacer>
           <v-card-actions>
@@ -417,14 +425,13 @@ export default {
       this.instanceDialog.activeTab = 0;
       this.instanceDialog.instance = instance;
 
-
       store.commit(RESET_INSTANCE, this.configurable);
       store.commit(EDIT_INSTANCE, instance);
 
       if (this.$refs.blockly != null) {
         this.$refs.blockly.reloadBlocks(instance.automation);
       }
-      
+
       this.instanceDialog.show = true;
     },
 
