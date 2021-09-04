@@ -300,7 +300,7 @@ export const client = {
 
   deletePort: async function (id) {
     await this.handleRestError(
-      () => axiosInstance.delete("rest/ports/" + id),
+      () => axiosInstance.delete("rest/ports/" + encodeURIComponent(id)),
       () => store.commit(REMOVE_PORT, id)
     )
   },

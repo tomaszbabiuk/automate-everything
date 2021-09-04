@@ -31,7 +31,7 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
         return coinFound.symbol
     }
 
-    override suspend fun getTickers(currencyFilter: List<CurrencyPair>): List<Pair<CurrencyPair, Double>> {
+    override suspend fun getTickers(currencyFilter: List<CurrencyPair>): Map<CurrencyPair, Double> {
         val geckoIdsOfBase =  currencyFilter
             .mapNotNull {
                 baseSymbolToGeckoId(it.base.lowercase())
@@ -52,6 +52,7 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
                 }
             }
             .flatten()
+            .toMap()
     }
 
     override suspend fun getWeeklyData(pair: CurrencyPair, fromTimestamp: Long, toTimestamp: Long): List<BaseBar> {
