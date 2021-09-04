@@ -91,13 +91,14 @@
           v-for="configurable in configurables"
           :key="configurable.clazz"
         >
-        
-          <v-card-title class="headline d-flex flex-row justify-space-between align-stretch">
+          <v-card-title
+            class="headline d-flex flex-row justify-space-between align-stretch"
+          >
             <div
               style="transform: scale(0.7)"
               v-html="configurable.iconRaw"
             ></div>
-                        <v-tooltip bottom class="n5">
+            <v-tooltip bottom class="n5">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on" class="align-baseline">
                   <v-icon>mdi-information-outline</v-icon>
@@ -106,10 +107,9 @@
               <span> {{ configurable.descriptionRes }}</span>
             </v-tooltip>
           </v-card-title>
-          
+
           <v-card-subtitle class="headline">
             {{ configurable.titleRes }}
-
           </v-card-subtitle>
 
           <v-spacer></v-spacer>
