@@ -1,4 +1,4 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
 import eu.geekhome.domain.extensibility.PluginMetadata
 import eu.geekhome.data.localization.Resource

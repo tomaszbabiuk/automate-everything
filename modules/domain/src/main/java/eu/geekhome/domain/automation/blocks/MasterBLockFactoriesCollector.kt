@@ -49,23 +49,6 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
 
             //triggers
             TimeloopTriggerBlockFactory(),
-
-            //temperature
-            ComparisonBlockFactory(Temperature::class.java, CommonBlockCategories.Temperature),
-            EquationBlockFactory(Temperature::class.java, CommonBlockCategories.Temperature),
-            TemperatureValueInCBlockFactory(CommonBlockCategories.Temperature.color),
-            TemperatureValueInKBlockFactory(CommonBlockCategories.Temperature.color),
-            TemperatureValueInFBlockFactory(CommonBlockCategories.Temperature.color),
-
-            //humidity
-            ComparisonBlockFactory(Humidity::class.java, CommonBlockCategories.Humidity),
-            EquationBlockFactory(Humidity::class.java, CommonBlockCategories.Humidity),
-            HumidityValueBlockFactory(CommonBlockCategories.Humidity.color),
-
-            //wattage
-            ComparisonBlockFactory(Wattage::class.java, CommonBlockCategories.Wattage),
-            EquationBlockFactory(Wattage::class.java, CommonBlockCategories.Wattage),
-            WattageValueBlockFactory(CommonBlockCategories.Wattage.color)
         )
 
         staticBlocks.addAll(pluginsCoordinator.blockFactories)

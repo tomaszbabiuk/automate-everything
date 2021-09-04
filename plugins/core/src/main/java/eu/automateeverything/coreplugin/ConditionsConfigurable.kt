@@ -1,4 +1,4 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
 import eu.geekhome.domain.configurable.CategoryConfigurable
 import eu.geekhome.domain.configurable.Configurable

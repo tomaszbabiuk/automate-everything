@@ -1,9 +1,9 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
-import eu.geekhome.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF
-import eu.geekhome.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF_BREAK
-import eu.geekhome.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON
-import eu.geekhome.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON_COUNTING
+import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF
+import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF_BREAK
+import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON
+import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON_COUNTING
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType

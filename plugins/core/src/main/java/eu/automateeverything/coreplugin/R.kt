@@ -1,4 +1,4 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
 import eu.geekhome.data.localization.Resource
 
@@ -19,8 +19,8 @@ object R {
     )
 
     val plugin_name = Resource(
-        "Core",
-        "Core"
+        "Core automation",
+        "Automatyka podstawowa"
     )
 
     val field_port_hint = Resource(

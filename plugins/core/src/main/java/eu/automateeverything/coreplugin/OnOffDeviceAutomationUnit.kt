@@ -1,7 +1,7 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
-import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
-import eu.geekhome.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
+import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
+import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.StateChangeReporter

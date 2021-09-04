@@ -1,4 +1,4 @@
-package eu.geekhome.coreplugin
+package eu.automateeverything.coreplugin
 
 import eu.geekhome.domain.automation.EvaluableAutomationUnit
 import java.util.*

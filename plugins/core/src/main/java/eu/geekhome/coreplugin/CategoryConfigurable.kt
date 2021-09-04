@@ -1,2 +1,0 @@
-package eu.geekhome.coreplugin
-
