@@ -11,5 +11,5 @@ data class PluginDto(
     val version: String,
     val isHardwareFactory: Boolean,
     val enabled: Boolean,
-    val settingGroups: List<SettingGroupDto>?
+    val settingGroups: List<SettingGroupDto>
 )

@@ -6,6 +6,7 @@ import store from './plugins/vuex'
 
 import ConfigurableForm from './components/geekhome/configurable/Form'
 import ConfigurableStringField from './components/geekhome/configurable/StringField'
+import ConfigurableBooleanField from './components/geekhome/configurable/BooleanField'
 import ConfigurablePowerLevelField from './components/geekhome/configurable/PowerLevelField'
 import ConfigurableDurationField from './components/geekhome/configurable/DurationField'
 import ConfigurableDoubleField from './components/geekhome/configurable/DoubleField'
@@ -22,6 +23,7 @@ import PortControl from './components/geekhome/PortControl'
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
+Vue.component('configurable-booleanfield', ConfigurableBooleanField)
 Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
 Vue.component('configurable-durationfield', ConfigurableDurationField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)

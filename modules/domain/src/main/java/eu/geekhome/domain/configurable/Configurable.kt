@@ -59,3 +59,8 @@ abstract class CategoryConfigurable : Configurable {
     override val editableIcon: Boolean = false
 }
 
+abstract class ActionConfigurable: StateDeviceConfigurable() {
+    override val taggable: Boolean = false
+    override val editableIcon: Boolean = false
+}
+

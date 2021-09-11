@@ -39,7 +39,9 @@ export default {
         nA: "n/d",
         refresh_page: "Odśwież stronę",
         load_more: "Załaduj więcej",
-        browse: "Przeglądaj"
+        browse: "Przeglądaj",
+        yes: "Tak",
+        no: "Nie"
     },
     app: {
         enable: "Włącz",

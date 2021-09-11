@@ -33,43 +33,36 @@ function createSseClient() {
       })
   
       this.liveMsgServer.addEventListener("DiscoveryEventDto", function(e) {
-        console.log(e)
         var discoveryEventDto = JSON.parse(e.data)
         store.commit(ADD_DISCOVERY_EVENT, discoveryEventDto)
       })
   
       this.liveMsgServer.addEventListener("PortDto", function(e) {
-        console.log(e)
         var portDto = JSON.parse(e.data)
         store.commit(UPDATE_PORT, portDto)
       })
   
       this.liveMsgServer.addEventListener("PluginDto", function(e) {
-        console.log(e)
         var pluginDto = JSON.parse(e.data)
         store.commit(UPDATE_PLUGIN, pluginDto)
       })
   
       this.liveMsgServer.addEventListener("AutomationUnitDto", function(e) {
-        console.log(e)
         var automationUnitDto = JSON.parse(e.data)
         store.commit(UPDATE_AUTOMATION_UNIT, automationUnitDto)
       })
   
       this.liveMsgServer.addEventListener("AutomationHistoryDto", function(e) {
-        console.log(e)
         var automationHistoryDto = JSON.parse(e.data)
         store.commit(ADD_AUTOMATION_HISTORY, automationHistoryDto)
       })
 
       this.liveMsgServer.addEventListener("HeartbeatDto", function(e) {
-        console.log(e)
         var heartbeatDto = JSON.parse(e.data)
         store.commit(SET_INBOX_UNREAD_COUNT, heartbeatDto.inboxUnreadCount)
       })
 
       this.liveMsgServer.addEventListener("InboxMessageDto", function(e) {
-        console.log(e)
         var inboxMessageDto = JSON.parse(e.data)
         store.commit(PREPEND_INBOX_MESSAGE, inboxMessageDto)
       })

@@ -153,7 +153,12 @@
                     "
                   >
                     {{ configurable.hint }}:
-                    {{ instance.fields[configurable.name] }}
+                    {{
+                      displayField(
+                        configurable,
+                        instance.fields[configurable.name]
+                      )
+                    }}
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -304,6 +309,18 @@ export default {
     },
   },
   methods: {
+    displayField: function (configurable, fieldValue) {
+      if (configurable.type == "Boolean") {
+        if (fieldValue == "1") {
+          return this.$vuetify.lang.t("$vuetify.common.yes");
+        } else {
+          return this.$vuetify.lang.t("$vuetify.common.no");
+        }
+      }
+
+      return fieldValue;
+    },
+
     extractOtherFields: function (instance) {
       var result = {};
       Object.entries(instance.fields).forEach(([key, value]) => {

@@ -73,14 +73,54 @@ object R {
         "Szerekość geograficzna"
     )
 
-    val configurable_device_title = Resource(
+    val field_reset_hint = Resource(
+        "Reset required after execution",
+        "Wymagaj resetowania po każdym wywołaniu"
+    )
+
+    val field_command_hint = Resource(
+        "Bash command to execute",
+        "Komenda bash do wykonania"
+    )
+
+    val configurable_devices_title = Resource(
         "Devices",
         "Urządzenia"
     )
 
-    val configurable_device_description = Resource(
+    val configurable_devices_description = Resource(
         "Add/remove devices (sensors, relays, switches, etc.)",
         "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)"
+    )
+
+    val configurable_actions_title = Resource(
+        "Actions",
+        "Akcje"
+    )
+
+    val configurable_actions_description = Resource(
+        "Add/remove actions (sending messages, calling other systems, executing bash scripts, etc.)",
+        "Dodawaj/usuwaj akcje (np. wysyłanie wiadomości, uruchamianie skryptów, wywoływanie innych systemów itp.)"
+    )
+
+    val configurable_bash_script_action_title = Resource(
+        "Bash script",
+        "Skrypt bash"
+    )
+
+    val configurable_bash_script_action_description = Resource(
+        "Executes bash script",
+        "Uruchamia skrypt bash"
+    )
+
+    val configurable_bash_script_action_add = Resource(
+        "Add bash script action",
+        "Dodaj skrypt bash"
+    )
+
+    val configurable_bash_script_action_edit = Resource(
+        "Edit bash script",
+        "Edytuj skrypt bash"
     )
 
     val configurable_conditions_title = Resource(
@@ -318,4 +358,18 @@ object R {
         "Manual"
     )
 
+    val state_ready = Resource(
+        "Ready",
+        "Gotowe"
+    )
+
+    val state_execute = Resource(
+        "Execute",
+        "Wykonaj"
+    )
+
+    val state_reset = Resource(
+        "Reset",
+        "Resetuj"
+    )
 }

@@ -39,7 +39,9 @@ export default {
         nA: "n/A",
         refresh_page: "Refresh page",
         load_more: "Load more",
-        browse: "Browse"
+        browse: "Browse",
+        yes: "Yes",
+        no: "No"
     },
     app: {
         enable: "Enable",

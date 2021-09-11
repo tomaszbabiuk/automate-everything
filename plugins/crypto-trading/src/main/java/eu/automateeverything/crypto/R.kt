@@ -5,14 +5,74 @@ package eu.automateeverything.crypto
 import eu.geekhome.data.localization.Resource
 
 object R {
+    val indicator_bol_upper = Resource(
+        "Upper Bollinger band",
+        "Górna wstęga Bollingera"
+    )
+
+    val indicator_bol_middle = Resource(
+        "Middle Bollinger band",
+        "Środkowa wstęga Bollingera"
+    )
+
+    val indicator_bol_lower = Resource(
+        "Lower Bollinger band",
+        "Dolna wstęga Bollingera"
+    )
+
+    val indicator_bol_width = Resource(
+        "Bollinger width",
+        "Szerokość wstęgi Bollingera"
+    )
+
     val indicator_ema21 = Resource(
         "EMA-21",
         "EMA-21"
     )
 
+    val indicator_ema34 = Resource(
+        "EMA-34",
+        "EMA-34"
+    )
+
+    val indicator_ema55 = Resource(
+        "EMA-55",
+        "EMA-55"
+    )
+
+    val indicator_ema89 = Resource(
+        "EMA-89",
+        "EMA-89"
+    )
+
+    val indicator_ema200 = Resource(
+        "EMA-21",
+        "EMA-21"
+    )
+
+    val indicator_sma50 = Resource(
+        "SMA-50",
+        "SMA-50"
+    )
+
+    val indicator_sma100 = Resource(
+        "SMA-100",
+        "SMA-100"
+    )
+
+    val indicator_sma200 = Resource(
+        "SMA-200",
+        "SMA-200"
+    )
+
     val indicator_rsi14 = Resource(
         "RSI-14",
         "RSI-14"
+    )
+
+    val indicator_roc100 = Resource(
+        "ROC-100",
+        "ROC-100"
     )
 
     val interval_day = Resource(
