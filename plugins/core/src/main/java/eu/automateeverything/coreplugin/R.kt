@@ -74,7 +74,7 @@ object R {
     )
 
     val field_reset_hint = Resource(
-        "Reset required after execution",
+        "Reset is required after each execution",
         "Wymagaj resetowania po każdym wywołaniu"
     )
 
@@ -363,13 +363,23 @@ object R {
         "Gotowe"
     )
 
-    val state_execute = Resource(
+    val action_execute = Resource(
         "Execute",
         "Wykonaj"
     )
 
-    val state_reset = Resource(
+    val state_executed = Resource(
+        "Executed",
+        "Wykonano"
+    )
+
+    val action_reset = Resource(
         "Reset",
         "Resetuj"
+    )
+
+    val state_reset = Resource(
+        "Reset",
+        "Zresetowany"
     )
 }

@@ -45,14 +45,6 @@ class TimedOnOffDeviceAutomationUnit(
         }
     }
 
-    private fun statesExcept(currentState: State, excludedStates: Array<String>): NextStatesDto {
-        val nextStates = states
-            .map { it.value }
-            .filter { it.type != StateType.ReadOnly }
-            .filter { it.id !in excludedStates }
-        return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
-    }
-
     @Suppress("SENSELESS_COMPARISON")
     override fun buildNextStates(state: State): NextStatesDto {
         if (state.id == STATE_OFF) {

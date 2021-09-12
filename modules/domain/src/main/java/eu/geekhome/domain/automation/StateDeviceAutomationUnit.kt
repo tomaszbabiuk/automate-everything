@@ -26,6 +26,19 @@ abstract class StateDeviceAutomationUnit(
             changeState(value.id, null, null)
         }
 
+    protected fun statesExcept(currentState: State, excludedStates: Array<String>): NextStatesDto {
+        val nextStates = states
+            .map { it.value }
+            .filter { it.type != StateType.ReadOnly }
+            .filter { it.id !in excludedStates }
+        return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
+    }
+
+    protected fun onlyOneState(stateId: String): NextStatesDto {
+        val nextStates = listOf(states[stateId]!!)
+        return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
+    }
+
     override fun changeState(state: String, code: String?, actor: String?) {
         if (currentState.id != state) {
             currentState = states[state]!!

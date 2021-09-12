@@ -5,12 +5,15 @@ import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.DeviceAutomationUnit
+import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.configurable.*
 import org.pf4j.Extension
 import java.util.HashMap
 
 @Extension
-class BashScriptActionConfigurable : ActionConfigurable() {
+class BashScriptActionConfigurable(
+    private val stateChangeReporter: StateChangeReporter
+) : ActionConfigurable() {
 
     override val parent: Class<out Configurable?>
         get() = ActionsConfigurable::class.java
@@ -33,32 +36,34 @@ class BashScriptActionConfigurable : ActionConfigurable() {
         """.trimIndent()
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        TODO("Not yet implemented")
+        val name = instance.fields[FIELD_NAME]!!
+        val resetRequired = instance.fields[FIELD_RESET]!! == "1"
+        return BashScriptActionAutomationUnit(stateChangeReporter, instance, name, resetRequired, states)
     }
 
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
+            states[STATE_UNKNOWN] = State(
+                STATE_UNKNOWN,
+                R.state_unknown,
+                R.state_unknown,
+                StateType.ReadOnly,
+                isSignaled = true,
+                codeRequired = false
+            )
             states[STATE_READY] = State(
                 STATE_READY,
                 R.state_ready,
-                R.state_ready,
+                R.state_reset,
                 StateType.ReadOnly,
                 isSignaled = false,
                 codeRequired = false
             )
-            states[STATE_EXECUTE] = State(
-                STATE_EXECUTE,
-                R.state_execute,
-                R.state_execute,
-                StateType.Control,
-                isSignaled = false,
-                codeRequired = false
-            )
-            states[STATE_RESET] = State(
-                STATE_RESET,
-                R.state_reset,
-                R.state_reset,
+            states[STATE_EXECUTED] = State(
+                STATE_EXECUTED,
+                R.state_executed,
+                R.action_execute,
                 StateType.Control,
                 isSignaled = false,
                 codeRequired = false
@@ -74,7 +79,7 @@ class BashScriptActionConfigurable : ActionConfigurable() {
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
             val result: MutableMap<String, FieldDefinition<*>> =
-                HashMap<String, FieldDefinition<*>>(super.fieldDefinitions)
+                LinkedHashMap(super.fieldDefinitions)
             result[FIELD_COMMAND] = commandField
             result[FIELD_RESET] = resetField
             return result
@@ -87,7 +92,6 @@ class BashScriptActionConfigurable : ActionConfigurable() {
         const val FIELD_COMMAND = "command"
         const val FIELD_RESET = "reset"
         const val STATE_READY = "ready"
-        const val STATE_EXECUTE = "execute"
-        const val STATE_RESET = "reset"
+        const val STATE_EXECUTED = "executed"
     }
 }
