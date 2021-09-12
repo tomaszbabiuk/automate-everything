@@ -29,7 +29,11 @@ class InboxMessageDtoMapper {
 
     private fun buildMessageBody(from: InboxItemDto): Resource {
         return when (from.kind) {
-            InboxItemKind.CustomMessage -> Resource.createUniResource(from.message)
+            InboxItemKind.CustomMessage -> return if (from.message == null) {
+                R.inbox_custom_message_empty
+            } else {
+                Resource.createUniResource(from.message!!)
+            }
             InboxItemKind.WelcomeMessage -> R.inbox_message_welcome_description_body
             InboxItemKind.NewPortFound -> R.inbox_message_port_found_body(from.newPortId)
             InboxItemKind.AutomationEnabled -> R.inbox_message_automation_enabled_body

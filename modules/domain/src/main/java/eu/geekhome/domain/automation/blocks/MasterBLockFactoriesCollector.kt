@@ -6,9 +6,6 @@ import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.BlockFactory
 import eu.geekhome.domain.configurable.*
 import eu.geekhome.domain.extensibility.PluginsCoordinator
-import eu.geekhome.domain.hardware.Humidity
-import eu.geekhome.domain.hardware.Temperature
-import eu.geekhome.domain.hardware.Wattage
 
 class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
                               private val repository: Repository
@@ -65,9 +62,10 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
                 val configurable = allConfigurables.find { it.javaClass.name == briefDto.clazz }
                 configurable is ConditionConfigurable
             }
+            .filter { briefDto -> briefDto.name != null }
             .map { briefDto ->
                 val id = briefDto.id
-                val label = Resource.createUniResource(briefDto.name)
+                val label = Resource.createUniResource(briefDto.name!!)
                 ConditionBlockFactory(id, label)
             }
             .toList()
@@ -78,6 +76,8 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
+            .asSequence()
+            .filter { briefDto -> briefDto.name != null }
             .map {  briefDto ->
                 val configurable = allConfigurables.find { it.javaClass.name == briefDto.clazz }
                 Pair(briefDto, configurable)
@@ -88,7 +88,7 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
             .map { (briefDto, configurable) ->
                 val id = briefDto.id
                 val sensorConfigurable = configurable as SensorConfigurable<*>
-                val label = Resource.createUniResource(briefDto.name)
+                val label = Resource.createUniResource(briefDto.name!!)
                 val category = sensorConfigurable.blocksCategory
 
                 SensorBlockFactory(sensorConfigurable.valueClazz, category, id, label)

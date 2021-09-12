@@ -5,6 +5,7 @@ import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_R
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
+import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.automation.StateDeviceAutomationUnit
 import java.lang.Exception
@@ -17,18 +18,24 @@ class ActionAutomationUnit(
     name: String,
     private val resetRequired: Boolean,
     states: Map<String, State>,
-    private val executionCode: () -> Unit
+    private val executionCode: () -> String
 ) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (state == STATE_EXECUTED) {
-            executionCode()
+            val result = executionCode()
+            modifyNote(EVALUATION_OUTPUT, Resource.createUniResource(result))
             if (!resetRequired) {
                 changeState(STATE_READY)
             }
         }
+
+        if (state == STATE_READY) {
+            removeNote(EVALUATION_OUTPUT)
+        }
     }
+
 
     override fun buildNextStates(state: State): NextStatesDto {
         return when (state.id) {
@@ -52,4 +59,8 @@ class ActionAutomationUnit(
 
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = false
+
+    companion object {
+        const val EVALUATION_OUTPUT = "output"
+    }
 }

@@ -18,7 +18,7 @@ abstract class StateDeviceAutomationUnit(
     protected val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
-    private var lastNotes: List<Resource>? = null
+    private var lastNotes: MutableMap<String, Resource> = HashMap()
 
     var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
@@ -47,9 +47,22 @@ abstract class StateDeviceAutomationUnit(
         }
     }
 
-    override fun updateNotes(notes: List<Resource>) {
-        if (notes != lastNotes) {
-            lastNotes = notes
+    override fun modifyNote(noteId: String, note: Resource) {
+        val lastHashCode = lastNotes.hashCode()
+        lastNotes[noteId] = note
+        val newHashCode = lastNotes.hashCode()
+
+        if (lastHashCode != newHashCode) {
+            evaluateAndReportStateUpdate()
+        }
+    }
+
+    fun removeNote(noteId: String) {
+        val lastHashCode = lastNotes.hashCode()
+        lastNotes.remove(noteId)
+        val newHashCode = lastNotes.hashCode()
+
+        if (lastHashCode != newHashCode) {
             evaluateAndReportStateUpdate()
         }
     }
@@ -71,11 +84,7 @@ abstract class StateDeviceAutomationUnit(
             value = state,
             isSignaled = state.isSignaled,
             nextStates = buildNextStates(state),
-            descriptions = if (lastNotes != null) {
-                lastNotes!!
-            } else {
-                listOf()
-            }
+            descriptions = lastNotes.values.toList()
         )
     }
 

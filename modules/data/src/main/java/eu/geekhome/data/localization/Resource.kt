@@ -1,36 +1,53 @@
-package eu.geekhome.data.localization;
+package eu.geekhome.data.localization
 
-import java.util.Hashtable;
-import java.util.Objects;
+import java.util.Hashtable
+import java.util.Arrays
+import java.util.stream.Collectors
+import java.util.Objects
 
-public class Resource {
-    private final Hashtable<Language, String> _values;
+class Resource(englishValue: String, polishValue: String) {
+    private val _values: Hashtable<Language, String> = Hashtable()
 
-    public Resource(String englishValue, String polishValue) {
-        _values = new Hashtable<>();
-        _values.put(Language.EN, englishValue);
-        _values.put(Language.PL, polishValue);
+    fun getValue(language: Language): String? {
+        return _values[language]
     }
 
-    public String getValue(Language language) {
-        return _values.get(language);
+    fun split(delimiter: String?): List<Resource> {
+        if (isUniResource()) {
+            val split = _values[Language.EN]!!
+                .split(delimiter!!).toTypedArray()
+            return Arrays
+                .stream(split)
+                .map { uniValue: String -> createUniResource(uniValue) }
+                .collect(Collectors.toList())
+        }
+
+        return listOf(this)
     }
 
-    public static Resource createUniResource(String uniValue) {
-        return new Resource(uniValue, uniValue);
+    private fun isUniResource(): Boolean {
+        return _values[Language.EN] == _values[Language.PL]
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Resource resource = (Resource) o;
-        return Objects.equals(_values, resource._values);
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val resource = other as Resource
+        return _values == resource._values
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(_values);
+    override fun hashCode(): Int {
+        return Objects.hash(_values)
+    }
+
+    companion object {
+        fun createUniResource(uniValue: String): Resource {
+            return Resource(uniValue, uniValue)
+        }
+    }
+
+    init {
+        _values[Language.EN] = englishValue
+        _values[Language.PL] = polishValue
     }
 }
-

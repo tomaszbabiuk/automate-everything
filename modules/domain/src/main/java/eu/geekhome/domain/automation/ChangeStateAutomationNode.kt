@@ -16,6 +16,6 @@ class ChangeStateAutomationNode(
 
     override fun modifyNote(noteId: String, note: Resource) {
         super.modifyNote(noteId, note)
-        deviceUnit.updateNotes(notes.values.toList())
+        deviceUnit.modifyNote(noteId, note)
     }
 }

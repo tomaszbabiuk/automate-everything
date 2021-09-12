@@ -33,6 +33,11 @@ object R {
         "Nowa wiadomość"
     )
 
+    val inbox_custom_message_empty = Resource(
+        "(Empty message)",
+        "(Pusta wiadomość)"
+    )
+
     val inbox_message_welcome_subject = Resource(
         "Welcome. Thank you for choosing Automate Everything.",
         "Witaj. Dziękujemy za wybór Automate Everything. "

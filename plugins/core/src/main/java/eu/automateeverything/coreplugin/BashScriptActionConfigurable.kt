@@ -1,11 +1,19 @@
 package eu.automateeverything.coreplugin
 
+import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.configurable.FieldDefinition
 import eu.geekhome.domain.configurable.RequiredStringValidator
 import eu.geekhome.domain.configurable.StringField
 import org.pf4j.Extension
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.*
+import java.util.stream.Collectors
+import kotlin.collections.ArrayList
+import kotlin.streams.toList
+
 
 @Extension
 class BashScriptActionConfigurable(
@@ -35,8 +43,13 @@ class BashScriptActionConfigurable(
         result[FIELD_COMMAND] = commandField
     }
 
-    override fun executionCode() {
-        println("Execute")
+    override fun executionCode(instance: InstanceDto): String {
+        val cmd = instance.fields[FIELD_COMMAND]!!
+        val run = Runtime.getRuntime()
+        val pr = run.exec(cmd)
+        pr.waitFor()
+        val buf = BufferedReader(InputStreamReader(pr.inputStream))
+        return buf.lines().collect(Collectors.joining(System.lineSeparator()))
     }
 
     override val addNewRes = R.configurable_bash_script_action_add

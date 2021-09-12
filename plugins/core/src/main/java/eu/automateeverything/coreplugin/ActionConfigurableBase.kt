@@ -22,7 +22,7 @@ abstract class ActionConfigurableBase(
         val name = instance.fields[FIELD_NAME]!!
         val resetRequired = instance.fields[FIELD_RESET]!! == VALUE_TRUE
         return ActionAutomationUnit(stateChangeReporter, instance, name, resetRequired, states) {
-            executionCode()
+            executionCode(instance)
         }
     }
 
@@ -69,7 +69,7 @@ abstract class ActionConfigurableBase(
 
     protected abstract fun addExtraFields(result: MutableMap<String, FieldDefinition<*>>)
 
-    protected abstract fun executionCode()
+    protected abstract fun executionCode(instance: InstanceDto) : String
 
     companion object {
         const val FIELD_RESET = "reset"

@@ -12,7 +12,7 @@ class EvaluationResultDtoMapper {
         return EvaluationResultDto(
             source.interfaceValue,
             source.isSignaled,
-            source.descriptions,
+            source.descriptions.flatMap { it.split(System.lineSeparator()) },
             if (source.error != null) {
                 source.error!!.toString()
             } else {
