@@ -1,22 +1,16 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.data.automation.State
-import eu.geekhome.data.automation.StateType
-import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.StateChangeReporter
-import eu.geekhome.domain.configurable.*
+import eu.geekhome.domain.configurable.FieldDefinition
+import eu.geekhome.domain.configurable.RequiredStringValidator
+import eu.geekhome.domain.configurable.StringField
 import org.pf4j.Extension
-import java.util.HashMap
 
 @Extension
 class BashScriptActionConfigurable(
-    private val stateChangeReporter: StateChangeReporter
-) : ActionConfigurable() {
-
-    override val parent: Class<out Configurable?>
-        get() = ActionsConfigurable::class.java
+    stateChangeReporter: StateChangeReporter
+) : ActionConfigurableBase(stateChangeReporter) {
 
     override val titleRes: Resource
         get() = R.configurable_bash_script_action_title
@@ -35,63 +29,21 @@ class BashScriptActionConfigurable(
             </svg>
         """.trimIndent()
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        val name = instance.fields[FIELD_NAME]!!
-        val resetRequired = instance.fields[FIELD_RESET]!! == "1"
-        return BashScriptActionAutomationUnit(stateChangeReporter, instance, name, resetRequired, states)
-    }
-
-    override val states: Map<String, State>
-        get() {
-            val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = State(
-                STATE_UNKNOWN,
-                R.state_unknown,
-                R.state_unknown,
-                StateType.ReadOnly,
-                isSignaled = true,
-                codeRequired = false
-            )
-            states[STATE_READY] = State(
-                STATE_READY,
-                R.state_ready,
-                R.state_reset,
-                StateType.ReadOnly,
-                isSignaled = false,
-                codeRequired = false
-            )
-            states[STATE_EXECUTED] = State(
-                STATE_EXECUTED,
-                R.state_executed,
-                R.action_execute,
-                StateType.Control,
-                isSignaled = false,
-                codeRequired = false
-            )
-            return states
-        }
-
-
     private val commandField = StringField(FIELD_COMMAND, R.field_command_hint, 0, "sudo shutdown -h 0", RequiredStringValidator())
 
-    private val resetField = BooleanField(FIELD_RESET, R.field_reset_hint, 0, false)
+    override fun addExtraFields(result: MutableMap<String, FieldDefinition<*>>) {
+        result[FIELD_COMMAND] = commandField
+    }
 
-    override val fieldDefinitions: Map<String, FieldDefinition<*>>
-        get() {
-            val result: MutableMap<String, FieldDefinition<*>> =
-                LinkedHashMap(super.fieldDefinitions)
-            result[FIELD_COMMAND] = commandField
-            result[FIELD_RESET] = resetField
-            return result
-        }
+    override fun executionCode() {
+        println("Execute")
+    }
+
     override val addNewRes = R.configurable_bash_script_action_add
 
     override val editRes = R.configurable_bash_script_action_edit
 
     companion object {
         const val FIELD_COMMAND = "command"
-        const val FIELD_RESET = "reset"
-        const val STATE_READY = "ready"
-        const val STATE_EXECUTED = "executed"
     }
 }

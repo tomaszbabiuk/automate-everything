@@ -1,7 +1,7 @@
 package eu.automateeverything.coreplugin
 
-import eu.automateeverything.coreplugin.BashScriptActionConfigurable.Companion.STATE_EXECUTED
-import eu.automateeverything.coreplugin.BashScriptActionConfigurable.Companion.STATE_READY
+import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_EXECUTED
+import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_READY
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
@@ -11,18 +11,19 @@ import java.lang.Exception
 import kotlin.Throws
 import java.util.Calendar
 
-class BashScriptActionAutomationUnit(
+class ActionAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instanceDto: InstanceDto,
     name: String,
     private val resetRequired: Boolean,
-    states: Map<String, State>
+    states: Map<String, State>,
+    private val executionCode: () -> Unit
 ) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (state == STATE_EXECUTED) {
-            doExecute()
+            executionCode()
             if (!resetRequired) {
                 changeState(STATE_READY)
             }
@@ -38,10 +39,6 @@ class BashScriptActionAutomationUnit(
                 onlyOneState(STATE_READY)
             }
         }
-    }
-
-    private fun doExecute() {
-        println("Execute")
     }
 
     override val usedPortsIds: Array<String> = arrayOf()
