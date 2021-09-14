@@ -15,7 +15,7 @@ abstract class StateDeviceAutomationUnit(
     private val instanceDto: InstanceDto,
     name: String,
     protected val states: Map<String, State>,
-    protected val requiresExtendedWidth: Boolean) :
+    private val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), IStateDeviceAutomationUnit {
 
     private var lastNotes: MutableMap<String, Resource> = HashMap()
@@ -37,6 +37,10 @@ abstract class StateDeviceAutomationUnit(
     protected fun onlyOneState(stateId: String): NextStatesDto {
         val nextStates = listOf(states[stateId]!!)
         return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
+    }
+
+    protected fun zeroStates(): NextStatesDto {
+        return NextStatesDto(listOf(), currentState.id, requiresExtendedWidth)
     }
 
     override fun changeState(state: String, code: String?, actor: String?) {

@@ -1,5 +1,7 @@
 package eu.automateeverything.coreplugin
 
+import eu.geekhome.data.automation.ControlState
+import eu.geekhome.data.automation.ReadOnlyState
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
@@ -149,45 +151,31 @@ class TimedOnOffDeviceConfigurable(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = LinkedHashMap()
-            states[STATE_UNKNOWN] = State(
+            states[STATE_UNKNOWN] = ReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
-                R.state_unknown,
-                StateType.ReadOnly,
-                isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_ON] = State(
+            states[STATE_ON] = ControlState(
                 STATE_ON,
                 R.state_on,
                 R.state_on,
-                StateType.Control,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_ON_COUNTING] = State(
+            states[STATE_ON_COUNTING] = ControlState(
                 STATE_ON_COUNTING,
                 R.state_on_counting,
                 R.state_on,
-                StateType.Control,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_OFF_BREAK] = State(
+            states[STATE_OFF_BREAK] = ReadOnlyState(
                 STATE_OFF_BREAK,
                 R.state_off_break,
-                R.state_off_break,
-                StateType.ReadOnly,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_OFF] = State(
+            states[STATE_OFF] = ControlState(
                 STATE_OFF,
                 R.state_forced_off,
                 R.state_off,
-                StateType.Control,
-                isSignaled = false,
-                codeRequired = false
             )
             return states
         }

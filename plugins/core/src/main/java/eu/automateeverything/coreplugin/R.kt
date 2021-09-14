@@ -368,9 +368,19 @@ object R {
         "Wykonaj"
     )
 
-    val state_executed = Resource(
-        "Executed",
-        "Wykonano"
+    val state_executing = Resource(
+        "Executing",
+        "Wykonywanie"
+    )
+
+    val state_success = Resource(
+        "Success",
+        "Sukces"
+    )
+
+    val state_failure = Resource(
+        "Failure",
+        "Porażka"
     )
 
     val action_reset = Resource(

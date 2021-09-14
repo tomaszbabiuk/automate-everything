@@ -43,13 +43,15 @@ class BashScriptActionConfigurable(
         result[FIELD_COMMAND] = commandField
     }
 
-    override fun executionCode(instance: InstanceDto): String {
+    override fun executionCode(instance: InstanceDto): Pair<Boolean,String> {
         val cmd = instance.fields[FIELD_COMMAND]!!
         val run = Runtime.getRuntime()
         val pr = run.exec(cmd)
         pr.waitFor()
         val buf = BufferedReader(InputStreamReader(pr.inputStream))
-        return buf.lines().collect(Collectors.joining(System.lineSeparator()))
+        val result = buf.lines().collect(Collectors.joining(System.lineSeparator()))
+        val success = pr.exitValue() == 0
+        return Pair(success, result)
     }
 
     override val addNewRes = R.configurable_bash_script_action_add

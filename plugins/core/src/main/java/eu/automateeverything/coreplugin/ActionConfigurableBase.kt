@@ -1,7 +1,8 @@
 package eu.automateeverything.coreplugin
 
+import eu.geekhome.data.automation.ControlState
+import eu.geekhome.data.automation.ReadOnlyState
 import eu.geekhome.data.automation.State
-import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.StateChangeReporter
@@ -29,29 +30,27 @@ abstract class ActionConfigurableBase(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = State(
+            states[STATE_UNKNOWN] = ReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
-                R.state_unknown,
-                StateType.ReadOnly,
-                isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_READY] = State(
+            states[STATE_READY] = ControlState(
                 STATE_READY,
                 R.state_ready,
-                R.state_reset,
-                StateType.ReadOnly,
-                isSignaled = false,
-                codeRequired = false
+                R.action_reset
             )
-            states[STATE_EXECUTED] = State(
-                STATE_EXECUTED,
-                R.state_executed,
-                R.action_execute,
-                StateType.Control,
-                isSignaled = false,
-                codeRequired = false
+            states[STATE_SUCCESS] = ReadOnlyState(
+                STATE_SUCCESS,
+                R.state_success,
+            )
+            states[STATE_FAILURE] = ReadOnlyState(
+                STATE_FAILURE,
+                R.state_failure,
+            )
+            states[STATE_EXECUTING] = ControlState(
+                STATE_EXECUTING,
+                R.state_executing,
+                R.action_execute
             )
             return states
         }
@@ -69,12 +68,14 @@ abstract class ActionConfigurableBase(
 
     protected abstract fun addExtraFields(result: MutableMap<String, FieldDefinition<*>>)
 
-    protected abstract fun executionCode(instance: InstanceDto) : String
+    protected abstract fun executionCode(instance: InstanceDto) : Pair<Boolean,String>
 
     companion object {
         const val FIELD_RESET = "reset"
         const val STATE_READY = "ready"
-        const val STATE_EXECUTED = "executed"
+        const val STATE_EXECUTING = "executed"
+        const val STATE_SUCCESS = "success"
+        const val STATE_FAILURE = "failure"
         const val VALUE_TRUE = "1"
     }
 }

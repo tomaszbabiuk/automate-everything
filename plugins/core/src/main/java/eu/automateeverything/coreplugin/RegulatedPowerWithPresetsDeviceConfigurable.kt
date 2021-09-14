@@ -1,5 +1,7 @@
 package eu.automateeverything.coreplugin
 
+import eu.geekhome.data.automation.ControlState
+import eu.geekhome.data.automation.ReadOnlyState
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.instances.InstanceDto
@@ -84,61 +86,45 @@ class RegulatedPowerWithPresetsDeviceConfigurable(
     override val states: Map<String, State>
         get() {
             val states: LinkedHashMap<String, State> = LinkedHashMap()
-            states[STATE_UNKNOWN] = State(
+            states[STATE_UNKNOWN] = ReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
-                R.state_unknown,
-                StateType.ReadOnly,
-                isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_PRESET1] = State(
+            states[STATE_PRESET1] = ControlState(
                 STATE_PRESET1,
                 R.state_preset1,
                 Resource.createUniResource("1"),
-                StateType.Control,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_PRESET2] = State(
+            states[STATE_PRESET2] = ControlState(
                 STATE_PRESET2,
                 R.state_preset2,
                 Resource.createUniResource("2"),
-                StateType.Control,
                 isSignaled = true,
                 codeRequired = false
             )
-            states[STATE_PRESET3] = State(
+            states[STATE_PRESET3] = ControlState(
                 STATE_PRESET3,
                 R.state_preset3,
                 Resource.createUniResource("3"),
-                StateType.Control,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_PRESET4] = State(
+            states[STATE_PRESET4] = ControlState(
                 STATE_PRESET4,
                 R.state_preset4,
                 Resource.createUniResource("4"),
-                StateType.Control,
                 isSignaled = true,
-                codeRequired = false
             )
-            states[STATE_OFF] = State(
+            states[STATE_OFF] = ControlState(
                 STATE_OFF,
                 R.state_off,
                 R.state_off,
-                StateType.Control,
                 isSignaled = false,
-                codeRequired = false
             )
-            states[STATE_MANUAL] = State(
+            states[STATE_MANUAL] = ReadOnlyState(
                 STATE_MANUAL,
                 R.state_manual,
-                R.state_manual,
-                StateType.ReadOnly,
                 isSignaled = true,
-                codeRequired = false
             )
             return states
         }
