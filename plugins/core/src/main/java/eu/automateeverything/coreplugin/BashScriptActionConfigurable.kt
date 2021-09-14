@@ -5,6 +5,7 @@ import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.configurable.FieldDefinition
 import eu.geekhome.domain.configurable.RequiredStringValidator
+import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import eu.geekhome.domain.configurable.StringField
 import org.pf4j.Extension
 import java.io.BufferedReader
@@ -39,19 +40,28 @@ class BashScriptActionConfigurable(
 
     private val commandField = StringField(FIELD_COMMAND, R.field_command_hint, 0, "sudo shutdown -h 0", RequiredStringValidator())
 
-    override fun addExtraFields(result: MutableMap<String, FieldDefinition<*>>) {
-        result[FIELD_COMMAND] = commandField
-    }
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
+        get() {
+            val result: MutableMap<String, FieldDefinition<*>> = HashMap(super.fieldDefinitions)
+            result[FIELD_COMMAND] = commandField
+            return result
+        }
 
-    override fun executionCode(instance: InstanceDto): Pair<Boolean,String> {
+    override fun executionCode(instance: InstanceDto): Pair<Boolean,Resource> {
         val cmd = instance.fields[FIELD_COMMAND]!!
         val run = Runtime.getRuntime()
-        val pr = run.exec(cmd)
-        pr.waitFor()
-        val buf = BufferedReader(InputStreamReader(pr.inputStream))
-        val result = buf.lines().collect(Collectors.joining(System.lineSeparator()))
-        val success = pr.exitValue() == 0
-        return Pair(success, result)
+        try {
+            val pr = run.exec(cmd)
+            pr.waitFor()
+
+            val buf = BufferedReader(InputStreamReader(pr.inputStream))
+            val result = Resource.createUniResource(buf.lines().collect(Collectors.joining(System.lineSeparator())))
+            val success = pr.exitValue() == 0
+            return Pair(success, result)
+        } catch (ex: Exception) {
+            val result = Resource.createUniResource(ex.localizedMessage)
+            return Pair(false, result)
+        }
     }
 
     override val addNewRes = R.configurable_bash_script_action_add

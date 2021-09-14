@@ -1,5 +1,6 @@
 package eu.automateeverything.coreplugin
 
+import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_CANCELLED
 import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_EXECUTING
 import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_FAILURE
 import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_READY
@@ -14,35 +15,35 @@ import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.Throws
 import java.util.Calendar
-import javax.xml.bind.JAXBElement
 
 class ActionAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instanceDto: InstanceDto,
     name: String,
-    private val resetRequired: Boolean,
     states: Map<String, State>,
-    private val executionCode: () -> Pair<Boolean,String>
+    private val executionCode: () -> Pair<Boolean,Resource>
 ) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
 
     private var executionScope: CoroutineScope? = null
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
+        if (state == STATE_CANCELLED) {
+            executionScope?.cancel("Restarting...")
+        }
+
         if (state == STATE_EXECUTING) {
             executionScope?.cancel("Restarting...")
             executionScope = CoroutineScope(Dispatchers.IO)
             executionScope!!.launch {
                 val result = executionCode()
-                modifyNote(EVALUATION_OUTPUT, Resource.createUniResource(result.second))
-                if (result.first) {
-                    changeState(STATE_SUCCESS)
-                } else {
-                    changeState(STATE_FAILURE)
-                }
-
-                if (!resetRequired) {
-                    changeState(STATE_READY)
+                if (isActive) {
+                    modifyNote(EVALUATION_OUTPUT, result.second)
+                    if (result.first) {
+                        changeState(STATE_SUCCESS)
+                    } else {
+                        changeState(STATE_FAILURE)
+                    }
                 }
             }
         }
@@ -56,7 +57,7 @@ class ActionAutomationUnit(
     override fun buildNextStates(state: State): NextStatesDto {
         return when (state.id) {
             STATE_EXECUTING -> {
-                zeroStates()
+                onlyOneState(STATE_CANCELLED)
             }
             STATE_READY -> {
                 onlyOneState(STATE_EXECUTING)

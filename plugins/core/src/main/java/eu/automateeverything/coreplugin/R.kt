@@ -73,11 +73,6 @@ object R {
         "Szerekość geograficzna"
     )
 
-    val field_reset_hint = Resource(
-        "Reset is required after each execution",
-        "Wymagaj resetowania po każdym wywołaniu"
-    )
-
     val field_command_hint = Resource(
         "Bash command to execute",
         "Komenda bash do wykonania"
@@ -378,6 +373,11 @@ object R {
         "Sukces"
     )
 
+    val state_cancelled = Resource(
+        "Cancelled",
+        "Anulowano"
+    )
+
     val state_failure = Resource(
         "Failure",
         "Porażka"
@@ -388,8 +388,8 @@ object R {
         "Resetuj"
     )
 
-    val state_reset = Resource(
-        "Reset",
-        "Zresetowany"
+    val action_cancel = Resource(
+        "Cancel",
+        "Anuluj"
     )
 }

@@ -39,10 +39,6 @@ abstract class StateDeviceAutomationUnit(
         return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
     }
 
-    protected fun zeroStates(): NextStatesDto {
-        return NextStatesDto(listOf(), currentState.id, requiresExtendedWidth)
-    }
-
     override fun changeState(state: String, code: String?, actor: String?) {
         if (currentState.id != state) {
             currentState = states[state]!!

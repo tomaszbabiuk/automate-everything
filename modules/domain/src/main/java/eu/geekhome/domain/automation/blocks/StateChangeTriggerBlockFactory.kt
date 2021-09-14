@@ -1,7 +1,6 @@
 package eu.geekhome.domain.automation.blocks
 
 import eu.geekhome.data.automation.State
-import eu.geekhome.data.automation.StateType
 import eu.geekhome.data.blocks.RawJson
 import eu.geekhome.domain.R
 import eu.geekhome.domain.automation.*
@@ -9,11 +8,9 @@ import eu.geekhome.domain.automation.*
 class StateChangeTriggerBlockFactory(
     instanceId: Long,
     private val deviceName: String,
-    states: Map<String, State>) : TriggerBlockFactory {
+    private val states: Map<String, State>) : TriggerBlockFactory {
 
     override val category = CommonBlockCategories.Triggers
-
-    private val statesToControl = states.filter { it.value.type == StateType.Control }
 
     private val typePrefix = "trigger_statedevice_"
     override val type: String = typePrefix + instanceId
@@ -34,7 +31,7 @@ class StateChangeTriggerBlockFactory(
                    "type": "field_dropdown",
                    "name": "STATE_ID",
                    "options": [
-                     ${buildStateOptions(statesToControl, it)}
+                     ${buildStateOptions(states, it)}
                    ]
                  }
                ],
