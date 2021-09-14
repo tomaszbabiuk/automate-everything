@@ -29,11 +29,11 @@ class ActionAutomationUnit(
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (state == STATE_CANCELLED) {
-            executionScope?.cancel("Restarting...")
+            executionScope?.cancel("Cancelled...")
         }
 
         if (state == STATE_EXECUTING) {
-            executionScope?.cancel("Restarting...")
+            executionScope?.cancel("New execution, previous must be cancelled...")
             executionScope = CoroutineScope(Dispatchers.IO)
             executionScope!!.launch {
                 val result = executionCode()
