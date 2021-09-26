@@ -73,11 +73,6 @@ object R {
         "Szerekość geograficzna"
     )
 
-    val field_command_hint = Resource(
-        "Bash command to execute",
-        "Komenda bash do wykonania"
-    )
-
     val configurable_devices_title = Resource(
         "Devices",
         "Urządzenia"
@@ -86,36 +81,6 @@ object R {
     val configurable_devices_description = Resource(
         "Add/remove devices (sensors, relays, switches, etc.)",
         "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)"
-    )
-
-    val configurable_actions_title = Resource(
-        "Actions",
-        "Akcje"
-    )
-
-    val configurable_actions_description = Resource(
-        "Add/remove actions (sending messages, calling other systems, executing bash scripts, etc.)",
-        "Dodawaj/usuwaj akcje (np. wysyłanie wiadomości, uruchamianie skryptów, wywoływanie innych systemów itp.)"
-    )
-
-    val configurable_bash_script_action_title = Resource(
-        "Bash script",
-        "Skrypt bash"
-    )
-
-    val configurable_bash_script_action_description = Resource(
-        "Executes bash script",
-        "Uruchamia skrypt bash"
-    )
-
-    val configurable_bash_script_action_add = Resource(
-        "Add bash script action",
-        "Dodaj skrypt bash"
-    )
-
-    val configurable_bash_script_action_edit = Resource(
-        "Edit bash script",
-        "Edytuj skrypt bash"
     )
 
     val configurable_conditions_title = Resource(
@@ -351,45 +316,5 @@ object R {
     val state_manual = Resource(
         "Manual",
         "Manual"
-    )
-
-    val state_ready = Resource(
-        "Ready",
-        "Gotowe"
-    )
-
-    val action_execute = Resource(
-        "Execute",
-        "Wykonaj"
-    )
-
-    val state_executing = Resource(
-        "Executing",
-        "Wykonywanie"
-    )
-
-    val state_success = Resource(
-        "Success",
-        "Sukces"
-    )
-
-    val state_cancelled = Resource(
-        "Cancelled",
-        "Anulowano"
-    )
-
-    val state_failure = Resource(
-        "Failure",
-        "Porażka"
-    )
-
-    val action_reset = Resource(
-        "Reset",
-        "Resetuj"
-    )
-
-    val action_cancel = Resource(
-        "Cancel",
-        "Anuluj"
     )
 }

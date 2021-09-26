@@ -4,6 +4,7 @@ include "app-geekhome"
 
 include "modules:domain"
 include "modules:data"
+include "modules:actions"
 include "modules:repository-sqldelight"
 
 include 'plugins'
@@ -12,6 +13,7 @@ include 'plugins:core'
 include 'plugins:shelly'
 include 'plugins:afore'
 include 'plugins:crypto-trading'
+include 'plugins:bash-action'
 
 include 'plugin-features:lan-gateway'
 include 'plugin-features:mqtt'

@@ -1,10 +1,10 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.actions
 
-import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_CANCELLED
-import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_EXECUTING
-import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_FAILURE
-import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_READY
-import eu.automateeverything.coreplugin.ActionConfigurableBase.Companion.STATE_SUCCESS
+import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_CANCELLED
+import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_EXECUTING
+import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_FAILURE
+import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_READY
+import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_SUCCESS
 import eu.geekhome.data.automation.NextStatesDto
 import eu.geekhome.data.automation.State
 import eu.geekhome.data.instances.InstanceDto
@@ -33,7 +33,7 @@ class ActionAutomationUnit(
         }
 
         if (state == STATE_EXECUTING) {
-            executionScope?.cancel("New execution, previous must be cancelled...")
+            executionScope?.cancel("New execution, previous must have been cancelled...")
             executionScope = CoroutineScope(Dispatchers.IO)
             executionScope!!.launch {
                 val result = executionCode()

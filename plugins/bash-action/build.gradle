@@ -1,0 +1,20 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+dependencies {
+    //common
+    shadow project(':modules:data')
+    shadow project(':modules:domain')
+    shadow project(':modules:actions')
+
+    //pf4j
+    shadow "org.pf4j:pf4j:$pf4jVersion"
+    kapt "org.pf4j:pf4j:$pf4jVersion"
+    annotationProcessor "org.pf4j:pf4j:$pf4jVersion"
+
+    //kotlin
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+}

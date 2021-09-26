@@ -182,8 +182,8 @@ object R {
         "To pole jest nieprawidłowe"
     )
 
-    val validator_invalid_ip_address = Resource(
-        "Invalid ip address",
-        "Nieprawidłowy adres IP"
+    val state_unknown = Resource(
+        "Unknown",
+        "Nieznany"
     )
 }

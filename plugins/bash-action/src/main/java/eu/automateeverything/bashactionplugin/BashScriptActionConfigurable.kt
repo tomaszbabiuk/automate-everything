@@ -1,19 +1,17 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.bashactionplugin
 
+import eu.automateeverything.actions.ActionConfigurableBase
 import eu.geekhome.data.instances.InstanceDto
 import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.configurable.FieldDefinition
 import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
 import eu.geekhome.domain.configurable.StringField
 import org.pf4j.Extension
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
-import kotlin.streams.toList
 
 
 @Extension

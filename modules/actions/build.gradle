@@ -5,15 +5,10 @@ plugins {
 dependencies {
     //projects
     implementation project(":modules:data")
+    implementation project(":modules:domain")
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"
-
-    //gson
-    implementation "com.google.code.gson:gson:${gsonVersion}"
-
-    //xstream
-    implementation "com.thoughtworks.xstream:xstream:1.4.15"
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

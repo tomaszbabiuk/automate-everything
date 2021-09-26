@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.actions
 
 import eu.geekhome.data.automation.ControlState
 import eu.geekhome.data.automation.ReadOnlyState
@@ -8,9 +8,7 @@ import eu.geekhome.data.localization.Resource
 import eu.geekhome.domain.automation.DeviceAutomationUnit
 import eu.geekhome.domain.automation.StateChangeReporter
 import eu.geekhome.domain.configurable.ActionConfigurable
-import eu.geekhome.domain.configurable.BooleanField
 import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.configurable.FieldDefinition
 import java.util.HashMap
 
 abstract class ActionConfigurableBase(
@@ -32,7 +30,7 @@ abstract class ActionConfigurableBase(
             val states: MutableMap<String, State> = HashMap()
             states[STATE_UNKNOWN] = ReadOnlyState(
                 STATE_UNKNOWN,
-                R.state_unknown,
+                eu.geekhome.domain.R.state_unknown,
             )
             states[STATE_READY] = ControlState(
                 STATE_READY,
