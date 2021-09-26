@@ -20,7 +20,7 @@ repositories {
 
 sqldelight {
     Database {
-        packageName = "eu.geekhome.sqldelightplugin.database"
+        packageName = "eu.automateeverything.sqldelightplugin.database"
         dialect = "sqlite:3.24"
     }
 }

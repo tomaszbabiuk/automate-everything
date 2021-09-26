@@ -1,6 +1,6 @@
 package eu.automateeverything.actions
 
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.data.localization.Resource
 
 object R {
     val configurable_actions_title = Resource(

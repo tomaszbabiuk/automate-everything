@@ -1,7 +1,7 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.domain.automation.IValueNode
-import eu.geekhome.domain.hardware.PortValue
+import eu.automateeverything.domain.automation.IValueNode
+import eu.automateeverything.domain.hardware.PortValue
 import org.ta4j.core.BarSeries
 import org.ta4j.core.BaseBarSeries
 import org.ta4j.core.indicators.*

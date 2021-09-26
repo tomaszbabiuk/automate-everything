@@ -2,12 +2,12 @@ package eu.automateeverything.coreplugin
 
 import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
 import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
-import eu.geekhome.data.automation.State
-import eu.geekhome.data.instances.InstanceDto
-import eu.geekhome.domain.automation.StateChangeReporter
-import eu.geekhome.domain.automation.StateDeviceAutomationUnit
-import eu.geekhome.domain.hardware.OutputPort
-import eu.geekhome.domain.hardware.Relay
+import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.hardware.OutputPort
+import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
 import kotlin.Throws
 import java.util.Calendar

@@ -1,0 +1,31 @@
+package eu.automateeverything.aforeplugin
+
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import org.pf4j.PluginWrapper
+import eu.automateeverything.domain.hardware.HardwarePlugin
+import eu.automateeverything.domain.langateway.LanGatewayResolver
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.hardware.HardwareAdapter
+
+class AforePlugin(
+    wrapper: PluginWrapper,
+    private val lanGatewayResolver: LanGatewayResolver) : HardwarePlugin(wrapper), PluginMetadata {
+
+    override fun createAdapters(): List<HardwareAdapter<*>> {
+        val result = ArrayList<HardwareAdapter<*>>()
+        val adapter = AforeAdapter(pluginId, lanGatewayResolver)
+        result.add(adapter)
+        return result
+    }
+
+    override fun start() {
+        println("Starting AFORE plugin")
+    }
+
+    override fun stop() {
+        println("Stopping AFORE plugin")
+    }
+
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
+}

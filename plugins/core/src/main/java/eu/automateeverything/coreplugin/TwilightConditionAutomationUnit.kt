@@ -1,6 +1,6 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.domain.automation.EvaluableAutomationUnit
+import eu.automateeverything.domain.automation.EvaluableAutomationUnit
 import java.util.*
 import kotlin.math.acos
 import kotlin.math.asin

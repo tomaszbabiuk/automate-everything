@@ -46,8 +46,8 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
 
     //slf4j
-    implementation "org.slf4j:slf4j-api:1.7.5"
-    implementation "org.slf4j:slf4j-simple:1.6.4"
+    implementation "org.slf4j:slf4j-api:1.7.32"
+    implementation "org.slf4j:slf4j-simple:1.7.32"
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
@@ -55,7 +55,7 @@ dependencies {
 }
 
 shadowJar {
-    mainClassName = 'eu.geekhome.Main'
+    mainClassName = 'eu.automateeverything.Main'
 }
 
 compileJava {

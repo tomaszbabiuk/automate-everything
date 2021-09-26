@@ -1,14 +1,14 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.fields.Reference
-import eu.geekhome.data.fields.ReferenceType
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.automation.blocks.BlockCategory
-import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.configurable.ReferenceField
-import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
-import eu.geekhome.domain.hardware.PortFinder
+import eu.automateeverything.data.fields.Reference
+import eu.automateeverything.data.fields.ReferenceType
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.blocks.BlockCategory
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.configurable.ReferenceField
+import eu.automateeverything.domain.configurable.RequiredStringValidator
+import eu.automateeverything.domain.configurable.SinglePortSensorConfigurable
+import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension

@@ -1,8 +1,8 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.configurable.NameDescriptionConfigurable
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
+import eu.automateeverything.data.localization.Resource
 import org.pf4j.Extension
 
 @Extension

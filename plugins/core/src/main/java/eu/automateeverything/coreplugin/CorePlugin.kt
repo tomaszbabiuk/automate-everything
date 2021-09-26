@@ -1,7 +1,7 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.domain.extensibility.PluginMetadata
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import eu.automateeverything.data.localization.Resource
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 

@@ -1,9 +1,9 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.settings.SettingsDto
-import eu.geekhome.domain.events.EventsSink
-import eu.geekhome.domain.events.PortUpdateEventData
-import eu.geekhome.domain.hardware.HardwareAdapterBase
+import eu.automateeverything.data.settings.SettingsDto
+import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.PortUpdateEventData
+import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
 import org.ta4j.core.BaseBar
 import java.util.*

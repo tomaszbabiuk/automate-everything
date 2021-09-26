@@ -1,6 +1,6 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.data.localization.Resource
 
 enum class Indicator(val label: Resource) {
     RSI14(R.indicator_rsi14),

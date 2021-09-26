@@ -1,12 +1,12 @@
 package eu.automateeverything.bashactionplugin
 
 import eu.automateeverything.actions.ActionConfigurableBase
-import eu.geekhome.data.instances.InstanceDto
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.automation.StateChangeReporter
-import eu.geekhome.domain.configurable.FieldDefinition
-import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.configurable.StringField
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.configurable.FieldDefinition
+import eu.automateeverything.domain.configurable.RequiredStringValidator
+import eu.automateeverything.domain.configurable.StringField
 import org.pf4j.Extension
 import java.io.BufferedReader
 import java.io.InputStreamReader

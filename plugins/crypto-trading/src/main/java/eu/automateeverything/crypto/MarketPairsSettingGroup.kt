@@ -1,8 +1,8 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.domain.configurable.FieldDefinition
-import eu.geekhome.domain.configurable.SettingGroup
-import eu.geekhome.domain.configurable.StringField
+import eu.automateeverything.domain.configurable.FieldDefinition
+import eu.automateeverything.domain.configurable.SettingGroup
+import eu.automateeverything.domain.configurable.StringField
 
 class MarketPairsSettingGroup : SettingGroup {
 

@@ -1,7 +1,7 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.hardware.PortValue
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.hardware.PortValue
 import kotlin.math.roundToInt
 
 class Ticker(

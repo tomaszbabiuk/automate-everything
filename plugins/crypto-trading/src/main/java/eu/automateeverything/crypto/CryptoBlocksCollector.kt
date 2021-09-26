@@ -1,9 +1,9 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.domain.automation.BlockFactory
-import eu.geekhome.domain.automation.blocks.BlockFactoriesCollector
-import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.hardware.PortFinder
+import eu.automateeverything.domain.automation.BlockFactory
+import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension

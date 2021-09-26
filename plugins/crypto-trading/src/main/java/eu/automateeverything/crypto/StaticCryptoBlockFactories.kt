@@ -1,8 +1,8 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.domain.automation.blocks.ComparisonBlockFactory
-import eu.geekhome.domain.automation.blocks.EquationBlockFactory
-import eu.geekhome.domain.automation.blocks.SimpleValueBlockFactory
+import eu.automateeverything.domain.automation.blocks.ComparisonBlockFactory
+import eu.automateeverything.domain.automation.blocks.EquationBlockFactory
+import eu.automateeverything.domain.automation.blocks.SimpleValueBlockFactory
 
 class TickerComparisonBlockFactory :
     ComparisonBlockFactory<Ticker>(Ticker::class.java, CryptoBlockCategories.Crypto)

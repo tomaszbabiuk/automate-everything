@@ -2,7 +2,7 @@
 
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.data.localization.Resource
 
 object R {
     val indicator_bol_upper = Resource(

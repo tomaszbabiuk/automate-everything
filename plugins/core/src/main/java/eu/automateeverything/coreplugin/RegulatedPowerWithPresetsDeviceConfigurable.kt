@@ -1,16 +1,15 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.data.automation.ControlState
-import eu.geekhome.data.automation.ReadOnlyState
-import eu.geekhome.data.automation.State
-import eu.geekhome.data.automation.StateType
-import eu.geekhome.data.instances.InstanceDto
-import eu.geekhome.domain.automation.DeviceAutomationUnit
-import eu.geekhome.domain.configurable.*
-import eu.geekhome.domain.hardware.PortFinder
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.automation.StateChangeReporter
-import eu.geekhome.domain.hardware.PowerLevel
+import eu.automateeverything.data.automation.ControlState
+import eu.automateeverything.data.automation.ReadOnlyState
+import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.hardware.PortFinder
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.hardware.PowerLevel
 import org.pf4j.Extension
 import kotlin.collections.LinkedHashMap
 

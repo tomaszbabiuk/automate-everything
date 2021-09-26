@@ -1,14 +1,14 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.domain.configurable.HumidityInputPortField
-import eu.geekhome.domain.configurable.RequiredStringValidator
-import eu.geekhome.domain.hardware.Humidity
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.automation.blocks.CommonBlockCategories
-import eu.geekhome.domain.automation.blocks.BlockCategory
-import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.configurable.SinglePortSensorConfigurable
-import eu.geekhome.domain.hardware.PortFinder
+import eu.automateeverything.domain.configurable.HumidityInputPortField
+import eu.automateeverything.domain.configurable.RequiredStringValidator
+import eu.automateeverything.domain.hardware.Humidity
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
+import eu.automateeverything.domain.automation.blocks.BlockCategory
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.configurable.SinglePortSensorConfigurable
+import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension

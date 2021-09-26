@@ -1,9 +1,9 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.data.instances.InstanceDto
-import eu.geekhome.domain.automation.EvaluableAutomationUnit
-import eu.geekhome.domain.configurable.*
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.automation.EvaluableAutomationUnit
+import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.data.localization.Resource
 import org.pf4j.Extension
 import java.util.*
 

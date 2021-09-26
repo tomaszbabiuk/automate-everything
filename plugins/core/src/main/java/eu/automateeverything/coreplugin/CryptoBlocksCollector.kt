@@ -1,11 +1,11 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.domain.automation.BlockFactory
-import eu.geekhome.domain.automation.blocks.*
-import eu.geekhome.domain.configurable.Configurable
-import eu.geekhome.domain.hardware.Humidity
-import eu.geekhome.domain.hardware.Temperature
-import eu.geekhome.domain.hardware.Wattage
+import eu.automateeverything.domain.automation.BlockFactory
+import eu.automateeverything.domain.automation.blocks.*
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.hardware.Humidity
+import eu.automateeverything.domain.hardware.Temperature
+import eu.automateeverything.domain.hardware.Wattage
 import org.pf4j.Extension
 
 @Extension

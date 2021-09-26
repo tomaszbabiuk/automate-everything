@@ -1,7 +1,7 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.data.blocks.RawJson
-import eu.geekhome.domain.automation.*
+import eu.automateeverything.data.blocks.RawJson
+import eu.automateeverything.domain.automation.*
 
 open class IndicatorValueBlockFactory(
     private val currencyPair: CurrencyPair,

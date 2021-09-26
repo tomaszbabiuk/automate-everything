@@ -1,6 +1,6 @@
 package eu.automateeverything.coreplugin
 
-import eu.geekhome.data.localization.Resource
+import eu.automateeverything.data.localization.Resource
 
 object R {
     val validator_max_should_exceed_min_time = Resource(

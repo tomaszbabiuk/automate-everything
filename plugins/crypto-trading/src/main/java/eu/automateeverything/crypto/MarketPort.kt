@@ -1,6 +1,6 @@
 package eu.automateeverything.crypto
 
-import eu.geekhome.domain.hardware.InputPort
+import eu.automateeverything.domain.hardware.InputPort
 import org.ta4j.core.BaseBar
 
 class MarketPort(

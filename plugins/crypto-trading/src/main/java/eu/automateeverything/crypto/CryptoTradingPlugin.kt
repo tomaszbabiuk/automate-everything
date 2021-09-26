@@ -2,11 +2,11 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.crypto.coingeckoapi.CoinGeckoApi
 import eu.automateeverything.crypto.coingeckoapi.CoinGeckoMarketProxy
-import eu.geekhome.data.localization.Resource
-import eu.geekhome.domain.configurable.SettingGroup
-import eu.geekhome.domain.extensibility.PluginMetadata
-import eu.geekhome.domain.hardware.HardwareAdapter
-import eu.geekhome.domain.hardware.HardwarePlugin
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.configurable.SettingGroup
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import eu.automateeverything.domain.hardware.HardwareAdapter
+import eu.automateeverything.domain.hardware.HardwarePlugin
 import org.pf4j.PluginWrapper
 
 class CryptoTradingPlugin(wrapper: PluginWrapper): HardwarePlugin(wrapper), PluginMetadata {
