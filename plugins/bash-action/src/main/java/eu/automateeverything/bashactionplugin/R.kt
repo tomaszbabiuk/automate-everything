@@ -27,4 +27,14 @@ object R {
         "Edit bash script",
         "Edytuj skrypt bash"
     )
+
+    val plugin_name = Resource(
+        "Bash action",
+        "Akcja bash (komenda)"
+    )
+
+    val plugin_description = Resource(
+        "Calls bash action",
+        "Wywołuje akcję systemową"
+    )
 }

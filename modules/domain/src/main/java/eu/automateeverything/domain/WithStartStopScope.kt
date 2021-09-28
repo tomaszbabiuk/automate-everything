@@ -12,7 +12,7 @@ abstract  class WithStartStopScope {
     }
 
     open fun stop() {
-        startStopScope?.cancel("Stopping ${this.javaClass.name}")
+        startStopScope.cancel("Stopping ${this.javaClass.name}")
     }
 
     private fun createNewScope() : CoroutineScope {

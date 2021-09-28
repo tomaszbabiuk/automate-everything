@@ -1,12 +1,12 @@
 # Welcome
-GeekHOME Server is a multiple purpose automation server. It can be a base for home automation systems, gardening controllers or even a complicated process controllers. Think of it like more plugin robust OpenHab or deeply customizable HomeAssistant.
+"Automate Everything" is a multiple purpose automation server. It can be a base for home automation systems, gardening controllers or even a complicated process controllers. Think of it like more plugin robust OpenHab or deeply customizable HomeAssistant.
 
 # State of the project
-The first GeekHOME Server had been created 10 years ago. The work on "This version 2.0" is in progress!
+The predecessor of "Automate Everything" was called "GeekHOME Server" had been created 10 years ago. This work is in progress!
 After UI related coding is done, all the functionality of geekHOME will be moved here.
 
 # Building
-GeekHOME needs gradle and npm to build. The most usable scripts and gradle tasks are:
+"Automate Everything" needs gradle and npm to build. The most usable scripts and gradle tasks are:
 
 * For building plugins:
 ```
@@ -15,20 +15,20 @@ GeekHOME needs gradle and npm to build. The most usable scripts and gradle tasks
 
 * For building frontend (user interface):
 ```
-cd app-geekhome/vuetify
+cd app-server/vuetify
 npm install
 npm run build
 ```
 
 * For building backend (the server):
 ```
-./gradlew :app-geekhome:shadowjar
+./gradlew :app:shadowjar
 ```
 
 # Directory structure
 After building, the directory structure should look like this:
 ```
-app-geekhome
+app
     |- build
     |   - libs
     |      - app-geekhome-all.jar
@@ -53,19 +53,19 @@ app-geekhome
 # Running
 * To run the server run:
 ```
-cd app-geekhome
-java -jar build/libs/app-geekhome-all.jar
+cd app-server
+java -jar build/libs/app-server-all.jar
 ```
 * or in debug mode:
 ```
-cd app-geekhome
+cd app-server
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar build/libs/app-geekhome-all.jar
 ```
 
 # Running in slow mode (for UI testing purpose)
 When using this option, all requests are going to be delayed for 5 seconds (good for UI testing).
 ```
-cd app-geekhome
+cd app-server
 java -jar build/libs/app-geekhome-all.jar -slow
 ```
 After starting, open *http://localhost* in your browser
