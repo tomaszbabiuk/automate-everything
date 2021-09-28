@@ -16,7 +16,7 @@ subprojects {
     }
 }
 
-ext.pluginsDir = rootProject.buildDir.path + '/../app-geekhome/plugins'
+ext.pluginsDir = rootProject.buildDir.path + '/../app-server/plugins'
 
 task cleanAll {
     subprojects.each {
