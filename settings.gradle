@@ -16,7 +16,7 @@ include 'plugins:shelly'
 include 'plugins:afore'
 include 'plugins:crypto-trading'
 include 'plugins:bash-action'
-include 'plugins:gmail-action'
+include 'plugins:email-action'
 
 //features used by the plugins
 include 'plugin-features:lan-gateway'

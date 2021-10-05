@@ -3,15 +3,6 @@ package eu.automateeverything.actions
 import eu.automateeverything.data.localization.Resource
 
 object R {
-    val configurable_actions_title = Resource(
-        "Actions",
-        "Akcje"
-    )
-
-    val configurable_actions_description = Resource(
-        "Add/remove actions (sending messages, calling other systems, executing bash scripts, etc.)",
-        "Dodawaj/usuwaj akcje (np. wysyłanie wiadomości, uruchamianie skryptów, wywoływanie innych systemów itp.)"
-    )
 
     val state_ready = Resource(
         "Ready",
@@ -52,4 +43,15 @@ object R {
         "Cancel",
         "Anuluj"
     )
+
+    val configurable_actions_title = Resource(
+        "Actions",
+        "Akcje"
+    )
+
+    val configurable_actions_description = Resource(
+        "Add/remove actions (sending messages, calling other systems, executing bash scripts, etc.)",
+        "Dodawaj/usuwaj akcje (np. wysyłanie wiadomości, uruchamianie skryptów, wywoływanie innych systemów itp.)"
+    )
+
 }

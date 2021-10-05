@@ -14,6 +14,9 @@ dependencies {
     kapt "org.pf4j:pf4j:$pf4jVersion"
     annotationProcessor "org.pf4j:pf4j:$pf4jVersion"
 
+    //email
+    implementation 'javax.mail:mail:1.4.7'
+
     //kotlin
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"

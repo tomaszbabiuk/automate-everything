@@ -2,11 +2,13 @@ package eu.automateeverything.domain.extensibility
 
 import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.configurable.ActionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PluginEventData
 import org.pf4j.*
+
 
 class SingletonExtensionPluginsCoordinator(
     private val liveEvents: EventsSink,
@@ -20,6 +22,12 @@ class SingletonExtensionPluginsCoordinator(
 
         override fun createPluginFactory(): PluginFactory {
             return PluginFactoryWithDI(injectionRegistry)
+        }
+
+        override fun createExtensionFinder(): ExtensionFinder {
+            val extensionFinder = super.createExtensionFinder() as DefaultExtensionFinder
+            extensionFinder.addServiceProviderExtensionFinder()
+            return extensionFinder
         }
 
         init {
@@ -73,7 +81,7 @@ class SingletonExtensionPluginsCoordinator(
     }
 
     override val configurables: List<Configurable>
-        get() = wrapped.getExtensions(Configurable::class.java)
+        get()  = wrapped.getExtensions(Configurable::class.java)
 
     override val blockFactories: List<BlockFactory<*>>
         get() = wrapped.getExtensions(BlockFactory::class.java)
