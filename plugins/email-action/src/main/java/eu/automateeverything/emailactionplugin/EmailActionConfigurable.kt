@@ -10,24 +10,22 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 import javax.net.ssl.SSLSocketFactory
 
-
 @Extension
 class EmailActionConfigurable(stateChangeReporter: StateChangeReporter) :
     ActionConfigurableBase(stateChangeReporter) {
 
     override val titleRes: Resource
-        get() = R.configurable_gmail_action_title
+        get() = R.configurable_email_action_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_gmail_action_description
+        get() = R.configurable_email_action_description
 
     override val iconRaw: String
         get() = """
-            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:se="http://svg-edit.googlecode.com" data-name="Layer 1">
-             <title>big4_outline</title>
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
              <g class="layer">
-              <title>terminal by Hare Krishna from the Noun Project</title>
-              <path d="m87.83,12.83l-75.66,0a8,8 0 0 0 -8,8l0,54.67a8,8 0 0 0 8,8l75.66,0a8,8 0 0 0 8,-8l0,-54.67a8,8 0 0 0 -8,-8zm4,62.67a4,4 0 0 1 -4,4l-75.66,0a4,4 0 0 1 -4,-4l0,-54.67a4,4 0 0 1 4,-4l75.66,0a4,4 0 0 1 4,4l0,54.67zm-60,-40.33a2,2 0 0 1 0,2.83l-8.83,8.83a2,2 0 0 1 -2.83,-2.83l7.42,-7.42l-7.5,-7.5a2,2 0 0 1 2.83,-2.83l8.91,8.92zm21.17,10.25a2,2 0 0 1 -2,2l-14.5,0a2,2 0 0 1 0,-4l14.5,0a2,2 0 0 1 2,2z" id="svg_1"/>
+              <title>Layer 1</title>
+              <path d="m89.38897,39.371l-4.331,0l-1.188,3.482c-1.242,-3.874 -4.398,-4.73 -6.366,-4.73c-2.762,-0.063 -5.787,1.381 -7.235,2.43c-3.871,2.952 -6.365,7.821 -6.365,12.486c0,4.859 3.542,9.525 8.344,9.525c0.851,0 1.837,-0.131 2.821,-0.463c2.896,-0.984 4.009,-2.626 4.799,-3.35c0.325,3.414 3.937,3.943 6.239,3.943c6.569,0 14.393,-7.227 13.868,-17.741c-0.527,-10.575 -11.109,-17.675 -20.964,-18.134c-2.003,-0.092 -3.953,0.044 -5.835,0.379l0,-0.829l-73.176,0l0,47.262l73.176,0l0,-0.524c0.717,0.066 1.437,0.103 2.154,0.103c4.271,0 9.137,-1.116 12.29,-2.236l-1.515,-3.545c-12.878,4.988 -27.99,-0.392 -29.629,-14.848c-1.249,-10.713 10.049,-22.277 20.695,-21.947c12.09,0.39 18.726,8.603 18.726,14.916c0,7.095 -5.125,13.466 -9.396,13.466c-1.571,0 -2.428,-0.985 -2.493,-2.437c0,-0.717 0.588,-2.427 0.852,-3.345l4.529,-13.863zm-10.18,16.227c-1.053,1.647 -3.023,3.553 -5.193,3.553c-1.25,0 -2.693,-0.397 -3.938,-2.038c-1.118,-1.451 -1.381,-3.024 -1.381,-4.402c0,-2.106 0.983,-5.851 3.155,-8.151c1.445,-1.512 2.826,-2.824 5.515,-2.824c3.422,0 4.471,2.167 4.599,4.006c0.266,2.761 -1.311,7.626 -2.757,9.856zm-17.329,-24.656l-25.291,16.337l-25.293,-16.337l50.584,0zm-0.47,38.115l-56.836,0l0,-36.984l32.015,20.651l17.862,-11.538c-2.006,4.051 -2.919,8.658 -2.381,13.428c0.718,6.254 4.401,11.217 9.34,14.443z" fill="black" id="svg_1"/>
              </g>
             </svg>
         """.trimIndent()
@@ -37,17 +35,15 @@ class EmailActionConfigurable(stateChangeReporter: StateChangeReporter) :
         return Pair(true, Resource.createUniResource("ok"))
     }
 
-    override val addNewRes = R.configurable_gmail_action_add
+    override val addNewRes = R.configurable_email_action_add
 
-    override val editRes = R.configurable_gmail_action_edit
+    override val editRes = R.configurable_email_action_edit
 
-    companion object {
-        const val FIELD_COMMAND = "command"
-    }
 
     @Throws(MessagingException::class)
     private fun sendEmailInternal(targetUser: String, subject: String, content: String) {
         val session = startSession()!!
+        throw Exception("dupa")
         val message: Message = composeEmailMessage(session, targetUser, subject, content)
         Transport.send(message)
     }
@@ -56,7 +52,7 @@ class EmailActionConfigurable(stateChangeReporter: StateChangeReporter) :
     private fun composeEmailMessage(session: Session, to: String, subject: String, content: String): Message {
         val message: Message = MimeMessage(session)
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
-        message.setSubject(subject)
+        message.subject = subject
         message.setText(content)
         return message
     }

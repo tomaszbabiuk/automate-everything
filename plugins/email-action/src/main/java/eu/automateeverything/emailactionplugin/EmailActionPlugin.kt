@@ -2,6 +2,7 @@ package eu.automateeverything.emailactionplugin
 
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.emailactionplugin.R
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
@@ -15,4 +16,7 @@ class EmailActionPlugin(wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadat
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+
+    override val settingGroups: List<SettingGroup>
+        get() = listOf(SMTPSettingGroup())
 }

@@ -100,7 +100,7 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
         if (thisDevice is StateDeviceConfigurable) {
             return thisDevice
                 .states
-                .filter { it.value.type != StateType.ReadOnly }
+                .filter { it.value.type == StateType.Control && it.value.action != null }
                 .map {
                     ChangeStateBlockFactory(it.value)
                 }

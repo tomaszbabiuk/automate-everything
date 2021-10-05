@@ -18,7 +18,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
                      "colour": ${category.color},
                      "tooltip": null,
                      "helpUrl": null,
-                     "message0": "${state.name.getValue(it)}",
+                     "message0": "${state.action!!.getValue(it)}",
                      "previousStatement": null,
                      "nextStatement": null }
                 """.trimIndent()

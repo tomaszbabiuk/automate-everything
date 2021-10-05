@@ -3,33 +3,57 @@ package eu.automateeverything.emailactionplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
-
-    val configurable_gmail_action_edit = Resource(
-        "Edit Gmail action",
-        "Edytuj akcję Gmail"
+    val field_username = Resource(
+        "Username",
+        "Nazwa użytkownika"
     )
-    val configurable_gmail_action_add = Resource(
-        "Add Gmail action",
-        "Dodaj akcję Gmail"
+
+    val field_password = Resource(
+        "Password",
+        "Hasło"
+    )
+
+    val field_host = Resource(
+        "Host address",
+        "Adres hosta"
+    )
+
+    val smtp_settings_title = Resource(
+        "SMTP configuration",
+        "Ustawienia SMTP"
+    )
+
+    val smtp_settings_description = Resource(
+        "SMTP server parameters",
+        "Parametry serwera SMTP"
+    )
+
+    val configurable_email_action_edit = Resource(
+        "Edit e-mail action",
+        "Edytuj akcję e-mail"
+    )
+    val configurable_email_action_add = Resource(
+        "Add e-mail action",
+        "Dodaj akcję e-mail"
     )
 
     val plugin_name = Resource(
-        "Gmail action",
-        "Akcja gmail"
+        "E-mail action",
+        "Akcja e-mail"
     )
 
     val plugin_description = Resource(
-        "Contains 'Gmail action' object that allows to send an email using Gmail account",
-        "Zawiera obiekt 'Akcja gmail' pozwalający wysyłać maile używając konta Gmail"
+        "Contains e-mail sending action",
+        "Zawiera akcję pozwalającą na wysyłanie poczty elektronicznej"
     )
 
-    val configurable_gmail_action_title = Resource(
-        "Gmail action",
-        "Akcja Gmail"
+    val configurable_email_action_title = Resource(
+        "E-mail action",
+        "Akcja e-mail"
     )
 
-    val configurable_gmail_action_description = Resource(
-        "Sends an email using Gmail account",
-        "Wysyła email używając konta Gmail"
+    val configurable_email_action_description = Resource(
+        "Sends an e-mail",
+        "Wysyła e-mail"
     )
 }

@@ -36,14 +36,19 @@ class ActionAutomationUnit(
             executionScope?.cancel("New execution, previous must have been cancelled...")
             executionScope = CoroutineScope(Dispatchers.IO)
             executionScope!!.launch {
-                val result = executionCode()
-                if (isActive) {
-                    modifyNote(EVALUATION_OUTPUT, result.second)
-                    if (result.first) {
-                        changeState(STATE_SUCCESS)
-                    } else {
-                        changeState(STATE_FAILURE)
+                try {
+                    val result = executionCode()
+                    if (isActive) {
+                        modifyNote(EVALUATION_OUTPUT, result.second)
+                        if (result.first) {
+                            changeState(STATE_SUCCESS)
+                        } else {
+                            changeState(STATE_FAILURE)
+                        }
                     }
+                } catch (ex: Exception) {
+                    modifyNote(EVALUATION_OUTPUT, Resource.createUniResource(ex.message!!))
+                    changeState(STATE_FAILURE)
                 }
             }
         }
