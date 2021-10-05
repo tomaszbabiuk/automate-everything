@@ -15,6 +15,8 @@ interface PluginsCoordinator {
     fun addPluginStateListener(listener: PluginStateListener)
     fun getPluginWrapper(pluginId: String): PluginWrapper?
     fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
+    fun getPluginSettingGroups(pluginWrapper: PluginWrapper) : List<SettingGroup>
+    fun findExtensionOwner(extensionClazz: Class<*>): PluginWrapper?
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val blockFactories: List<BlockFactory<*>>

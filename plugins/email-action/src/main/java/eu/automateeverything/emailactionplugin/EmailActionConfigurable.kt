@@ -4,6 +4,7 @@ import eu.automateeverything.actions.ActionConfigurableBase
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.Extension
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -11,8 +12,9 @@ import javax.mail.internet.MimeMessage
 import javax.net.ssl.SSLSocketFactory
 
 @Extension
-class EmailActionConfigurable(stateChangeReporter: StateChangeReporter) :
-    ActionConfigurableBase(stateChangeReporter) {
+class EmailActionConfigurable(
+    stateChangeReporter: StateChangeReporter,
+    settingsResolver: SettingsResolver) : ActionConfigurableBase(stateChangeReporter) {
 
     override val titleRes: Resource
         get() = R.configurable_email_action_title
@@ -75,5 +77,9 @@ class EmailActionConfigurable(stateChangeReporter: StateChangeReporter) :
                     return PasswordAuthentication(settingsUser, settingsPassword)
                 }
             })
+    }
+
+    init {
+        println("Here I am")
     }
 }

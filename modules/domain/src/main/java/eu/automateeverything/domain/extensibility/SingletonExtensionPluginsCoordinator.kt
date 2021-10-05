@@ -1,8 +1,8 @@
 package eu.automateeverything.domain.extensibility
 
+import eu.automateeverything.data.Repository
 import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
-import eu.automateeverything.domain.configurable.ActionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.events.EventsSink
@@ -12,12 +12,14 @@ import org.pf4j.*
 
 class SingletonExtensionPluginsCoordinator(
     private val liveEvents: EventsSink,
-    private val injectionRegistry: InjectionRegistry
+    private val injectionRegistry: InjectionRegistry,
+    private val repository: Repository,
 ) : PluginsCoordinator {
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
-            return SingletonExtensionFactoryWithDI(injectionRegistry)
+            val extractor = ExtensionSettingsExtractor(this@SingletonExtensionPluginsCoordinator, repository)
+            return SingletonExtensionFactoryWithDI(injectionRegistry, extractor)
         }
 
         override fun createPluginFactory(): PluginFactory {
@@ -49,6 +51,20 @@ class SingletonExtensionPluginsCoordinator(
         val pluginWrapper = getPluginWrapper(pluginId) ?: return listOf()
         val metadata = pluginWrapper.plugin as PluginMetadata
         return metadata.settingGroups
+    }
+
+    override fun getPluginSettingGroups(pluginWrapper: PluginWrapper): List<SettingGroup> {
+        val metadata = pluginWrapper.plugin as PluginMetadata
+        return metadata.settingGroups
+    }
+
+    override fun findExtensionOwner(extensionClazz: Class<*>): PluginWrapper? {
+        return wrapped
+            .plugins.firstOrNull {
+                wrapped
+                    .getExtensionClasses(it.pluginId)
+                    .contains(extensionClazz)
+            }
     }
 
     override fun enablePlugin(pluginId: String): PluginWrapper? {

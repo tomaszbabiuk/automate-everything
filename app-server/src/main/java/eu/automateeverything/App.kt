@@ -33,7 +33,7 @@ open class App : ResourceConfig() {
     private val eventsSink: EventsSink = NumberedEventsSink()
     private val repository: Repository = SqlDelightRepository()
     private val inbox: Inbox = BroadcastingInbox(eventsSink, repository)
-    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventsSink, injectionRegistry)
+    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventsSink, injectionRegistry, repository)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = MasterBlockFactoriesCollector(pluginsCoordinator, repository)
     private val stateChangeReporter: StateChangeReporter = BroadcastingStateChangeReporter(eventsSink)
