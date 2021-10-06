@@ -8,6 +8,7 @@ import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_SUCC
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
@@ -46,6 +47,9 @@ class ActionAutomationUnit(
                             changeState(STATE_FAILURE)
                         }
                     }
+                } catch (ex: LocalizedException) {
+                    modifyNote(EVALUATION_OUTPUT, ex.localizedMessage)
+                    changeState(STATE_FAILURE)
                 } catch (ex: Exception) {
                     modifyNote(EVALUATION_OUTPUT, Resource.createUniResource(ex.message!!))
                     changeState(STATE_FAILURE)

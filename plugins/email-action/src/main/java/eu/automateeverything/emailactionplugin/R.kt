@@ -56,4 +56,19 @@ object R {
         "Sends an e-mail",
         "Wysyła e-mail"
     )
+
+    val error_host_not_defined = Resource(
+        "SMTP 'host' not defined! You can edit this in the settings of 'Email action' plugin",
+        "Adres 'hosta' SMTP nie jest zdefiniowany. Można go wprowadzić w ustawieniach rozszerzenia 'Akcja e-mail'"
+    )
+
+    val error_username_not_defined = Resource(
+        "SMTP 'username' not defined! You can edit this in the settings of 'Email action' plugin",
+        "'Nazwa użytkownika' SMTP nie jest zdefiniowana. Można ją wprowadzić w ustawieniach rozszerzenia 'Akcja e-mail'"
+    )
+
+    val error_password_not_defined = Resource(
+        "SMTP 'username' not defined! You can edit this in the settings of 'Email action' plugin",
+        "'Hasło' SMTP nie jest zdefiniowane. Można je wprowadzić w ustawieniach rozszerzenia 'Akcja e-mail'"
+    )
 }

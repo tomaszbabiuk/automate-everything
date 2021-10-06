@@ -17,6 +17,7 @@ import ConfigurableBlockConfigurator from './components/ae/configurable/BlockCon
 
 import SettingsForm from './components/ae/settings/Form'
 import SettingsStringField from './components/ae/settings/StringField'
+import SettingsPasswordStringField from './components/ae/settings/PasswordStringField'
 
 import PortControl from './components/ae/PortControl'
 
@@ -35,6 +36,7 @@ Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
 //settings
 Vue.component('settings-form', SettingsForm)
 Vue.component('settings-stringfield', SettingsStringField)
+Vue.component('settings-passwordstringfield', SettingsPasswordStringField)
 
 //geekhome
 Vue.component('portcontrol', PortControl)

@@ -2,9 +2,13 @@ package eu.automateeverything.emailactionplugin
 
 import eu.automateeverything.actions.ActionConfigurableBase
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.settings.SettingsResolver
+import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_HOST
+import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_PASSWORD
+import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_USERNAME
 import org.pf4j.Extension
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -15,6 +19,10 @@ import javax.net.ssl.SSLSocketFactory
 class EmailActionConfigurable(
     stateChangeReporter: StateChangeReporter,
     settingsResolver: SettingsResolver) : ActionConfigurableBase(stateChangeReporter) {
+
+    private var hostFromSettings: String?
+    private var usernameFromSettings: String?
+    private var passwordFromSettings: String?
 
     override val titleRes: Resource
         get() = R.configurable_email_action_title
@@ -45,7 +53,6 @@ class EmailActionConfigurable(
     @Throws(MessagingException::class)
     private fun sendEmailInternal(targetUser: String, subject: String, content: String) {
         val session = startSession()!!
-        throw Exception("dupa")
         val message: Message = composeEmailMessage(session, targetUser, subject, content)
         Transport.send(message)
     }
@@ -60,12 +67,19 @@ class EmailActionConfigurable(
     }
 
     private fun startSession(): Session? {
+        if (hostFromSettings == null) {
+            throw LocalizedException(R.error_host_not_defined)
+        }
+        if (usernameFromSettings == null) {
+            throw LocalizedException(R.error_username_not_defined)
+        }
+        if (passwordFromSettings == null) {
+            throw LocalizedException(R.error_password_not_defined)
+        }
+
         val props = System.getProperties()
-        val settingsSmtpHost = "smtp.gmail.com"
-        val settingsUser = "tomasz.babiuk@gmail.com"
-        val settingsPassword = "C@l1nk@wg2"
         props.setProperty("mail.store.protocol", "imaps")
-        props["mail.smtp.host"] = settingsSmtpHost
+        props["mail.smtp.host"] = hostFromSettings
         props["mail.smtp.socketFactory.port"] = "465"
         props["mail.smtp.socketFactory.class"] = SSLSocketFactory::class.java.name
         props["mail.smtp.auth"] = "true"
@@ -74,12 +88,15 @@ class EmailActionConfigurable(
         props["mail.imap.timeout"] = "30000"
             return Session.getDefaultInstance(props, object : Authenticator() {
                 override fun getPasswordAuthentication(): PasswordAuthentication {
-                    return PasswordAuthentication(settingsUser, settingsPassword)
+                    return PasswordAuthentication(usernameFromSettings, passwordFromSettings)
                 }
             })
     }
 
     init {
-        println("Here I am")
+        val settings = settingsResolver.resolve().first()
+        hostFromSettings = settings.fields[FIELD_HOST]
+        usernameFromSettings = settings.fields[FIELD_USERNAME]
+        passwordFromSettings = settings.fields[FIELD_PASSWORD]
     }
 }
