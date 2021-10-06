@@ -8,7 +8,7 @@ import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.data.localization.Resource
 import java.util.stream.Collectors
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class ConfigurableDtoMapper @Inject constructor(
     private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper

@@ -4,10 +4,10 @@ import eu.automateeverything.data.plugins.PluginDto
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.rest.ResourceNotFoundException
 import org.pf4j.PluginWrapper
-import javax.inject.Inject
-import javax.inject.Singleton
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Singleton
 @Path("plugins")

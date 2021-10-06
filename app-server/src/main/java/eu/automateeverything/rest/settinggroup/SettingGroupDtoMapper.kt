@@ -6,7 +6,7 @@ import eu.automateeverything.rest.MappingException
 import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper
 import eu.automateeverything.domain.configurable.*
 import java.util.stream.Collectors
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class SettingGroupDtoMapper @Inject constructor(
     private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper

@@ -6,11 +6,11 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.configurable.FieldValidationResult
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.extensibility.PluginMetadata
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.*
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 import kotlin.collections.HashMap
 
 typealias ValidationResultMap = Map<String, FieldValidationResult>
@@ -34,7 +34,7 @@ class SettingsController @Inject constructor(
     @GET
     @Path("/{pluginId}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getSettings(@PathParam("pluginId") pluginId: String, @Context request: HttpServletRequest?): Map<String, SettingsValuesMap> {
+    fun getSettings(@PathParam("pluginId") pluginId: String): Map<String, SettingsValuesMap> {
         val result = HashMap<String, SettingsValuesMap>()
         repository
             .getSettingsByPluginId(pluginId)

@@ -1,9 +1,8 @@
 package eu.automateeverything.rest;
 
-import javax.ws.rs.container.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
-import java.io.IOException;
+import jakarta.ws.rs.container.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 @PreMatching
@@ -13,14 +12,13 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
      * Method for ContainerRequestFilter.
      */
     @Override
-    public void filter(ContainerRequestContext request) throws IOException {
+    public void filter(ContainerRequestContext request) {
 
         // If it's a preflight request, we abort the request with
         // a 200 status, and the CORS headers are added in the
         // response filter method below.
         if (isPreflightRequest(request)) {
             request.abortWith(Response.ok().build());
-            return;
         }
     }
 
@@ -37,8 +35,7 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
      * Method for ContainerResponseFilter.
      */
     @Override
-    public void filter(ContainerRequestContext request, ContainerResponseContext response)
-            throws IOException {
+    public void filter(ContainerRequestContext request, ContainerResponseContext response) {
 
         // if there is no Origin header, then it is not a
         // cross origin request. We don't do anything.

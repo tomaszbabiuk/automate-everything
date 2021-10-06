@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn v-if="valueClazz == 'eu.geekhome.domain.hardware.Relay'" @click="togglePort()" :disabled="disabled">Toggle</v-btn>
-    <v-slider v-model="powerLevel" v-if="valueClazz == 'eu.geekhome.domain.hardware.PowerLevel'" hint="Changing" max="100" min="0"
+    <v-btn v-if="valueClazz == 'eu.automateeverything.domain.hardware.Relay'" @click="togglePort()" :disabled="disabled">Toggle</v-btn>
+    <v-slider v-model="powerLevel" v-if="valueClazz == 'eu.automateeverything.domain.hardware.PowerLevel'" hint="Changing" max="100" min="0"
        thumb-label @click="controlPowerLevel()" :disabled="disabled"></v-slider>
   </div>
 </template>

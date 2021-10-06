@@ -18,11 +18,7 @@ import javax.net.ssl.SSLSocketFactory
 @Extension
 class EmailActionConfigurable(
     stateChangeReporter: StateChangeReporter,
-    settingsResolver: SettingsResolver) : ActionConfigurableBase(stateChangeReporter) {
-
-    private var hostFromSettings: String?
-    private var usernameFromSettings: String?
-    private var passwordFromSettings: String?
+    private val settingsResolver: SettingsResolver) : ActionConfigurableBase(stateChangeReporter) {
 
     override val titleRes: Resource
         get() = R.configurable_email_action_title
@@ -67,36 +63,39 @@ class EmailActionConfigurable(
     }
 
     private fun startSession(): Session? {
-        if (hostFromSettings == null) {
-            throw LocalizedException(R.error_host_not_defined)
-        }
-        if (usernameFromSettings == null) {
-            throw LocalizedException(R.error_username_not_defined)
-        }
-        if (passwordFromSettings == null) {
-            throw LocalizedException(R.error_password_not_defined)
-        }
+        val settings = settingsResolver.resolve()
+        if (settings.size == 1) {
+            val hostFromSettings = settings[0].fields[FIELD_HOST]
+            val usernameFromSettings = settings[0].fields[FIELD_USERNAME]
+            val passwordFromSettings = settings[0].fields[FIELD_PASSWORD]
 
-        val props = System.getProperties()
-        props.setProperty("mail.store.protocol", "imaps")
-        props["mail.smtp.host"] = hostFromSettings
-        props["mail.smtp.socketFactory.port"] = "465"
-        props["mail.smtp.socketFactory.class"] = SSLSocketFactory::class.java.name
-        props["mail.smtp.auth"] = "true"
-        props["mail.smtp.port"] = "465"
-        props["mail.imap.connectiontimeout"] = "30000"
-        props["mail.imap.timeout"] = "30000"
+            if (hostFromSettings == null) {
+                throw LocalizedException(R.error_host_not_defined)
+            }
+            if (usernameFromSettings == null) {
+                throw LocalizedException(R.error_username_not_defined)
+            }
+            if (passwordFromSettings == null) {
+                throw LocalizedException(R.error_password_not_defined)
+            }
+
+            val props = System.getProperties()
+            props.setProperty("mail.store.protocol", "imaps")
+            props["mail.smtp.host"] = hostFromSettings
+            props["mail.smtp.socketFactory.port"] = "465"
+            props["mail.smtp.socketFactory.class"] = SSLSocketFactory::class.java.name
+            props["mail.smtp.auth"] = "true"
+            props["mail.smtp.port"] = "465"
+            props["mail.imap.connectiontimeout"] = "30000"
+            props["mail.imap.timeout"] = "30000"
             return Session.getDefaultInstance(props, object : Authenticator() {
                 override fun getPasswordAuthentication(): PasswordAuthentication {
                     return PasswordAuthentication(usernameFromSettings, passwordFromSettings)
                 }
             })
+        } else {
+            throw LocalizedException(R.error_no_settings)
+        }
     }
 
-    init {
-        val settings = settingsResolver.resolve().first()
-        hostFromSettings = settings.fields[FIELD_HOST]
-        usernameFromSettings = settings.fields[FIELD_USERNAME]
-        passwordFromSettings = settings.fields[FIELD_PASSWORD]
-    }
 }

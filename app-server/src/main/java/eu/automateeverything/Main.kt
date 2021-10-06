@@ -55,7 +55,7 @@ object Main {
         val restContext = ServletContextHandler()
         val serHol = restContext.addServlet(ServletContainer::class.java, "/rest/*")
         serHol.initOrder = 1
-        serHol.setInitParameter("javax.ws.rs.Application", applicationClazz.name)
+        serHol.setInitParameter("jakarta.ws.rs.Application", applicationClazz.name)
         return restContext
     }
 }

@@ -26,11 +26,11 @@ class SingletonExtensionPluginsCoordinator(
             return PluginFactoryWithDI(injectionRegistry)
         }
 
-        override fun createExtensionFinder(): ExtensionFinder {
-            val extensionFinder = super.createExtensionFinder() as DefaultExtensionFinder
-            extensionFinder.addServiceProviderExtensionFinder()
-            return extensionFinder
-        }
+//        override fun createExtensionFinder(): ExtensionFinder {
+//            val extensionFinder = super.createExtensionFinder() as DefaultExtensionFinder
+//            extensionFinder.addServiceProviderExtensionFinder()
+//            return extensionFinder
+//        }
 
         init {
             addPluginStateListener(this)

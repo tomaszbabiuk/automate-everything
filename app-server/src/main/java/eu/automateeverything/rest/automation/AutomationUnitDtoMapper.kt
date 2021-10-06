@@ -5,7 +5,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import kotlin.Throws
 import eu.automateeverything.rest.MappingException
 import eu.automateeverything.domain.automation.DeviceAutomationUnit
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class AutomationUnitDtoMapper @Inject constructor(
     private val evaluationResultDtoMapper: EvaluationResultDtoMapper

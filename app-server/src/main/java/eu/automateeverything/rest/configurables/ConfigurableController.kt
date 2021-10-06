@@ -1,15 +1,15 @@
 package eu.automateeverything.rest.configurables
 
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
-import javax.inject.Inject
-import javax.ws.rs.GET
-import javax.ws.rs.Produces
-import javax.servlet.http.HttpServletRequest
+import jakarta.inject.Inject
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Produces
 import eu.automateeverything.data.configurables.ConfigurableDto
+import jakarta.servlet.http.HttpServletRequest
 import java.util.stream.Collectors
-import javax.ws.rs.Path
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 
 @Path("configurables")
 class ConfigurableController @Inject constructor(
@@ -18,7 +18,7 @@ class ConfigurableController @Inject constructor(
 ) {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getConfigurables(@Context request: HttpServletRequest?): List<ConfigurableDto> {
+    fun getConfigurables(): List<ConfigurableDto> {
         return pluginsCoordinator
             .configurables
             .stream()

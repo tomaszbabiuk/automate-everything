@@ -7,7 +7,7 @@ import eu.automateeverything.rest.MappingException
 import eu.automateeverything.domain.events.AutomationStateEventData
 import eu.automateeverything.domain.events.AutomationUpdateEventData
 import eu.automateeverything.data.localization.Resource
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class AutomationHistoryDtoMapper @Inject constructor() {
 

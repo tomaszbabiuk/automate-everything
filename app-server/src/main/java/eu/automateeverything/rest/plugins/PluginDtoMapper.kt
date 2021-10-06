@@ -7,7 +7,7 @@ import org.pf4j.PluginWrapper
 import org.pf4j.PluginState
 import eu.automateeverything.domain.hardware.HardwarePlugin
 import eu.automateeverything.domain.extensibility.PluginMetadata
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class PluginDtoMapper @Inject constructor(
     private val settingsGroupDtoMapper: SettingGroupDtoMapper,

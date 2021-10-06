@@ -1,7 +1,7 @@
 package eu.automateeverything.rest;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.*;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.ext.*;
 import java.io.IOException;
 
 public class SlowDownInterceptor implements WriterInterceptor, ReaderInterceptor {

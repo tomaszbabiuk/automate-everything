@@ -3,7 +3,6 @@ package eu.automateeverything.emailactionplugin
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.SettingGroup
-import eu.automateeverything.emailactionplugin.R
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 

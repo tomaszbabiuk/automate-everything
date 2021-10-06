@@ -4,11 +4,11 @@ import eu.automateeverything.data.automationhistory.AutomationHistoryDto
 import eu.automateeverything.domain.events.AutomationStateEventData
 import eu.automateeverything.domain.events.AutomationUpdateEventData
 import eu.automateeverything.domain.events.EventsSink
-import javax.inject.Inject
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.core.MediaType
+import jakarta.inject.Inject
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
 
 @Path("automationhistory")
 class AutomationHistoryController @Inject constructor(

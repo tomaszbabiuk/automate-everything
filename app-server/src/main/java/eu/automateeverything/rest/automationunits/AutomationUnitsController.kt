@@ -7,9 +7,9 @@ import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.HardwareManager
 import java.lang.Exception
-import javax.inject.Inject
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Path("automationunits")
 class AutomationUnitsController @Inject constructor(

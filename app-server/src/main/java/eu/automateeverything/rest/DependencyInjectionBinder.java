@@ -23,7 +23,7 @@ import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 public class DependencyInjectionBinder extends AbstractBinder {
 

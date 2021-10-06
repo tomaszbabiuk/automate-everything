@@ -2,10 +2,10 @@ package eu.automateeverything.rest.hardware
 
 import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.events.EventsSink
-import javax.inject.Inject
+import jakarta.inject.Inject
 import eu.automateeverything.data.hardware.HardwareAdapterDto
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Path("hardwareadapters")
 class AdapterController @Inject constructor(

@@ -4,11 +4,11 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.inbox.InboxMessageDto
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.rest.ResourceNotFoundException
-import javax.inject.Inject
-import javax.servlet.http.HttpServletResponse
-import javax.ws.rs.*
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 
 @Path("inbox")
 class InboxController @Inject constructor(
@@ -46,7 +46,7 @@ class InboxController @Inject constructor(
     @PUT
     @Path("/{id}/read")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateRead(@PathParam("id") id: Long?, read: Boolean): InboxMessageDto {
+    fun updateRead(@PathParam("id") id: Long?): InboxMessageDto {
         if (id == null) {
             throw ResourceNotFoundException()
         }

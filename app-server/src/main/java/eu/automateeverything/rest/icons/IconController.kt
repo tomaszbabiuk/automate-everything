@@ -2,9 +2,9 @@ package eu.automateeverything.rest.icons
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.icons.IconDto
-import javax.inject.Inject
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Path("icons")
 class IconController @Inject constructor(private val repository: Repository) {

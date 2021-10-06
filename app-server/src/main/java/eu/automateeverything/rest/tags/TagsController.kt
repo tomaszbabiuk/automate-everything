@@ -2,9 +2,9 @@ package eu.automateeverything.rest.tags
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.tags.TagDto
-import javax.inject.Inject
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Path("tags")
 class TagsController @Inject constructor(private val repository: Repository) {

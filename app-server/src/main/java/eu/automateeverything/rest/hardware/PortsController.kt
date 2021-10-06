@@ -3,11 +3,11 @@ package eu.automateeverything.rest.hardware
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.hardware.HardwareManager
-import javax.inject.Inject
+import jakarta.inject.Inject
 import eu.automateeverything.rest.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
 
 @Path("ports")
 class PortsController @Inject constructor(
