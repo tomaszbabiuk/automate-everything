@@ -3,6 +3,21 @@ package eu.automateeverything.emailactionplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val field_recipient_hint = Resource(
+        "Recipient",
+        "Odbiorca"
+    )
+
+    val field_subject_hint = Resource(
+        "Subject",
+        "Subject"
+    )
+
+    val field_body_hint = Resource(
+        "Body",
+        "Treść"
+    )
+
     val field_username = Resource(
         "Username",
         "Nazwa użytkownika"

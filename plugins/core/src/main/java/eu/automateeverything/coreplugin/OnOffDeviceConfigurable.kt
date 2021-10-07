@@ -52,15 +52,10 @@ class OnOffDeviceConfigurable(
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        val portId = readPortId(instance)
+        val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port)
-    }
-
-    private fun readPortId(instance: InstanceDto): String {
-        val portFieldValue = instance.fields[FIELD_PORT]
-        return portField.builder.fromPersistableString(portFieldValue)
     }
 
     override val states: Map<String, State>

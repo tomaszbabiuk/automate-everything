@@ -5,15 +5,10 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.settings.SettingsResolver
-import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_HOST
-import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_PASSWORD
-import eu.automateeverything.emailactionplugin.SMTPSettingGroup.Companion.FIELD_USERNAME
 import org.pf4j.Extension
-import javax.mail.*
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeMessage
-import javax.net.ssl.SSLSocketFactory
+import java.util.HashMap
 
 @Extension
 class EmailActionConfigurable(
@@ -36,38 +31,30 @@ class EmailActionConfigurable(
             </svg>
         """.trimIndent()
 
+    private val recipientField = StringField(FIELD_RECIPIENT, R.field_recipient_hint, 0, "", RequiredStringValidator())
+    private val subjectField = StringField(FIELD_SUBJECT, R.field_subject_hint, 0, "", RequiredStringValidator())
+    private val bodyField = StringField(FIELD_BODY, R.field_body_hint, 0, "", RequiredStringValidator())
+
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
+        get() {
+            val result: MutableMap<String, FieldDefinition<*>> =
+                LinkedHashMap(super.fieldDefinitions)
+            result[FIELD_RECIPIENT] = recipientField
+            result[FIELD_SUBJECT] = subjectField
+            result[FIELD_BODY] = bodyField
+            return result
+        }
+
     override fun executionCode(instance: InstanceDto): Pair<Boolean,Resource> {
-        sendEmailInternal("tomasz.babiuk@gmail.com", "subject", "content")
-        return Pair(true, Resource.createUniResource("ok"))
-    }
+        val recipient = extractFieldValue(instance, recipientField)
+        val subject = extractFieldValue(instance, subjectField)
+        val body = extractFieldValue(instance, bodyField)
 
-    override val addNewRes = R.configurable_email_action_add
-
-    override val editRes = R.configurable_email_action_edit
-
-
-    @Throws(MessagingException::class)
-    private fun sendEmailInternal(targetUser: String, subject: String, content: String) {
-        val session = startSession()!!
-        val message: Message = composeEmailMessage(session, targetUser, subject, content)
-        Transport.send(message)
-    }
-
-    @Throws(MessagingException::class)
-    private fun composeEmailMessage(session: Session, to: String, subject: String, content: String): Message {
-        val message: Message = MimeMessage(session)
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
-        message.subject = subject
-        message.setText(content)
-        return message
-    }
-
-    private fun startSession(): Session? {
         val settings = settingsResolver.resolve()
         if (settings.size == 1) {
-            val hostFromSettings = settings[0].fields[FIELD_HOST]
-            val usernameFromSettings = settings[0].fields[FIELD_USERNAME]
-            val passwordFromSettings = settings[0].fields[FIELD_PASSWORD]
+            val hostFromSettings = settings[0].fields[SMTPSettingGroup.FIELD_HOST]
+            val usernameFromSettings = settings[0].fields[SMTPSettingGroup.FIELD_USERNAME]
+            val passwordFromSettings = settings[0].fields[SMTPSettingGroup.FIELD_PASSWORD]
 
             if (hostFromSettings == null) {
                 throw LocalizedException(R.error_host_not_defined)
@@ -79,23 +66,21 @@ class EmailActionConfigurable(
                 throw LocalizedException(R.error_password_not_defined)
             }
 
-            val props = System.getProperties()
-            props.setProperty("mail.store.protocol", "imaps")
-            props["mail.smtp.host"] = hostFromSettings
-            props["mail.smtp.socketFactory.port"] = "465"
-            props["mail.smtp.socketFactory.class"] = SSLSocketFactory::class.java.name
-            props["mail.smtp.auth"] = "true"
-            props["mail.smtp.port"] = "465"
-            props["mail.imap.connectiontimeout"] = "30000"
-            props["mail.imap.timeout"] = "30000"
-            return Session.getDefaultInstance(props, object : Authenticator() {
-                override fun getPasswordAuthentication(): PasswordAuthentication {
-                    return PasswordAuthentication(usernameFromSettings, passwordFromSettings)
-                }
-            })
+            EmailSender.sendEmailInternal(hostFromSettings, usernameFromSettings, passwordFromSettings, recipient, subject, body)
         } else {
             throw LocalizedException(R.error_no_settings)
         }
+
+        return Pair(true, Resource.createUniResource("ok"))
     }
 
+    override val addNewRes = R.configurable_email_action_add
+
+    override val editRes = R.configurable_email_action_edit
+
+    companion object {
+        const val FIELD_RECIPIENT = "recipient"
+        const val FIELD_SUBJECT = "subject"
+        const val FIELD_BODY = "body"
+    }
 }

@@ -46,7 +46,7 @@ class BashScriptActionConfigurable(
         }
 
     override fun executionCode(instance: InstanceDto): Pair<Boolean,Resource> {
-        val cmd = instance.fields[FIELD_COMMAND]!!
+        val cmd = extractFieldValue(instance, commandField)
         val run = Runtime.getRuntime()
         try {
             val pr = run.exec(cmd)

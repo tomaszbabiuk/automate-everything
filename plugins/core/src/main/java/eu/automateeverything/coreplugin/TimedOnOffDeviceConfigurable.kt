@@ -125,12 +125,12 @@ class TimedOnOffDeviceConfigurable(
     })
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        val portId = readPortId(instance)
+        val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
-        val name = instance.fields[FIELD_NAME]!!
-        val minWorkingTime = minTimeField.builder.fromPersistableString(instance.fields[FIELD_MIN_TIME])
-        val maxWorkingTime = maxTimeField.builder.fromPersistableString(instance.fields[FIELD_MAX_TIME])
-        val breakTime = breakTimeField.builder.fromPersistableString(instance.fields[FIELD_BREAK_TIME])
+        val name = extractFieldValue(instance, nameField)
+        val minWorkingTime = extractFieldValue(instance, minTimeField)
+        val maxWorkingTime = extractFieldValue(instance, maxTimeField)
+        val breakTime = extractFieldValue(instance, breakTimeField)
         return TimedOnOffDeviceAutomationUnit(
             stateChangeReporter,
             instance,
@@ -140,11 +140,6 @@ class TimedOnOffDeviceConfigurable(
             breakTime,
             states,
             port)
-    }
-
-    private fun readPortId(instance: InstanceDto): String {
-        val portFieldValue = instance.fields[FIELD_PORT]
-        return portField.builder.fromPersistableString(portFieldValue)
     }
 
     override val states: Map<String, State>

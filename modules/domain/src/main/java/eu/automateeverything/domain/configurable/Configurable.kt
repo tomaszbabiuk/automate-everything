@@ -17,6 +17,11 @@ interface Configurable : ExtensionPoint {
     val hasAutomation: Boolean
     val editableIcon: Boolean
     val taggable: Boolean
+
+    fun <T> extractFieldValue(instance: InstanceDto, field: FieldDefinition<T>) : T {
+        val rawValue = instance.fields[field.name]
+        return field.builder.fromPersistableString(rawValue)
+    }
 }
 
 interface ConfigurableWithFields : Configurable {

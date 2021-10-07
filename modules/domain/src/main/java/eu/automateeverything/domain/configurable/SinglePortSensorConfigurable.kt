@@ -14,15 +14,10 @@ abstract class SinglePortSensorConfigurable<T: PortValue>(
 ) : SensorConfigurable<T>(valueClazz) {
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<T> {
-        val portId = readPortId(instance)
+        val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields[FIELD_NAME]
         return SensorAutomationUnit(name, port)
-    }
-
-    private fun readPortId(instance: InstanceDto): String {
-        val portFieldValue = instance.fields[FIELD_PORT]
-        return portField.builder.fromPersistableString(portFieldValue)
     }
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>

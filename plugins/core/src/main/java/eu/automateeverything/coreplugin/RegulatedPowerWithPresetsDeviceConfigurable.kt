@@ -67,19 +67,14 @@ class RegulatedPowerWithPresetsDeviceConfigurable(
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
 
-        val portId = readPortId(instance)
+        val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
-        val name = instance.fields[FIELD_NAME]!!
-        val preset1 = instance.fields[FIELD_PRESET1]!!.toInt()
-        val preset2 = instance.fields[FIELD_PRESET2]!!.toInt()
-        val preset3 = instance.fields[FIELD_PRESET3]!!.toInt()
-        val preset4 = instance.fields[FIELD_PRESET4]!!.toInt()
+        val name = extractFieldValue(instance,nameField)
+        val preset1 = extractFieldValue(instance, preset1Field)
+        val preset2 = extractFieldValue(instance, preset2Field)
+        val preset3 = extractFieldValue(instance, preset3Field)
+        val preset4 = extractFieldValue(instance, preset4Field)
         return RegulatedPowerWithPresetsDeviceAutomationUnit(stateChangeReporter, instance, name, preset1, preset2, preset3, preset4, states, port)
-    }
-
-    private fun readPortId(instance: InstanceDto): String {
-        val portFieldValue = instance.fields[FIELD_PORT]
-        return portField.builder.fromPersistableString(portFieldValue)
     }
 
     override val states: Map<String, State>
