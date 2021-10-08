@@ -38,6 +38,6 @@ out
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-/app-geekhome/repository.sqlite
-/app-geekhome/firstrun.marker
+/app-server/repository.sqlite
+/app-server/firstrun.marker
 

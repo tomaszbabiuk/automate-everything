@@ -1,129 +1,121 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import eu.automateeverything.data.blocks.RawJson;
-import eu.automateeverything.data.localization.Language;
-import eu.automateeverything.data.localization.Resource;
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import eu.automateeverything.data.blocks.RawJson
+import eu.automateeverything.data.localization.Language
+import eu.automateeverything.data.localization.Resource
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.HttpHeaders
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.MultivaluedMap
+import jakarta.ws.rs.ext.MessageBodyReader
+import jakarta.ws.rs.ext.MessageBodyWriter
+import java.io.*
+import java.lang.reflect.Field
+import java.lang.reflect.Type
+import java.nio.charset.StandardCharsets
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.ext.MessageBodyReader;
-import jakarta.ws.rs.ext.MessageBodyWriter;
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Locale;
+class GsonMessageBodyHandler : MessageBodyWriter<Any?>, MessageBodyReader<Any> {
+    private val gsons = HashMap<Language, Gson>()
 
-public class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
-        MessageBodyReader<Object> {
-
-    private final HashMap<Language, Gson> _gsons = new HashMap<>();
-
-    public GsonMessageBodyHandler() {
-        for (Language language : Language.values()) {
-            _gsons.put(language, createGson(language));
-        }
-    }
-
-    private Gson createGson(Language language) {
-        final GsonBuilder gsonBuilder = new GsonBuilder();
+    private fun createGson(language: Language): Gson {
+        val gsonBuilder = GsonBuilder()
         return gsonBuilder.disableHtmlEscaping()
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                .setPrettyPrinting()
-                .serializeNulls()
-                .registerTypeAdapter(Resource.class, new ResourceGsonTypeAdapter(language))
-                .registerTypeAdapter(Class.class, new ClassGsonTypeAdapter())
-                .registerTypeAdapter(RawJson.class, new RawJsonTypeAdapter(language))
-                .setFieldNamingStrategy(f -> f.getName().replaceAll("_", ""))
-                .create();
+            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+            .setPrettyPrinting()
+            .serializeNulls()
+            .registerTypeAdapter(Resource::class.java, ResourceGsonTypeAdapter(language))
+            .registerTypeAdapter(Class::class.java, ClassGsonTypeAdapter())
+            .registerTypeAdapter(RawJson::class.java, RawJsonTypeAdapter(language))
+            .setFieldNamingStrategy { f: Field -> f.name.replace("_".toRegex(), "") }
+            .create()
     }
 
     @Context
-    HttpHeaders requestHeaders;
-
-
-    @Override
-    public boolean isReadable(Class<?> type, Type genericType,
-                              java.lang.annotation.Annotation[] annotations, MediaType mediaType) {
-        return true;
+    var requestHeaders: HttpHeaders? = null
+    override fun isReadable(
+        type: Class<*>?, genericType: Type,
+        annotations: Array<Annotation>, mediaType: MediaType
+    ): Boolean {
+        return true
     }
 
-    @Override
-    public Object readFrom(Class<Object> type, Type genericType,
-                           Annotation[] annotations, MediaType mediaType,
-                           MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
-        InputStreamReader streamReader = null;
-        try {
-            streamReader = new InputStreamReader(entityStream, StandardCharsets.UTF_8);
-            Type jsonType;
-            if (type.equals(genericType)) {
-                jsonType = type;
+    override fun readFrom(
+        type: Class<Any>, genericType: Type,
+        annotations: Array<Annotation>, mediaType: MediaType,
+        httpHeaders: MultivaluedMap<String, String>, entityStream: InputStream
+    ): Any {
+        var streamReader: InputStreamReader? = null
+        return try {
+            streamReader = InputStreamReader(entityStream, StandardCharsets.UTF_8)
+            val jsonType: Type = if (type == genericType) {
+                type
             } else {
-                jsonType = genericType;
+                genericType
             }
-            return _gsons.get(Language.EN).fromJson(streamReader, jsonType);
+            gsons[Language.EN]!!
+                .fromJson(streamReader, jsonType)
         } finally {
             try {
-                streamReader.close();
-            } catch (IOException ignored) {
+                streamReader!!.close()
+            } catch (ignored: IOException) {
             }
         }
     }
 
-    @Override
-    public boolean isWriteable(Class<?> type, Type genericType,
-                               Annotation[] annotations, MediaType mediaType) {
-        return true;
+    override fun isWriteable(
+        type: Class<*>?, genericType: Type,
+        annotations: Array<Annotation>, mediaType: MediaType
+    ): Boolean {
+        return true
     }
 
-    @Override
-    public long getSize(Object object, Class<?> type, Type genericType,
-                        Annotation[] annotations, MediaType mediaType) {
-        return -1;
+    override fun getSize(
+        `object`: Any?, type: Class<*>?, genericType: Type,
+        annotations: Array<Annotation>, mediaType: MediaType
+    ): Long {
+        return -1
     }
 
-    @Override
-    public void writeTo(Object object, Class<?> type, Type genericType,
-                        Annotation[] annotations, MediaType mediaType,
-                        MultivaluedMap<String, Object> httpHeaders,
-                        OutputStream entityStream) throws IOException,
-            WebApplicationException {
-
-        Language language = matchLanguage();
-
-        OutputStreamWriter writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8);
-        try {
-            Type jsonType;
-            if (type.equals(genericType)) {
-                jsonType = type;
+    @Throws(IOException::class, WebApplicationException::class)
+    override fun writeTo(
+        `object`: Any?, type: Class<*>, genericType: Type,
+        annotations: Array<Annotation>, mediaType: MediaType,
+        httpHeaders: MultivaluedMap<String, Any>,
+        entityStream: OutputStream
+    ) {
+        val language = matchLanguage()
+        val writer = OutputStreamWriter(entityStream, StandardCharsets.UTF_8)
+        writer.use {
+            val jsonType: Type = if (type == genericType) {
+                type
             } else {
-                jsonType = genericType;
+                genericType
             }
-            _gsons.get(language).toJson(object, jsonType, writer);
-        } finally {
-            writer.close();
+            gsons[language]!!.toJson(`object`, jsonType, it)
         }
     }
 
-    private Language matchLanguage() {
-        if (requestHeaders.getAcceptableLanguages().size() > 0) {
-            Locale firstLocale = requestHeaders.getAcceptableLanguages().get(0);
-            for (Language language : Language.values()) {
-                if (language.name().equalsIgnoreCase(firstLocale.getLanguage())) {
-                    return language;
+    private fun matchLanguage(): Language {
+        if (requestHeaders!!.acceptableLanguages.size > 0) {
+            val firstLocale = requestHeaders!!.acceptableLanguages[0]
+            for (language in Language.values()) {
+                if (language.name.equals(firstLocale.language, ignoreCase = true)) {
+                    return language
                 }
             }
         }
 
         //fallback
-        return Language.EN;
+        return Language.EN
+    }
+
+    init {
+        for (language in Language.values()) {
+            gsons[language] = createGson(language)
+        }
     }
 }
-

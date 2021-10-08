@@ -1,17 +1,9 @@
-package eu.automateeverything.data.automation;
+package eu.automateeverything.data.automation
 
-public enum StateType {
-    ReadOnly(0),
-    Control(1);
+enum class StateType(private val index: Int) {
+    ReadOnly(0), Control(1);
 
-    private final int _index;
-
-    StateType(int index) {
-        _index = index;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(_index);
+    override fun toString(): String {
+        return index.toString()
     }
 }

@@ -1,8 +1,6 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-public class MappingException extends RuntimeException {
+import java.lang.RuntimeException
 
-    public MappingException(Class<?> from, Class<?> to) {
-        super("Cannot map from: " + from.getName() + " to " + to.getName());
-    }
-}
+class MappingException(from: Class<*>, to: Class<*>) :
+    RuntimeException("Cannot map from: " + from.name + " to " + to.name)

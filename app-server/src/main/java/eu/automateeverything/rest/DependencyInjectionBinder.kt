@@ -1,101 +1,129 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import eu.automateeverything.data.Repository;
-import eu.automateeverything.domain.hardware.HardwareManager;
-import eu.automateeverything.domain.extensibility.PluginsCoordinator;
-import eu.automateeverything.domain.automation.AutomationConductor;
-import eu.automateeverything.domain.automation.BlocklyParser;
-import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector;
-import eu.automateeverything.domain.events.EventsSink;
-import eu.automateeverything.domain.inbox.Inbox;
-import eu.automateeverything.rest.inbox.InboxMessageDtoMapper;
-import eu.automateeverything.rest.live.HeartbeatDtoMapper;
-import eu.automateeverything.rest.automation.AutomationUnitDtoMapper;
-import eu.automateeverything.rest.automation.EvaluationResultDtoMapper;
-import eu.automateeverything.rest.automationhistory.AutomationHistoryDtoMapper;
-import eu.automateeverything.rest.configurables.ConfigurableDtoMapper;
-import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper;
-import eu.automateeverything.rest.hardware.HardwareAdapterDtoMapper;
-import eu.automateeverything.rest.hardware.NumberedHardwareEventToEventDtoMapper;
-import eu.automateeverything.rest.hardware.PortDtoMapper;
-import eu.automateeverything.rest.plugins.PluginDtoMapper;
-import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper;
-import org.glassfish.hk2.api.Factory;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import eu.automateeverything.data.Repository
+import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.extensibility.PluginsCoordinator
+import eu.automateeverything.domain.hardware.HardwareManager
+import eu.automateeverything.domain.automation.AutomationConductor
+import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.inbox.Inbox
+import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper
+import jakarta.inject.Singleton
+import eu.automateeverything.rest.configurables.ConfigurableDtoMapper
+import eu.automateeverything.rest.plugins.PluginDtoMapper
+import eu.automateeverything.rest.hardware.HardwareAdapterDtoMapper
+import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
+import eu.automateeverything.rest.automation.EvaluationResultDtoMapper
+import eu.automateeverything.rest.hardware.PortDtoMapper
+import eu.automateeverything.rest.hardware.NumberedHardwareEventToEventDtoMapper
+import eu.automateeverything.rest.automationhistory.AutomationHistoryDtoMapper
+import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper
+import eu.automateeverything.rest.live.HeartbeatDtoMapper
+import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
+import eu.automateeverything.domain.automation.BlocklyParser
+import org.glassfish.hk2.api.Factory
+import org.glassfish.hk2.utilities.binding.AbstractBinder
 
-import jakarta.inject.Singleton;
+class DependencyInjectionBinder(
+    private val eventsSink: EventsSink,
+    private val repository: Repository,
+    private val pluginsCoordinator: PluginsCoordinator,
+    private val hardwareManager: HardwareManager,
+    private val automationConductor: AutomationConductor,
+    private val blockFactoriesCollector: BlockFactoriesCollector,
+    private val inbox: Inbox
+) : AbstractBinder() {
 
-public class DependencyInjectionBinder extends AbstractBinder {
-
-    private final EventsSink _eventsSink;
-    private final Repository _repository;
-    private final PluginsCoordinator _pluginsCoordinator;
-    private final HardwareManager _hardwareManager;
-    private final AutomationConductor _automationConductor;
-    private final BlockFactoriesCollector _blockFactoriesCollector;
-    private Inbox _inbox;
-
-    public DependencyInjectionBinder(
-            EventsSink eventsSink,
-            Repository repository,
-            PluginsCoordinator pluginsCoordinator,
-            HardwareManager hardwareManager,
-            AutomationConductor automationConductor,
-            BlockFactoriesCollector blockFactoriesCollector,
-            Inbox inbox
-    ) {
-        _eventsSink = eventsSink;
-        _repository = repository;
-        _pluginsCoordinator = pluginsCoordinator;
-        _hardwareManager = hardwareManager;
-        _automationConductor = automationConductor;
-        _blockFactoriesCollector = blockFactoriesCollector;
-        _inbox = inbox;
-    }
-
-    @Override
-    protected void configure() {
+    override fun configure() {
         //mappers
-        bind(FieldDefinitionDtoMapper.class).to(FieldDefinitionDtoMapper.class).in(Singleton.class);
-        bind(ConfigurableDtoMapper.class).to(ConfigurableDtoMapper.class).in(Singleton.class);
-        bind(PluginDtoMapper.class).to(PluginDtoMapper.class).in(Singleton.class);
-        bind(HardwareAdapterDtoMapper.class).to(HardwareAdapterDtoMapper.class).in(Singleton.class);
-        bind(AutomationUnitDtoMapper.class).to(AutomationUnitDtoMapper.class).in(Singleton.class);
-        bind(EvaluationResultDtoMapper.class).to(EvaluationResultDtoMapper.class).in(Singleton.class);
-        bind(PortDtoMapper.class).to(PortDtoMapper.class).in(Singleton.class);
-        bind(NumberedHardwareEventToEventDtoMapper.class).to(NumberedHardwareEventToEventDtoMapper.class).in(Singleton.class);
-        bind(AutomationHistoryDtoMapper.class).to(AutomationHistoryDtoMapper.class).in(Singleton.class);
-        bind(SettingGroupDtoMapper.class).to(SettingGroupDtoMapper.class).in(Singleton.class);
-        bind(HeartbeatDtoMapper.class).to(HeartbeatDtoMapper.class).in(Singleton.class);
-        bind(InboxMessageDtoMapper.class).to(InboxMessageDtoMapper.class).in(Singleton.class);
+        bind(FieldDefinitionDtoMapper::class.java)
+            .to(FieldDefinitionDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(ConfigurableDtoMapper::class.java)
+            .to(ConfigurableDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(PluginDtoMapper::class.java)
+            .to(PluginDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(HardwareAdapterDtoMapper::class.java)
+            .to(HardwareAdapterDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(AutomationUnitDtoMapper::class.java)
+            .to(AutomationUnitDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(EvaluationResultDtoMapper::class.java)
+            .to(EvaluationResultDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(PortDtoMapper::class.java)
+            .to(PortDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(NumberedHardwareEventToEventDtoMapper::class.java)
+            .to(NumberedHardwareEventToEventDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(AutomationHistoryDtoMapper::class.java)
+            .to(AutomationHistoryDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(SettingGroupDtoMapper::class.java)
+            .to(SettingGroupDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(HeartbeatDtoMapper::class.java)
+            .to(HeartbeatDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(InboxMessageDtoMapper::class.java)
+            .to(InboxMessageDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(BlocklyParser::class.java)
+            .to(BlocklyParser::class.java)
+            .`in`(Singleton::class.java)
 
         //factories for objects shared with the App
-        bindFactory(new SingletonFactory<>(_hardwareManager)).to(HardwareManager.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_automationConductor)).to(AutomationConductor.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_pluginsCoordinator)).to(PluginsCoordinator.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_repository)).to(Repository.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_eventsSink)).to(EventsSink.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_blockFactoriesCollector)).to(BlockFactoriesCollector.class).in(Singleton.class);
-        bindFactory(new SingletonFactory<>(_inbox)).to(Inbox.class).in(Singleton.class);
+        bindFactory(SingletonFactory(hardwareManager))
+            .to(HardwareManager::class.java)
+            .`in`(Singleton::class.java)
 
-        //blocks
-        bind(BlocklyParser.class).to(BlocklyParser.class).in(Singleton.class);
+        bindFactory(SingletonFactory(automationConductor))
+            .to(AutomationConductor::class.java)
+            .`in`(Singleton::class.java)
+
+        bindFactory(SingletonFactory(pluginsCoordinator))
+            .to(PluginsCoordinator::class.java)
+            .`in`(Singleton::class.java)
+
+        bindFactory(SingletonFactory(repository))
+            .to(Repository::class.java)
+            .`in`(Singleton::class.java)
+
+        bindFactory(SingletonFactory(eventsSink))
+            .to(EventsSink::class.java)
+            .`in`(Singleton::class.java)
+
+        bindFactory(SingletonFactory(blockFactoriesCollector))
+            .to(BlockFactoriesCollector::class.java)
+            .`in`(Singleton::class.java)
+
+        bindFactory(SingletonFactory(inbox))
+            .to(Inbox::class.java)
+            .`in`(Singleton::class.java)
+
     }
 
-    static class SingletonFactory<T> implements Factory<T> {
-        private final T instance;
-
-        public SingletonFactory(T instance) {
-            this.instance = instance;
+    internal class SingletonFactory<T>(private val instance: T) : Factory<T> {
+        override fun provide(): T {
+            return instance
         }
 
-        @Override
-        public T provide() {
-            return instance;
-        }
-
-        @Override
-        public void dispose(T instance) {
-        }
+        override fun dispose(instance: T) {}
     }
 }

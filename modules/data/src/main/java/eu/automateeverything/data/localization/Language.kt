@@ -1,6 +1,5 @@
-package eu.automateeverything.data.localization;
+package eu.automateeverything.data.localization
 
-public enum Language {
-    EN,
-    PL
+enum class Language {
+    EN, PL
 }
