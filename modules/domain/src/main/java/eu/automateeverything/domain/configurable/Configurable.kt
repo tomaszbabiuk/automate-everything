@@ -2,7 +2,7 @@ package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.EvaluableAutomationUnit
+import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.automation.DeviceAutomationUnit
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.data.localization.Resource
@@ -31,7 +31,7 @@ interface ConfigurableWithFields : Configurable {
 }
 
 abstract class ConditionConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnit
+    abstract fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false

@@ -1,7 +1,7 @@
 package eu.automateeverything.coreplugin
 
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.EvaluableAutomationUnit
+import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.data.localization.Resource
 import org.pf4j.Extension
@@ -46,7 +46,7 @@ class TwilightConditionConfigurable : ConditionConfigurable() {
 
     private val latitudeField = DoubleField(FIELD_LATITUDE, R.field_latitude_hint, 0, 0.0, RequiredDoubleValidator())
 
-    override fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnit {
+    override fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase {
         val longitude = extractFieldValue(instance, longitudeField)
         val latitude = extractFieldValue(instance, latitudeField)
         return TwilightConditionAutomationUnit(longitude, latitude)

@@ -1,6 +1,6 @@
 package eu.automateeverything.coreplugin
 
-import eu.automateeverything.domain.automation.EvaluableAutomationUnit
+import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import java.util.*
 import kotlin.math.acos
 import kotlin.math.asin
@@ -8,7 +8,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class TwilightConditionAutomationUnit(private val longitude: Double, private val latitude: Double) :
-    EvaluableAutomationUnit() {
+    EvaluableAutomationUnitBase() {
 
     private var sunriseUTCHour = 0
     private var sunriseUTCMinute = 0

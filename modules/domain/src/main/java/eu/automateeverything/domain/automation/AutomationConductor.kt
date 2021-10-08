@@ -37,7 +37,7 @@ class AutomationConductor(
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
     val automationUnitsCache = HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>()
-    private val evaluationUnitsCache = HashMap<Long, IEvaluableAutomationUnit>()
+    private val evaluationUnitsCache = HashMap<Long, EvaluableAutomationUnit>()
 
     fun isEnabled(): Boolean {
         return enabled
