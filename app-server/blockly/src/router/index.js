@@ -4,7 +4,7 @@ import Control from '../views/Control'
 import Timeline from '../views/Timeline'
 import Inbox from '../views/Inbox'
 import Plugins from '../views/Plugins'
-import Configurables from '../views/Configurables'
+import Objects from '../views/Objects'
 import Tags from '../views/Tags'
 import Icons from '../views/Icons'
 import Discover from '../views/Discover'
@@ -44,9 +44,9 @@ const routes = [
     component: PluginSettings
   },
   {
-    path: '/configurables/:clazz',
-    name: 'configurables',
-    component: Configurables
+    path: '/objects/:clazz',
+    name: 'objects',
+    component: Objects
   },
   {
     path: '/tags',

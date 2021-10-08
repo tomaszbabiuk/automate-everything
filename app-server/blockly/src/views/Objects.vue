@@ -267,7 +267,7 @@ export default {
         breadcrumbs.push({
           text: selectedConfigurable.titleRes,
           disabled: isLast,
-          href: "/configurables/" + selectedConfigurable.clazz,
+          href: "/objects/" + selectedConfigurable.clazz,
         });
 
         selectedConfigurable = this.getConfigurableByClazz(
@@ -279,7 +279,7 @@ export default {
       breadcrumbs.push({
         text: this.$vuetify.lang.t("$vuetify.navigation.objects"),
         disabled: false,
-        href: "/configurables/null",
+        href: "/objects/null",
       });
 
       return breadcrumbs.reverse();
@@ -359,7 +359,7 @@ export default {
 
     browse: async function (configurable) {
       this.$router.push({
-        name: "configurables",
+        name: "objects",
         params: { clazz: configurable.clazz },
       });
       await this.refresh();

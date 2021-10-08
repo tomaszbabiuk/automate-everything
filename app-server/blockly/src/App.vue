@@ -149,7 +149,7 @@ export default {
         },
         {
           title: "$vuetify.navigation.objects",
-          route: "/configurables/null",
+          route: "/objects/null",
           icon: "objects",
           hasBadge: false
         },
