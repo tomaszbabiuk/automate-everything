@@ -36,12 +36,12 @@ class LogicNotBlockFactory : EvaluatorBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")
         }
 
-        var nodeToNegate: IEvaluatorNode? = null
+        var nodeToNegate: EvaluatorNode? = null
         val firstValue = block.values.find { it.name == "NOT" }
         if (firstValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"NOT\"> defined")

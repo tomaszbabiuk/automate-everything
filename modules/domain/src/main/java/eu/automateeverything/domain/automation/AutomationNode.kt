@@ -1,0 +1,3 @@
+package eu.automateeverything.domain.automation
+
+interface AutomationNode

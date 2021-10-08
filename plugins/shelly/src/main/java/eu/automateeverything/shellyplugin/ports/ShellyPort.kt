@@ -7,7 +7,7 @@ open class ShellyPort<V: PortValue>(
     override val id : String,
     override val valueClazz: Class<V>,
     val sleepInterval: Long
-) : IConnectible, Port<V> {
+) : Connectible, Port<V> {
     final override var connectionValidUntil: Long = 0
 
     init {

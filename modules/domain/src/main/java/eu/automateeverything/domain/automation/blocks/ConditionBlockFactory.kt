@@ -28,10 +28,10 @@ class ConditionBlockFactory(
 
     override fun transform(
         block: Block,
-        next: IStatementNode?,
+        next: StatementNode?,
         context: AutomationContext,
-        transformer: IBlocklyTransformer
-    ): IEvaluatorNode {
+        transformer: BlocklyTransformer
+    ): EvaluatorNode {
         val evaluator = context.evaluationUnitsCache[this.conditionId]
 
         if (evaluator != null) {

@@ -6,7 +6,7 @@ import java.util.*
 
 class SensorAutomationNode(
     private val deviceUnit: DeviceAutomationUnit<*>
-) : IValueNode {
+) : ValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
         if (deviceUnit.lastEvaluation.error != null) {

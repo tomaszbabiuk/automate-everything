@@ -5,7 +5,7 @@ import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
-import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
@@ -18,7 +18,7 @@ class OnOffDeviceAutomationUnit(
     name: String,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {

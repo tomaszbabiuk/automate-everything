@@ -71,7 +71,7 @@ open class ComparisonBlockFactory<T: PortValue>(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have one field defined")
         }
@@ -82,13 +82,13 @@ open class ComparisonBlockFactory<T: PortValue>(
 
         val operator = ComparisonOperator.fromString(block.fields[0].value!!)
 
-        var leftNode: IValueNode? = null
+        var leftNode: ValueNode? = null
         val leftValue = block.values?.find { it.name == "LEFT" }
         if (leftValue?.block != null) {
             leftNode = transformer.transformValue(leftValue.block, context)
         }
 
-        var rightNode: IValueNode? = null
+        var rightNode: ValueNode? = null
         val rightValue = block.values?.find { it.name == "RIGHT" }
         if (rightValue?.block != null) {
             rightNode = transformer.transformValue(rightValue.block, context)

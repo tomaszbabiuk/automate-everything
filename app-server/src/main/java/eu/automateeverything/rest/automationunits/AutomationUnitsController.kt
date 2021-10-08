@@ -4,7 +4,7 @@ import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.rest.ResourceNotFoundException
 import eu.automateeverything.data.automation.AutomationUnitDto
 import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
-import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.hardware.HardwareManager
 import java.lang.Exception
 import jakarta.inject.Inject
@@ -40,12 +40,12 @@ class AutomationUnitsController @Inject constructor(
             .firstOrNull() ?: throw ResourceNotFoundException()
 
         val instance = instanceAndUnitPair.first
-        val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnit
+        val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnitBase
         if (unit != null) {
             unit.changeState(state)
             hardwareManager.executeAllPendingChanges()
         } else {
-            throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnit::class.java.simpleName} expected")
+            throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnitBase::class.java.simpleName} expected")
         }
 
         return mapper.map(unit, instance)

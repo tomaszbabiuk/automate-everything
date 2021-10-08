@@ -6,9 +6,9 @@ import java.util.*
 class StateDeviceTriggerNode(
     context: AutomationContext,
     private val instanceId: Long,
-    private val unit: StateDeviceAutomationUnit,
+    private val unit: StateDeviceAutomationUnitBase,
     private val observedStateId: String,
-    override val next: IStatementNode?
+    override val next: StatementNode?
 ) : StatementNodeBase(), StateChangedListener {
 
     init {
@@ -21,7 +21,7 @@ class StateDeviceTriggerNode(
         }
     }
 
-    override fun onChanged(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto) {
+    override fun onChanged(deviceUnit: StateDeviceAutomationUnitBase, instanceDto: InstanceDto) {
         if (instanceDto.id == instanceId) {
             if (deviceUnit.currentState.id == observedStateId) {
                 next?.process(Calendar.getInstance(), false)

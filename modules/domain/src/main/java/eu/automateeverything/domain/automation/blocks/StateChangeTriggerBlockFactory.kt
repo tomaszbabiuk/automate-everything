@@ -46,10 +46,10 @@ class StateChangeTriggerBlockFactory(
 
     override fun transform(
         block: Block,
-        next: IStatementNode?,
+        next: StatementNode?,
         context: AutomationContext,
-        transformer: IBlocklyTransformer
-    ): IStatementNode {
+        transformer: BlocklyTransformer
+    ): StatementNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")
         }
@@ -66,7 +66,7 @@ class StateChangeTriggerBlockFactory(
 
         val instanceIdRaw = block.type.replace(typePrefix, "")
         val instanceId = instanceIdRaw.toLong()
-        val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnit
+        val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnitBase
 
         return StateDeviceTriggerNode(context, instanceId, triggerUnit, stateId, next)
     }

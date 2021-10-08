@@ -2,7 +2,7 @@ package eu.automateeverything.domain.hardware
 
 import java.util.*
 
-interface IConnectible {
+interface Connectible {
     var connectionValidUntil : Long
 
     fun updateValidUntil(until : Long) {
@@ -18,7 +18,7 @@ interface IConnectible {
     }
 }
 
-interface Port<V: PortValue> : IConnectible {
+interface Port<V: PortValue> : Connectible {
     val id: String
 
     val valueClazz: Class<V>

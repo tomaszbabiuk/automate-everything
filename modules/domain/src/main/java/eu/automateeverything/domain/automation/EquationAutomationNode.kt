@@ -7,10 +7,10 @@ import java.util.*
 
 class EquationAutomationNode(
     private val valueType: Class<out PortValue>,
-    private val leftValue: IValueNode?,
+    private val leftValue: ValueNode?,
     private val operator: MathOperator,
     private val rightValue: Double
-) : IValueNode {
+) : ValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
 

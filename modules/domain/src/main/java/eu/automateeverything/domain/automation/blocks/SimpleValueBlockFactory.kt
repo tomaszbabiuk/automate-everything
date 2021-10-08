@@ -13,12 +13,12 @@ open class SimpleValueBlockFactory<T: PortValue>(
     private val initialValue: Double,
     private val unit: String,
     typeSuffix: String,
-    private val valueConverter: IValueConverter?,
+    private val valueConverter: ValueConverter?,
     override val category: BlockCategory) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
-    fun buildMaxValueAttribute(maxValue: Double?): String {
+    private fun buildMaxValueAttribute(maxValue: Double?): String {
         return if (maxValue != null) {
             "\"max\": $maxValue,"
         } else {
@@ -56,7 +56,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IValueNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): ValueNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: VALUE and UNIT")
         }
@@ -69,7 +69,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
             if (valueConverter != null) {
                 value = valueConverter.convert(value)
             }
-            return ValueNode(PortValueBuilder.buildFromDouble(valueType,value))
+            return BasicValueNode(PortValueBuilder.buildFromDouble(valueType,value))
         }
 
         throw MalformedBlockException(block.type, "cannot extract temperature value")

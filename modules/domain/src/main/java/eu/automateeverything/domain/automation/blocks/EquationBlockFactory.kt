@@ -57,7 +57,7 @@ open class EquationBlockFactory<T: PortValue>(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): EquationAutomationNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EquationAutomationNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two FIELDS defined")
         }
@@ -73,7 +73,7 @@ open class EquationBlockFactory<T: PortValue>(
 
         val leftValue = block.values?.find { it.name == "LEFT" }
 
-        var leftNode: IValueNode? = null
+        var leftNode: ValueNode? = null
         if (leftValue?.block != null) {
             leftNode = transformer.transformValue(leftValue.block, context)
         }

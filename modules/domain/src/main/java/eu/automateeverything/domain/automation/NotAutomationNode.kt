@@ -3,8 +3,8 @@ package eu.automateeverything.domain.automation
 import java.util.*
 
 class NotAutomationNode(
-    private val nodeToNegate: IEvaluatorNode?,
-) : IEvaluatorNode {
+    private val nodeToNegate: EvaluatorNode?,
+) : EvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
 

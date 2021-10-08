@@ -41,12 +41,12 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
         if (block.values == null || block.values.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
         }
 
-        var firstNode: IEvaluatorNode? = null
+        var firstNode: EvaluatorNode? = null
         val firstValue = block.values.find { it.name == "FIRST" }
         if (firstValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"FIRST\"> defined")
@@ -54,7 +54,7 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
             firstNode = transformer.transformEvaluator(firstValue.block, context)
         }
 
-        var secondNode: IEvaluatorNode? = null
+        var secondNode: EvaluatorNode? = null
         val secondValue = block.values.find { it.name == "SECOND" }
         if (secondValue == null) {
             throw MalformedBlockException(block.type, "should have <value name=\"SECOND\"> defined")

@@ -29,10 +29,10 @@ class SensorBlockFactory<T: PortValue>(
 
     override fun transform(
         block: Block,
-        next: IStatementNode?,
+        next: StatementNode?,
         context: AutomationContext,
-        transformer: IBlocklyTransformer
-    ): IValueNode {
+        transformer: BlocklyTransformer
+    ): ValueNode {
         val evaluator = context.automationUnitsCache[this.sensorId]
 
         if (evaluator != null) {

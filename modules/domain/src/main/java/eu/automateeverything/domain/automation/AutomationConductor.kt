@@ -66,7 +66,7 @@ class AutomationConductor(
         }
     }
 
-    private fun rebuildAutomations(): Map<Long, List<IStatementNode>> {
+    private fun rebuildAutomations(): Map<Long, List<StatementNode>> {
         firstLoop = true
 
         stateChangeReporter.removeAllListeners()

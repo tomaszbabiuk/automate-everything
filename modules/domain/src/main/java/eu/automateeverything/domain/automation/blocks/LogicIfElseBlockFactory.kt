@@ -44,9 +44,9 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IStatementNode {
-        var ifNode: IStatementNode? = null
-        var elseNode: IStatementNode? = null
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): StatementNode {
+        var ifNode: StatementNode? = null
+        var elseNode: StatementNode? = null
 
         if (block.statements != null) {
             val ifStatement = block.statements.find { it.name == "IF" }

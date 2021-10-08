@@ -3,10 +3,10 @@ package eu.automateeverything.domain.automation
 import java.util.*
 
 class IfThanElseAutomationNode(
-    override val next: IStatementNode?,
-    private val evaluatorNode: IEvaluatorNode?,
-    private val ifNode: IStatementNode?,
-    private val elseNode: IStatementNode?
+    override val next: StatementNode?,
+    private val evaluatorNode: EvaluatorNode?,
+    private val ifNode: StatementNode?,
+    private val elseNode: StatementNode?
     ) : StatementNodeBase() {
 
     override fun process(now: Calendar, firstLoop: Boolean) {

@@ -9,7 +9,7 @@ import eu.automateeverything.coreplugin.RegulatedPowerWithPresetsDeviceConfigura
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
-import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.PowerLevel
 import java.lang.Exception
@@ -26,7 +26,7 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     private val preset4: Int,
     states: Map<String, State>,
     private val controlPort: OutputPort<PowerLevel>,
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, true) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, true) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {

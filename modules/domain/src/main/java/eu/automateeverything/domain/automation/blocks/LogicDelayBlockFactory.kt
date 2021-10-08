@@ -42,8 +42,8 @@ class LogicDelayBlockFactory : StatementBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IStatementNode {
-        var doNode: IStatementNode? = null
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): StatementNode {
+        var doNode: StatementNode? = null
 
         if (block.statements != null) {
             val doStatement = block.statements.find { it.name == "DO" }

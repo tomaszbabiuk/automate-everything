@@ -11,7 +11,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
-import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.Throws
@@ -23,7 +23,7 @@ class ActionAutomationUnit(
     name: String,
     states: Map<String, State>,
     private val executionCode: () -> Pair<Boolean,Resource>
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
 
     private var executionScope: CoroutineScope? = null
 

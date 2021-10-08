@@ -27,13 +27,13 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
 
     override fun transform(
         block: Block,
-        next: IStatementNode?,
+        next: StatementNode?,
         context: AutomationContext,
-        transformer: IBlocklyTransformer
-    ): IStatementNode {
+        transformer: BlocklyTransformer
+    ): StatementNode {
         if (context.thisDevice is StateDeviceConfigurable) {
             val evaluator = context.automationUnitsCache[context.instanceDto.id]
-            if (evaluator is StateDeviceAutomationUnit) {
+            if (evaluator is StateDeviceAutomationUnitBase) {
                 return ChangeStateAutomationNode(state.id, evaluator, next)
             } else {
                 throw MalformedBlockException(block.type, "should point only to a state device")

@@ -5,8 +5,8 @@ import kotlinx.coroutines.*
 import java.util.*
 
 class DelayAutomationNode(
-    override val next: IStatementNode?,
-    private val doNode: IStatementNode?,
+    override val next: StatementNode?,
+    private val doNode: StatementNode?,
     private val seconds: Int) : StatementNodeBase() {
 
     private var scope: CoroutineScope? = null

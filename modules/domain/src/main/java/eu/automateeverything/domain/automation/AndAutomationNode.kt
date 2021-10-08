@@ -3,9 +3,9 @@ package eu.automateeverything.domain.automation
 import java.util.*
 
 class AndAutomationNode(
-    private val firstEvaluator: IEvaluatorNode?,
-    private val secondEvaluator: IEvaluatorNode?
-) : IEvaluatorNode {
+    private val firstEvaluator: EvaluatorNode?,
+    private val secondEvaluator: EvaluatorNode?
+) : EvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
 

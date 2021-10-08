@@ -1,10 +1,10 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.localization.Resource
+import java.util.*
 
-interface IStateDeviceAutomationUnit {
-
-    @Throws(Exception::class)
-    fun changeState(state: String, code: String? = null, actor: String? = null)
+interface StatementNode : AutomationNode {
+    val next: StatementNode?
+    fun process(now: Calendar, firstLoop: Boolean)
     fun modifyNote(noteId: String, note: Resource)
 }

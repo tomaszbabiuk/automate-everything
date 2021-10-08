@@ -5,8 +5,8 @@ import java.util.*
 
 class ChangeStateAutomationNode(
     private val state: String,
-    private val deviceUnit: StateDeviceAutomationUnit,
-    override val next: IStatementNode?
+    private val deviceUnit: StateDeviceAutomationUnitBase,
+    override val next: StatementNode?
 ) : StatementNodeBase() {
 
     override fun process(now: Calendar, firstLoop: Boolean) {

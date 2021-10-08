@@ -4,7 +4,7 @@ import java.util.*
 
 class TimeTriggerNode(
     private val seconds: Int,
-    override val next: IStatementNode?
+    override val next: StatementNode?
     ) : StatementNodeBase() {
 
     private var lastProcessed: Long = 0

@@ -5,10 +5,10 @@ import eu.automateeverything.domain.hardware.PortValue
 import java.util.*
 
 class ComparisonAutomationNode(
-    private val leftValue: IValueNode?,
+    private val leftValue: ValueNode?,
     private val operator: ComparisonOperator,
-    private val rightValue: IValueNode?
-) : IEvaluatorNode {
+    private val rightValue: ValueNode?
+) : EvaluatorNode {
 
     override fun evaluate(now: Calendar): Boolean {
 

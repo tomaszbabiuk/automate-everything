@@ -8,7 +8,7 @@ import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
-import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.hardware.OutputPort
@@ -26,7 +26,7 @@ class TimedOnOffDeviceAutomationUnit(
     private val breakTime: Duration,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
-) : StateDeviceAutomationUnit(stateChangeReporter, instanceDto, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
 
     var onSince = 0L
     var offSince = 0L

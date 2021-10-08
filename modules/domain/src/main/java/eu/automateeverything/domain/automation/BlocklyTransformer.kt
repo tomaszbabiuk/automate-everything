@@ -1,45 +1,10 @@
 package eu.automateeverything.domain.automation
 
-import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.hardware.PortValue
-import java.util.*
-import kotlin.collections.ArrayList
+class BlocklyTransformer {
 
-interface IAutomationNode
+    fun transform(blocks: List<Block>, context: AutomationContext) : List<StatementNode> {
 
-interface IStatementNode : IAutomationNode {
-    val next: IStatementNode?
-    fun process(now: Calendar, firstLoop: Boolean)
-    fun modifyNote(noteId: String, note: Resource)
-}
-
-interface IEvaluatorNode: IAutomationNode {
-    fun evaluate(now: Calendar) : Boolean
-}
-
-interface IValueNode: IAutomationNode {
-    fun getValue(now: Calendar) : PortValue?
-}
-
-class ValueNode<T: PortValue>(val value: T) : IValueNode {
-    override fun getValue(now: Calendar): T {
-        return value
-    }
-}
-
-interface IBlocklyTransformer {
-
-    fun transformEvaluator(block: Block, context: AutomationContext) : IEvaluatorNode
-    fun transformValue(block: Block, context: AutomationContext) : IValueNode
-    fun transformTrigger(block: Block, context: AutomationContext) : IStatementNode
-    fun transformStatement(block: Block, context: AutomationContext) : IStatementNode
-}
-
-class BlocklyTransformer : IBlocklyTransformer {
-
-    fun transform(blocks: List<Block>, context: AutomationContext) : List<IStatementNode> {
-
-        val masterNodes = ArrayList<IStatementNode>()
+        val masterNodes = ArrayList<StatementNode>()
 
         blocks.forEach {
             val masterNode = transformTrigger(it, context)
@@ -49,7 +14,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         return masterNodes
     }
 
-    override fun transformEvaluator(block: Block, context: AutomationContext) : IEvaluatorNode {
+    fun transformEvaluator(block: Block, context: AutomationContext) : EvaluatorNode {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<EvaluatorBlockFactory>()
@@ -62,7 +27,7 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownEvaluatorBlockException(block.type)
     }
 
-    override fun transformValue(block: Block, context: AutomationContext): IValueNode {
+    fun transformValue(block: Block, context: AutomationContext): ValueNode {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<ValueBlockFactory>()
@@ -75,8 +40,8 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownValueBlockException(block.type)
     }
 
-    override fun transformTrigger(block: Block, context: AutomationContext) : IStatementNode {
-        var next: IStatementNode? = null
+    private fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
+        var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }
@@ -93,8 +58,8 @@ class BlocklyTransformer : IBlocklyTransformer {
         throw UnknownTriggerBlockException(block.type)
     }
 
-    override fun transformStatement(block: Block, context: AutomationContext) : IStatementNode {
-        var next: IStatementNode? = null
+    fun transformStatement(block: Block, context: AutomationContext) : StatementNode {
+        var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context)
         }

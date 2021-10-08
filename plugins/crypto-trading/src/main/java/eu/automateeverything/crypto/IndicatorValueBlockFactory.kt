@@ -39,7 +39,7 @@ open class IndicatorValueBlockFactory(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IValueNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): ValueNode {
         if (block.fields == null || block.fields!!.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: INDICATOR and INTERVAL")
         }

@@ -53,10 +53,10 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
 
     override fun transform(
         block: Block,
-        next: IStatementNode?,
+        next: StatementNode?,
         context: AutomationContext,
-        transformer: IBlocklyTransformer
-    ): IStatementNode {
+        transformer: BlocklyTransformer
+    ): StatementNode {
 
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")

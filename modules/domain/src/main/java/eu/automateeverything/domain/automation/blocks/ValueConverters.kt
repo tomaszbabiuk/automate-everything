@@ -1,16 +1,16 @@
 package eu.automateeverything.domain.automation.blocks
 
-interface IValueConverter {
+interface ValueConverter {
     fun convert(x: Double) : Double
 }
 
-class CelsiusToKelvinValueConverter : IValueConverter {
+class CelsiusToKelvinValueConverter : ValueConverter {
     override fun convert(x: Double): Double {
         return x + 273.15
     }
 }
 
-class FahrenheitToKelvinValueConverter : IValueConverter {
+class FahrenheitToKelvinValueConverter : ValueConverter {
     override fun convert(x: Double): Double {
         return  (x + 459.67) * 5/9
     }

@@ -47,7 +47,7 @@ open class StateValueBlockFactory(
         }
     }
 
-    override fun transform(block: Block, next: IStatementNode?, context: AutomationContext, transformer: IBlocklyTransformer): IEvaluatorNode {
+    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
 
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")
@@ -65,7 +65,7 @@ open class StateValueBlockFactory(
 
         val instanceIdRaw = block.type.replace(typePrefix, "")
         val instanceId = instanceIdRaw.toLong()
-        val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnit
+        val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnitBase
 
         return IsInStateAutomationNode(triggerUnit, stateId)
     }

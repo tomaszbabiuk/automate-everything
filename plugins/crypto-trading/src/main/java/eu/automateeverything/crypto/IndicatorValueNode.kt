@@ -1,6 +1,6 @@
 package eu.automateeverything.crypto
 
-import eu.automateeverything.domain.automation.IValueNode
+import eu.automateeverything.domain.automation.ValueNode
 import eu.automateeverything.domain.hardware.PortValue
 import org.ta4j.core.BarSeries
 import org.ta4j.core.BaseBarSeries
@@ -18,7 +18,7 @@ class IndicatorValueNode(
     private val tickerPort: MarketPort,
     private val indicator: Indicator,
     private val interval: Interval
-) : IValueNode {
+) : ValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
         val dataSource = when (interval) {
