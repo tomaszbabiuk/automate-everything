@@ -1,29 +1,22 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import eu.automateeverything.data.blocks.RawJson;
-import eu.automateeverything.data.localization.Language;
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
+import eu.automateeverything.data.blocks.RawJson
+import eu.automateeverything.data.localization.Language
+import kotlin.Throws
+import java.io.IOException
 
-import java.io.IOException;
-
-public class RawJsonTypeAdapter extends TypeAdapter<RawJson> {
-
-    private final Language _language;
-
-    public RawJsonTypeAdapter(Language language) {
-        _language = language;
+class RawJsonTypeAdapter(private val language: Language) : TypeAdapter<RawJson>() {
+    @Throws(IOException::class)
+    override fun read(`in`: JsonReader): RawJson {
+        throw IOException("Not implemented, RawJson can only be passed one-way server -> client")
     }
 
-    @Override
-    public RawJson read(final JsonReader in) throws IOException {
-        throw new IOException("Not implemented, RawJson can only be passed one-way server -> client");
-    }
-
-    @Override
-    public void write(final JsonWriter out, final RawJson input) throws IOException {
-        String outputJson = input.getTemplateFunction().invoke(_language);
-        out.jsonValue(outputJson);
+    @Throws(IOException::class)
+    override fun write(out: JsonWriter, input: RawJson) {
+        val outputJson = input.templateFunction.invoke(language)
+        out.jsonValue(outputJson)
     }
 }

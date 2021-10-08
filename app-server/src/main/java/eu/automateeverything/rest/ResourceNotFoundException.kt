@@ -1,4 +1,5 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-public class ResourceNotFoundException extends Exception {
-}
+import java.lang.Exception
+
+class ResourceNotFoundException : Exception()

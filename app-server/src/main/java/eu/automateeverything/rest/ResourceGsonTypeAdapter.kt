@@ -1,32 +1,25 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import eu.automateeverything.data.localization.Language;
-import eu.automateeverything.data.localization.Resource;
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
+import eu.automateeverything.data.localization.Language
+import eu.automateeverything.data.localization.Resource
+import java.lang.UnsupportedOperationException
+import kotlin.Throws
+import java.io.IOException
 
-import java.io.IOException;
-
-public class ResourceGsonTypeAdapter extends TypeAdapter<Resource> {
-
-    private final Language _language;
-
-    public ResourceGsonTypeAdapter(Language language) {
-        _language = language;
+class ResourceGsonTypeAdapter(private val _language: Language) : TypeAdapter<Resource>() {
+    override fun read(`in`: JsonReader): Resource {
+        throw UnsupportedOperationException()
     }
 
-    @Override
-    public Resource read(final JsonReader in) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void write(final JsonWriter out, final Resource resource) throws IOException {
+    @Throws(IOException::class)
+    override fun write(out: JsonWriter, resource: Resource?) {
         if (resource == null) {
-            out.nullValue();
+            out.nullValue()
         } else {
-            out.value(resource.getValue(_language));
+            out.value(resource.getValue(_language))
         }
     }
 }

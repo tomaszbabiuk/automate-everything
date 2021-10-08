@@ -5,20 +5,17 @@ import kotlin.Throws
 import java.util.Calendar
 
 abstract class EvaluableAutomationUnitBase : EvaluableAutomationUnit {
-    private var passed = false
     private var lastEvaluationTime: Long = 0
 
-    override fun isPassed(): Boolean {
-        return passed
-    }
+    override var isPassed = false
 
     @Throws(Exception::class)
     override fun evaluate(now: Calendar): Boolean {
         if (lastEvaluationTime != now.timeInMillis) {
-            passed = doEvaluate(now)
+            isPassed = doEvaluate(now)
             lastEvaluationTime = now.timeInMillis
         }
-        return passed
+        return isPassed
     }
 
     @Throws(Exception::class)

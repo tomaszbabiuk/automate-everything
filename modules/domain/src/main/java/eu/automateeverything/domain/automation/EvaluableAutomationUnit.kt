@@ -1,8 +1,11 @@
-package eu.automateeverything.domain.automation;
+package eu.automateeverything.domain.automation
 
-import java.util.Calendar;
+import java.lang.Exception
+import kotlin.Throws
+import java.util.Calendar
 
-public interface EvaluableAutomationUnit {
-    boolean evaluate(Calendar now) throws Exception;
-    boolean isPassed();
+interface EvaluableAutomationUnit {
+    @Throws(Exception::class)
+    fun evaluate(now: Calendar): Boolean
+    val isPassed: Boolean
 }

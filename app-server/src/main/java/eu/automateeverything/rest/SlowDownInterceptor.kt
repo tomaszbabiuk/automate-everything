@@ -1,24 +1,26 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.ext.*;
-import java.io.IOException;
+import jakarta.ws.rs.ext.WriterInterceptor
+import jakarta.ws.rs.ext.ReaderInterceptor
+import kotlin.Throws
+import java.io.IOException
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.ext.ReaderInterceptorContext
+import jakarta.ws.rs.ext.WriterInterceptorContext
+import java.lang.InterruptedException
 
-public class SlowDownInterceptor implements WriterInterceptor, ReaderInterceptor {
-
-    @Override
-    public Object aroundReadFrom(ReaderInterceptorContext context)
-            throws IOException, WebApplicationException {
-        return context.proceed();
+class SlowDownInterceptor : WriterInterceptor, ReaderInterceptor {
+    @Throws(IOException::class, WebApplicationException::class)
+    override fun aroundReadFrom(context: ReaderInterceptorContext): Any {
+        return context.proceed()
     }
 
-    @Override
-    public void aroundWriteTo(WriterInterceptorContext context)
-            throws IOException, WebApplicationException {
+    @Throws(IOException::class, WebApplicationException::class)
+    override fun aroundWriteTo(context: WriterInterceptorContext) {
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ignored) {
+            Thread.sleep(5000)
+        } catch (ignored: InterruptedException) {
         }
-        context.proceed();
+        context.proceed()
     }
 }

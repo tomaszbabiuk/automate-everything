@@ -1,14 +1,12 @@
-package eu.automateeverything.rest;
+package eu.automateeverything.rest
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.ext.ExceptionMapper
 
-public class ResourceNotFoundExceptionMapper implements ExceptionMapper<ResourceNotFoundException> {
-
-    @Override
-    public Response toResponse(ResourceNotFoundException ex) {
+class ResourceNotFoundExceptionMapper : ExceptionMapper<ResourceNotFoundException?> {
+    override fun toResponse(ex: ResourceNotFoundException?): Response {
         return Response
-                .status(404)
-                .build();
+            .status(404)
+            .build()
     }
 }
