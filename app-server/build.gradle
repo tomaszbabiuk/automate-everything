@@ -100,7 +100,7 @@ task startDebugAgent {
     doLast {
         ssh.run {
             session(remotes.raspberry) {
-                execute 'sudo screen -dm java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005 -Dfile.encoding=UTF-8 -Djava.library.path=/usr/lib/jni -Duser.dir=/home/pi/ae -jar /home/pi/ae/app-server-all.jar'
+                execute 'sudo screen -dm java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005 -Dfile.encoding=UTF-8 -Djava.library.path=/usr/lib/jni -Duser.dir=/home/pi/ae -Dpf4j.pluginsDir=/home/pi/ae/plugins -jar /home/pi/ae/app-server-all.jar'
             }
         }
     }

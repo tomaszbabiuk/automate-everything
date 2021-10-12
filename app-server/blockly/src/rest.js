@@ -20,7 +20,7 @@ import store, {
 export const lang = vuetify.framework.lang
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost/'
+  baseURL: '/'
 })
 
 var requestInterceptor = function (config) {
