@@ -1,11 +1,62 @@
 # Welcome
-"Automate Everything" is a multiple purpose automation server. It can be a base for home automation systems, gardening controllers or even a complicated process controllers. Think of it like more plugin robust OpenHab or deeply customizable HomeAssistant.
+"Automate Everything" is a multipurpose automation server. It can control your home or garden watering system. It can even trade cryptocurrencies! 
+
+Think of "Automate Everything" as more plugin friendly OpenHab or deeply customizable HomeAssistant. You can even use "Automate Everything" as "If This Than That" service in your local network. 
+
+With correct set of plugins you can automate literally everything!
+
+# Best features
+1. Everything is a plugin
+2. Zero-conf principle
+3. Modern UI
+4. Deeply integrated with Google Blockly
+5. Type-safe automation
+6. Different automation types (event based/ loop based)
+7. Developers haven
+8. More than Home Automation server
+9. Embedded MQTT server
+
+# A note of history
+The predecessor of "Automate Everything" was called "GeekHOME Server". The origin project was created almost 10 years ago. "Automate Everything" is natural evolution of "GeekHOME Server" and most of the old functionality will be moved here sooner or later (and by that I mean a set of plugins for controlling lights, ventilation, central heating, alarm system and others).
 
 # State of the project
-The predecessor of "Automate Everything" was called "GeekHOME Server" had been created 10 years ago. This work is in progress!
-After UI related coding is done, all the functionality of geekHOME will be moved here.
+The project is still in development.
 
-# Building
+# Installing on Raspberry Pi
+The recommended version of Raspberry Pi is *Raspberry Pi 4*.
+The setup below assumes you have a fresh installation of Raspbian/Ubuntu and you can connect to the board with SSH:
+```bash
+ssh pi@x.x.x.x
+```
+Where x.x.x.x is the IP address of your Pi in your local network.
+
+### Installing java
+```bash
+sudo apt update
+sudo apt install openjdk-11-jdk
+java -version
+```
+
+### Java troubleshooting.
+If you have problem running multiple java versions, or getting errors like that:
+```
+Error occurred during initialization of VM
+Server VM is only supported on ARMv7+ VFP
+```
+run
+```bash 
+sudo update-alternatives --config java
+```
+and manually select java 11
+
+### Installing RXTX drivers (optional)
+Required only if you're using "USB to 1-wire" adapter or "USB to RS485" adapter.
+```bash
+sudo apt-get install librxtx-java
+sudo reboot
+```
+
+# Building from sources
 "Automate Everything" needs gradle and npm to build. The most usable scripts and gradle tasks are:
 
 * For building plugins:
