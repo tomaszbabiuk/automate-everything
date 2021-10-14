@@ -83,7 +83,7 @@ task deploy {
         ssh.run {
             session(remotes.raspberry) {
                 execute 'sudo killall -9 java || true'
-                execute 'sudo rm -rf /home/pi/ae'
+                execute 'sudo rm -rf /home/pi/ae || true'
                 execute 'mkdir /home/pi/ae'
 
                 put from: "${buildDir}/libs/app-server-all.jar", into: '/home/pi/ae'
@@ -91,6 +91,8 @@ task deploy {
                 put from: "${buildDir}/../blockly/dist", into: '/home/pi/ae'
 
                 execute 'mv /home/pi/ae/dist/ /home/pi/ae/web/'
+                execute 'echo "java -Dfile.encoding=UTF-8 -Djava.library.path=/usr/lib/jni -Duser.dir=/home/pi/ae -Dpf4j.pluginsDir=/home/pi/ae/plugins -jar /home/pi/ae/app-server-all.jar" > /home/pi/ae/run.sh'
+                execute 'chmod +x'
             }
         }
     }
@@ -104,4 +106,11 @@ task startDebugAgent {
             }
         }
     }
+}
+
+task rebuildWeb(type:Exec) {
+    workingDir '${buildDir}/../blockly'
+
+    //on windows:
+    commandLine 'cmd', '/c', 'npm run build'
 }

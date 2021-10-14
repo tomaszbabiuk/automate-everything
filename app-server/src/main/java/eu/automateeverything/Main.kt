@@ -1,5 +1,6 @@
 package eu.automateeverything
 
+import io.ktor.http.*
 import org.eclipse.jetty.server.Handler
 import org.eclipse.jetty.server.Server
 import kotlin.jvm.JvmStatic
@@ -13,18 +14,20 @@ import org.glassfish.jersey.servlet.ServletContainer
 import java.lang.Exception
 
 object Main {
+    private const val DEFAULT_PORT = 80
 
     @JvmStatic
     fun main(args: Array<String>) {
         val contexts = ContextHandlerCollection()
         val slowDown = args.contains("-slow")
+        val port = extractPort(args)
 
         contexts.handlers = arrayOf<Handler>(
             buildWebContext(),
             buildRestContext(slowDown)
         )
 
-        val server = Server(80)
+        val server = Server(port)
         server.handler = contexts
         try {
             server.start()
@@ -32,6 +35,14 @@ object Main {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun extractPort(args: Array<String>): Int {
+
+        return args
+            .filter { it.startsWith("-port=") }
+            .map { it.replace("-port=", "").toInt() }
+            .firstOrNull() ?: DEFAULT_PORT
     }
 
     private fun buildWebContext(): ContextHandler {
