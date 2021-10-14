@@ -32,10 +32,6 @@ interface Port<V: PortValue> : Connectible {
     fun tryRead() : V? {
         return (this as InputPort<V>).read()
     }
-
-    fun tryWrite(value: V) {
-        return (this as OutputPort<V>).write(value)
-    }
 }
 
 interface InputPort<V : PortValue> : Port<V> {

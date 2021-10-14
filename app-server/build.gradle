@@ -92,7 +92,7 @@ task deploy {
 
                 execute 'mv /home/pi/ae/dist/ /home/pi/ae/web/'
                 execute 'echo "java -Dfile.encoding=UTF-8 -Djava.library.path=/usr/lib/jni -Duser.dir=/home/pi/ae -Dpf4j.pluginsDir=/home/pi/ae/plugins -jar /home/pi/ae/app-server-all.jar" > /home/pi/ae/run.sh'
-                execute 'chmod +x'
+                execute 'chmod +x /home/pi/ae/run.sh'
             }
         }
     }
