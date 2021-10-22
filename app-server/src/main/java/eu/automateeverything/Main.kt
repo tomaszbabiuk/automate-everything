@@ -1,6 +1,5 @@
 package eu.automateeverything
 
-import io.ktor.http.*
 import org.eclipse.jetty.server.Handler
 import org.eclipse.jetty.server.Server
 import kotlin.jvm.JvmStatic

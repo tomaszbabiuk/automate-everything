@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 
-class TemperatureContainerWrapper extends ContainerWrapperBase {
+public class TemperatureContainerWrapper extends ContainerWrapperBase {
     private OneWireContainer28 _wrapped;
     private long _lastTemperatureRead = 0;
     private Double _lastTemperature;

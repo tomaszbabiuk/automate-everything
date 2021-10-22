@@ -28,23 +28,25 @@ class OneWirePlugin(
         return OneWireAdapter(pluginId, serialPort)
     }
 
-    private fun listSerialPorts(): ArrayList<String> {
-        val serialPorts = ArrayList<String>()
-        val path = File.separator + "dev"
-        val directory = File(path)
-        if (directory.exists()) {
-            val aliases = directory.listFiles()
-            if (aliases != null) {
-                for (f in aliases) {
-                    if (f.name.startsWith("ttyU")) {
-                        val adapterPort = f.absolutePath
-                        serialPorts.add(adapterPort)
-                    }
-                }
-            }
-        }
+    private fun listSerialPorts(): List<String> {
+//        val serialPorts = ArrayList<String>()
+//        val path = File.separator + "dev"
+//        val directory = File(path)
+//        if (directory.exists()) {
+//            val aliases = directory.listFiles()
+//            if (aliases != null) {
+//                for (f in aliases) {
+//                    if (f.name.startsWith("ttyU")) {
+//                        val adapterPort = f.absolutePath
+//                        serialPorts.add(adapterPort)
+//                    }
+//                }
+//            }
+//        }
+//
+//        return serialPorts
 
-        return serialPorts
+        return listOf("COM2")
     }
 
     override val name: Resource = R.plugin_name
