@@ -22,7 +22,7 @@ class AforeAdapter(
     var operationScope: CoroutineScope? = null
     private var operationSink: EventsSink? = null
     private val httpClient = createHttpClient()
-    private val idBuilder = PortIdBuilder(owningPluginId, ADAPTER_ID)
+    private val idBuilder = PortIdBuilder(owningPluginId)
 
     private fun createHttpClient() = HttpClient(CIO) {
         install(JsonFeature) {

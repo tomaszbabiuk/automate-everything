@@ -7,7 +7,7 @@ import com.dalsemi.onewire.container.SwitchContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class SwitchContainerWrapper extends ContainerWrapperBase {
+public class SwitchContainerWrapper extends ContainerWrapperBase {
     private boolean _lastReadingFailed;
     private boolean[] _values;
     private boolean[] _prevValues;

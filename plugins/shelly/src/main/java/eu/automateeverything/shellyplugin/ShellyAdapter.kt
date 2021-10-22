@@ -24,7 +24,7 @@ class ShellyAdapter(private val owningPluginId: String,
                     lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
     override val id = ADAPTER_ID
     private var brokerIP: Inet4Address? = null
-    private var idBuilder = PortIdBuilder(owningPluginId, id)
+    private var idBuilder = PortIdBuilder(owningPluginId)
     private var updateSink: EventsSink? = null
     private val client = createHttpClient()
     private val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
@@ -96,7 +96,6 @@ class ShellyAdapter(private val owningPluginId: String,
         if (mqttPayload != null) {
             val topic = shellyOutput.writeTopic
             mqttBroker.publish(topic, mqttPayload)
-//            shellyOutput.reset()
         }
     }
 

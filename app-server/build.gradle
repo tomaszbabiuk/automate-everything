@@ -11,7 +11,7 @@ run {
 
 remotes {
     raspberry {
-        host = '192.168.1.100'
+        host = '192.168.1.112'
         user = 'pi'
         password = 'raspberry'
     }

@@ -71,7 +71,7 @@ class PortsController @Inject constructor(
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun deleteTag(@PathParam("id") id: String) {
+    fun deletePort(@PathParam("id") id: String) {
         repository
             .deletePort(id)
     }
