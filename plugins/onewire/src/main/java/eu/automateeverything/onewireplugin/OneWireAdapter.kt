@@ -3,15 +3,11 @@ package eu.automateeverything.onewireplugin
 import com.dalsemi.onewire.OneWireException
 import com.dalsemi.onewire.adapter.DSPortAdapter
 import com.dalsemi.onewire.adapter.USerialAdapter
-import com.dalsemi.onewire.container.OneWireContainer28
 import com.dalsemi.onewire.container.OneWireSensor
-import com.dalsemi.onewire.container.TemperatureContainer
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
-import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.domain.hardware.PortIdBuilder
-import eu.automateeverything.domain.hardware.Temperature
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -54,9 +50,7 @@ class OneWireAdapter(
         adapter.freePort()
     }
 
-    override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
-        this.operationSink = operationSink
-
+    override fun start(settings: List<SettingsDto>) {
         if (operationScope != null) {
             operationScope!!.cancel("Adapter already started")
         }

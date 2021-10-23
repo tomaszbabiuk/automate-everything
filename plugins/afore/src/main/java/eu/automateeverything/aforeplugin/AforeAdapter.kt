@@ -17,10 +17,10 @@ import java.util.*
 
 class AforeAdapter(
     private val owningPluginId: String,
-    private val lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<AforeWattageInputPort>() {
+    private val lanGatewayResolver: LanGatewayResolver,
+    private val eventsSink: EventsSink) : HardwareAdapterBase<AforeWattageInputPort>() {
     override val id  = ADAPTER_ID
     var operationScope: CoroutineScope? = null
-    private var operationSink: EventsSink? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId)
 
@@ -99,7 +99,7 @@ class AforeAdapter(
             val connectionStateHasChanged = it.checkIfConnected(now) != previousConnectionState
             if (valueHasChanged || connectionStateHasChanged) {
                 val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)
-                operationSink?.broadcastEvent(event)
+                eventsSink.broadcastEvent(event)
             }
         }
     }
@@ -112,8 +112,7 @@ class AforeAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
-        this.operationSink = operationSink
+    override fun start(settings: List<SettingsDto>) {
 
         if (operationScope != null) {
             operationScope!!.cancel("Adapter already started")

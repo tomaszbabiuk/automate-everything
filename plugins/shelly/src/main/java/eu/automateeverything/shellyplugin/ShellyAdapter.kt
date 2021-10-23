@@ -19,13 +19,15 @@ import java.net.Inet4Address
 import java.net.InetAddress
 import java.util.*
 
-class ShellyAdapter(private val owningPluginId: String,
-                    private val mqttBroker: MqttBrokerService,
-                    lanGatewayResolver: LanGatewayResolver) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
+class ShellyAdapter(
+    private val owningPluginId: String,
+    private val mqttBroker: MqttBrokerService,
+    lanGatewayResolver: LanGatewayResolver,
+    private val eventsSink: EventsSink
+) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
     override val id = ADAPTER_ID
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId)
-    private var updateSink: EventsSink? = null
     private val client = createHttpClient()
     private val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
 
@@ -99,8 +101,7 @@ class ShellyAdapter(private val owningPluginId: String,
         }
     }
 
-    override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
-        this.updateSink = operationSink
+    override fun start(settings: List<SettingsDto>) {
         mqttBroker.addMqttListener(this)
     }
 
@@ -123,7 +124,7 @@ class ShellyAdapter(private val owningPluginId: String,
                 (it as ShellyInputPort<*>?)?.setValueFromMqttPayload(msgAsString)
 
                 val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                updateSink?.broadcastEvent(updateEvent)
+                eventsSink.broadcastEvent(updateEvent)
             }
     }
 

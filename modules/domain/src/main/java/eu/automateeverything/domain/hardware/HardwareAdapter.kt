@@ -16,7 +16,7 @@ interface HardwareAdapter<T : Port<*>> {
     fun executePendingChanges()
 
     fun stop()
-    fun start(operationSink: EventsSink, settings: List<SettingsDto>)
+    fun start(settings: List<SettingsDto>)
 
     var lastDiscoveryTime: Long
     var lastError: Throwable?

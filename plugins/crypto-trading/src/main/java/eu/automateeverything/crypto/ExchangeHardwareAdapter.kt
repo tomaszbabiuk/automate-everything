@@ -11,10 +11,10 @@ import java.util.*
 class ExchangeHardwareAdapter(
     override val id: String,
     private val owningPluginId: String,
-    private val marketProxy: MarketProxy) : HardwareAdapterBase<MarketPort>() {
+    private val marketProxy: MarketProxy,
+    private val eventsSink: EventsSink) : HardwareAdapterBase<MarketPort>() {
 
     private var operationScope: CoroutineScope? = null
-    private var operationSink: EventsSink? = null
     private var currencyFilter: List<String>? = null
     private var currencyFilterDefaults = marketPairsStringToList(MarketPairsSettingGroup.FIELD_MARKET_PAIRS_IV)
     private val refreshIntervalMs = 30 * 1000L
@@ -28,9 +28,7 @@ class ExchangeHardwareAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override fun start(operationSink: EventsSink, settings: List<SettingsDto>) {
-        this.operationSink = operationSink
-
+    override fun start(settings: List<SettingsDto>) {
         settings
             .filter{it.clazz == MarketPairsSettingGroup::class.java.name}
             .forEach {
@@ -103,7 +101,7 @@ class ExchangeHardwareAdapter(
                 if (valueHasChanged || wasDisconnected) {
                     port.updateValue(ticker)
                     val event = PortUpdateEventData(owningPluginId, id, port)
-                    operationSink?.broadcastEvent(event)
+                    eventsSink.broadcastEvent(event)
                 }
 
                 port.connectionValidUntil = calculateValidUntil(calendar.timeInMillis)
@@ -114,7 +112,7 @@ class ExchangeHardwareAdapter(
                 it.markDisconnected()
                 if (wasConnected) {
                     val event = PortUpdateEventData(owningPluginId, id, it)
-                    operationSink?.broadcastEvent(event)
+                    eventsSink.broadcastEvent(event)
                 }
             }
         }

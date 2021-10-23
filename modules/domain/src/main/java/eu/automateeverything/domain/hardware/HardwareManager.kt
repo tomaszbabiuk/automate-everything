@@ -55,7 +55,7 @@ class HardwareManager(
             .filter { factory.pluginId == it.key.pluginId }
             .flatMap { it.value }
             .forEach { bundle ->
-                bundle.adapter.start(eventsSink, extractPluginSettings(bundle.owningPluginId))
+                bundle.adapter.start(extractPluginSettings(bundle.owningPluginId))
                 discover(bundle)
             }
     }
