@@ -8,11 +8,13 @@ import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import eu.automateeverything.domain.hardware.HardwarePlugin
+import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.PluginWrapper
 
 class CryptoTradingPlugin(
     wrapper: PluginWrapper,
-    private val eventsSink: EventsSink)
+    private val eventsSink: EventsSink,
+    private val settingsResolver: SettingsResolver)
     : HardwarePlugin(wrapper), PluginMetadata {
 
     override fun start() {
@@ -22,8 +24,9 @@ class CryptoTradingPlugin(
     }
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
+        val pluginSettings = settingsResolver.resolve()
         val coinGeckoProxy = CoinGeckoMarketProxy(CoinGeckoApi())
-        val coinGeckoAdapter = ExchangeHardwareAdapter("Coingecko", pluginId, coinGeckoProxy, eventsSink)
+        val coinGeckoAdapter = ExchangeHardwareAdapter("Coingecko", pluginId, coinGeckoProxy, eventsSink, pluginSettings)
 
         return listOf(coinGeckoAdapter)
     }

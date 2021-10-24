@@ -8,7 +8,7 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 class SingletonExtensionFactoryWithDI(
     private val injectionRegistry: InjectionRegistry,
-    private val extensionSettingsExtractor: ExtensionSettingsExtractor) : DefaultExtensionFactory() {
+    private val settingsExtractor: SettingsExtractor) : DefaultExtensionFactory() {
 
     private val cache: MutableMap<ClassLoader, MutableMap<String, Any>> = WeakHashMap()
 
@@ -38,7 +38,7 @@ class SingletonExtensionFactoryWithDI(
         if (constructors.size == 1) {
             val pluginSpecificSettingsResolver = object : SettingsResolver {
                 override fun resolve(): List<SettingsDto> {
-                    return extensionSettingsExtractor.extractPluginSettings(extensionClass)
+                    return settingsExtractor.extractSettings(extensionClass)
                 }
             }
             val primaryConstructor = constructors[0]

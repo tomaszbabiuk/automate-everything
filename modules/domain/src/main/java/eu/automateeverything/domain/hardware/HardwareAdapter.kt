@@ -1,7 +1,6 @@
 package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.AdapterState
-import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 
 interface HardwareAdapter<T : Port<*>> {
@@ -16,7 +15,7 @@ interface HardwareAdapter<T : Port<*>> {
     fun executePendingChanges()
 
     fun stop()
-    fun start(settings: List<SettingsDto>)
+    fun start()
 
     var lastDiscoveryTime: Long
     var lastError: Throwable?

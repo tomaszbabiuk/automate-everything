@@ -112,8 +112,7 @@ class AforeAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override fun start(settings: List<SettingsDto>) {
-
+    override fun start() {
         if (operationScope != null) {
             operationScope!!.cancel("Adapter already started")
         }

@@ -1,12 +1,16 @@
 package eu.automateeverything.domain.extensibility
 
+import eu.automateeverything.data.settings.SettingsDto
+import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.Plugin
 import org.pf4j.PluginFactory
 import org.pf4j.PluginWrapper
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
 
-class PluginFactoryWithDI(private val injectionRegistry: InjectionRegistry) : PluginFactory {
+class PluginFactoryWithDI(
+    private val injectionRegistry: InjectionRegistry,
+    private val settingsExtractor: SettingsExtractor) : PluginFactory {
 
     private val log = LoggerFactory.getLogger(PluginFactoryWithDI::class.java)
 
@@ -39,6 +43,11 @@ class PluginFactoryWithDI(private val injectionRegistry: InjectionRegistry) : Pl
     private fun createWithDI(pluginClass: Class<*>, pluginWrapper: PluginWrapper): Plugin {
         val constructors = pluginClass.constructors
         if (constructors.size == 1) {
+            val pluginSpecificSettingsResolver = object : SettingsResolver {
+                override fun resolve(): List<SettingsDto> {
+                    return settingsExtractor.extractSettings(pluginWrapper.pluginId)
+                }
+            }
             val primaryConstructor = constructors[0]
             val injectionParameters = primaryConstructor
                 .parameters
@@ -47,6 +56,8 @@ class PluginFactoryWithDI(private val injectionRegistry: InjectionRegistry) : Pl
 
                     if (it.type == PluginWrapper::class.java) {
                         pluginWrapper
+                    } else if (constructedType == SettingsResolver::class.java) {
+                        pluginSpecificSettingsResolver
                     } else {
                         val obj = injectionRegistry.resolve(constructedType)
                             ?: throw CreationException("Cannot inject ${pluginClass.name}, the constructor contains parameter of unknown type $constructedType")

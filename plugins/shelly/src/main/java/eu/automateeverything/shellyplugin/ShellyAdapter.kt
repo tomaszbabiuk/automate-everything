@@ -1,6 +1,5 @@
 package eu.automateeverything.shellyplugin
 
-import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.*
@@ -101,7 +100,7 @@ class ShellyAdapter(
         }
     }
 
-    override fun start(settings: List<SettingsDto>) {
+    override fun start() {
         mqttBroker.addMqttListener(this)
     }
 

@@ -8,7 +8,7 @@ class OneWireSensorToPortMapper(private val portIdBuilder: PortIdBuilder) {
     fun map(sensor: OneWireSensor): OneWirePort<*> {
         if (sensor is OneWireContainer28) {
             val inputPortId = portIdBuilder.buildPortId(sensor.addressAsString, 0, "I")
-            return OneWireTemperatureInputPort(inputPortId, sensor)
+            return OneWireTemperatureInputPort(inputPortId, sensor.address, sensor.adapter)
         }
 
         throw Exception("Unknown sensor type")

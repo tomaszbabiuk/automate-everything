@@ -12,7 +12,9 @@ class ExchangeHardwareAdapter(
     override val id: String,
     private val owningPluginId: String,
     private val marketProxy: MarketProxy,
-    private val eventsSink: EventsSink) : HardwareAdapterBase<MarketPort>() {
+    private val eventsSink: EventsSink,
+    private val settings: List<SettingsDto>)
+    : HardwareAdapterBase<MarketPort>() {
 
     private var operationScope: CoroutineScope? = null
     private var currencyFilter: List<String>? = null
@@ -28,7 +30,7 @@ class ExchangeHardwareAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override fun start(settings: List<SettingsDto>) {
+    override fun start() {
         settings
             .filter{it.clazz == MarketPairsSettingGroup::class.java.name}
             .forEach {

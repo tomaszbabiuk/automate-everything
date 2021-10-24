@@ -5,7 +5,6 @@ import eu.automateeverything.domain.automation.PortNotFoundException
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
-import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.async
@@ -17,7 +16,7 @@ import org.pf4j.PluginStateEvent
 import org.pf4j.PluginStateListener
 
 class HardwareManager(
-    private val pluginsCoordinator: PluginsCoordinator,
+    pluginsCoordinator: PluginsCoordinator,
     private val eventsSink: EventsSink,
     private val inbox: Inbox,
     private val repository: Repository,
@@ -55,7 +54,7 @@ class HardwareManager(
             .filter { factory.pluginId == it.key.pluginId }
             .flatMap { it.value }
             .forEach { bundle ->
-                bundle.adapter.start(extractPluginSettings(bundle.owningPluginId))
+                bundle.adapter.start()
                 discover(bundle)
             }
     }
@@ -79,12 +78,6 @@ class HardwareManager(
                 }
             }
         }
-    }
-
-    private fun extractPluginSettings(pluginId: String): List<SettingsDto> {
-        return pluginsCoordinator
-            .getPluginSettingGroups(pluginId)
-            .mapNotNull { repository.getSettingsByPluginIdAndClazz(pluginId, it.javaClass.name) }
     }
 
     private suspend fun removeFactory(factory: HardwarePlugin) {

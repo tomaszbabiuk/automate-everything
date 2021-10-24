@@ -1,14 +1,15 @@
 package eu.automateeverything.onewireplugin
 
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import eu.automateeverything.domain.hardware.HardwarePlugin
 import org.pf4j.PluginWrapper
-import java.io.File
 
 class OneWirePlugin(
-    wrapper: PluginWrapper)
+    wrapper: PluginWrapper,
+    private val eventsSink: EventsSink)
     : HardwarePlugin(wrapper), PluginMetadata{
 
     override fun start() {
@@ -25,7 +26,7 @@ class OneWirePlugin(
     }
 
     private fun createOneWireAdapter(serialPort: String): HardwareAdapter<*> {
-        return OneWireAdapter(pluginId, serialPort)
+        return OneWireAdapter(pluginId, serialPort, eventsSink)
     }
 
     private fun listSerialPorts(): List<String> {

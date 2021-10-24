@@ -4,6 +4,7 @@ import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SettingGroup
+import eu.automateeverything.domain.hardware.HardwareAdapter
 import org.pf4j.PluginStateListener
 import org.pf4j.PluginWrapper
 
@@ -21,4 +22,5 @@ interface PluginsCoordinator {
     val configurables: List<Configurable>
     val blockFactories: List<BlockFactory<*>>
     val blockFactoriesCollectors: List<BlockFactoriesCollector>
+    val hardwareAdapters: List<HardwareAdapter<*>>
 }

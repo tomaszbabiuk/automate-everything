@@ -7,23 +7,24 @@ import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PluginEventData
+import eu.automateeverything.domain.hardware.HardwareAdapter
 import org.pf4j.*
-
 
 class SingletonExtensionPluginsCoordinator(
     private val liveEvents: EventsSink,
     private val injectionRegistry: InjectionRegistry,
-    private val repository: Repository,
+    repository: Repository
 ) : PluginsCoordinator {
+
+    val extractor = SettingsExtractor(this, repository)
 
     private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
         override fun createExtensionFactory(): ExtensionFactory {
-            val extractor = ExtensionSettingsExtractor(this@SingletonExtensionPluginsCoordinator, repository)
             return SingletonExtensionFactoryWithDI(injectionRegistry, extractor)
         }
 
         override fun createPluginFactory(): PluginFactory {
-            return PluginFactoryWithDI(injectionRegistry)
+            return PluginFactoryWithDI(injectionRegistry, extractor)
         }
 
         init {
@@ -98,6 +99,9 @@ class SingletonExtensionPluginsCoordinator(
 
     override val blockFactoriesCollectors: List<BlockFactoriesCollector>
         get() = wrapped.getExtensions(BlockFactoriesCollector::class.java)
+
+    override val hardwareAdapters: List<HardwareAdapter<*>>
+        get() = wrapped.getExtensions(HardwareAdapter::class.java)
 
     override val plugins: List<PluginWrapper>
         get() = wrapped.plugins

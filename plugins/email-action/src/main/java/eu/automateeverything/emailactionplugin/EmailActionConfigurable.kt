@@ -8,7 +8,6 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.Extension
-import java.util.HashMap
 
 @Extension
 class EmailActionConfigurable(
