@@ -3,6 +3,8 @@ package eu.automateeverything.onewireplugin
 import com.dalsemi.onewire.OneWireException
 import com.dalsemi.onewire.adapter.DSPortAdapter
 import com.dalsemi.onewire.container.OneWireContainer28
+import com.dalsemi.onewire.container.Sleeper
+import com.dalsemi.onewire.container.ThreadSleeper
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.PortValue
 import eu.automateeverything.domain.hardware.Temperature
@@ -11,13 +13,14 @@ import java.math.RoundingMode
 import java.util.*
 
 interface OneWirePort<V: PortValue> : InputPort<V> {
-    fun refresh(now: Calendar, adapter: DSPortAdapter)
+    val oneWireAddress: ByteArray
+    fun refresh(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper)
 }
 
 class OneWireTemperatureInputPort(
     override val id: String,
-    private val oneWireAddress: ByteArray,
-    temporaryAdapter: DSPortAdapter
+    override val oneWireAddress: ByteArray,
+    temporaryAdapter: DSPortAdapter,
 ) : OneWirePort<Temperature> {
 
     override var connectionValidUntil = Long.MAX_VALUE
@@ -30,7 +33,7 @@ class OneWireTemperatureInputPort(
         lastTemperatureRead = now.timeInMillis
 
         try {
-            lastTemperature = Temperature(readTemperatureInternal(now, temporaryAdapter) + 273.15)
+            lastTemperature = Temperature(readTemperatureInternal(now, temporaryAdapter, ThreadSleeper()) + 273.15)
         } catch (ex: Exception) {
             lastTemperature = Temperature(Double.NaN)
             markDisconnected()
@@ -41,15 +44,15 @@ class OneWireTemperatureInputPort(
         return lastTemperature
     }
 
-    override fun refresh(now: Calendar, adapter: DSPortAdapter) {
-        val newTemperature = tryReadTemperature(now, adapter)
+    override fun refresh(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper) {
+        val newTemperature = tryReadTemperature(now, adapter, sleeper)
         if (newTemperature != null) {
             lastTemperature = Temperature(newTemperature + 273.15)
         }
     }
 
     @Throws(AdapterNonOperationalException::class)
-    fun tryReadTemperature(now: Calendar, adapter: DSPortAdapter): Double? {
+    fun tryReadTemperature(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper): Double? {
         val nowInMillis =  now.timeInMillis
         return if (nowInMillis - lastTemperatureRead < 30000) {
             lastTemperature.value - 273.15
@@ -58,7 +61,7 @@ class OneWireTemperatureInputPort(
                 throw AdapterNonOperationalException()
             }
 
-            readTemperatureInternal(now, adapter)
+            readTemperatureInternal(now, adapter, sleeper)
         } catch (ex: OneWireException) {
             markDisconnected()
             null
@@ -66,10 +69,10 @@ class OneWireTemperatureInputPort(
     }
 
     @Throws(OneWireException::class)
-    private fun readTemperatureInternal(now: Calendar, adapter: DSPortAdapter): Double {
+    private fun readTemperatureInternal(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper): Double {
         val container = OneWireContainer28(adapter, oneWireAddress)
         var state: ByteArray = container.readDevice()
-        container.doTemperatureConvert(state)
+        container.doTemperatureConvert(state, sleeper)
         state = container.readDevice()
         lastTemperatureRead = now.timeInMillis
         val lastTemp: BigDecimal = BigDecimal(container.getTemperature(state)).setScale(2, RoundingMode.CEILING)

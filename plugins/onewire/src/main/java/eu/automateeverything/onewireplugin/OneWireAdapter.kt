@@ -5,12 +5,12 @@ import com.dalsemi.onewire.adapter.DSPortAdapter
 import com.dalsemi.onewire.adapter.OneWireIOException
 import com.dalsemi.onewire.adapter.USerialAdapter
 import com.dalsemi.onewire.container.OneWireSensor
+import com.dalsemi.onewire.utils.Address
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import java.util.*
 
 class OneWireAdapter(
@@ -21,7 +21,6 @@ class OneWireAdapter(
 
     private var mapper: OneWireSensorToPortMapper
     override val id: String = "1-WIRE $serialPortName"
-    val channel = Channel<String>()
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
@@ -86,20 +85,18 @@ class OneWireAdapter(
     }
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): List<OneWirePort<*>> {
-        println("one-wire discovery... returned already cached data")
-
-        channel.send("discovery")
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, "The manual discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
+        if (ports.values.isNotEmpty()) {
+            eventsSink.broadcastDiscoveryEvent(owningPluginId, "Here's the list of already discovered devices:")
+            ports.values.forEach {
+                eventsSink.broadcastDiscoveryEvent(owningPluginId, Address.toString(it.oneWireAddress))
+            }
+        }
 
         return ports.values.toList()
     }
 
-    private fun maintenanceLoop() {
-        val channelResult = channel.tryReceive()
-        if (channelResult.isSuccess) {
-            val order = channelResult.getOrNull()
-            println(order)
-        }
-
+    private suspend fun maintenanceLoop() = coroutineScope {
         val now = Calendar.getInstance()
         try {
             val adapter = initializeAdapter(serialPortName)
@@ -109,7 +106,13 @@ class OneWireAdapter(
                     val previousValue = it.read().asDouble()
                     val previousConnectionState = it.checkIfConnected(now)
 
-                    it.refresh(now, adapter)
+                    it.refresh(now, adapter) {  sleepingMs ->
+                        var total = 0
+                        while (isActive && total < sleepingMs) {
+                            Thread.sleep(10)
+                            total++
+                        }
+                    }
 
                     val valueHasChanged = it.read().asDouble() != previousValue
                     val connectionStateHasChanged = it.checkIfConnected(now) != previousConnectionState

@@ -458,6 +458,10 @@ public class OneWireContainer28
         }
     }
 
+    public void doTemperatureConvert (byte[] state)
+            throws OneWireIOException, OneWireException {
+        doTemperatureConvert(state, new ThreadSleeper());
+    }
    /**
     * Performs a temperature conversion on <code>state</code> information.
     *
@@ -473,7 +477,7 @@ public class OneWireContainer28
     *
     * @see    #getTemperature
     */
-   public void doTemperatureConvert (byte[] state)
+   public void doTemperatureConvert (byte[] state, Sleeper sleeper)
       throws OneWireIOException, OneWireException
    {
       int msDelay = 750;   // in milliseconds
@@ -511,7 +515,7 @@ public class OneWireContainer28
          // delay for specified amount of time
          try
          {
-            Thread.sleep(msDelay);
+             sleeper.sleep(msDelay);
          }
          catch (InterruptedException e){}
 
