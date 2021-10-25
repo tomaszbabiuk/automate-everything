@@ -7,18 +7,18 @@ import com.dalsemi.onewire.container.SwitchContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SwitchContainerWrapper extends ContainerWrapperBase {
+public class BinaryInputsCoordinator extends ContainerWrapperBase {
     private boolean _lastReadingFailed;
-    private boolean[] _values;
+    private final boolean[] _values;
     private boolean[] _prevValues;
-    private SwitchContainer _wrapped;
-    private int _channelsCount;
+    private final SwitchContainer _wrapped;
+    private final int _channelsCount;
 
     int getChannelsCount() {
         return _channelsCount;
     }
 
-    SwitchContainerWrapper(SwitchContainer switchContainer) throws OneWireException {
+    BinaryInputsCoordinator(SwitchContainer switchContainer) throws OneWireException {
         super((OneWireContainer)switchContainer);
         _wrapped = switchContainer;
         byte[] initialData = _wrapped.readDevice();
@@ -39,7 +39,7 @@ public class SwitchContainerWrapper extends ContainerWrapperBase {
         }
     }
 
-    Boolean read(int channel) {
+    Boolean cachedRead(int channel) {
         return _values[channel];
     }
 
@@ -61,10 +61,10 @@ public class SwitchContainerWrapper extends ContainerWrapperBase {
         }
     }
 
-    private boolean preserveSensedOnlyReadings(ArrayList<SwitchContainerReading> readings) throws OneWireException {
+    private void preserveSensedOnlyReadings(ArrayList<SwitchContainerReading> readings) throws OneWireException {
         for (SwitchContainerReading reading : readings) {
             if (!reading.isSensed()) {
-                return false;
+                return;
             }
         }
 
@@ -148,10 +148,10 @@ public class SwitchContainerWrapper extends ContainerWrapperBase {
         }
     }
 
-    class SwitchContainerReading {
-        private int _channel;
-        private boolean _level;
-        private boolean _sensed;
+    static class SwitchContainerReading {
+        private final int _channel;
+        private final boolean _level;
+        private final boolean _sensed;
 
         int getChannel() {
             return _channel;

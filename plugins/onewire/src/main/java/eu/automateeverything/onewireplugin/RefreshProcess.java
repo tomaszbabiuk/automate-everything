@@ -94,15 +94,15 @@ class RefreshProcess implements Runnable {
                     }
                     _pipe.add(task);
                 } else if (task.getType() == TaskType.ReadSensedSwitchValue) {
-                    SwitchContainerWrapper switchContainer = (SwitchContainerWrapper)(task.getDiscoveryInfo().getContainer());
-                    ArrayList<SwitchContainerWrapper.SwitchContainerReading> readings = switchContainer.tryRead(true);
+                    BinaryInputsCoordinator switchContainer = (BinaryInputsCoordinator)(task.getDiscoveryInfo().getContainer());
+                    ArrayList<BinaryInputsCoordinator.SwitchContainerReading> readings = switchContainer.tryRead(true);
                     hasRefreshErrors = analyseSwitchReadings(hasRefreshErrors, task, readings);
                 } else if (task.getType() == TaskType.ReadSwitchValue) {
-                    SwitchContainerWrapper switchContainer = (SwitchContainerWrapper)(task.getDiscoveryInfo().getContainer());
-                    ArrayList<SwitchContainerWrapper.SwitchContainerReading> readings = switchContainer.tryRead(false);
+                    BinaryInputsCoordinator switchContainer = (BinaryInputsCoordinator)(task.getDiscoveryInfo().getContainer());
+                    ArrayList<BinaryInputsCoordinator.SwitchContainerReading> readings = switchContainer.tryRead(false);
                     hasRefreshErrors = analyseSwitchReadings(hasRefreshErrors, task, readings);
                 } else if (task.getType() == TaskType.WriteSwitchValue) {
-                    SwitchContainerWrapper switchContainer = (SwitchContainerWrapper)(task.getDiscoveryInfo().getContainer());
+                    BinaryInputsCoordinator switchContainer = (BinaryInputsCoordinator)(task.getDiscoveryInfo().getContainer());
                     switchContainer.tryExecute();
                 }  else if (task.getType() == TaskType.RefreshLoopFinished) {
                         _adapterRefreshedListener.refreshed(hasRefreshErrors);
@@ -122,11 +122,11 @@ class RefreshProcess implements Runnable {
         free();
     }
 
-    private boolean analyseSwitchReadings(boolean hasRefreshErrors, AdapterTask task, ArrayList<SwitchContainerWrapper.SwitchContainerReading> readings) {
+    private boolean analyseSwitchReadings(boolean hasRefreshErrors, AdapterTask task, ArrayList<BinaryInputsCoordinator.SwitchContainerReading> readings) {
         if (readings == null) {
             hasRefreshErrors = true;
         } else {
-            for (SwitchContainerWrapper.SwitchContainerReading reading : readings) {
+            for (BinaryInputsCoordinator.SwitchContainerReading reading : readings) {
                 onInputSwitchRefreshed(task.getDiscoveryInfo(), reading.getChannel(), reading.getLevel(), reading.isSensed());
             }
         }

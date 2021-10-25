@@ -5,7 +5,7 @@ import eu.automateeverything.domain.hardware.Relay
 
 class OneWireRelayOutputPort(
     override val id: String,
-    private var switchContainer: SwitchContainerWrapper,
+    private var switchContainer: BinaryInputsCoordinator,
     private val channel: Int            )
     : OutputPort<Relay> {
 
@@ -15,7 +15,7 @@ class OneWireRelayOutputPort(
     override var requestedValue : Relay? = null
 
     override fun read(): Relay {
-        return Relay(switchContainer.read(channel))
+        return Relay(switchContainer.cachedRead(channel))
     }
 
     override fun write(value: Relay) {

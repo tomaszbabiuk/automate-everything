@@ -5,17 +5,10 @@ import com.dalsemi.onewire.adapter.DSPortAdapter
 import com.dalsemi.onewire.container.OneWireContainer28
 import com.dalsemi.onewire.container.Sleeper
 import com.dalsemi.onewire.container.ThreadSleeper
-import eu.automateeverything.domain.hardware.InputPort
-import eu.automateeverything.domain.hardware.PortValue
 import eu.automateeverything.domain.hardware.Temperature
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
-
-interface OneWirePort<V: PortValue> : InputPort<V> {
-    val oneWireAddress: ByteArray
-    fun refresh(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper)
-}
 
 class OneWireTemperatureInputPort(
     override val id: String,

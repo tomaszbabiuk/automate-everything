@@ -4,7 +4,7 @@ import com.dalsemi.onewire.OneWireException
 import com.dalsemi.onewire.adapter.DSPortAdapter
 import com.dalsemi.onewire.adapter.OneWireIOException
 import com.dalsemi.onewire.adapter.USerialAdapter
-import com.dalsemi.onewire.container.OneWireSensor
+import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.utils.Address
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PortUpdateEventData
@@ -24,7 +24,7 @@ class OneWireAdapter(
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
-        mapper = OneWireSensorToPortMapper(portIdBuilder)
+        mapper = OneWireSensorToPortMapper(owningPluginId, portIdBuilder, eventsSink)
     }
 
     var operationScope: CoroutineScope? = null
@@ -60,7 +60,8 @@ class OneWireAdapter(
         //discovery
         val discoveryAdapter = initializeAdapter(serialPortName)
         searchForOneWireSensors(discoveryAdapter)
-            .map(mapper::map)
+            .mapNotNull(mapper::map)
+            .flatten()
             .forEach { ports[it.id] = it }
         freeAdapter(discoveryAdapter)
 
@@ -73,11 +74,11 @@ class OneWireAdapter(
         }
     }
 
-    private fun searchForOneWireSensors(adapter: USerialAdapter): List<OneWireSensor> {
+    private fun searchForOneWireSensors(adapter: USerialAdapter): List<OneWireContainer> {
         return adapter
             .allDeviceContainers
             .toList()
-            .filterIsInstance<OneWireSensor>()
+            .filterIsInstance<OneWireContainer>()
     }
 
     override fun stop() {
