@@ -1,12 +1,21 @@
 package eu.automateeverything.onewireplugin
 
-import com.dalsemi.onewire.adapter.DSPortAdapter
-import com.dalsemi.onewire.container.Sleeper
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.PortValue
 import java.util.*
 
-interface OneWirePort<V: PortValue> : InputPort<V> {
-    val oneWireAddress: ByteArray
-    fun refresh(now: Calendar, adapter: DSPortAdapter, sleeper: Sleeper)
+abstract class OneWirePort<V: PortValue> : InputPort<V> {
+    abstract val address: ByteArray
+    abstract var value: V
+    var lastUpdateMs: Long = Calendar.getInstance().timeInMillis
+    override var connectionValidUntil = Long.MAX_VALUE
+
+    override fun read(): V {
+        return value
+    }
+
+    fun update(now: Long, value: V) {
+        lastUpdateMs = now
+        this.value = value
+    }
 }

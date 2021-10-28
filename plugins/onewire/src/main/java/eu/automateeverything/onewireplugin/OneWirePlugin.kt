@@ -5,11 +5,13 @@ import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import eu.automateeverything.domain.hardware.HardwarePlugin
+import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.PluginWrapper
 
 class OneWirePlugin(
     wrapper: PluginWrapper,
-    private val eventsSink: EventsSink)
+    private val eventsSink: EventsSink,
+    private val settingsResolver: SettingsResolver)
     : HardwarePlugin(wrapper), PluginMetadata{
 
     override fun start() {
@@ -21,6 +23,8 @@ class OneWirePlugin(
     }
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
+        val settings = settingsResolver.resolve()
+
         return listSerialPorts()
             .map { createOneWireAdapter(it) }
     }
@@ -52,4 +56,6 @@ class OneWirePlugin(
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+
+    override val settingGroups = listOf(DS2408RolesSettingGroup())
 }

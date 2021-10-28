@@ -16,7 +16,7 @@ export default {
     };
   },
 
-  props: ["id", "hint", "counter", "clazz", "disabled"],
+  props: ["id", "hint", "counter", "clazz", "disabled", "initialValue"],
 
   computed: {
     validation() {
@@ -44,7 +44,9 @@ export default {
   mounted: function() {
     var settings = this.$store.state.settings[this.clazz]
     if (settings != null) {
-      this.text=settings[this.id]
+      this.text = settings[this.id]
+    } else {
+      this.text = this.initialValue
     }
   }
 };
