@@ -24,13 +24,21 @@ class OneWirePlugin(
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
         val settings = settingsResolver.resolve()
+        val ds2408AsRelays = settings
+            .firstOrNull()
+            ?.fields
+            ?.get(DS2408RolesSettingGroup.FIELD_ADDRESSES_OF_RELAYS)
+            ?.replace(";",",")
+            ?.replace(" ","")
+            ?.split(",") ?: listOf()
+
 
         return listSerialPorts()
-            .map { createOneWireAdapter(it) }
+            .map { createOneWireAdapter(it, ds2408AsRelays) }
     }
 
-    private fun createOneWireAdapter(serialPort: String): HardwareAdapter<*> {
-        return OneWireAdapter(pluginId, serialPort, eventsSink)
+    private fun createOneWireAdapter(serialPort: String, ds2408AsRelays: List<String>): HardwareAdapter<*> {
+        return OneWireAdapter(pluginId, serialPort, eventsSink, ds2408AsRelays)
     }
 
     private fun listSerialPorts(): List<String> {

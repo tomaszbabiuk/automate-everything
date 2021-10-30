@@ -9,7 +9,7 @@ import java.math.RoundingMode
 
 object TemperatureContainerHelper {
 
-    fun readTemperature(adapter: DSPortAdapter, address: ByteArray, sleeper: Sleeper): Double {
+    private fun readTemperature(adapter: DSPortAdapter, address: ByteArray, sleeper: Sleeper): Double {
         val container = OneWireContainer28(adapter, address)
         var state: ByteArray = container.readDevice()
         container.doTemperatureConvert(state, sleeper)

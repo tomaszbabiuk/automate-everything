@@ -1,15 +1,18 @@
 package eu.automateeverything.onewireplugin.helpers
 
 import com.dalsemi.onewire.OneWireException
+import com.dalsemi.onewire.adapter.DSPortAdapter
+import com.dalsemi.onewire.container.OneWireContainer29
 import com.dalsemi.onewire.container.Sleeper
 import com.dalsemi.onewire.container.SwitchContainer
-import java.util.*
 
 object SwitchContainerHelper {
 
-    fun readChannelsCount(switchContainer: SwitchContainer): Int {
+    fun readChannelsCount(adapter: DSPortAdapter, address: ByteArray): Int {
         return try {
-            switchContainer.getNumberChannels(switchContainer.readDevice())
+            val container = OneWireContainer29(adapter, address)
+            val registersData = container.readDevice()
+            container.getNumberChannels(registersData)
         } catch (ex: java.lang.Exception) {
             0
         }

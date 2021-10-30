@@ -22,7 +22,9 @@ import java.util.*
 class OneWireAdapter(
     private val owningPluginId: String,
     private val serialPortName: String,
-    private val eventsSink: EventsSink)
+    private val eventsSink: EventsSink,
+    ds2408AsRelays: List<String>
+)
     : HardwareAdapterBase<OneWirePort<*>>() {
 
     private var mapper: OneWireSensorToPortMapper
@@ -30,7 +32,7 @@ class OneWireAdapter(
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
-        mapper = OneWireSensorToPortMapper(owningPluginId, portIdBuilder, eventsSink)
+        mapper = OneWireSensorToPortMapper(owningPluginId, portIdBuilder, eventsSink, ds2408AsRelays)
     }
 
     var operationScope: CoroutineScope? = null
@@ -63,7 +65,6 @@ class OneWireAdapter(
             operationScope!!.cancel("Adapter already started")
         }
 
-
         //discovery
         val adapterForDiscoveryOnly = initializeAdapter(serialPortName)
         val allContainers = searchForOneWireSensors(adapterForDiscoveryOnly)
@@ -95,7 +96,6 @@ class OneWireAdapter(
     override suspend fun internalDiscovery(eventsSink: EventsSink): List<OneWirePort<*>> {
         eventsSink.broadcastDiscoveryEvent(owningPluginId, "The manual discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
         if (ports.values.isNotEmpty()) {
-            eventsSink.broadcastDiscoveryEvent(owningPluginId, "Here's the list of already discovered devices:")
             ports.values.forEach {
                 eventsSink.broadcastDiscoveryEvent(owningPluginId, Address.toString(it.address))
             }
