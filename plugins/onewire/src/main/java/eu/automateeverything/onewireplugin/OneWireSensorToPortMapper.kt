@@ -1,10 +1,6 @@
 package eu.automateeverything.onewireplugin
 
-import com.dalsemi.onewire.adapter.DSPortAdapter
-import com.dalsemi.onewire.container.OneWireContainer
-import com.dalsemi.onewire.container.OneWireContainer28
-import com.dalsemi.onewire.container.OneWireContainer29
-import com.dalsemi.onewire.container.SwitchContainer
+import com.dalsemi.onewire.container.*
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortIdBuilder
@@ -20,13 +16,12 @@ class OneWireSensorToPortMapper(
     private val ds2408AsRelays: List<String>
 ) {
     fun map(sensor: OneWireContainer): List<OneWirePort<*>>? {
-        val adapter = sensor.adapter
         when (sensor) {
-            is OneWireContainer28 -> {
-                return mapOneWireContainer28(adapter, sensor)
+            is TemperatureContainer -> {
+                return mapTemperatureContainer(sensor)
             }
-            is OneWireContainer29 -> {
-                mapOneWireContainer29(adapter, sensor)
+            is SwitchContainer -> {
+                return mapSwitchContainer(sensor)
             }
             else -> {
                 broadcastMessage("${sensor.name}/${sensor.addressAsString}: unsupported (ignoring)")
@@ -36,38 +31,39 @@ class OneWireSensorToPortMapper(
         return null
     }
 
-    private fun mapOneWireContainer29(adapter: DSPortAdapter, sensor: SwitchContainer): List<OneWirePort<*>>? {
-        val isRelay = ds2408AsRelays.contains((sensor as OneWireContainer).addressAsString)
+    private fun mapSwitchContainer(switch: SwitchContainer): List<OneWirePort<*>>? {
+        switch as OneWireContainer
+        val isRelay = ds2408AsRelays.contains(switch.addressAsString)
         try {
             if (isRelay) {
-                broadcastMessage("${sensor.name}/${sensor.addressAsString} discovered as Relay board!")
+                broadcastMessage("${switch.name}/${switch.addressAsString} discovered as Relay board!")
 
-                val channelsCount = SwitchContainerHelper.readChannelsCount(adapter, sensor.address)
-                val inputReadings = SwitchContainerHelper.read(sensor, false)
+                val channelsCount = SwitchContainerHelper.readChannelsCount(switch)
+                val inputReadings = SwitchContainerHelper.read(switch, false)
                 return (0 until channelsCount)
                     .map { channel ->
-                        val inputPortId = portIdBuilder.buildPortId((sensor as OneWireContainer).addressAsString, channel, "R")
+                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel, "R")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValue = Relay(initialValueRaw)
-                        OneWireRelayPort(inputPortId, channel, sensor.address, initialValue)
+                        OneWireRelayPort(inputPortId, channel, switch.address, initialValue)
                     }
                     .toList()
             } else {
-                broadcastMessage("${sensor.name}/${sensor.addressAsString} discovered as Relay board!")
+                broadcastMessage("${switch.name}/${switch.addressAsString} discovered as Input board!")
 
-                val channelsCount = SwitchContainerHelper.readChannelsCount(adapter, sensor.address)
-                val inputReadings = SwitchContainerHelper.read(sensor, false)
+                val channelsCount = SwitchContainerHelper.readChannelsCount(switch)
+                val inputReadings = SwitchContainerHelper.read(switch, false)
                 return (0 until channelsCount)
                     .map { channel ->
-                        val inputPortId = portIdBuilder.buildPortId(sensor.addressAsString, channel, "B")
+                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel, "B")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValue = BinaryInput(initialValueRaw)
-                        OneWireBinaryInputPort(inputPortId, channel, sensor.address, initialValue)
+                        OneWireBinaryInputPort(inputPortId, channel, switch.address, initialValue)
                     }
                     .toList()
             }
         } catch (ex: Exception) {
-            broadcastMessage("There's been a problem reading container: ${sensor.name}/${sensor.addressAsString}")
+            broadcastMessage("There's been a problem reading container: ${switch.name}/${switch.addressAsString}")
         }
 
         return null
@@ -77,16 +73,17 @@ class OneWireSensorToPortMapper(
         eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
     }
 
-    private fun mapOneWireContainer28(adapter: DSPortAdapter, sensor: OneWireContainer28): List<OneWireTemperatureInputPort>? {
-        broadcastMessage("${sensor.name}/${sensor.addressAsString} discovered as Thermometer!")
+    private fun mapTemperatureContainer(temperatureSensor: TemperatureContainer): List<OneWireTemperatureInputPort>? {
+        temperatureSensor as OneWireContainer
+        broadcastMessage("${temperatureSensor.name}/${temperatureSensor.addressAsString} discovered as Thermometer!")
 
         try {
-            val inputPortId = portIdBuilder.buildPortId(sensor.addressAsString, 0, "I")
-            val initialValueRaw = TemperatureContainerHelper.read(adapter, sensor.address)
+            val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0, "I")
+            val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor)
             val initialValue = Temperature(initialValueRaw + 273.15)
-            return listOf(OneWireTemperatureInputPort(inputPortId, sensor.address, initialValue))
+            return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue))
         } catch (ex: Exception) {
-            broadcastMessage("There's been a problem reading container: ${sensor.name}/${sensor.addressAsString}")
+            broadcastMessage("There's been a problem reading container: ${temperatureSensor.name}/${temperatureSensor.addressAsString}")
         }
 
         return null

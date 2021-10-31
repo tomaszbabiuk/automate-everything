@@ -1,16 +1,13 @@
 package eu.automateeverything.onewireplugin.helpers
 
 import com.dalsemi.onewire.OneWireException
-import com.dalsemi.onewire.adapter.DSPortAdapter
-import com.dalsemi.onewire.container.OneWireContainer29
-import com.dalsemi.onewire.container.Sleeper
 import com.dalsemi.onewire.container.SwitchContainer
+import kotlinx.coroutines.delay
 
 object SwitchContainerHelper {
 
-    fun readChannelsCount(adapter: DSPortAdapter, address: ByteArray): Int {
+    fun readChannelsCount(container: SwitchContainer): Int {
         return try {
-            val container = OneWireContainer29(adapter, address)
             val registersData = container.readDevice()
             container.getNumberChannels(registersData)
         } catch (ex: java.lang.Exception) {
@@ -19,40 +16,39 @@ object SwitchContainerHelper {
     }
 
     @Throws(OneWireException::class)
-    fun execute(switchContainer: SwitchContainer, sleeper: Sleeper) {
+    suspend fun execute(switchContainer: SwitchContainer, values: Array<Boolean>) {
         var trial = 1
         while (trial < 4) {
-            if (executeWithBackoff(switchContainer, sleeper)) {
+            if (executeWithBackoff(switchContainer, values)) {
                 return
             }
             trial++
         }
     }
 
-    private fun executeWithBackoff(switchContainer: SwitchContainer, sleeper: Sleeper): Boolean {
+    private suspend fun executeWithBackoff(
+        switchContainer: SwitchContainer,
+        values: Array<Boolean>
+    ): Boolean {
         return try {
-            executeInternal(switchContainer)
+            executeInternal(switchContainer, values)
             true
         } catch (ex: Exception) {
-            sleeper.sleep(500)
+            delay(500)
             false
         }
     }
 
     @Throws(OneWireException::class)
-    private fun executeInternal(switchContainer: SwitchContainer) {
-//        val prevValuesSnapshot: BooleanArray = _prevValues.clone()
-//        if (!Arrays.equals(_values, _prevValues)) {
-//            makeCopy()
-//            for (i in _values.indices) {
-//                if (_values.get(i) != prevValuesSnapshot[i]) {
-//                    _logger.activity(getAddressAsString().toString() + "-" + i, _values.get(i), prevValuesSnapshot[i])
-//                    val data: ByteArray = _wrapped.readDevice()
-//                    _wrapped.setLatchState(i, !_values.get(i), false, data)
-//                    _wrapped.writeDevice(data)
-//                }
-//            }
-//        }
+    private fun executeInternal(
+        switchContainer: SwitchContainer,
+        values: Array<Boolean>
+    ) {
+        val data = switchContainer.readDevice()
+        values.forEachIndexed { index, newValue ->
+            switchContainer.setLatchState(index, newValue, false, data)
+        }
+        switchContainer.writeDevice(data)
     }
 
     @Throws(OneWireException::class)
