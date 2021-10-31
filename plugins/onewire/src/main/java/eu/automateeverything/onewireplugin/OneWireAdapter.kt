@@ -7,7 +7,6 @@ import com.dalsemi.onewire.adapter.USerialAdapter
 import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.container.SwitchContainer
 import com.dalsemi.onewire.container.TemperatureContainer
-import com.dalsemi.onewire.utils.Address
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.BinaryInput
@@ -31,8 +30,7 @@ class OneWireAdapter(
     private var mapper: OneWireSensorToPortMapper
     override val id: String = "1-WIRE $serialPortName"
 
-    val executionQueue = ConcurrentLinkedQueue<ValueSnapshot>()
-
+    private val executionQueue = ConcurrentLinkedQueue<ValueSnapshot>()
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
@@ -128,11 +126,11 @@ class OneWireAdapter(
     }
 
     private suspend fun maintenanceLoop() = coroutineScope {
-        val now = Calendar.getInstance().timeInMillis
+        val now = Calendar.getInstance()
         try {
             val adapter = initializeAdapter(serialPortName)
 
-            maintainRelays(adapter)
+            maintainExecutionOfRelays(adapter)
 
             val discoveredAddresses = ports.values.map { it.address }.distinct()
             discoveredAddresses.forEach {
@@ -146,14 +144,15 @@ class OneWireAdapter(
             freeAdapter(adapter)
         }
         catch (ex: OneWireIOException) {
+            println(ex)
             ports.values.forEach {
-                it.markDisconnected()
+                maintainPortConnectivity(now, it, false)
                 broadcastPortChangedEvent(it)
             }
         }
     }
 
-    private suspend fun maintainRelays(adapter: USerialAdapter) {
+    private suspend fun maintainExecutionOfRelays(adapter: USerialAdapter) {
         if (!executionQueue.isEmpty()) {
             val snapshot = executionQueue.poll()
             val container = adapter.getDeviceContainer(snapshot.containerAddress) as SwitchContainer
@@ -177,46 +176,69 @@ class OneWireAdapter(
         }
     }
 
-    private fun maintainAsThermometer(container: OneWireContainer?, now: Long) {
+    private fun maintainAsThermometer(container: OneWireContainer?, now: Calendar) {
         if (container is TemperatureContainer) {
             ports.values
                 .filter { port -> port.address.contentEquals(container.address) }
                 .map { port ->
-                    port.connectionValidUntil = Long.MAX_VALUE
+                    maintainPortConnectivity(now, port, true)
                     port
                 }
                 .filterIsInstance<OneWireTemperatureInputPort>()
-                .filter { port -> port.lastUpdateMs + 30000 < now }
+                .filter { port -> port.lastUpdateMs + 30000 < now.timeInMillis }
                 .forEach { port ->
                     val newTemperatureK = TemperatureContainerHelper.read(container) + 273.15
                     if (newTemperatureK != port.value.value) {
-                        port.update(now, Temperature(newTemperatureK))
+                        port.update(now.timeInMillis, Temperature(newTemperatureK))
                         broadcastPortChangedEvent(port)
                     }
                 }
         }
     }
 
-    private fun maintainAsBinaryInput(container: OneWireContainer?, now: Long) {
-        if (container is SwitchContainer && !ds2408AsRelays.contains(container.addressAsString)) {
-            val readings = SwitchContainerHelper.read(container, true)
-
-            ports.values
-                .filter { port -> port.address.contentEquals(container.address) }
-                .map { port ->
-                    port.connectionValidUntil = Long.MAX_VALUE
-                    port
-                }
-                .filterIsInstance<OneWireBinaryInputPort>()
-                .forEach { port ->
-                    val channel = port.channel
-                    val reading = readings[channel]
-                    val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
-                    if (newBinaryReading != port.value.value) {
-                        port.update(now, BinaryInput(newBinaryReading))
-                        broadcastPortChangedEvent(port)
+    private fun maintainAsBinaryInput(container: OneWireContainer?, now: Calendar) {
+        if (container is SwitchContainer) {
+            val isRelay = ds2408AsRelays.contains(container.addressAsString)
+            if (isRelay) {
+                ports.values
+                    .filter { port -> port.address.contentEquals(container.address) }
+                    .map { port ->
+                        maintainPortConnectivity(now, port, true)
+                        port
                     }
-                }
+            } else {
+                val readings = SwitchContainerHelper.read(container, true)
+
+                ports.values
+                    .filter { port -> port.address.contentEquals(container.address) }
+                    .map { port ->
+                        maintainPortConnectivity(now, port, true)
+                        port
+                    }
+                    .filterIsInstance<OneWireBinaryInputPort>()
+                    .forEach { port ->
+                        val channel = port.channel
+                        val reading = readings[channel]
+                        val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
+                        if (newBinaryReading != port.value.value) {
+                            port.update(now.timeInMillis, BinaryInput(newBinaryReading))
+                            broadcastPortChangedEvent(port)
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun maintainPortConnectivity(now: Calendar, port: OneWirePort<*>, connected: Boolean) {
+        val oldConnectionState = port.checkIfConnected(now)
+        if (connected) {
+            port.connectionValidUntil = Long.MAX_VALUE
+        } else {
+            port.markDisconnected()
+        }
+        val newConnectionState = port.checkIfConnected(now)
+        if (oldConnectionState != newConnectionState) {
+            broadcastPortChangedEvent(port)
         }
     }
 
