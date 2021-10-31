@@ -123,11 +123,6 @@ class OneWireAdapter(
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): List<OneWirePort<*>> {
         eventsSink.broadcastDiscoveryEvent(owningPluginId, "The manual discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
-        if (ports.values.isNotEmpty()) {
-            ports.values.forEach {
-                eventsSink.broadcastDiscoveryEvent(owningPluginId, Address.toString(it.address))
-            }
-        }
 
         return ports.values.toList()
     }
@@ -162,7 +157,10 @@ class OneWireAdapter(
         if (!executionQueue.isEmpty()) {
             val snapshot = executionQueue.poll()
             val container = adapter.getDeviceContainer(snapshot.containerAddress) as SwitchContainer
-            SwitchContainerHelper.execute(container, snapshot.newValues)
+            val newValuesInverted = Array(snapshot.newValues.size) {
+                !snapshot.newValues[it]
+            }
+            SwitchContainerHelper.execute(container, newValuesInverted)
 
             ports
                 .values

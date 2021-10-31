@@ -44,8 +44,8 @@ class OneWireSensorToPortMapper(
                     .map { channel ->
                         val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel, "R")
                         val initialValueRaw = inputReadings[channel].level
-                        val initialValue = Relay(initialValueRaw)
-                        OneWireRelayPort(inputPortId, channel, switch.address, initialValue)
+                        val initialValueInverted = Relay(!initialValueRaw)
+                        OneWireRelayPort(inputPortId, channel, switch.address, initialValueInverted)
                     }
                     .toList()
             } else {
