@@ -18,17 +18,22 @@ import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
 import kotlinx.coroutines.*
 import java.util.*
+import java.util.concurrent.CancellationException
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class OneWireAdapter(
     private val owningPluginId: String,
     private val serialPortName: String,
     private val eventsSink: EventsSink,
-    ds2408AsRelays: List<String>
+    private val ds2408AsRelays: List<String>
 )
     : HardwareAdapterBase<OneWirePort<*>>() {
 
     private var mapper: OneWireSensorToPortMapper
     override val id: String = "1-WIRE $serialPortName"
+
+    val executionQueue = ConcurrentLinkedQueue<ValueSnapshot>()
+
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
@@ -40,7 +45,29 @@ class OneWireAdapter(
 
 
     override fun executePendingChanges() {
-        //TODO
+        val portsGroupedByAddress = ports
+            .values
+            .filterIsInstance<OneWireRelayPort>()
+            .groupBy { it.address }
+
+        portsGroupedByAddress.forEach { (address, u) ->
+            val channels = u.size
+            val sortedPorts = u.sortedBy { it.channel }
+
+            val prevValues = Array(channels) { i ->
+                sortedPorts[i].value.value
+            }
+            val newValues = Array(channels) { i ->
+                sortedPorts[i].requestedValue?.value ?: sortedPorts[i].value.value
+            }
+
+            val changedItems = newValues.filterIndexed { index, newValue -> prevValues[index] != newValue }
+            if (changedItems.isNotEmpty()) {
+                println("Changed! $address")
+                val valueSnapshot = ValueSnapshot(address, prevValues, newValues)
+                executionQueue.add(valueSnapshot)
+            }
+        }
     }
 
     @Throws(OneWireException::class)
@@ -75,9 +102,11 @@ class OneWireAdapter(
         freeAdapter(adapterForDiscoveryOnly)
 
         operationScope = CoroutineScope(Dispatchers.IO)
+
         operationScope?.launch {
             while (isActive) {
-                maintenanceLoop(allContainers)
+                maintenanceLoop()
+                delay(100)
             }
         }
     }
@@ -104,20 +133,44 @@ class OneWireAdapter(
         return ports.values.toList()
     }
 
-    private suspend fun maintenanceLoop(allContainers: List<OneWireContainer>) = coroutineScope {
+    private suspend fun maintenanceLoop() = coroutineScope {
         val now = Calendar.getInstance().timeInMillis
         try {
             val adapter = initializeAdapter(serialPortName)
-            allContainers.forEach { container ->
-                println("Refreshing $container")
+
+            if (!executionQueue.isEmpty()) {
+                val snapshot = executionQueue.poll()
+                val container = adapter.getDeviceContainer(snapshot.containerAddress) as SwitchContainer
+                SwitchContainerHelper.execute(container, snapshot.newValues)
+
+                ports
+                    .values
+                    .filter { port -> port.address.contentEquals(snapshot.containerAddress) }
+                    .filterIsInstance<OneWireRelayPort>()
+                    .forEach { port ->
+                        val oldValue = port.value.value
+                        port.commit()
+                        val newValue = port.value.value
+                        if (newValue != oldValue) {
+                            broadcastPortChangedEvent(port)
+                        }
+                    }
+            }
+
+            val discoveredAddresses = ports.values.map { it.address }.distinct()
+            discoveredAddresses.forEach {
+                val container = adapter.getDeviceContainer(it)
                 if (container is TemperatureContainer) {
                     ports.values
                         .filter { port -> port.address.contentEquals(container.address) }
+                        .map { port ->
+                            port.connectionValidUntil = Long.MAX_VALUE
+                            port
+                        }
                         .filterIsInstance<OneWireTemperatureInputPort>()
                         .filter { port -> port.lastUpdateMs + 30000 < now }
                         .forEach { port ->
-                            val newTemperatureK = TemperatureContainerHelper.read(adapter, container.address) + 273.15
-                            //TODO: Handle exception
+                            val newTemperatureK = TemperatureContainerHelper.read(container) + 273.15
                             if (newTemperatureK != port.value.value) {
                                 port.update(now, Temperature(newTemperatureK))
                                 broadcastPortChangedEvent(port)
@@ -125,11 +178,15 @@ class OneWireAdapter(
                         }
                 }
 
-                if (container is SwitchContainer) {
+                if (container is SwitchContainer && !ds2408AsRelays.contains(container.addressAsString)) {
                     val readings = SwitchContainerHelper.read(container, true)
 
                     ports.values
                         .filter { port -> port.address.contentEquals(container.address) }
+                        .map { port ->
+                            port.connectionValidUntil = Long.MAX_VALUE
+                            port
+                        }
                         .filterIsInstance<OneWireBinaryInputPort>()
                         .forEach { port ->
                             val channel = port.channel
@@ -143,28 +200,9 @@ class OneWireAdapter(
                 }
             }
 
-//            ports
-//                .values
-//                .forEach {
-//                    val previousValue = it.read().asDouble()
-//                    val previousConnectionState = it.checkIfConnected(now)
-//
-//                    it.refresh(now, adapter) {  sleepingMs ->
-//                        var total = 0
-//                        while (isActive && total < sleepingMs) {
-//                            Thread.sleep(10)
-//                            total++
-//                        }
-//                    }
-//
-//                    val valueHasChanged = it.read().asDouble() != previousValue
-//                    val connectionStateHasChanged = it.checkIfConnected(now) != previousConnectionState
-//                    if (valueHasChanged || connectionStateHasChanged) {
-//                        broadcastPortChangedEvent(it)
-//                    }
-//                }
             freeAdapter(adapter)
-        } catch (ex: OneWireIOException) {
+        }
+        catch (ex: OneWireIOException) {
             ports.values.forEach {
                 it.markDisconnected()
                 broadcastPortChangedEvent(it)
@@ -175,5 +213,31 @@ class OneWireAdapter(
     private fun broadcastPortChangedEvent(it: OneWirePort<*>) {
         val event = PortUpdateEventData(owningPluginId, id, it)
         eventsSink.broadcastEvent(event)
+    }
+
+    data class ValueSnapshot(
+        val containerAddress: ByteArray,
+        val previousValues: Array<Boolean>,
+        val newValues: Array<Boolean>) {
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ValueSnapshot
+
+            if (!containerAddress.contentEquals(other.containerAddress)) return false
+            if (!previousValues.contentEquals(other.previousValues)) return false
+            if (!newValues.contentEquals(other.newValues)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = containerAddress.contentHashCode()
+            result = 31 * result + previousValues.contentHashCode()
+            result = 31 * result + newValues.contentHashCode()
+            return result
+        }
     }
 }

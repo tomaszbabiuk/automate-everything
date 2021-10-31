@@ -37,6 +37,13 @@ class OneWireRelayPort(
         requestedValue = value
     }
 
+    fun commit() {
+        if (requestedValue != null) {
+            value.value = requestedValue!!.value
+            reset()
+        }
+    }
+
     override var requestedValue: Relay? = null
 
     override fun reset() {

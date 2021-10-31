@@ -118,10 +118,9 @@ class AforeAdapter(
         }
 
         operationScope = CoroutineScope(Dispatchers.IO)
-        operationScope?.launch {
+        operationScope?.launch(CoroutineName("afore_maintenance_loop")) {
             while (isActive) {
                 maintenanceLoop(Calendar.getInstance())
-                delay(30000)
             }
         }
     }
