@@ -18,7 +18,6 @@ import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
 import kotlinx.coroutines.*
 import java.util.*
-import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class OneWireAdapter(
@@ -138,65 +137,14 @@ class OneWireAdapter(
         try {
             val adapter = initializeAdapter(serialPortName)
 
-            if (!executionQueue.isEmpty()) {
-                val snapshot = executionQueue.poll()
-                val container = adapter.getDeviceContainer(snapshot.containerAddress) as SwitchContainer
-                SwitchContainerHelper.execute(container, snapshot.newValues)
-
-                ports
-                    .values
-                    .filter { port -> port.address.contentEquals(snapshot.containerAddress) }
-                    .filterIsInstance<OneWireRelayPort>()
-                    .forEach { port ->
-                        val oldValue = port.value.value
-                        port.commit()
-                        val newValue = port.value.value
-                        if (newValue != oldValue) {
-                            broadcastPortChangedEvent(port)
-                        }
-                    }
-            }
+            maintainRelays(adapter)
 
             val discoveredAddresses = ports.values.map { it.address }.distinct()
             discoveredAddresses.forEach {
-                val container = adapter.getDeviceContainer(it)
-                if (container is TemperatureContainer) {
-                    ports.values
-                        .filter { port -> port.address.contentEquals(container.address) }
-                        .map { port ->
-                            port.connectionValidUntil = Long.MAX_VALUE
-                            port
-                        }
-                        .filterIsInstance<OneWireTemperatureInputPort>()
-                        .filter { port -> port.lastUpdateMs + 30000 < now }
-                        .forEach { port ->
-                            val newTemperatureK = TemperatureContainerHelper.read(container) + 273.15
-                            if (newTemperatureK != port.value.value) {
-                                port.update(now, Temperature(newTemperatureK))
-                                broadcastPortChangedEvent(port)
-                            }
-                        }
-                }
-
-                if (container is SwitchContainer && !ds2408AsRelays.contains(container.addressAsString)) {
-                    val readings = SwitchContainerHelper.read(container, true)
-
-                    ports.values
-                        .filter { port -> port.address.contentEquals(container.address) }
-                        .map { port ->
-                            port.connectionValidUntil = Long.MAX_VALUE
-                            port
-                        }
-                        .filterIsInstance<OneWireBinaryInputPort>()
-                        .forEach { port ->
-                            val channel = port.channel
-                            val reading = readings[channel]
-                            val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
-                            if (newBinaryReading != port.value.value) {
-                                port.update(now, BinaryInput(newBinaryReading))
-                                broadcastPortChangedEvent(port)
-                            }
-                        }
+                if (executionQueue.isEmpty()) {
+                    val container = adapter.getDeviceContainer(it)
+                    maintainAsThermometer(container, now)
+                    maintainAsBinaryInput(container, now)
                 }
             }
 
@@ -207,6 +155,70 @@ class OneWireAdapter(
                 it.markDisconnected()
                 broadcastPortChangedEvent(it)
             }
+        }
+    }
+
+    private suspend fun maintainRelays(adapter: USerialAdapter) {
+        if (!executionQueue.isEmpty()) {
+            val snapshot = executionQueue.poll()
+            val container = adapter.getDeviceContainer(snapshot.containerAddress) as SwitchContainer
+            SwitchContainerHelper.execute(container, snapshot.newValues)
+
+            ports
+                .values
+                .filter { port -> port.address.contentEquals(snapshot.containerAddress) }
+                .filterIsInstance<OneWireRelayPort>()
+                .forEach { port ->
+                    val oldValue = port.value.value
+                    port.commit()
+                    val newValue = port.value.value
+                    if (newValue != oldValue) {
+                        broadcastPortChangedEvent(port)
+                    }
+                }
+        }
+    }
+
+    private fun maintainAsThermometer(container: OneWireContainer?, now: Long) {
+        if (container is TemperatureContainer) {
+            ports.values
+                .filter { port -> port.address.contentEquals(container.address) }
+                .map { port ->
+                    port.connectionValidUntil = Long.MAX_VALUE
+                    port
+                }
+                .filterIsInstance<OneWireTemperatureInputPort>()
+                .filter { port -> port.lastUpdateMs + 30000 < now }
+                .forEach { port ->
+                    val newTemperatureK = TemperatureContainerHelper.read(container) + 273.15
+                    if (newTemperatureK != port.value.value) {
+                        port.update(now, Temperature(newTemperatureK))
+                        broadcastPortChangedEvent(port)
+                    }
+                }
+        }
+    }
+
+    private fun maintainAsBinaryInput(container: OneWireContainer?, now: Long) {
+        if (container is SwitchContainer && !ds2408AsRelays.contains(container.addressAsString)) {
+            val readings = SwitchContainerHelper.read(container, true)
+
+            ports.values
+                .filter { port -> port.address.contentEquals(container.address) }
+                .map { port ->
+                    port.connectionValidUntil = Long.MAX_VALUE
+                    port
+                }
+                .filterIsInstance<OneWireBinaryInputPort>()
+                .forEach { port ->
+                    val channel = port.channel
+                    val reading = readings[channel]
+                    val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
+                    if (newBinaryReading != port.value.value) {
+                        port.update(now, BinaryInput(newBinaryReading))
+                        broadcastPortChangedEvent(port)
+                    }
+                }
         }
     }
 
