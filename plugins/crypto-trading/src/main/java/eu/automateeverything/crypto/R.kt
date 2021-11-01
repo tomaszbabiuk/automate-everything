@@ -139,7 +139,7 @@ object R {
         "Bloki i obiekty do handlowania kryptowalutami. Wsparcie dla giełd Binance i Bitfinex (nieoficjalne)."
     )
 
-    val plugin_name = Resource("Crypto trading", "Handel kryptowalutami")
+    val plugin_name = Resource("Crypto", "Krypto")
 
     fun block_indicator_label(pair: String) = Resource(
         "%1 of $pair  %2",

@@ -18,6 +18,8 @@ include 'plugins:onewire'
 include 'plugins:crypto-trading'
 include 'plugins:bash-action'
 include 'plugins:email-action'
+include 'plugins:central-heating'
+include 'plugins:alarm'
 
 //features used by the plugins
 include 'plugin-features:lan-gateway'

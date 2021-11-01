@@ -308,7 +308,7 @@ export const client = {
 
   controlPort: async function (portId, controlValue) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/ports/" + portId + "/value", JSON.stringify(controlValue)),
+      () => axiosInstance.put("rest/ports/" + encodeURIComponent(portId) + "/value", JSON.stringify(controlValue)),
       (response) => {
         console.log(response.data)
       }
@@ -353,6 +353,7 @@ export const client = {
   },
 
   changeState: async function (instanceId, state) {
+    console.log('dupa')
     await this.handleRestError(
       () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", state),
       (response) => {

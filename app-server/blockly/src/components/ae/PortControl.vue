@@ -56,8 +56,9 @@ export default {
   },
 
   mounted: function() {
-    console.log(this.initialValue)
-    this.powerLevel = this.initialValue
+    if (!this.disabled) {
+      this.powerLevel = this.initialValue
+    }
   }
 };
 </script>
