@@ -1,13 +1,12 @@
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.aforeplugin.R
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.extensibility.PluginMetadata
-import eu.automateeverything.domain.hardware.BasicPlugin
+import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
 class CentralHeatingPlugin(
-    wrapper: PluginWrapper) : BasicPlugin(wrapper), PluginMetadata {
+    wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
 
     override fun start() {
     }

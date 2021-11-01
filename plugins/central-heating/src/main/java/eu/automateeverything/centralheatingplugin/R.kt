@@ -1,4 +1,4 @@
-package eu.automateeverything.aforeplugin
+package eu.automateeverything.centralheatingplugin
 
 import eu.automateeverything.data.localization.Resource
 

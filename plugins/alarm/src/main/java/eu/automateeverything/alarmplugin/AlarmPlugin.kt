@@ -3,10 +3,10 @@ package eu.automateeverything.alarmplugin
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.hardware.BasicPlugin
+import org.pf4j.Plugin
 
 class AlarmPlugin(
-    wrapper: PluginWrapper) : BasicPlugin(wrapper), PluginMetadata {
+    wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
 
     override fun start() {
     }
