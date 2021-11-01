@@ -7,6 +7,9 @@ include "app-server"
 include "modules:domain"
 include "modules:data"
 include "modules:actions"
+include "modules:devices"
+include "modules:scenes"
+include "modules:conditions"
 include "modules:repository-sqldelight"
 
 //plugins

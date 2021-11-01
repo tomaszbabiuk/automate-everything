@@ -1,0 +1,20 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+    //projects
+    implementation project(":modules:data")
+    implementation project(":modules:domain")
+
+    //pf4j
+    implementation "org.pf4j:pf4j:${pf4jVersion}"
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+}
+
+repositories {
+    mavenCentral()
+}

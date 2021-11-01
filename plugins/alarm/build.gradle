@@ -7,6 +7,7 @@ dependencies {
     //projects
     shadow project(':modules:data')
     shadow project(':modules:domain')
+    shadow project(':modules:devices')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"

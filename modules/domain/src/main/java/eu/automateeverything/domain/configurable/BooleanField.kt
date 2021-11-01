@@ -11,4 +11,4 @@ class BooleanField(
     vararg validators: Validator<Boolean?>
 ) : FieldDefinition<Boolean>(
     FieldType.Boolean, name, hint, maxSize, initialValue, Boolean::class.java,
-    BooleanFieldBuilder(), null, *validators)
+    BooleanFieldBuilder(), null, null, *validators)

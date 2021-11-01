@@ -11,6 +11,7 @@ import ConfigurablePowerLevelField from './components/ae/configurable/PowerLevel
 import ConfigurableDurationField from './components/ae/configurable/DurationField'
 import ConfigurableDoubleField from './components/ae/configurable/DoubleField'
 import ConfigurableReferenceField from './components/ae/configurable/ReferenceField'
+import ConfigurableSingleOptionEnumerationField from './components/ae/configurable/SingleOptionEnumerationField'
 import ConfigurableIconSelector from './components/ae/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/ae/configurable/TagsSelector'
 import ConfigurableBlockConfigurator from './components/ae/configurable/BlockConfigurator'
@@ -29,6 +30,7 @@ Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
 Vue.component('configurable-durationfield', ConfigurableDurationField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)
 Vue.component('configurable-referencefield', ConfigurableReferenceField)
+Vue.component('configurable-singleoptionenumerationfield', ConfigurableSingleOptionEnumerationField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
 Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)

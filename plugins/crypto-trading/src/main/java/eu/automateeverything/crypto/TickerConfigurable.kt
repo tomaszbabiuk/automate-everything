@@ -7,12 +7,12 @@ import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.ReferenceField
 import eu.automateeverything.domain.configurable.RequiredStringValidator
-import eu.automateeverything.domain.configurable.SinglePortSensorConfigurable
+import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class TickerConfigurable(portFinder: PortFinder) : SinglePortSensorConfigurable<Ticker>(
+class TickerConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigurable<Ticker>(
     Ticker::class.java,
     ReferenceField(FIELD_PORT, R.field_port_hint, Reference(Ticker::class.java, ReferenceType.InputPort),RequiredStringValidator()),
     portFinder

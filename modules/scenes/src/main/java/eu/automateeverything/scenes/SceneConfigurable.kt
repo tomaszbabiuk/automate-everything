@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.scenes
 
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.NameDescriptionConfigurable

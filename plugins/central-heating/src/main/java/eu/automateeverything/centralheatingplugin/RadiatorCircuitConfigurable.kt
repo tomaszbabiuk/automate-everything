@@ -1,4 +1,4 @@
-package eu.automateeverything.alarmplugin
+package eu.automateeverything.centralheatingplugin
 
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.Configurable
@@ -7,7 +7,7 @@ import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
 import org.pf4j.Extension
 
 @Extension
-class ThermometerConfigurable() : NameDescriptionConfigurable(), ConfigurableWithFields {
+class RadiatorCircuitConfigurable() : NameDescriptionConfigurable(), ConfigurableWithFields {
 
     override val hasAutomation = true
     override val editableIcon = false

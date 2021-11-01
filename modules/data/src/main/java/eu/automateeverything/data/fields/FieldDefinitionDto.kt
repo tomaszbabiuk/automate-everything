@@ -8,6 +8,7 @@ class FieldDefinitionDto(
     val hint: Resource,
     val maxSize: Int,
     val initialValue: String,
-    val ref: ReferenceDto?
+    val ref: ReferenceDto?,
+    val values: Map<String, Resource>?
 )
 

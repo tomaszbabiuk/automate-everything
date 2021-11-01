@@ -7,11 +7,11 @@ import eu.automateeverything.domain.hardware.PortValue
 import eu.automateeverything.domain.automation.SensorAutomationUnit
 import java.util.*
 
-abstract class SinglePortSensorConfigurable<T: PortValue>(
+abstract class SinglePortDeviceConfigurable<T: PortValue>(
     valueClazz: Class<T>,
     private val portField: FieldDefinition<String>,
     private val portFinder: PortFinder
-) : SensorConfigurable<T>(valueClazz) {
+) : DeviceConfigurable<T>(valueClazz) {
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<T> {
         val portId = extractFieldValue(instance, portField)

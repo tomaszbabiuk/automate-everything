@@ -16,7 +16,8 @@ class FieldDefinitionDtoMapper {
                 ReferenceDto(field.reference!!.clazz.name, field.reference!!.type)
             } else {
                 null
-            }
+            },
+            field.values
         )
     }
 }

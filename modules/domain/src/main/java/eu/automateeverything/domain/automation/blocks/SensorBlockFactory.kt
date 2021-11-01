@@ -2,7 +2,7 @@ package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
-import eu.automateeverything.domain.configurable.SensorConfigurable
+import eu.automateeverything.domain.configurable.DeviceConfigurable
 import eu.automateeverything.domain.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 
@@ -40,6 +40,6 @@ class SensorBlockFactory<T: PortValue>(
         }
 
         throw MalformedBlockException(block.type,
-            "it's impossible to connect this block with correct ${SensorConfigurable::class.java}")
+            "it's impossible to connect this block with correct ${DeviceConfigurable::class.java}")
     }
 }

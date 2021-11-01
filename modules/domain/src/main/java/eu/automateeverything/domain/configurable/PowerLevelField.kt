@@ -10,4 +10,4 @@ class PowerLevelField(
     vararg validators: Validator<Int?>
 ) : FieldDefinition<Int>(
     FieldType.PowerLevel, name, hint, 0, initialValue, Int::class.java,
-    IntegerFieldBuilder(), null, *validators)
+    IntegerFieldBuilder(), null, null, *validators)

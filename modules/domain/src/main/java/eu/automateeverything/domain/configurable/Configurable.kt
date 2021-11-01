@@ -2,11 +2,11 @@ package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
-import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.automation.blocks.BlockCategory
+import eu.automateeverything.domain.hardware.PortValue
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
@@ -30,13 +30,6 @@ interface ConfigurableWithFields : Configurable {
     val editRes: Resource
 }
 
-abstract class ConditionConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase
-    override val hasAutomation: Boolean = false
-    override val taggable: Boolean = false
-    override val editableIcon: Boolean = false
-}
-
 abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State>
     abstract val states: Map<String, State>
@@ -49,7 +42,14 @@ abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), Configur
     }
 }
 
-abstract class SensorConfigurable<V: PortValue>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
+abstract class ConditionConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
+    abstract fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase
+    override val hasAutomation: Boolean = false
+    override val taggable: Boolean = false
+    override val editableIcon: Boolean = false
+}
+
+abstract class DeviceConfigurable<V: PortValue>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<V>
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = true

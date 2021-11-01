@@ -11,4 +11,4 @@ class PasswordStringField(
     vararg validators: Validator<String?>
 ) : FieldDefinition<String>(
     FieldType.PasswordString, name, hint, maxSize, initialValue, String::class.java,
-    StringFieldBuilder(), null, *validators)
+    StringFieldBuilder(), null, null, *validators)

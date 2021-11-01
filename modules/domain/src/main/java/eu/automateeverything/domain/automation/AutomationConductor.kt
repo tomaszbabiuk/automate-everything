@@ -10,7 +10,7 @@ import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.R
 import eu.automateeverything.domain.configurable.ConditionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
-import eu.automateeverything.domain.configurable.SensorConfigurable
+import eu.automateeverything.domain.configurable.DeviceConfigurable
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable
 import eu.automateeverything.domain.events.*
 import eu.automateeverything.domain.inbox.Inbox
@@ -132,7 +132,7 @@ class AutomationConductor(
                 configurable.buildAutomationUnit(instance)
             }
 
-            is SensorConfigurable<*> -> {
+            is DeviceConfigurable<*> -> {
                 configurable.buildAutomationUnit(instance)
             }
 
@@ -146,7 +146,7 @@ class AutomationConductor(
                 AutomationUnitWrapper(originName, State::class.java, ex)
             }
 
-            is SensorConfigurable<*> -> {
+            is DeviceConfigurable<*> -> {
                 AutomationUnitWrapper(originName, configurable.valueClazz, ex)
             }
 

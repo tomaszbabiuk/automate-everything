@@ -4,6 +4,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.conditions.ConditionsConfigurable
 import org.pf4j.Extension
 import java.util.*
 

@@ -7,10 +7,14 @@ import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.hardware.*
 
 open class ReferenceField(name: String, hint: Resource, ref: Reference, vararg validators: Validator<String?>) :
-    FieldDefinition<String>(FieldType.Reference, name, hint, 0, "", String::class.java, StringFieldBuilder(), ref, *validators)
+    FieldDefinition<String>(FieldType.Reference, name, hint, 0, "",
+        String::class.java, StringFieldBuilder(), ref, null, *validators)
 
 class WattageInputPortField(name: String, hint: Resource, vararg validators: Validator<String?>) :
     ReferenceField(name, hint,  Reference(Wattage::class.java, ReferenceType.InputPort), *validators)
+
+class BinaryInputPortField(name: String, hint: Resource, vararg validators: Validator<String?>) :
+    ReferenceField(name, hint,  Reference(BinaryInput::class.java, ReferenceType.InputPort), *validators)
 
 class RelayOutputPortField(name: String, hint: Resource, vararg validators: Validator<String?>) :
     ReferenceField(name, hint, Reference(Relay::class.java, ReferenceType.OutputPort), *validators)

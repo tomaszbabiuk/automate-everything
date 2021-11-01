@@ -9,7 +9,6 @@
         :counter="field.maxSize"
         :required="field.required"
         :id="field.name"
-        :initialValue="field.initialValue"
         :clazz="settingGroup.clazz"
         :disabled="disabled"
         v-bind:is="fieldClassToFormComponent(field.type)"

@@ -83,15 +83,15 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
                 Pair(briefDto, configurable)
             }
             .filter {
-                it.second is SensorConfigurable<*>
+                it.second is DeviceConfigurable<*>
             }
             .map { (briefDto, configurable) ->
                 val id = briefDto.id
-                val sensorConfigurable = configurable as SensorConfigurable<*>
+                val deviceConfigurable = configurable as DeviceConfigurable<*>
                 val label = Resource.createUniResource(briefDto.name!!)
-                val category = sensorConfigurable.blocksCategory
+                val category = deviceConfigurable.blocksCategory
 
-                SensorBlockFactory(sensorConfigurable.valueClazz, category, id, label)
+                SensorBlockFactory(deviceConfigurable.valueClazz, category, id, label)
             }
             .toList()
     }

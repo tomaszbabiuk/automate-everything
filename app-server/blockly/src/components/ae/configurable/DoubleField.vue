@@ -15,7 +15,7 @@ data: function() {
       text: '',
     };
   },
-  props: ["initialValue", "id", "hint", "required", "counter"],
+  props: ["id", "hint", "required", "counter"],
   computed: {
     validation() {
       return this.$store.state.instanceValidation[this.id]
@@ -29,11 +29,13 @@ data: function() {
       this.error = !val.valid
       this.errorMessages = val.reasons
     },
+
     storeFieldData(value) {
       if (this.text != value) {
         this.text = value
       }
     },
+    
     text(value) {
       this.$store.commit(UPDATE_INSTANCE_FIELD, { 
         name: this.id,

@@ -353,7 +353,6 @@ export const client = {
   },
 
   changeState: async function (instanceId, state) {
-    console.log('dupa')
     await this.handleRestError(
       () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", state),
       (response) => {

@@ -22,6 +22,9 @@ dependencies {
     implementation project(":modules:data")
     implementation project(":modules:domain")
     implementation project(":modules:actions")
+    implementation project(":modules:devices")
+    implementation project(":modules:scenes")
+    implementation project(":modules:conditions")
     implementation project(":modules:repository-sqldelight")
     implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
@@ -70,6 +73,10 @@ dependencies {
 
 shadowJar {
     mainClassName = 'eu.automateeverything.Main'
+
+    mergeServiceFiles {
+        path = 'META-INF/extensions.idx'
+    }
 }
 
 compileJava {

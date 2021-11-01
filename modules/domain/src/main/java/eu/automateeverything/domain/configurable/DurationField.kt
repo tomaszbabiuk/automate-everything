@@ -10,4 +10,4 @@ class DurationField(
     vararg validators: Validator<Duration?>
 ) : FieldDefinition<Duration>(
     FieldType.Duration, name, hint, 0, initialValue,
-    Duration::class.java, DurationFieldBuilder(), null, *validators)
+    Duration::class.java, DurationFieldBuilder(), null, null, *validators)

@@ -10,5 +10,6 @@ class DoubleField(
     initialValue: Double,
     vararg validators: Validator<Double?>) :
     FieldDefinition<Double>(
-        FieldType.Double, name, hint, maxSize, initialValue, Double::class.java, DoubleFieldBuilder(), null, *validators
+        FieldType.Double, name, hint, maxSize, initialValue, Double::class.java,
+        DoubleFieldBuilder(), null, null, *validators
     )

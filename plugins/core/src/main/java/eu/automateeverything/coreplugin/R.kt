@@ -73,26 +73,6 @@ object R {
         "Szerekość geograficzna"
     )
 
-    val configurable_devices_title = Resource(
-        "Devices",
-        "Urządzenia"
-    )
-
-    val configurable_devices_description = Resource(
-        "Add/remove devices (sensors, relays, switches, etc.)",
-        "Dodawaj/usuwaj urządzenia (czujniki, przekaźniki, włączniki, itp.)"
-    )
-
-    val configurable_conditions_title = Resource(
-        "Conditions",
-        "Warunki"
-    )
-
-    val configurable_conditions_description = Resource(
-        "Add/remove conditions",
-        "Dodawaj/usuwaj warunki"
-    )
-
     val configurable_meters_title = Resource(
         "Meters",
         "Urządzenia pomiarowe"
@@ -101,26 +81,6 @@ object R {
     val configurable_meters_description = Resource(
         "Add/remove any type of meters (thermometers, wattmeters, etc.)",
         "Dodawaj/usuwaj urządzenia pomiarowe (termometry, watomierze, itp.)"
-    )
-
-    val configurable_scene_add = Resource(
-        "Add scene",
-        "Dodaj scenę"
-    )
-
-    val configurable_scene_edit = Resource(
-        "Edit scene",
-        "Edytuj scenę"
-    )
-
-    val configurable_scene_title = Resource(
-        "Scenes",
-        "Sceny"
-    )
-
-    val configurable_scene_description = Resource(
-        "Scene is a set of conditions that define specyfic behavior",
-        "Sceny to zbiór warunków, które definiują określone zachowanie"
     )
 
     val configurable_onoffdevice_add = Resource(

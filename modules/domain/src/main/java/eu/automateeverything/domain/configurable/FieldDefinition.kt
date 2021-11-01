@@ -13,6 +13,7 @@ abstract class FieldDefinition<T> protected constructor(
     val valueClazz: Class<T>,
     val builder: FieldBuilder<T>,
     val reference: Reference? = null,
+    val values: Map<String, Resource>? = null,
     private vararg val validators: Validator<T?>
 ) {
     fun validate(valueAsString: String?, fields: Map<String, String?>): FieldValidationResult {

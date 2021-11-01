@@ -10,6 +10,7 @@
         :required="field.required"
         :id="field.name"
         :fieldRef="field.ref"
+        :values="field.values"
         v-bind:is="configurableClassToFormComponent(field.type)"
       >
       </component>

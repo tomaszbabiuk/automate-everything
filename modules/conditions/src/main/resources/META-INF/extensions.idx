@@ -1,0 +1,2 @@
+# All extensions out of 'plugins' folder should be declared manually
+eu.automateeverything.conditions.ConditionsConfigurable
