@@ -1,26 +1,34 @@
 package eu.automateeverything.alarmplugin
 
-import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PortValue
 import org.pf4j.Extension
 
 @Extension
 class AlarmLineConfigurable<T: PortValue>(
-    private val portFinder: PortFinder
+    private val portFinder: PortFinder,
+    private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
     private val portField = BinaryInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val contactTypeField = ContactTypeField(FIELD_CONTACT_TYPE, R.field_contact_type_hint, RequiredStringValidator())
+    private val contactTypeField = ContactTypeField(FIELD_CONTACT_TYPE, R.field_contact_type_hint)
     private val delayTimeField = DurationField(FIELD_DELAY_TIME, R.field_delay_time_hint, Duration(0))
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        TODO("Not yet implemented")
+        val portId = extractFieldValue(instance, portField)
+        val port = portFinder.searchForInputPort(BinaryInput::class.java, portId)
+        val name = extractFieldValue(instance, nameField)
+        val contactType = extractFieldValue(instance, contactTypeField)
+        val delayTime = extractFieldValue(instance, delayTimeField)
+
+        return AlarmLineAutomationUnit(stateChangeReporter, instance, name, states, port, contactType, delayTime)
     }
 
     override val states: Map<String, State>

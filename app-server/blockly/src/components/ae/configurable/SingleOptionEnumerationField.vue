@@ -9,7 +9,6 @@
           :error="error" 
           :error-messages="errorMessages"
           :return-object="false"
-          clearable
           dense
         ></v-select>
   </div>
@@ -28,7 +27,7 @@ data: function() {
     };
   },
 
-  props: ["id", "hint", "required", "counter", "values"],
+  props: ["id", "hint", "values"],
 
   computed: {
     validation() {
