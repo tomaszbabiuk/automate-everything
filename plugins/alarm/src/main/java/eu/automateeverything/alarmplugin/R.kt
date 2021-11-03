@@ -36,12 +36,12 @@ object R {
     )
 
     val configurable_alarmline_add = Resource(
-        "Add alarm line",
+        "Add an alarm line",
         "Dodaj linię alarmową"
     )
 
     val configurable_alarmline_edit = Resource(
-        "Edit alarm line",
+        "Edit an alarm line",
         "Edytuj linię alarmową"
     )
 
@@ -51,13 +51,18 @@ object R {
     )
 
     val configurable_alarmlines_description = Resource(
-        "Alarm lines models the circuts between the magnetic/movement/other detectors are and the alarm central unit.",
-        "Linie alarmowe modelują obwody pomiędzy czujnikami (ruchu, otwarcia lub innymi), a cantralną jednostną alarmową."
+        "Alarm line models the alarm circuit between the magnetic/movement/other detectors are and the alarm central unit.",
+        "Linia alarmowa modeluje obwód alarmowy pomiędzy czujnikami (ruchu, otwarcia lub innymi), a cantralną jednostną alarmową."
     )
 
     val state_unknown = Resource(
         "Unknown",
         "Nieznany"
+    )
+
+    val state_armed = Resource(
+        "Armed",
+        "Uzbrojony"
     )
 
     val state_disarmed = Resource(
@@ -78,5 +83,50 @@ object R {
     val state_alarm = Resource(
         "Alarm",
         "Alarm"
+    )
+
+    val state_leaving = Resource(
+        "Leaving",
+        "Opuszczanie obiektu"
+    )
+
+    val action_arm = Resource(
+        "Arm",
+        "Uzbrój"
+    )
+
+    val action_disarm = Resource(
+        "Disarm",
+        "Rozbrój"
+    )
+
+    val field_status_port_hint = Resource(
+        "Status port",
+        "Port statusu"
+    )
+
+    val field_arming_port_hint = Resource(
+        "Arming port",
+        "Port uzbrajania"
+    )
+
+    val configurable_combinationlock_add = Resource(
+        "Add a combination lock",
+        "Dodaj szyfrator alarmowy"
+    )
+
+    val configurable_combinationlock_edit = Resource(
+        "Edit a combination lock",
+        "Edytuj szyfrator alarmowy"
+    )
+
+    val configurable_combintationlocks_title = Resource(
+        "Combination locks",
+        "Szyfratory alarmowe"
+    )
+
+    val configurable_combinationlocks_description = Resource(
+        "Add/edit combination locks. The combination lock is a type of locking device in which a sequence of numbers, is used to arm/disarm the alarm zone.",
+        "Dodawanie/edycja szyfratorów alarmowych. Szyfratory są urządzeniami, które pozwalają na uzbrajanie/rozbrajanie strefy alarmowej za pomocą sekwencji kodu."
     )
 }
