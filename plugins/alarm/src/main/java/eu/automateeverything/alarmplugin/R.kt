@@ -3,6 +3,16 @@ package eu.automateeverything.alarmplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val field_combination_locks_hint = Resource(
+        "Combination Locks",
+        "Zamki szyfrowe"
+    )
+
+    val field_alarm_lines_hint = Resource(
+        "Alarm lines",
+        "Linie alarmowe"
+    )
+
     var plugin_description = Resource(
         "Alarm devices",
         "Urządzenia do alarmu"
@@ -47,7 +57,7 @@ object R {
 
     val configurable_alarmlines_title = Resource(
         "Alarm lines",
-        "Alarm lines"
+        "Linie alarmowe"
     )
 
     val configurable_alarmlines_description = Resource(
@@ -129,4 +139,25 @@ object R {
         "Add/edit combination locks. The combination lock is a type of locking device in which a sequence of numbers, is used to arm/disarm the alarm zone.",
         "Dodawanie/edycja szyfratorów alarmowych. Szyfratory są urządzeniami, które pozwalają na uzbrajanie/rozbrajanie strefy alarmowej za pomocą sekwencji kodu."
     )
+
+    val configurable_alarmzone_add = Resource(
+        "Add an alarm zone",
+        "Dodaj strefę alarmową"
+    )
+
+    val configurable_alarmzone_edit = Resource(
+        "Edit an zone line",
+        "Edytuj strefę alarmową"
+    )
+
+    val configurable_alarmzone_title = Resource(
+        "Alarm zones",
+        "Strefy alarmowe"
+    )
+
+    val configurable_alarmzone_description = Resource(
+        "Alarm zone controls the group of alarm lines. It fires the alarm when armed and one of the alarm lines is breached.",
+        "Strefa alarmowa kontroluje grupę lini alarmowych. Uruchamia alarm, gdy jest ubzrojona i jeden z czujników zostaje naruszony."
+    )
+
 }

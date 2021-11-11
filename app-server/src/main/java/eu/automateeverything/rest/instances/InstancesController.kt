@@ -52,10 +52,12 @@ class InstancesController @Inject constructor(
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getInstancesOfClass(@QueryParam("class") clazz: String?): List<InstanceDto> {
+    fun getInstances(@QueryParam("class") clazz: String?): List<InstanceDto> {
         return if (clazz != null) {
             repository.getInstancesOfClazz(clazz)
-        } else ArrayList()
+        } else {
+            return repository.getAllInstances()
+        }
     }
 
     @DELETE

@@ -1,7 +1,8 @@
 package eu.automateeverything.data.fields
 
 enum class FieldType {
-    Reference,
+    PortReference,
+    InstanceReference,
     Duration,
     Double,
     PowerLevel,

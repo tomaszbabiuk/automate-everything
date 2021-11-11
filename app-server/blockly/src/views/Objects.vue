@@ -122,7 +122,7 @@
       </div>
 
       <div v-if="canAddInstances()">
-        <v-card tile v-for="instance in instances" :key="instance.id">
+        <v-card tile v-for="instance in filteredInstances" :key="instance.id">
           <v-list>
             <v-list-item two-line>
               <v-list-item-icon v-if="instance.iconId === null">
@@ -185,7 +185,7 @@
           </v-card-actions>
         </v-card>
 
-        <div v-if="instances.length == 0" class="text-center">
+        <div v-if="filteredInstances.length == 0" class="text-center">
           {{ $vuetify.lang.t("$vuetify.noDataText") }}
         </div>
       </div>
@@ -299,8 +299,14 @@ export default {
       return this.$store.state.configurables.filter(filterFunction);
     },
 
-    instances: function () {
+    allInstances: function () {
       return this.$store.state.instances;
+    },
+
+    filteredInstances: function () {
+      return this.allInstances.filter( x => {
+          return x.clazz === this.getConfigurableClazz()
+        })
     },
 
     configurable: function () {
@@ -370,7 +376,7 @@ export default {
     },
 
     refreshInstances: async function () {
-      return client.getInstancesOfClazz(this.getConfigurableClazz());
+      return client.getAllInstances();
     },
 
     refreshTags: async function () {

@@ -1,8 +1,7 @@
 package eu.automateeverything.rest.fields
 
+import eu.automateeverything.data.fields.*
 import eu.automateeverything.domain.configurable.FieldDefinition
-import eu.automateeverything.data.fields.FieldDefinitionDto
-import eu.automateeverything.data.fields.ReferenceDto
 
 class FieldDefinitionDtoMapper {
     fun map(field: FieldDefinition<*>): FieldDefinitionDto {
@@ -13,7 +12,15 @@ class FieldDefinitionDtoMapper {
             field.maxSize,
             field.initialValueAsString(),
             if (field.reference != null) {
-                ReferenceDto(field.reference!!.clazz.name, field.reference!!.type)
+                if (field.reference!! is PortReference) {
+                    ReferenceDto(field.reference!!.clazz.name,
+                        (field.reference!! as PortReference).type.toString())
+                } else if (field.reference!! is InstanceReference) {
+                    ReferenceDto(field.reference!!.clazz.name,
+                        (field.reference!! as InstanceReference).type.toString())
+                } else {
+                    null
+                }
             } else {
                 null
             },

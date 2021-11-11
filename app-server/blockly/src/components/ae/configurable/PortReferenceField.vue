@@ -39,12 +39,11 @@ data: function() {
     },  
 
     ports() {
-      console.log(this.fieldRef)
       var portFilter = {
         clazz: this.fieldRef.clazz,
-        canRead: this.fieldRef.type === "InputPort" || this.fieldRef.type === "OutputPort",
-        canWrite: this.fieldRef.type === "OutputPort",
-        any: this.fieldRef.type === "AnyPort"
+        canRead: this.fieldRef.type === "Input" || this.fieldRef.type === "Output",
+        canWrite: this.fieldRef.type === "Output",
+        any: this.fieldRef.type === "Any"
       }
       return this.$store.state.ports.filter((port) => {
         return port.valueClazz === portFilter.clazz &&

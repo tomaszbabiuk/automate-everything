@@ -10,7 +10,8 @@ import ConfigurableBooleanField from './components/ae/configurable/BooleanField'
 import ConfigurablePowerLevelField from './components/ae/configurable/PowerLevelField'
 import ConfigurableDurationField from './components/ae/configurable/DurationField'
 import ConfigurableDoubleField from './components/ae/configurable/DoubleField'
-import ConfigurableReferenceField from './components/ae/configurable/ReferenceField'
+import ConfigurablePortReferenceField from './components/ae/configurable/PortReferenceField'
+import ConfigurableInstanceReferenceField from './components/ae/configurable/InstanceReferenceField'
 import ConfigurableSingleOptionEnumerationField from './components/ae/configurable/SingleOptionEnumerationField'
 import ConfigurableIconSelector from './components/ae/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/ae/configurable/TagsSelector'
@@ -29,7 +30,8 @@ Vue.component('configurable-booleanfield', ConfigurableBooleanField)
 Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
 Vue.component('configurable-durationfield', ConfigurableDurationField)
 Vue.component('configurable-doublefield', ConfigurableDoubleField)
-Vue.component('configurable-referencefield', ConfigurableReferenceField)
+Vue.component('configurable-portreferencefield', ConfigurablePortReferenceField)
+Vue.component('configurable-instancereferencefield', ConfigurableInstanceReferenceField)
 Vue.component('configurable-singleoptionenumerationfield', ConfigurableSingleOptionEnumerationField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)

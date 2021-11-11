@@ -108,6 +108,13 @@ export const client = {
     )
   },
 
+  getAllInstances: async function () {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/instances"),
+      (response) => store.commit(SET_INSTANCES, response.data)
+    )
+  },
+
   deleteInstance: async function (id) {
     await this.handleRestError(
       () => axiosInstance.delete("rest/instances/" + id),
