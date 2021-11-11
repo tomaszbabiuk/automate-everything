@@ -19,7 +19,7 @@ class AlarmZoneConfigurable<T: PortValue>(
 ) : StateDeviceConfigurable() {
 
     private val combinationLocksField = InstanceReferenceField(FIELD_COMBINATION_LOCKS, R.field_combination_locks_hint,
-        InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Multiple)
+        InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Single)
     )
     private val alarmLinesField = InstanceReferenceField(FIELD_ALARM_LINES, R.field_alarm_lines_hint,
         InstanceReference(AlarmLineConfigurable::class.java, InstanceReferenceType.Multiple)
@@ -68,7 +68,7 @@ class AlarmZoneConfigurable<T: PortValue>(
             val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_LEAVING_TIME] = leavingTimeField
             result[FIELD_ALARM_LINES] = alarmLinesField
-//            result[FIELD_COMBINATION_LOCKS] = combinationLocksField
+            result[FIELD_COMBINATION_LOCKS] = combinationLocksField
             return result
         }
 

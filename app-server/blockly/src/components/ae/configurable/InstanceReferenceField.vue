@@ -10,7 +10,7 @@
           :error-messages="errorMessages"
           clearable
           return-object
-          multiple
+          :multiple="isMultiple"
           dense
         ></v-select>
   </div>
@@ -50,6 +50,10 @@ data: function() {
                       return { id: x.id, name: x.fields["name"]}
                     })
 
+    },
+
+    isMultiple() {
+      return this.fieldRef.type === "Multiple"
     }
   },
 
@@ -63,6 +67,13 @@ data: function() {
       } else {
         return null
       }
+    },
+
+    mapSelected: function(id) {
+      return {
+        id: eval(id), 
+        name: this.findById(eval(id))
+      } 
     }
   },
 
@@ -72,17 +83,30 @@ data: function() {
       this.errorMessages = val.reasons
     },
 
-    storeFieldData(ids) {      
-      this.selected = ids.split(",").map(x=> {
-        return {
-          id: eval(x), 
-          name: this.findById(eval(x))
-        } 
-      });
+    storeFieldData(ids) {
+      if (this.isMultiple) { 
+        var actualSelection = this.selected.map(x => x.id).join(',')
+        console.log(actualSelection + ' ' + ids)   
+        if (ids !== actualSelection) {
+          console.log('changed') 
+          this.selected = ids.split(",").map(this.mapSelected)
+        }
+      } else {
+        var actualSelection2 = ids.id
+        if (ids != actualSelection2) {
+          this.selected = this.mapSelected(ids)
+        }
+      }
     },
 
     selected(value) {
-      var onlyIds = value.map(x => x.id).join(',')
+      var onlyIds = null
+      if (this.isMultiple) {
+        onlyIds = value.map(x => x.id).join(',')
+      } else if (value != null) {
+        onlyIds = value.id
+      }
+
       this.$store.commit(UPDATE_INSTANCE_FIELD, { 
         name: this.id,
         value: onlyIds
@@ -91,12 +115,11 @@ data: function() {
   },
 
   mounted: function() {
-    this.selected = this.storeFieldData.split(",").map(x=> {
-      return {
-        id: eval(x), 
-        name: this.findById(eval(x))
-      } 
-    });
+    if (this.isMultiple) {
+      this.selected = this.storeFieldData.split(",").map(this.mapSelected)
+    } else {
+      this.selected = this.mapSelected(this.storeFieldData)
+    }
   }
 };
 </script>
