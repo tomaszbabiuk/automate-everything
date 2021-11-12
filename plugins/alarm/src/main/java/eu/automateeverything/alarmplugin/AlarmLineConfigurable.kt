@@ -17,6 +17,9 @@ class AlarmLineConfigurable<T: PortValue>(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
+    override val parent: Class<out Configurable>
+        get() = AlarmDevicesConfigurable::class.java
+
     private val portField = BinaryInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
     private val contactTypeField = ContactTypeField(FIELD_CONTACT_TYPE, R.field_contact_type_hint)
     private val delayTimeField = DurationField(FIELD_DELAY_TIME, R.field_delay_time_hint, Duration(0))
@@ -65,8 +68,6 @@ class AlarmLineConfigurable<T: PortValue>(
             result[FIELD_DELAY_TIME] = delayTimeField
             return result
         }
-
-    override val parent: Class<out Configurable>? = null
 
     override val addNewRes = R.configurable_alarmline_add
     override val editRes = R.configurable_alarmline_edit

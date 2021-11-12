@@ -85,13 +85,14 @@ export default {
         itemsPerPageText: "Wierszy na stronie"
     },
     noDataText: "Brak danych",
-    configurables: {
+    objects: {
         add: "Dodaj",
         edit: "Edytuj",
         data: "Dane",
         tags: "Tagi",
         icon: "Ikona",
-        automation: "Automatyka"
+        automation: "Automatyka",
+        deleted: "(usunięto)"
     },
     discover: {
         ports: "Porty",

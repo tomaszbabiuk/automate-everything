@@ -88,7 +88,6 @@ data: function() {
         var actualSelection = this.selected.map(x => x.id).join(',')
         console.log(actualSelection + ' ' + ids)   
         if (ids !== actualSelection) {
-          console.log('changed') 
           this.selected = ids.split(",").map(this.mapSelected)
         }
       } else {
@@ -102,7 +101,7 @@ data: function() {
     selected(value) {
       var onlyIds = null
       if (this.isMultiple) {
-        onlyIds = value.map(x => x.id).join(',')
+        onlyIds = value.filter(x => x.id != undefined).map(x => x.id).join(',')
       } else if (value != null) {
         onlyIds = value.id
       }

@@ -4,8 +4,6 @@ import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
-import eu.automateeverything.data.fields.PortReference
-import eu.automateeverything.data.fields.PortReferenceType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.DeviceAutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
@@ -18,11 +16,16 @@ class AlarmZoneConfigurable<T: PortValue>(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
+    override val parent: Class<out Configurable>
+        get() = AlarmDevicesConfigurable::class.java
+
     private val combinationLocksField = InstanceReferenceField(FIELD_COMBINATION_LOCKS, R.field_combination_locks_hint,
-        InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Single)
+        InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Single),
+        RequiredStringValidator()
     )
     private val alarmLinesField = InstanceReferenceField(FIELD_ALARM_LINES, R.field_alarm_lines_hint,
-        InstanceReference(AlarmLineConfigurable::class.java, InstanceReferenceType.Multiple)
+        InstanceReference(AlarmLineConfigurable::class.java, InstanceReferenceType.Multiple),
+        RequiredStringValidator()
     )
 
     private val leavingTimeField = DurationField(FIELD_LEAVING_TIME, R.field_delay_time_hint,
@@ -71,8 +74,6 @@ class AlarmZoneConfigurable<T: PortValue>(
             result[FIELD_COMBINATION_LOCKS] = combinationLocksField
             return result
         }
-
-    override val parent: Class<out Configurable>? = null
 
     override val addNewRes = R.configurable_alarmzone_add
     override val editRes = R.configurable_alarmzone_edit

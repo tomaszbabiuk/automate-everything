@@ -38,16 +38,16 @@
             <template v-slot:extension>
               <v-tabs v-model="instanceDialog.activeTab">
                 <v-tab>
-                  {{ $vuetify.lang.t("$vuetify.configurables.data") }}
+                  {{ $vuetify.lang.t("$vuetify.objects.data") }}
                 </v-tab>
                 <v-tab v-if="configurable.editableIcon">
-                  {{ $vuetify.lang.t("$vuetify.configurables.icon") }}
+                  {{ $vuetify.lang.t("$vuetify.objects.icon") }}
                 </v-tab>
                 <v-tab v-if="configurable.taggable">
-                  {{ $vuetify.lang.t("$vuetify.configurables.tags") }}
+                  {{ $vuetify.lang.t("$vuetify.objects.tags") }}
                 </v-tab>
                 <v-tab v-if="configurable.hasAutomation">
-                  {{ $vuetify.lang.t("$vuetify.configurables.automation") }}
+                  {{ $vuetify.lang.t("$vuetify.objects.automation") }}
                 </v-tab>
 
                 <v-tab-item>
@@ -228,12 +228,7 @@
 
 <script>
 import { client } from "../rest.js";
-import store from "../plugins/vuex";
-import {
-  CLEAR_INSTANCES,
-  RESET_INSTANCE,
-  EDIT_INSTANCE,
-} from "../plugins/vuex";
+import store, { CLEAR_INSTANCES, RESET_INSTANCE, EDIT_INSTANCE } from "../plugins/vuex";
 
 export default {
   data: function () {
@@ -315,13 +310,33 @@ export default {
     },
   },
   methods: {
-    displayField: function (configurable, fieldValue) {
-      if (configurable.type == "Boolean") {
+    findInstanceNameById: function(id) {
+      var y = this.allInstances.find(
+        x => x.id === id
+      )
+      if (y != null) {
+        return y.fields["name"]
+      } else {
+        return  this.$vuetify.lang.t(
+          "$vuetify.objects.deleted"
+        );
+      }
+    },
+
+    displayField: function (fieldDefinition, fieldValue) {
+      if (fieldDefinition.type == "Boolean") {
         if (fieldValue == "1") {
           return this.$vuetify.lang.t("$vuetify.common.yes");
         } else {
           return this.$vuetify.lang.t("$vuetify.common.no");
         }
+      }
+
+      if (fieldDefinition.type == "InstanceReference") {
+        return fieldValue
+                .split(",")
+                .map(x=> this.findInstanceNameById(eval(x)))
+                .join(", ")
       }
 
       return fieldValue;
@@ -339,7 +354,7 @@ export default {
     },
 
     extractFieldDefinition: function (fieldName) {
-      return this.configurable.fields.filter((element) => {
+      return this.configurable.fields.filter(element => {
         return element.name === fieldName;
       });
     },
@@ -354,7 +369,7 @@ export default {
 
     getConfigurableByClazz: function (clazz) {
       var result = null;
-      this.$store.state.configurables.forEach((element) => {
+      this.$store.state.configurables.forEach(element => {
         if (element.clazz == clazz) {
           result = element;
         }
@@ -417,7 +432,7 @@ export default {
       this.instanceDialog.show = true;
       this.instanceDialog.title = this.configurable.addNewRes;
       this.instanceDialog.actionText = this.$vuetify.lang.t(
-        "$vuetify.configurables.add"
+        "$vuetify.objects.add"
       );
       this.instanceDialog.action = this.addInstance;
       this.instanceDialog.activeTab = 0;
@@ -442,7 +457,7 @@ export default {
     showEditInstanceDialog: function (instance) {
       this.instanceDialog.title = this.configurable.editRes;
       this.instanceDialog.actionText = this.$vuetify.lang.t(
-        "$vuetify.configurables.edit"
+        "$vuetify.objects.edit"
       );
       this.instanceDialog.action = this.editInstance;
       this.instanceDialog.activeTab = 0;

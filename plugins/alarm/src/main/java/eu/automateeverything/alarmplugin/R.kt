@@ -160,4 +160,13 @@ object R {
         "Strefa alarmowa kontroluje grupę lini alarmowych. Uruchamia alarm, gdy jest ubzrojona i jeden z czujników zostaje naruszony."
     )
 
+    val configurable_alarmdevices_title = Resource(
+        "Alarm devices",
+        "Urządzenia alarmowe"
+    )
+
+    val configurable_alarmdevices_description = Resource(
+        "Alarm lines, combination locks, alarm zones, etc...",
+        "Linie alarmowe, szyfratory, strefy alarmowe itp..."
+    )
 }

@@ -85,13 +85,14 @@ export default {
         itemsPerPageText: "Rows per page"
     },
     noDataText: "No data",
-    configurables: {
+    objects: {
         add: "Add",
         edit:  "Edit",
         data: "Data",
         tags: "Tags",
         icon: "Icon",
-        automation: "Automation"
+        automation: "Automation",
+        deleted: "(deleted)"
     },
     discover: {
         ports: "Ports",

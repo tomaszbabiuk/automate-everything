@@ -19,6 +19,9 @@ class CombinationLockConfigurable<T: PortValue>(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
+    override val parent: Class<out Configurable>
+        get() = AlarmDevicesConfigurable::class.java
+
     private val statusPortField = RelayOutputPortField(FIELD_STATUS_PORT, R.field_status_port_hint, RequiredStringValidator())
     private val armingPortField = BinaryInputPortField(FIELD_ARMING_PORT, R.field_arming_port_hint, RequiredStringValidator())
 
@@ -64,8 +67,6 @@ class CombinationLockConfigurable<T: PortValue>(
             result[FIELD_ARMING_PORT] = armingPortField
             return result
         }
-
-    override val parent: Class<out Configurable>? = null
 
     override val addNewRes = R.configurable_combinationlock_add
     override val editRes = R.configurable_combinationlock_edit
