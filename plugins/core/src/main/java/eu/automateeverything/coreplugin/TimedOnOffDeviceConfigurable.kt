@@ -153,13 +153,12 @@ class TimedOnOffDeviceConfigurable(
             states[STATE_ON] = ControlState(
                 STATE_ON,
                 R.state_on,
-                R.state_on,
+                R.action_on,
                 isSignaled = true,
             )
-            states[STATE_ON_COUNTING] = ControlState(
+            states[STATE_ON_COUNTING] = ReadOnlyState(
                 STATE_ON_COUNTING,
                 R.state_on_counting,
-                R.state_on,
                 isSignaled = true,
             )
             states[STATE_OFF_BREAK] = ReadOnlyState(
@@ -170,7 +169,7 @@ class TimedOnOffDeviceConfigurable(
             states[STATE_OFF] = ControlState(
                 STATE_OFF,
                 R.state_forced_off,
-                R.state_off,
+                R.action_off,
             )
             return states
         }

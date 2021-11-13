@@ -20,10 +20,6 @@ class AlarmZoneConfigurable<T: PortValue>(
     override val parent: Class<out Configurable>
         get() = AlarmDevicesConfigurable::class.java
 
-    private val combinationLocksField = InstanceReferenceField(FIELD_COMBINATION_LOCKS, R.field_combination_locks_hint,
-        InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Single),
-    )
-
     private val alarmLinesField = InstanceReferenceField(FIELD_ALARM_LINES, R.field_alarm_lines_hint,
         InstanceReference(AlarmLineConfigurable::class.java, InstanceReferenceType.Multiple),
         RequiredStringValidator()
@@ -35,16 +31,10 @@ class AlarmZoneConfigurable<T: PortValue>(
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
         val name = extractFieldValue(instance, nameField)
-        val combinationLockIdsRaw = extractFieldValue(instance, combinationLocksField)
-        val combinationLockIds =  if (combinationLockIdsRaw.isNotEmpty()) {
-            combinationLockIdsRaw.split(",").map { it.toLong() }
-        } else {
-            listOf()
-        }
         val alarmLineIdsRaw = extractFieldValue(instance, alarmLinesField)
         val alarmLineIds = alarmLineIdsRaw.split(",").map { it.toLong() }
         val leavingTime = extractFieldValue(instance, leavingTimeField)
-        return AlarmZoneAutomationUnit(stateChangeReporter, instance, name, states, leavingTime, alarmLineIds, combinationLockIds)
+        return AlarmZoneAutomationUnit(stateChangeReporter, instance, name, states, leavingTime, alarmLineIds)
     }
 
     override val states: Map<String, State>
@@ -72,10 +62,12 @@ class AlarmZoneConfigurable<T: PortValue>(
             states[STATE_PREALARM] = ReadOnlyState(
                 STATE_PREALARM,
                 R.state_prealarm,
+                isSignaled = true
             )
             states[STATE_ALARM] = ReadOnlyState(
                 STATE_ALARM,
                 R.state_alarm,
+                isSignaled = true
             )
             return states
         }
@@ -85,7 +77,6 @@ class AlarmZoneConfigurable<T: PortValue>(
             val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_LEAVING_TIME] = leavingTimeField
             result[FIELD_ALARM_LINES] = alarmLinesField
-            result[FIELD_COMBINATION_LOCKS] = combinationLocksField
             return result
         }
 
@@ -108,7 +99,6 @@ class AlarmZoneConfigurable<T: PortValue>(
         """.trimIndent()
 
     companion object {
-        const val FIELD_COMBINATION_LOCKS = "locks"
         const val FIELD_ALARM_LINES = "alarmLines"
         const val FIELD_LEAVING_TIME = "leavingTime"
         const val STATE_DISARMED = "disarmed"

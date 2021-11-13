@@ -21,36 +21,27 @@ class AlarmZoneAutomationUnit(
     states: Map<String, State>,
     private val leavingTime: Duration,
     private val alarmLineIds: List<Long>,
-    private val combinationLockIds: List<Long>
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, states, false) {
 
     override fun applyNewState(state: String) {
         when (state) {
             STATE_DISARMED -> {
-                changeLeavingStateOfCodeLocks(false)
-                disarmCodeLocks()
                 disarmAlarmSensors()
             }
             STATE_ARMED -> {
-                changeLeavingStateOfCodeLocks(false)
                 armAlarmSensors()
-                armCodeLocks()
                 _sensorThatCausedTheAlarm = null
             }
             STATE_LEAVING -> {
-                changeLeavingStateOfCodeLocks(true)
-                armCodeLocks()
+                _leavingStartedAtTicks = Calendar.getInstance().timeInMillis
             }
             STATE_PREALARM -> {
-                changeLeavingStateOfCodeLocks(false)
             }
             STATE_ALARM -> {
-                changeLeavingStateOfCodeLocks(false)
             }
         }
     }
 
-    private lateinit var combinationLockUnits: List<CombinationLockAutomationUnit>
     private lateinit var alarmLineUnits: List<AlarmLineAutomationUnit>
 
     private var _sensorThatCausedTheAlarm: AlarmLineAutomationUnit? = null
@@ -68,14 +59,7 @@ class AlarmZoneAutomationUnit(
             return
         }
 
-        if (currentState.id !== STATE_DISARMED) {
-            if (checkIfAnyCodeLockIsInState(false)) {
-                changeState(STATE_DISARMED)
-                return
-            }
-        }
-
-        if (currentState.id === STATE_ARMED) {
+        if (currentState.id == STATE_ARMED) {
             for (alarmSensorAutomationUnit in alarmLineUnits) {
                 if (alarmSensorAutomationUnit.isAlarm()) {
                     _sensorThatCausedTheAlarm = alarmSensorAutomationUnit
@@ -86,14 +70,6 @@ class AlarmZoneAutomationUnit(
                     changeState(STATE_PREALARM)
                     return
                 }
-            }
-        }
-
-        if (currentState.id === STATE_DISARMED) {
-            if (checkIfAnyCodeLockIsInState(true)) {
-                _leavingStartedAtTicks = now.timeInMillis
-                changeState(STATE_LEAVING)
-                return
             }
         }
 
@@ -113,45 +89,15 @@ class AlarmZoneAutomationUnit(
         }
     }
 
-    @Throws(java.lang.Exception::class)
-    private fun changeLeavingStateOfCodeLocks(leaving: Boolean) {
-        for (codeLock in combinationLockUnits) {
-            codeLock.leaving = leaving
-        }
-    }
 
     override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>) {
         alarmLineUnits = alarmLineIds.map { automationUnitsCache[it]!!.second as AlarmLineAutomationUnit }
-        combinationLockUnits = combinationLockIds.map { automationUnitsCache[it]!!.second as CombinationLockAutomationUnit }
     }
 
-    private fun checkIfAnyCodeLockIsInState(isArmed: Boolean): Boolean {
-        var result = false
-        for (codeLockAutomationUnit in combinationLockUnits) {
-            if (codeLockAutomationUnit.isArmed == isArmed) {
-                result = true
-                break
-            }
-        }
-        return result
-    }
-
-    @Throws(Exception::class)
-    private fun armCodeLocks() {
-        combinationLockUnits.forEach { it.arm() }
-    }
-
-    @Throws(Exception::class)
-    private fun disarmCodeLocks() {
-        combinationLockUnits.forEach { it.disarm() }
-    }
-
-    @Throws(Exception::class)
     private fun armAlarmSensors() {
         alarmLineUnits.forEach { it.arm() }
     }
 
-    @Throws(Exception::class)
     private fun disarmAlarmSensors() {
         alarmLineUnits.forEach { it.disarm() }
     }

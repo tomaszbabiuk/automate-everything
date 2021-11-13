@@ -233,12 +233,22 @@ object R {
         "Wł"
     )
 
+    val action_on = Resource(
+        "On",
+        "Wł"
+    )
+
     val state_on_counting = Resource(
         "On (counting)",
         "Wł (odliczanie)"
     )
 
     val state_off = Resource(
+        "Off",
+        "Wył"
+    )
+
+    val action_off = Resource(
         "Off",
         "Wył"
     )
