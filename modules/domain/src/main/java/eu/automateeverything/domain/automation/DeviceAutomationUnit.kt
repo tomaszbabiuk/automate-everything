@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.automation
 
+import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.R
 import java.util.*
 
@@ -29,5 +30,8 @@ abstract class DeviceAutomationUnit<T>(var nameOfOrigin: String?) {
             interfaceValue = R.error_automation,
             error =  ex,
             descriptions  = listOf(ex.localizedMessage))
+    }
+
+    open fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>) {
     }
 }

@@ -22,14 +22,16 @@ class CombinationLockAutomationUnit(
     private val statusPort: OutputPort<Relay>,
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, states, false) {
 
-    private var isLeaving: Boolean = false
+    var leaving: Boolean = false
         set(value) {
             field = value
-            changeState(STATE_LEAVING)
+            if (value) {
+                changeState(STATE_LEAVING)
+            }
         }
 
     private var lastReading = armingPort.read().value
-    private var isArmed = false
+    var isArmed = false
     private var lastToggleTick = 0L
 
     override fun applyNewState(state: String) {
@@ -84,7 +86,7 @@ class CombinationLockAutomationUnit(
 
     private fun toggleStatusPort(now: Calendar) {
         val oneSecondElapsed = now.timeInMillis - lastToggleTick > 1000
-        if (isLeaving && oneSecondElapsed) {
+        if (leaving && oneSecondElapsed) {
             lastToggleTick = now.timeInMillis
             val relayState = statusPort.read().value
             statusPort.write(Relay(!relayState))

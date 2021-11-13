@@ -324,6 +324,10 @@ export default {
     },
 
     displayField: function (fieldDefinition, fieldValue) {
+      if (fieldValue == null) {
+        return "-"
+      }
+      
       if (fieldDefinition.type == "Boolean") {
         if (fieldValue == "1") {
           return this.$vuetify.lang.t("$vuetify.common.yes");

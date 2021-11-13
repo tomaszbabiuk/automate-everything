@@ -19,7 +19,7 @@ class AlarmLineAutomationUnit(
     delayTime: Duration
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, states, false) {
 
-    private val armingTicks: Int = delayTime.seconds
+    private val armingTicks: Int = delayTime.milliseconds
     private var armingStartedAtTicks: Long = 0
     private var lastBreachedTime: Calendar? = null
     private var lineBreached = false
@@ -73,6 +73,7 @@ class AlarmLineAutomationUnit(
     fun prealarm() {
         changeState(AlarmLineConfigurable.STATE_PREALARM)
     }
+
     override fun calculateInternal(now: Calendar) {
         if (lineBreached != isLineBreached()) {
             lastBreachedTime = now

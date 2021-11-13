@@ -101,6 +101,8 @@ class AutomationConductor(
             }
         }
 
+        automationUnitsCache.values.forEach { it.second.bind(automationUnitsCache) }
+
         return allInstances
             .filter { it.automation != null }
             .associateBy({ it.id}, { instanceDto ->

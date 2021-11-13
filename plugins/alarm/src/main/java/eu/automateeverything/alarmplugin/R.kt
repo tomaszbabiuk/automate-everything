@@ -35,6 +35,11 @@ object R {
         "Czas opóźnienia"
     )
 
+    val field_leaving_time_hint = Resource(
+        "Leaving time",
+        "Czas na wyjście"
+    )
+
     val value_no = Resource(
         "Normally open",
         "Normalnie otwarte"
@@ -108,6 +113,11 @@ object R {
     val action_disarm = Resource(
         "Disarm",
         "Rozbrój"
+    )
+
+    val action_count = Resource(
+        "Count and arm",
+        "Odliczaj i uzbrój"
     )
 
     val field_status_port_hint = Resource(

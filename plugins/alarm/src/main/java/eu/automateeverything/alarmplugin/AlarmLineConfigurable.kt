@@ -86,7 +86,7 @@ class AlarmLineConfigurable<T: PortValue>(
         const val FIELD_PORT = "portId"
         const val FIELD_CONTACT_TYPE = "inactiveState"
         const val FIELD_DELAY_TIME = "delayTime"
-        const val STATE_DISARMED = "armed"
+        const val STATE_DISARMED = "disarmed"
         const val STATE_WATCHING = "watching"
         const val STATE_PREALARM = "prealarm"
         const val STATE_ALARM = "alarm"

@@ -28,7 +28,7 @@ class CombinationLockConfigurable<T: PortValue>(
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
         val armingPortId = extractFieldValue(instance, armingPortField)
         val armingPort = portFinder.searchForInputPort(BinaryInput::class.java, armingPortId)
-        val statusPortId = extractFieldValue(instance, armingPortField)
+        val statusPortId = extractFieldValue(instance, statusPortField)
         val statusPort = portFinder.searchForOutputPort(Relay::class.java, statusPortId)
 
         val name = extractFieldValue(instance, nameField)
@@ -49,12 +49,12 @@ class CombinationLockConfigurable<T: PortValue>(
             states[STATE_DISARMED] = ControlState(
                 STATE_DISARMED,
                 R.state_disarmed,
-                R.action_arm
+                R.action_disarm
             )
             states[STATE_ARMED] = ControlState(
                 STATE_ARMED,
                 R.state_armed,
-                R.action_disarm,
+                R.action_arm,
                 isSignaled = true
             )
             return states

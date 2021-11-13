@@ -1,5 +1,6 @@
 package eu.automateeverything.alarmplugin
 
+import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
@@ -21,23 +22,29 @@ class AlarmZoneConfigurable<T: PortValue>(
 
     private val combinationLocksField = InstanceReferenceField(FIELD_COMBINATION_LOCKS, R.field_combination_locks_hint,
         InstanceReference(CombinationLockConfigurable::class.java, InstanceReferenceType.Single),
-        RequiredStringValidator()
     )
+
     private val alarmLinesField = InstanceReferenceField(FIELD_ALARM_LINES, R.field_alarm_lines_hint,
         InstanceReference(AlarmLineConfigurable::class.java, InstanceReferenceType.Multiple),
         RequiredStringValidator()
     )
 
-    private val leavingTimeField = DurationField(FIELD_LEAVING_TIME, R.field_delay_time_hint,
+    private val leavingTimeField = DurationField(FIELD_LEAVING_TIME, R.field_leaving_time_hint,
         Duration(0)
     )
 
     override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
-        val combinationLockId = extractFieldValue(instance, combinationLocksField)
-        val alarmLineId = extractFieldValue(instance, alarmLinesField)
+        val name = extractFieldValue(instance, nameField)
+        val combinationLockIdsRaw = extractFieldValue(instance, combinationLocksField)
+        val combinationLockIds =  if (combinationLockIdsRaw.isNotEmpty()) {
+            combinationLockIdsRaw.split(",").map { it.toLong() }
+        } else {
+            listOf()
+        }
+        val alarmLineIdsRaw = extractFieldValue(instance, alarmLinesField)
+        val alarmLineIds = alarmLineIdsRaw.split(",").map { it.toLong() }
         val leavingTime = extractFieldValue(instance, leavingTimeField)
-
-        throw Exception("Not implemented")
+        return AlarmZoneAutomationUnit(stateChangeReporter, instance, name, states, leavingTime, alarmLineIds, combinationLockIds)
     }
 
     override val states: Map<String, State>
@@ -47,13 +54,20 @@ class AlarmZoneConfigurable<T: PortValue>(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_DISARMED] = ReadOnlyState(
+            states[STATE_DISARMED] = ControlState(
                 STATE_DISARMED,
                 R.state_disarmed,
+                R.action_disarm
             )
-            states[STATE_WATCHING] = ReadOnlyState(
-                STATE_WATCHING,
-                R.state_watching,
+            states[STATE_ARMED] = ControlState(
+                STATE_ARMED,
+                R.state_armed,
+                R.action_arm,
+            )
+            states[STATE_LEAVING] = ControlState(
+                STATE_LEAVING,
+                R.state_leaving,
+                R.action_count
             )
             states[STATE_PREALARM] = ReadOnlyState(
                 STATE_PREALARM,
@@ -97,8 +111,9 @@ class AlarmZoneConfigurable<T: PortValue>(
         const val FIELD_COMBINATION_LOCKS = "locks"
         const val FIELD_ALARM_LINES = "alarmLines"
         const val FIELD_LEAVING_TIME = "leavingTime"
-        const val STATE_DISARMED = "armed"
-        const val STATE_WATCHING = "watching"
+        const val STATE_DISARMED = "disarmed"
+        const val STATE_ARMED = "armed"
+        const val STATE_LEAVING = "leaving"
         const val STATE_PREALARM = "prealarm"
         const val STATE_ALARM = "alarm"
     }
