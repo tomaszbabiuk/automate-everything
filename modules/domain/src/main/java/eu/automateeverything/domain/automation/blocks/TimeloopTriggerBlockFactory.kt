@@ -39,7 +39,7 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
                      {
                        "type": "field_dropdown",
                        "name": "SECONDS",
-                       "options": ${LoopTime.values().joinToString(prefix="[", postfix = "]") { "[\"${it.label.getValue(language)}\", \"${it}\"]" }}
+                       "options": ${LoopTime.values().joinToString(prefix="[", postfix = "]") { "[\"${it.label.getValue(language)}\", \"${it.seconds}\"]" }}
                      }
                    ],
                    "nextStatement": "Boolean",

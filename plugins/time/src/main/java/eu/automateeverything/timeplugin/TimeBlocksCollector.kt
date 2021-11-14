@@ -14,6 +14,7 @@ class TimeBlocksCollector() : BlockFactoriesCollector {
 
     private fun collectTimeStaticBlocks() = listOf(
         TimestampValueBlockFactory(),
+        NowBlockFactory(),
         TimeComparisonBlockFactory(),
         TimeEquationBlockFactory(),
     )
