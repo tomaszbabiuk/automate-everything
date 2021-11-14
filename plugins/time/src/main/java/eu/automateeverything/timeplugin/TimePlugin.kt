@@ -1,0 +1,22 @@
+package eu.automateeverything.timeplugin
+
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import org.pf4j.Plugin
+import org.pf4j.PluginWrapper
+
+class TimePlugin(
+    wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
+
+
+    override fun start() {
+        println("Starting AFORE plugin")
+    }
+
+    override fun stop() {
+        println("Stopping AFORE plugin")
+    }
+
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
+}

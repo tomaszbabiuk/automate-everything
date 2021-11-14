@@ -23,6 +23,7 @@ include 'plugins:bash-action'
 include 'plugins:email-action'
 include 'plugins:central-heating'
 include 'plugins:alarm'
+include 'plugins:time'
 
 //features used by the plugins
 include 'plugin-features:lan-gateway'

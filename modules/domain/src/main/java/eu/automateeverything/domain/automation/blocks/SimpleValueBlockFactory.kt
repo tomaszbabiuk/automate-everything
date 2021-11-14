@@ -5,7 +5,6 @@ import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.hardware.PortValue
 import eu.automateeverything.domain.hardware.PortValueBuilder
 
-
 open class SimpleValueBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
     private val minValue: Double,
