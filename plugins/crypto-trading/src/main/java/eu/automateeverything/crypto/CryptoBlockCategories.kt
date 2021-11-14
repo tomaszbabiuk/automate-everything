@@ -7,5 +7,5 @@ enum class CryptoBlockCategories(
     override val categoryName: Resource,
     override val color: Int
 ) : BlockCategory {
-    Crypto(R.category_crypto, 15),
+    Crypto(R.category_crypto, 30),
 }

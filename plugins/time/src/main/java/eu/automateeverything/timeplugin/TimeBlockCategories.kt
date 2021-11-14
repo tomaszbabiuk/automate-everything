@@ -7,6 +7,6 @@ enum class TimeBlockCategories(
     override val categoryName: Resource,
     override val color: Int
 ) : BlockCategory {
-    SecondOfDay(R.category_time, 45),
-    DayOfYear(R.category_date, 60),
+    SecondOfDay(R.category_time, 180),
+    DayOfYear(R.category_date, 90),
 }
