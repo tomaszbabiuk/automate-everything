@@ -2,6 +2,8 @@ package eu.automateeverything.timeplugin
 
 import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.automation.blocks.ComparisonBlockFactory
+import eu.automateeverything.domain.automation.blocks.EquationBlockFactory
 import eu.automateeverything.domain.configurable.Configurable
 import org.pf4j.Extension
 
@@ -9,19 +11,21 @@ import org.pf4j.Extension
 class TimeBlocksCollector() : BlockFactoriesCollector {
 
     override fun collect(thisDevice: Configurable?): List<BlockFactory<*>> {
-        return collectTimeStaticBlocks() + collectDateStaticBlocks()
+        return collectTimeStaticBlocks() + collectDayStaticBlocks()
     }
 
     private fun collectTimeStaticBlocks() = listOf(
-        TimestampValueBlockFactory(),
+        SecondOfDayValueBlockFactory(),
         NowBlockFactory(),
-        TimeComparisonBlockFactory(),
-        TimeEquationBlockFactory(),
+        ComparisonBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay),
+        EquationBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay)
     )
 
-    private fun collectDateStaticBlocks() = listOf(
-        DateComparisonBlockFactory(),
-        DateEquationBlockFactory(),
-    )
 
+    private fun collectDayStaticBlocks() = listOf(
+        DayOfYearStampValueBlockFactory(),
+        TodayBlockFactory(),
+        ComparisonBlockFactory(DayOfYearStamp::class.java, TimeBlockCategories.DayOfYear),
+        EquationBlockFactory(DayOfYearStamp::class.java, TimeBlockCategories.DayOfYear)
+    )
 }

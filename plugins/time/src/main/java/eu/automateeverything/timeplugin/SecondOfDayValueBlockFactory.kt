@@ -4,9 +4,9 @@ import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.hardware.PortValueBuilder
 
-open class TimestampValueBlockFactory: ValueBlockFactory {
+open class SecondOfDayValueBlockFactory: ValueBlockFactory {
 
-    enum class HourEnumOption(val label: String, val seconds: Int) {
+    enum class HourOption(val label: String, val seconds: Int) {
         H00("00",3600 * 0),
         H01("01",3600 * 1),
         H02("02",3600 * 2),
@@ -33,7 +33,7 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
         H23("23",3600 * 23),
     }
 
-    enum class MinuteEnumOption(val label: String, val seconds: Int) {
+    enum class MinuteOption(val label: String, val seconds: Int) {
         M00("00",60 * 0),
         M01("01",60 * 1),
         M02("02",60 * 2),
@@ -96,7 +96,7 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
         M59("59",60 * 59),
     }
 
-    enum class SecondEnumOption(val label: String, val seconds: Int) {
+    enum class SecondOption(val label: String, val seconds: Int) {
         S00("00",0),
         S01("01",1),
         S02("02",2),
@@ -159,9 +159,9 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
         S59("59",59),
     }
 
-    override val category = TimeBlockCategories.Time
+    override val category = TimeBlockCategories.SecondOfDay
 
-    override val type: String = "${Timestamp::class.java.simpleName.lowercase()}_value"
+    override val type: String = "${SecondOfDayStamp::class.java.simpleName.lowercase()}_value"
 
     override fun buildBlock(): RawJson {
 
@@ -174,21 +174,21 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
                     {
                       "type": "field_dropdown",
                       "name": "HOUR",
-                      "options": ${ HourEnumOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}
+                      "options": ${ HourOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}
                     },
                     {
                       "type": "field_dropdown",
                       "name": "MINUTE",
-                      "options": ${ MinuteEnumOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}                      
+                      "options": ${ MinuteOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}                      
                     },
                     {
                       "type": "field_dropdown",
                       "name": "SECOND",
-                      "options": ${ SecondEnumOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}                                            
+                      "options": ${ SecondOption.values().joinToString(prefix = "[", postfix = "]") { "[\"${it.label}\", \"${it.seconds}\"]" }}                                            
                     }
                   ],
                   "inputsInline": true,
-                  "output": "${Timestamp::class.java.simpleName}",
+                  "output": "${SecondOfDayStamp::class.java.simpleName}",
                   "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
@@ -199,7 +199,7 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
 
     override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): ValueNode {
         if (block.fields == null || block.fields!!.size != 3) {
-            throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: VALUE and UNIT")
+            throw MalformedBlockException(block.type, "should have exactly three <FIELDS> defined: HOUR, MINUTE and SECOND")
         }
 
         val hourField = block.fields!!.find { it.name == "HOUR" }
@@ -214,7 +214,7 @@ open class TimestampValueBlockFactory: ValueBlockFactory {
         val totalSecondsRaw =
             hourField.value!!.toDouble() + minuteField.value!!.toDouble() + secondField.value!!.toDouble()
         val totalSecondsValue =
-            PortValueBuilder.buildFromDouble(Timestamp::class.java, totalSecondsRaw) as Timestamp
+            PortValueBuilder.buildFromDouble(SecondOfDayStamp::class.java, totalSecondsRaw) as SecondOfDayStamp
 
         return BasicValueNode(totalSecondsValue)
     }

@@ -3,6 +3,66 @@ package eu.automateeverything.timeplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val month_january = Resource(
+        "January",
+        "Styczeń"
+    )
+
+    val month_february = Resource(
+        "February",
+        "Luty"
+    )
+
+    val month_march = Resource(
+        "March",
+        "Marzec"
+    )
+
+    val month_april = Resource(
+        "April",
+        "Kwiecień"
+    )
+
+    val month_may = Resource(
+        "May",
+        "Maj"
+    )
+
+    val month_june = Resource(
+        "June",
+        "Czerwiec"
+    )
+
+    val month_july = Resource(
+        "July",
+        "Lipiec"
+    )
+
+    val month_august = Resource(
+        "August",
+        "Sierpień"
+    )
+
+    val month_september = Resource(
+        "September",
+        "Wrzesień"
+    )
+
+    val month_october = Resource(
+        "October",
+        "Październik"
+    )
+
+    val month_november = Resource(
+        "November",
+        "Pażdziernik"
+    )
+
+    val month_december = Resource(
+        "December",
+        "Grudzień"
+    )
+    
     val block_now_label = Resource(
             "Now (current time)",
             "Teraz (bieżąca godzina)"

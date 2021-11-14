@@ -3,7 +3,7 @@ package eu.automateeverything.timeplugin
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.hardware.PortValue
 
-class Datestamp(var value: Double) : PortValue {
+class SecondOfDayStamp(var value: Double) : PortValue {
     override fun toFormattedString(): Resource {
         return Resource.createUniResource(value.toString())
     }

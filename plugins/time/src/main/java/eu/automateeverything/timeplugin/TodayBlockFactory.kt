@@ -3,11 +3,11 @@ package eu.automateeverything.timeplugin
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
 
-open class NowBlockFactory: ValueBlockFactory {
+open class TodayBlockFactory: ValueBlockFactory {
 
-    override val category = TimeBlockCategories.SecondOfDay
+    override val category = TimeBlockCategories.DayOfYear
 
-    override val type: String = "timeofday_value"
+    override val type: String = "today_value"
 
     override fun buildBlock(): RawJson {
 
@@ -15,8 +15,8 @@ open class NowBlockFactory: ValueBlockFactory {
             """
                 {
                   "type": "$type",
-                  "message0": "${R.block_now_label.getValue(it)}",
-                  "output": "${SecondOfDayStamp::class.java.simpleName}",
+                  "message0": "${R.block_today_label.getValue(it)}",
+                  "output": "${DayOfYearStamp::class.java.simpleName}",
                   "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
@@ -26,7 +26,7 @@ open class NowBlockFactory: ValueBlockFactory {
     }
 
     override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): ValueNode {
-        return NowValueNode()
+        return TodayValueNode()
     }
 }
 
