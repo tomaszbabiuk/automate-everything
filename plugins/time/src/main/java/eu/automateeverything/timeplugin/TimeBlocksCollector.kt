@@ -18,7 +18,8 @@ class TimeBlocksCollector() : BlockFactoriesCollector {
         SecondOfDayValueBlockFactory(),
         NowBlockFactory(),
         ComparisonBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay),
-        EquationBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay)
+        EquationBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay),
+        EvenSecondBlockFactory()
     )
 
 

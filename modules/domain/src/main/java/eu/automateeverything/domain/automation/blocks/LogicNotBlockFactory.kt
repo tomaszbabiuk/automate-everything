@@ -23,11 +23,11 @@ class LogicNotBlockFactory : EvaluatorBlockFactory {
                         {
                           "type": "input_value",
                           "name": "NOT",
-                          "check": "Boolean"
+                          "check": "${Boolean::class.java.simpleName}"
                         }
                       ],
                       "inputsInline": true,
-                      "output": "Boolean",
+                      "output": "${Boolean::class.java.simpleName}",
                       "colour": ${category.color},
                       "tooltip": "",
                       "helpUrl": ""

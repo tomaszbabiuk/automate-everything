@@ -20,7 +20,7 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
                         {
                           "type": "input_value",
                           "name": "FIRST",
-                          "check": "Boolean"
+                          "check": "${Boolean::class.java.simpleName}"
                         },
                         {
                           "type": "input_dummy"
@@ -28,7 +28,7 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
                         {
                           "type": "input_value",
                           "name": "SECOND",
-                          "check": "Boolean"
+                          "check": "${Boolean::class.java.simpleName}"
                         }
                       ],
                       "inputsInline": true,

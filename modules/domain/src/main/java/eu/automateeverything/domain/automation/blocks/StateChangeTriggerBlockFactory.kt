@@ -35,7 +35,7 @@ class StateChangeTriggerBlockFactory(
                    ]
                  }
                ],
-               "nextStatement": "Boolean",
+               "nextStatement": "${Boolean::class.java.simpleName}",
                "colour": ${category.color},
                "tooltip": null,
                "helpUrl": null

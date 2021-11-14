@@ -3,6 +3,11 @@ package eu.automateeverything.timeplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val block_evensecond_label = Resource(
+        "Even second",
+        "Parzysta sekunda"
+    )
+
     val month_january = Resource(
         "January",
         "Styczeń"

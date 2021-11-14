@@ -38,7 +38,7 @@ open class StateValueBlockFactory(
                      }
                   ],
                   "inputsInline": true,
-                  "output": "Boolean",
+                  "output": "${Boolean::class.java.simpleName}",
                   "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""

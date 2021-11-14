@@ -20,7 +20,7 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
                     {
                       "type": "input_value",
                       "name": "CONDITION",
-                      "check": "Boolean",
+                      "check": "${Boolean::class.java.simpleName}",
                       "align": "RIGHT"
                     },
                     {

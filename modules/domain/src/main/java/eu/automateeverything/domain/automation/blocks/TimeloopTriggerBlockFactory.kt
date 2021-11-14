@@ -42,7 +42,7 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
                        "options": ${LoopTime.values().joinToString(prefix="[", postfix = "]") { "[\"${it.label.getValue(language)}\", \"${it.seconds}\"]" }}
                      }
                    ],
-                   "nextStatement": "Boolean",
+                   "nextStatement": "${Boolean::class.java.simpleName}",
                    "colour": ${category.color},
                    "tooltip": null,
                    "helpUrl": null
