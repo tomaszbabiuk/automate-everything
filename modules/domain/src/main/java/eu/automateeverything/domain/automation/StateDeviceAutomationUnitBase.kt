@@ -15,7 +15,7 @@ abstract class StateDeviceAutomationUnitBase(
     private val instanceDto: InstanceDto,
     name: String,
     protected val states: Map<String, State>,
-    private val requiresExtendedWidth: Boolean) :
+    protected val requiresExtendedWidth: Boolean) :
     DeviceAutomationUnit<State>(name), StateDeviceAutomationUnit {
 
     private var lastNotes: MutableMap<String, Resource> = HashMap()

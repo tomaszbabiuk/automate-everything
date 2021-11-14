@@ -28,6 +28,11 @@ object R {
         "Port"
     )
 
+    val field_readonly_hint = Resource(
+        "Read only",
+        "Tylko do odczytu"
+    )
+
     val field_min_working_time = Resource(
         "Minimum working time",
         "Minimalny czas pracy "

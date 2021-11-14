@@ -26,10 +26,11 @@ class TimedOnOffDeviceAutomationUnit(
     private val breakTime: Duration,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
+    private val readOnly: Boolean
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
 
-    var onSince = 0L
-    var offSince = 0L
+    private var onSince = 0L
+    private var offSince = 0L
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
@@ -46,6 +47,10 @@ class TimedOnOffDeviceAutomationUnit(
 
     @Suppress("SENSELESS_COMPARISON")
     override fun buildNextStates(state: State): NextStatesDto {
+        if (readOnly) {
+            return NextStatesDto(listOf(), currentState.id, requiresExtendedWidth)
+        }
+
         if (state.id == STATE_OFF) {
             return if (minWorkingTime != null && minWorkingTime.seconds > 0) {
                 statesExcept(state, arrayOf(STATE_ON))

@@ -2,6 +2,7 @@ package eu.automateeverything.coreplugin
 
 import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_OFF
 import eu.automateeverything.coreplugin.OnOffDeviceConfigurable.Companion.STATE_ON
+import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
@@ -18,6 +19,7 @@ class OnOffDeviceAutomationUnit(
     name: String,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
+    private val readOnly: Boolean
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
 
     @Throws(Exception::class)
@@ -46,4 +48,12 @@ class OnOffDeviceAutomationUnit(
 
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = true
+
+    override fun buildNextStates(state: State): NextStatesDto {
+        if (readOnly) {
+            return NextStatesDto(listOf(), state.id, requiresExtendedWidth)
+        }
+
+        return super.buildNextStates(state)
+    }
 }
