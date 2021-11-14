@@ -92,4 +92,14 @@ object R {
         "Date",
         "Data"
     )
+
+    val block_dayofyear_message = Resource(
+        "M: %1 D: %2",
+        "M: %1 D: %2"
+    )
+
+    val block_secondofday_message = Resource(
+        "H: %1 M: %2 S: %3",
+        "H: %1 M: %2 S: %3"
+    )
 }

@@ -67,7 +67,7 @@ open class DayOfYearStampValueBlockFactory: ValueBlockFactory {
             """
                 {
                   "type": "$type",
-                  "message0": "M: %1 D: %2",
+                  "message0": "${R.block_dayofyear_message.getValue(language)}",
                   "args0": [
                     {
                       "type": "field_dropdown",

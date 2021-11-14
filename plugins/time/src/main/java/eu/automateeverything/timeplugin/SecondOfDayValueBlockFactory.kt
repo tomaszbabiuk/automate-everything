@@ -165,11 +165,11 @@ open class SecondOfDayValueBlockFactory: ValueBlockFactory {
 
     override fun buildBlock(): RawJson {
 
-        return RawJson {
+        return RawJson { language ->
             """
                 {
                   "type": "$type",
-                  "message0": "H: %1 M: %2 S: %3",
+                  "message0": "${R.block_secondofday_message.getValue(language)}",
                   "args0": [
                     {
                       "type": "field_dropdown",
