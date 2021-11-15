@@ -86,14 +86,14 @@ class AutomationConductor(
                         val physicalUnit = buildPhysicalUnit(configurable, instance)
                         automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                     } catch (ex: AutomationErrorException) {
-                        println(ex)
+                        println(ex) //TODO:
                         val originName = instance.fields["name"]
                         val wrapper = buildWrappedUnit(originName, configurable, ex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     } catch (ex: Exception) {
-                        println(ex)
+                        println(ex) //TODO:
                         val originName = instance.fields["name"]
-                        val aex = AutomationErrorException(R.error_automation, ex)
+                        val aex = AutomationErrorException(R.error_automation(ex), ex)
                         val wrapper = buildWrappedUnit(originName, configurable, aex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     }

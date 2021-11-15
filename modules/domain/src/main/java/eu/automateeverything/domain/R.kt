@@ -3,6 +3,7 @@
 package eu.automateeverything.domain
 
 import eu.automateeverything.data.localization.Resource
+import kotlin.Exception
 
 object R {
     var category_this_device = Resource(
@@ -143,6 +144,11 @@ object R {
     val error_automation = Resource(
         "Automation error",
         "Błąd automatyki"
+    )
+
+    fun error_automation(cause: Exception) = Resource(
+        "Automation error. Detailed error is: ${cause.message}",
+        "Błąd automatyki. Szczegóły błędu: ${cause.message}"
     )
 
     fun error_port_not_found(portId: String): Resource {
