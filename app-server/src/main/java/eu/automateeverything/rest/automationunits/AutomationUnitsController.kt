@@ -1,7 +1,7 @@
 package eu.automateeverything.rest.automationunits
 
 import eu.automateeverything.domain.automation.AutomationConductor
-import eu.automateeverything.rest.ResourceNotFoundException
+import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.data.automation.AutomationUnitDto
 import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase

@@ -3,7 +3,7 @@ package eu.automateeverything.rest.inbox
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.inbox.InboxMessageDto
 import eu.automateeverything.domain.inbox.Inbox
-import eu.automateeverything.rest.ResourceNotFoundException
+import eu.automateeverything.domain.ResourceNotFoundException
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.inject.Inject
 import jakarta.ws.rs.*

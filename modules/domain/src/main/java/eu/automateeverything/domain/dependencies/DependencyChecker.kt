@@ -1,25 +1,17 @@
-package eu.automateeverything.domain.instances
+package eu.automateeverything.domain.dependencies
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.fields.FieldType
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.automation.Block
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.ConfigurableWithFields
+import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import jakarta.inject.Inject
-
-enum class DependencyType {
-   Instance, Automation
-}
-
-data class Dependency(
-    val type: DependencyType,
-    val name: String?,
-    val level: Int
-)
 
 class DependencyChecker @Inject constructor(
     private val pluginsCoordinator: PluginsCoordinator,
@@ -30,14 +22,15 @@ class DependencyChecker @Inject constructor(
     fun checkInstance(instanceId: Long): HashMap<Long, Dependency> {
         val allInstances = repository.getAllInstances()
 
-        val dependencies = HashMap<Long, Dependency>()
         val checkedInstance = findInstance(instanceId, allInstances)
         if (checkedInstance != null) {
+            val dependencies = HashMap<Long, Dependency>()
             checkReferences(checkedInstance, allInstances, dependencies, 1)
             checkAutomations(checkedInstance, allInstances, dependencies, 1)
+            return dependencies
         }
 
-        return dependencies
+        throw ResourceNotFoundException()
     }
 
     private fun findInstance(instanceId: Long, allInstances: List<InstanceDto>): InstanceDto? {
@@ -52,7 +45,7 @@ class DependencyChecker @Inject constructor(
 
     private fun findInstanceName(instanceId: Long, allInstances: List<InstanceDto>): String? {
         val instance =  allInstances.find { instanceDto -> instanceDto.id == instanceId }
-        return instance?.fields?.get("name")
+        return instance?.fields?.get(NameDescriptionConfigurable.FIELD_NAME)
     }
 
     private fun checkReferences(checkedInstanc2e: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>, level: Int) {

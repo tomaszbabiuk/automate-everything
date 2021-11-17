@@ -4,7 +4,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.hardware.HardwareManager
 import jakarta.inject.Inject
-import eu.automateeverything.rest.ResourceNotFoundException
+import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType

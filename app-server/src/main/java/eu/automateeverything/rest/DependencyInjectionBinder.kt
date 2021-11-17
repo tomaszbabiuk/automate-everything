@@ -21,7 +21,7 @@ import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper
 import eu.automateeverything.rest.live.HeartbeatDtoMapper
 import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
 import eu.automateeverything.domain.automation.BlocklyParser
-import eu.automateeverything.domain.instances.DependencyChecker
+import eu.automateeverything.domain.dependencies.DependencyChecker
 import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 

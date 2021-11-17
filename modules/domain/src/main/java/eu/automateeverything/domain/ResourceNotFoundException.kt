@@ -1,4 +1,4 @@
-package eu.automateeverything.rest
+package eu.automateeverything.domain
 
 import java.lang.Exception
 

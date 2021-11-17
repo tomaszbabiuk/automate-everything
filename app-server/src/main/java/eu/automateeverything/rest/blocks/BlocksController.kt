@@ -4,7 +4,7 @@ import eu.automateeverything.data.blocks.*
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.rest.*
+import eu.automateeverything.domain.ResourceNotFoundException
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path

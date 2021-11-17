@@ -1,5 +1,6 @@
 package eu.automateeverything.rest
 
+import eu.automateeverything.domain.ResourceNotFoundException
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.ExceptionMapper
 
