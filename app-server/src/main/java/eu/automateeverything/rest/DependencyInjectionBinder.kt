@@ -21,6 +21,7 @@ import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper
 import eu.automateeverything.rest.live.HeartbeatDtoMapper
 import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
 import eu.automateeverything.domain.automation.BlocklyParser
+import eu.automateeverything.domain.instances.DependencyChecker
 import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 
@@ -86,6 +87,10 @@ class DependencyInjectionBinder(
 
         bind(BlocklyParser::class.java)
             .to(BlocklyParser::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(DependencyChecker::class.java)
+            .to(DependencyChecker::class.java)
             .`in`(Singleton::class.java)
 
         //factories for objects shared with the App

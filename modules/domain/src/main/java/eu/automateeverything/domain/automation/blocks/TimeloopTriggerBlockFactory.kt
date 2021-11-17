@@ -17,12 +17,6 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
         Minutes10(R.minutes10, 600),
         Minutes30(R.minutes30, 1800),
         Hour(R.hour, 3600);
-
-        companion object {
-            fun fromString(raw: String): LoopTime {
-                return values().first { it.name == raw }
-            }
-        }
     }
 
     override val category = CommonBlockCategories.Triggers

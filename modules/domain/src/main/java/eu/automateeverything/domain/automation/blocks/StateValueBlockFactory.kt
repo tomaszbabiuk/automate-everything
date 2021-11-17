@@ -8,7 +8,7 @@ import eu.automateeverything.domain.R
 
 open class StateValueBlockFactory(
     private val deviceName: String,
-    instanceId: Long,
+    private val instanceId: Long,
     private val states: Map<String, State>,
 ) : EvaluatorBlockFactory {
 
@@ -68,5 +68,9 @@ open class StateValueBlockFactory(
         val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnitBase
 
         return IsInStateAutomationNode(triggerUnit, stateId)
+    }
+
+    override fun dependsOn(): List<Long> {
+        return listOf(instanceId)
     }
 }

@@ -8,6 +8,7 @@ interface BlockFactory<N: AutomationNode> {
     val type:String
     fun buildBlock() : RawJson
     fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer) : N
+    fun dependsOn() : List<Long> = listOf()
 }
 
 //preventing type erasure

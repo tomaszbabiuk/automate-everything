@@ -6,15 +6,18 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.rest.settings.ValidationResultMap
 import eu.automateeverything.domain.configurable.ConfigurableWithFields
 import eu.automateeverything.domain.configurable.FieldValidationResult
-import java.util.*
+import eu.automateeverything.domain.instances.Dependency
+import eu.automateeverything.domain.instances.DependencyChecker
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import kotlin.collections.HashMap
 
 @Path("instances")
 class InstancesController @Inject constructor(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val repository: Repository
+    private val repository: Repository,
+    private val dependencyChecker: DependencyChecker
 ) {
 
     private fun findConfigurable(clazz: String): ConfigurableWithFields? {
@@ -48,6 +51,13 @@ class InstancesController @Inject constructor(
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getInstancesById(@PathParam("id") id: Long): InstanceDto {
         return repository.getInstance(id)
+    }
+
+    @GET
+    @Path("/{id}/dependencies")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun getInstanceDependencies(@PathParam("id") id: Long): HashMap<Long, Dependency> {
+        return dependencyChecker.checkInstance(id)
     }
 
     @GET
