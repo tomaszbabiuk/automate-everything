@@ -6,7 +6,7 @@ import eu.automateeverything.domain.R
 import eu.automateeverything.domain.automation.*
 
 class StateChangeTriggerBlockFactory(
-    instanceId: Long,
+    private val instanceId: Long,
     private val deviceName: String,
     private val states: Map<String, State>) : TriggerBlockFactory {
 
@@ -69,5 +69,9 @@ class StateChangeTriggerBlockFactory(
         val triggerUnit = context.automationUnitsCache[instanceId] as StateDeviceAutomationUnitBase
 
         return StateDeviceTriggerNode(context, instanceId, triggerUnit, stateId, next)
+    }
+
+    override fun dependsOn(): List<Long> {
+        return listOf(instanceId)
     }
 }

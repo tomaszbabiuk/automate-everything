@@ -41,4 +41,8 @@ class ConditionBlockFactory(
         throw MalformedBlockException(block.type,
             "it's impossible to connect this block with correct ${ConditionConfigurable::class.java}")
     }
+
+    override fun dependsOn(): List<Long> {
+        return listOf(conditionId)
+    }
 }
