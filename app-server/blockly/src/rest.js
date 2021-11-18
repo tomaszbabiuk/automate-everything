@@ -116,10 +116,14 @@ export const client = {
     )
   },
 
-  deleteInstance: async function (id) {
+  deleteInstance: async function (instanceIdToDelete) {
     await this.handleRestError(
-      () => axiosInstance.delete("rest/instances/" + id),
-      () => store.commit(REMOVE_INSTANCE, id)
+      () => axiosInstance.delete("rest/instances/" + instanceIdToDelete),
+      response => {
+        response.data.forEach(removedInstanceId => {
+          store.commit(REMOVE_INSTANCE, removedInstanceId)
+        })
+      }
     )
   },
 

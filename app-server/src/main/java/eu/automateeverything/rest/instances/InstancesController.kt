@@ -6,6 +6,7 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.rest.settings.ValidationResultMap
 import eu.automateeverything.domain.configurable.ConfigurableWithFields
 import eu.automateeverything.domain.configurable.FieldValidationResult
+import eu.automateeverything.domain.dependencies.DependencyChecker
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
@@ -14,7 +15,8 @@ import kotlin.collections.HashMap
 @Path("instances")
 class InstancesController @Inject constructor(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val repository: Repository
+    private val repository: Repository,
+    private val dependencyChecker: DependencyChecker
 ) {
 
     private fun findConfigurable(clazz: String): ConfigurableWithFields? {
@@ -63,8 +65,16 @@ class InstancesController @Inject constructor(
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun deleteInstance(@PathParam("id") id: Long) {
-        repository.deleteInstance(id)
+    fun deleteInstance(@PathParam("id") id: Long): List<Long> {
+        val dependencies = dependencyChecker.checkInstance(id)
+        return if (dependencies.size > 0) {
+            val toRemove = dependencies.values.map { it.id } + listOf(id)
+            repository.deleteInstances(toRemove)
+            toRemove
+        } else {
+            repository.deleteInstance(id)
+            listOf(id)
+        }
     }
 
     private fun validate(instanceDto: InstanceDto, onValidCallback: () -> Unit):

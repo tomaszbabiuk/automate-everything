@@ -117,6 +117,14 @@ class SqlDelightRepository : Repository {
         }
     }
 
+    override fun deleteInstances(ids: List<Long>) {
+        database.transaction {
+            ids.forEach {
+                database.configurableInstanceQueries.delete(it)
+            }
+        }
+    }
+
     override fun getInstance(id: Long): InstanceDto {
         val instance = database
                 .configurableInstanceQueries

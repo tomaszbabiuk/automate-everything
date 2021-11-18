@@ -86,7 +86,6 @@ data: function() {
     storeFieldData(ids) {
       if (this.isMultiple) { 
         var actualSelection = this.selected.map(x => x.id).join(',')
-        console.log(actualSelection + ' ' + ids)   
         if (ids !== actualSelection) {
           this.selected = ids.split(",").map(this.mapSelected)
         }

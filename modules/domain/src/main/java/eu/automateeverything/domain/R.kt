@@ -48,7 +48,7 @@ object R {
 
     val block_label_delay = Resource(
         "Wait for %1 seconds %2 and than: %3",
-        "Poczekaj %1 sekund %2 potem: %4"
+        "Poczekaj %1 sekund %2 potem: %3"
     )
 
     val block_label_if_than_else = Resource(
@@ -83,7 +83,7 @@ object R {
 
     val block_label_in_state = Resource(
         "%1 is in state %2",
-        "%1 is in state %2"
+        "%1 jest w stanie %2"
     )
 
     val second = Resource(

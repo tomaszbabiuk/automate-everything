@@ -71,9 +71,9 @@ class DependencyChecker @Inject constructor(
                             ?.map { it.toLong() }
                             ?.forEach { instanceId ->
                                 if (checkedInstance.id == instanceId) {
-                                    val name = findInstanceName(instanceId, allInstances)
+                                    val name = findInstanceName(instance.id, allInstances)
                                     if (name != null) {
-                                        addDependency(instanceId, Dependency(checkedInstance.id, DependencyType.Instance, name))
+                                        addDependency(instanceId, Dependency(instance.id, DependencyType.Instance, name))
                                     }
                                 }
                             }
