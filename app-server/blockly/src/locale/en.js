@@ -92,7 +92,8 @@ export default {
         tags: "Tags",
         icon: "Icon",
         automation: "Automation",
-        deleted: "(deleted)"
+        deleted: "(deleted)",
+        dependencies_detected_note: "Dependencies detected! Those objects WILL ALSO BE DELETED!"
     },
     discover: {
         ports: "Ports",

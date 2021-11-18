@@ -92,7 +92,8 @@ export default {
         tags: "Tagi",
         icon: "Ikona",
         automation: "Automatyka",
-        deleted: "(usunięto)"
+        deleted: "(usunięto)",
+        dependencies_detected_note: "Wykryto zależności! Oto obiekty, które także ZOSTANĄ USUNIĘTE!"
     },
     discover: {
         ports: "Porty",

@@ -25,8 +25,8 @@ class DependencyChecker @Inject constructor(
         val checkedInstance = findInstance(instanceId, allInstances)
         if (checkedInstance != null) {
             val dependencies = HashMap<Long, Dependency>()
-            checkReferences(checkedInstance, allInstances, dependencies, 1)
-            checkAutomations(checkedInstance, allInstances, dependencies, 1)
+            checkReferences(checkedInstance, allInstances, dependencies)
+            checkAutomations(checkedInstance, allInstances, dependencies)
             return dependencies
         }
 
@@ -48,15 +48,14 @@ class DependencyChecker @Inject constructor(
         return instance?.fields?.get(NameDescriptionConfigurable.FIELD_NAME)
     }
 
-    private fun checkReferences(checkedInstanc2e: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>, level: Int) {
+    private fun checkReferences(checkedInstance: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>) {
         fun addDependency(instanceId: Long, dependency: Dependency) {
             if (!dependencies.containsKey(instanceId)) {
                 dependencies[instanceId] = dependency
                 val instanceToCheck = allInstances.find { instanceDto -> instanceDto.id == instanceId }
                 if (instanceToCheck != null) {
-                    val newLevel = level + 1
-                    checkReferences(instanceToCheck, allInstances, dependencies, newLevel)
-                    checkAutomations(instanceToCheck, allInstances, dependencies, newLevel)
+                    checkReferences(instanceToCheck, allInstances, dependencies)
+                    checkAutomations(instanceToCheck, allInstances, dependencies)
                 }
             }
         }
@@ -71,10 +70,10 @@ class DependencyChecker @Inject constructor(
                             ?.split(",")
                             ?.map { it.toLong() }
                             ?.forEach { instanceId ->
-                                if (checkedInstanc2e.id == instanceId) {
+                                if (checkedInstance.id == instanceId) {
                                     val name = findInstanceName(instanceId, allInstances)
                                     if (name != null) {
-                                        addDependency(instanceId, Dependency(DependencyType.Instance, name, level))
+                                        addDependency(instanceId, Dependency(checkedInstance.id, DependencyType.Instance, name))
                                     }
                                 }
                             }
@@ -84,7 +83,7 @@ class DependencyChecker @Inject constructor(
         }
     }
 
-    private fun checkAutomations(checkedInstance: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>, level: Int) {
+    private fun checkAutomations(checkedInstance: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>) {
         allInstances.forEach { instanceDto ->
             val automation = instanceDto.automation
             if (automation != null) {
@@ -97,7 +96,7 @@ class DependencyChecker @Inject constructor(
                         relatedFactory?.dependsOn()?.forEach { relatedInstanceId ->
                             if (checkedInstance.id == relatedInstanceId) {
                                 val name = findInstanceName(instanceDto.id, allInstances)
-                                dependencies[instanceDto.id] = Dependency(DependencyType.Automation, name, level + 1)
+                                dependencies[instanceDto.id] = Dependency(instanceDto.id, DependencyType.Automation, name)
                             }
                         }
                     }

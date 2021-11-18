@@ -17,7 +17,7 @@ class DependenciesController @Inject constructor(
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getInstanceDependencies(@PathParam("id") id: Long): HashMap<Long, Dependency> {
-        return dependencyChecker.checkInstance(id)
+    fun getInstanceDependencies(@PathParam("id") id: Long): MutableCollection<Dependency> {
+        return dependencyChecker.checkInstance(id).values
     }
 }

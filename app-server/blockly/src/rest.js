@@ -3,7 +3,7 @@ import vuetify from './plugins/vuetify'
 import store, { 
   UPDATE_AUTOMATION_UNIT,
   SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN,
-  SET_CONFIGURABLES, SET_CONDITIONS, SET_FILTERS,
+  SET_CONFIGURABLES,
   SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE,
   CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG,
   CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY,
@@ -14,7 +14,8 @@ import store, {
   UPDATE_AUTOMATION, CLEAR_AUTOMATION_UNITS, ADD_AUTOMATION_UNIT,
   ADD_AUTOMATION_HISTORY,
   SET_SETTINGS, SET_SETTINGS_VALIDATION,
-  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE, SET_INBOX_TOTAL_COUNT
+  CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE, SET_INBOX_TOTAL_COUNT,
+  SET_DEPENDENCIES
 } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
@@ -129,20 +130,6 @@ export const client = {
     )
   },
 
-  getFilters: async function () {
-    await this.handleRestError(
-      () => axiosInstance.get("rest/instancebriefs/Filter"),
-      (response) => store.commit(SET_FILTERS, response.data)
-    )
-  },
-
-  getConditions: async function () {
-    await this.handleRestError(
-      () => axiosInstance.get("rest/instancebriefs/Condition"),
-      (response) => store.commit(SET_CONDITIONS, response.data)
-    )
-  },
-
   getTags: async function () {
     await this.handleRestError(
       () => axiosInstance.get("rest/tags"),
@@ -234,7 +221,7 @@ export const client = {
 
   getIconRawWithCallback: async function(id, callback) {
     await this.handleRestError(
-      () => axiosInstance.get("rest/icons/"+id +"/raw"),
+      () => axiosInstance.get("rest/icons/"+ id +"/raw"),
       (response) => callback(response.data)
     )
   },
@@ -418,6 +405,13 @@ export const client = {
       (response) => {
         store.commit(UPDATE_INBOX_MESSAGE, response.data)
       }
+    )
+  },
+
+  getDependencies: async function (instanceId) {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/dependencies/" + instanceId),
+      (response) => store.commit(SET_DEPENDENCIES, response.data)
     )
   },
 }

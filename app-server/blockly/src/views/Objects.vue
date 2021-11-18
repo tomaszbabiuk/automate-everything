@@ -195,14 +195,38 @@
           <v-card-title class="headline">{{
             $vuetify.lang.t("$vuetify.common.delete_question")
           }}</v-card-title>
+          <v-card-subtitle v-if="dependencies.length > 0">
+            {{ $vuetify.lang.t("$vuetify.objects.dependencies_detected_note") }}
+          </v-card-subtitle>
+          <v-card-text class="text-center">
+            <v-progress-circular
+              v-if="deleteDialog.loading"
+              indeterminate
+              size="64"
+            ></v-progress-circular>
+
+            <v-chip
+              v-for="dependency in dependencies"
+              :key="dependency.id"
+              class="ma-2"
+              color="red"
+              text-color="white"
+            >
+              {{ dependency.name }}
+            </v-chip>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeDeleteDialog()">{{
               $vuetify.lang.t("$vuetify.common.cancel")
             }}</v-btn>
-            <v-btn color="blue darken-1" text @click="deleteDialog.action()">{{
-              $vuetify.lang.t("$vuetify.common.ok")
-            }}</v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="deleteDialog.action()"
+              :disabled="deleteDialog.loading"
+              >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
+            >
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -228,7 +252,12 @@
 
 <script>
 import { client } from "../rest.js";
-import store, { CLEAR_INSTANCES, RESET_INSTANCE, EDIT_INSTANCE } from "../plugins/vuex";
+import store, {
+  CLEAR_INSTANCES,
+  CLEAR_DEPENDENCIES,
+  RESET_INSTANCE,
+  EDIT_INSTANCE,
+} from "../plugins/vuex";
 
 export default {
   data: function () {
@@ -243,6 +272,7 @@ export default {
         actionText: "",
       },
       deleteDialog: {
+        loading: false,
         show: false,
         action: function () {},
         instanceId: null,
@@ -298,10 +328,14 @@ export default {
       return this.$store.state.instances;
     },
 
+    dependencies: function () {
+      return this.$store.state.dependencies;
+    },
+
     filteredInstances: function () {
-      return this.allInstances.filter( x => {
-          return x.clazz === this.getConfigurableClazz()
-        })
+      return this.allInstances.filter((x) => {
+        return x.clazz === this.getConfigurableClazz();
+      });
     },
 
     configurable: function () {
@@ -310,24 +344,20 @@ export default {
     },
   },
   methods: {
-    findInstanceNameById: function(id) {
-      var y = this.allInstances.find(
-        x => x.id === id
-      )
+    findInstanceNameById: function (id) {
+      var y = this.allInstances.find((x) => x.id === id);
       if (y != null) {
-        return y.fields["name"]
+        return y.fields["name"];
       } else {
-        return  this.$vuetify.lang.t(
-          "$vuetify.objects.deleted"
-        );
+        return this.$vuetify.lang.t("$vuetify.objects.deleted");
       }
     },
 
     displayField: function (fieldDefinition, fieldValue) {
       if (fieldValue == null) {
-        return "-"
+        return "-";
       }
-      
+
       if (fieldDefinition.type == "Boolean") {
         if (fieldValue == "1") {
           return this.$vuetify.lang.t("$vuetify.common.yes");
@@ -338,9 +368,9 @@ export default {
 
       if (fieldDefinition.type == "InstanceReference") {
         return fieldValue
-                .split(",")
-                .map(x=> this.findInstanceNameById(eval(x)))
-                .join(", ")
+          .split(",")
+          .map((x) => this.findInstanceNameById(eval(x)))
+          .join(", ");
       }
 
       return fieldValue;
@@ -358,7 +388,7 @@ export default {
     },
 
     extractFieldDefinition: function (fieldName) {
-      return this.configurable.fields.filter(element => {
+      return this.configurable.fields.filter((element) => {
         return element.name === fieldName;
       });
     },
@@ -373,7 +403,7 @@ export default {
 
     getConfigurableByClazz: function (clazz) {
       var result = null;
-      this.$store.state.configurables.forEach(element => {
+      this.$store.state.configurables.forEach((element) => {
         if (element.clazz == clazz) {
           result = element;
         }
@@ -446,12 +476,20 @@ export default {
       this.instanceDialog.show = false;
     },
 
-    showDeleteInstanceDialog: function (instanceId) {
+    showDeleteInstanceDialog: async function (instanceId) {
+      this.$store.commit(CLEAR_DEPENDENCIES);
+
       this.deleteDialog = {
+        loading: true,
         action: this.deleteInstance,
         instanceId: instanceId,
         show: true,
       };
+
+      var dialog = this.deleteDialog;
+      await client
+        .getDependencies(instanceId)
+        .then(() => (dialog.loading = false));
     },
 
     closeDeleteDialog: function () {
