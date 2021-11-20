@@ -3,6 +3,31 @@ package eu.automateeverything.scenes
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val state_unknown = Resource(
+        "Unknown",
+        "Nieznany"
+    )
+
+    val state_active = Resource(
+        "Active",
+        "Aktywne"
+    )
+
+    val state_inactive = Resource(
+        "Inactive",
+        "Nieaktywne"
+    )
+
+    val action_activate = Resource(
+        "Activate",
+        "Aktywuj"
+    )
+
+    val action_deactivate = Resource(
+        "Deactivate",
+        "Dezaktywuj"
+    )
+
     val configurable_scene_add = Resource(
         "Add scene",
         "Dodaj scenę"

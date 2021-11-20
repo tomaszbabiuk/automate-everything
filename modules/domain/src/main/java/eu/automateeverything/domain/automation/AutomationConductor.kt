@@ -8,10 +8,7 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.R
-import eu.automateeverything.domain.configurable.ConditionConfigurable
-import eu.automateeverything.domain.configurable.Configurable
-import eu.automateeverything.domain.configurable.DeviceConfigurable
-import eu.automateeverything.domain.configurable.StateDeviceConfigurable
+import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.events.*
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.*
@@ -86,13 +83,11 @@ class AutomationConductor(
                         val physicalUnit = buildPhysicalUnit(configurable, instance)
                         automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                     } catch (ex: AutomationErrorException) {
-                        println(ex) //TODO:
-                        val originName = instance.fields["name"]
+                        val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                         val wrapper = buildWrappedUnit(originName, configurable, ex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     } catch (ex: Exception) {
-                        println(ex) //TODO:
-                        val originName = instance.fields["name"]
+                        val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                         val aex = AutomationErrorException(R.error_automation(ex), ex)
                         val wrapper = buildWrappedUnit(originName, configurable, aex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)

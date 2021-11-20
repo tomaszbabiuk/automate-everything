@@ -1,19 +1,54 @@
 package eu.automateeverything.scenes
 
-import eu.automateeverything.domain.configurable.Configurable
-import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
+import eu.automateeverything.data.automation.ControlState
+import eu.automateeverything.data.automation.ReadOnlyState
+import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.configurable.StateDeviceConfigurable
 import org.pf4j.Extension
+import java.util.HashMap
 
 @Extension
 class SceneConfigurable(
-    override val hasAutomation: Boolean = true,
-    override val editableIcon: Boolean = true,
+    private val stateChangeReporter: StateChangeReporter
+) : StateDeviceConfigurable() {
+
+    override val hasAutomation: Boolean = true
+    override val editableIcon: Boolean = true
     override val taggable: Boolean = false
-) : NameDescriptionConfigurable() {
 
     override val parent: Class<out Configurable?>?
         get() = null
+
+    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
+        val name = instance.fields[FIELD_NAME]!!
+        return SceneAutomationUnit(stateChangeReporter, instance, name, states)
+    }
+
+    override val states: Map<String, State>
+        get() {
+            val states: MutableMap<String, State> = HashMap()
+            states[STATE_UNKNOWN] = ReadOnlyState(
+                STATE_UNKNOWN,
+                R.state_unknown,
+            )
+            states[STATE_ACTIVE] = ControlState(
+                STATE_ACTIVE,
+                R.state_active,
+                R.action_activate,
+                isSignaled = true
+            )
+            states[STATE_INACTIVE] = ControlState(
+                STATE_INACTIVE,
+                R.state_inactive,
+                R.action_deactivate,
+            )
+            return states
+        }
 
     override val addNewRes: Resource
         get() = R.configurable_scene_add
@@ -36,4 +71,9 @@ class SceneConfigurable(
                       </g>
                      </g>
                     </svg>"""
+
+    companion object {
+        const val STATE_ACTIVE = "active"
+        const val STATE_INACTIVE = "inactive"
+    }
 }
