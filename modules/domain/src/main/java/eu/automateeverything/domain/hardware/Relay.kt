@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.hardware
 
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 
 class Relay(var value: Boolean) : PortValue {

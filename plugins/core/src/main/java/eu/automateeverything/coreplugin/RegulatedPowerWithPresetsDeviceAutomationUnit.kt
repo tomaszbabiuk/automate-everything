@@ -55,22 +55,22 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     override fun calculateInternal(now: Calendar) {
         when (controlPort.read().value) {
             preset1 -> {
-                changeState(STATE_PRESET1, null, null)
+                changeState(STATE_PRESET1, null)
             }
             preset2 -> {
-                changeState(STATE_PRESET2, null, null)
+                changeState(STATE_PRESET2, null)
             }
             preset3 -> {
-                changeState(STATE_PRESET3, null, null)
+                changeState(STATE_PRESET3, null)
             }
             preset4 -> {
-                changeState(STATE_PRESET4, null, null)
+                changeState(STATE_PRESET4, null)
             }
             0 -> {
-                changeState(STATE_OFF, null, null)
+                changeState(STATE_OFF, null)
             }
             else -> {
-                changeState(STATE_MANUAL, null, null)
+                changeState(STATE_MANUAL, null)
             }
         }
     }

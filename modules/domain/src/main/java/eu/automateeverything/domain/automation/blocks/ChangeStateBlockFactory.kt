@@ -7,7 +7,7 @@ import eu.automateeverything.domain.configurable.StateDeviceConfigurable
 
 class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory {
 
-    override val category = CommonBlockCategories.ThisDevice
+    override val category = CommonBlockCategories.ThisObject
 
     override val type: String = "change_state_${state.id}"
 

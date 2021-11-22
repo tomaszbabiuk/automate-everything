@@ -1,5 +1,7 @@
 package eu.automateeverything.domain.hardware
 
+import eu.automateeverything.data.hardware.PortValue
+
 interface Port<V: PortValue> : Connectible {
     val id: String
 

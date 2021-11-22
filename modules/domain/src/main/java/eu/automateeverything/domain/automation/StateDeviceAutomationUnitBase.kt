@@ -4,7 +4,6 @@ import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.automation.StateType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.PowerLevel
@@ -16,14 +15,13 @@ abstract class StateDeviceAutomationUnitBase(
     name: String,
     protected val states: Map<String, State>,
     protected val requiresExtendedWidth: Boolean) :
-    DeviceAutomationUnit<State>(name), StateDeviceAutomationUnit {
+    AutomationUnit<State>(name), StateDeviceAutomationUnit {
 
-    private var lastNotes: MutableMap<String, Resource> = HashMap()
 
     var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
             field = value
-            changeState(value.id, null, null)
+            changeState(value.id, null)
         }
 
     protected fun statesExcept(currentState: State, excludedStates: Array<String>): NextStatesDto {
@@ -39,7 +37,7 @@ abstract class StateDeviceAutomationUnitBase(
         return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
     }
 
-    override fun changeState(state: String, code: String?, actor: String?) {
+    override fun changeState(state: String, actor: String?) {
         if (currentState.id != state) {
             currentState = states[state]!!
             applyNewState(state)
@@ -47,34 +45,9 @@ abstract class StateDeviceAutomationUnitBase(
         }
     }
 
-    override fun modifyNote(noteId: String, note: Resource) {
-        val lastHashCode = lastNotes.hashCode()
-        lastNotes[noteId] = note
-        val newHashCode = lastNotes.hashCode()
-
-        if (lastHashCode != newHashCode) {
-            evaluateAndReportStateUpdate()
-        }
-    }
-
-    fun removeNote(noteId: String) {
-        val lastHashCode = lastNotes.hashCode()
-        lastNotes.remove(noteId)
-        val newHashCode = lastNotes.hashCode()
-
-        if (lastHashCode != newHashCode) {
-            evaluateAndReportStateUpdate()
-        }
-    }
-
     private fun evaluateAndReportStateChange() {
         lastEvaluation = buildEvaluationResult(currentState.id, states)
         stateChangeReporter.reportDeviceStateChange(this, instanceDto)
-    }
-
-    private fun evaluateAndReportStateUpdate() {
-        lastEvaluation = buildEvaluationResult(currentState.id, states)
-        stateChangeReporter.reportDeviceStateUpdated(this, instanceDto)
     }
 
     private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {

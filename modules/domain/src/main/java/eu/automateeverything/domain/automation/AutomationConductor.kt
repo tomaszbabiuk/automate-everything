@@ -33,7 +33,7 @@ class AutomationConductor(
     private var firstLoop: Boolean = false
     private val blocklyParser = BlocklyParser()
     private val blocklyTransformer = BlocklyTransformer()
-    val automationUnitsCache = HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>()
+    val automationUnitsCache = HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>()
     private val evaluationUnitsCache = HashMap<Long, EvaluableAutomationUnit>()
 
     fun isEnabled(): Boolean {
@@ -123,7 +123,7 @@ class AutomationConductor(
             })
     }
 
-    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): DeviceAutomationUnit<*> {
+    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): AutomationUnit<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
                 configurable.buildAutomationUnit(instance)

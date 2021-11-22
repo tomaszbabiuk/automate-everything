@@ -7,6 +7,6 @@ data class EvaluationResultDto(
     val isSignaled: Boolean,
     val descriptions: List<Resource>?,
     val error: String?,
-    val nextStates: NextStatesDto?
+    val nextStates: NextStatesDto?,
 )
 

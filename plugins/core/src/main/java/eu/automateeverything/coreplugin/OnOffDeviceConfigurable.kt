@@ -4,7 +4,7 @@ import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
@@ -54,7 +54,7 @@ class OnOffDeviceConfigurable(
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
     private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
@@ -73,6 +73,7 @@ class OnOffDeviceConfigurable(
                 STATE_ON,
                 R.state_on,
                 R.state_on,
+                isSignaled = true
             )
             states[STATE_OFF] = ControlState(
                 STATE_OFF,

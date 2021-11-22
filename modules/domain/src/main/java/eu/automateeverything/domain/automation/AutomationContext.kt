@@ -6,7 +6,7 @@ import eu.automateeverything.data.instances.InstanceDto
 class AutomationContext(
     val instanceDto: InstanceDto,
     val thisDevice: Configurable?,
-    val automationUnitsCache: Map<Long, DeviceAutomationUnit<*>>,
+    val automationUnitsCache: Map<Long, AutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, EvaluableAutomationUnit>,
     val blocksCache: List<BlockFactory<*>>,
     val stateChangeReporter: StateChangeReporter

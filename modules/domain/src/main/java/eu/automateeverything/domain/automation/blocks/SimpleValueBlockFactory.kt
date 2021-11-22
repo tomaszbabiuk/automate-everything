@@ -2,7 +2,7 @@ package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.hardware.PortValueBuilder
 
 open class SimpleValueBlockFactory<T: PortValue>(

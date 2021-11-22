@@ -1,16 +1,44 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
 import java.util.*
 
-abstract class DeviceAutomationUnit<T>(var nameOfOrigin: String?) {
+abstract class AutomationUnit<T>(var nameOfOrigin: String?) {
     abstract var lastEvaluation: EvaluationResult<T>
     abstract val usedPortsIds: Array<String>
     abstract val recalculateOnTimeChange: Boolean
     abstract val recalculateOnPortUpdate: Boolean
 
     abstract fun calculateInternal(now: Calendar)
+
+    fun modifyNote(noteId: String, note: Resource) {
+        val lastHashCode = lastNotes.hashCode()
+        lastNotes[noteId] = note
+        val newHashCode = lastNotes.hashCode()
+
+        if (lastHashCode != newHashCode) {
+            evaluateAndReportStateUpdate()
+        }
+    }
+
+    protected var lastNotes: MutableMap<String, Resource> = HashMap()
+
+    fun removeNote(noteId: String) {
+        val lastHashCode = lastNotes.hashCode()
+        lastNotes.remove(noteId)
+        val newHashCode = lastNotes.hashCode()
+
+        if (lastHashCode != newHashCode) {
+            evaluateAndReportStateUpdate()
+        }
+    }
+
+    private fun evaluateAndReportStateUpdate() {
+//        lastEvaluation = buildEvaluationResult(currentState.id, states)
+//        stateChangeReporter.reportDeviceStateUpdated(this, instanceDto)
+    }
 
     fun calculate(now: Calendar) {
         return try {
@@ -32,6 +60,6 @@ abstract class DeviceAutomationUnit<T>(var nameOfOrigin: String?) {
             descriptions  = listOf(ex.localizedMessage))
     }
 
-    open fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>) {
+    open fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>) {
     }
 }

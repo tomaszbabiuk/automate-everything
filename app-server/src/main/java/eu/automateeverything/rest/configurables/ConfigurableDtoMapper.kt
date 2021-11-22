@@ -34,6 +34,7 @@ class ConfigurableDtoMapper @Inject constructor(
             configurable.descriptionRes,
             configurable.javaClass.name,
             if (configurable.parent != null) configurable.parent!!.name else null,
+            getValueClazz(configurable)?.name,
             getConfigurableType(configurable),
             fields,
             addNewRes,
@@ -43,6 +44,14 @@ class ConfigurableDtoMapper @Inject constructor(
             configurable.editableIcon,
             configurable.taggable
         )
+    }
+
+    private fun getValueClazz(configurable: Configurable): Class<out Any?>? {
+        if (configurable is DeviceConfigurable<*>) {
+            return configurable.valueClazz
+        }
+
+        return null
     }
 
     private fun getConfigurableType(configurable: Configurable): ConfigurableType {

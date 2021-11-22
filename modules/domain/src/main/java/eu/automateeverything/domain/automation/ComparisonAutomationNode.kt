@@ -1,7 +1,7 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.domain.automation.blocks.ComparisonOperator
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class ComparisonAutomationNode(

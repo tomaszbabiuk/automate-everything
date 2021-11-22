@@ -1,5 +1,6 @@
 package eu.automateeverything.shellyplugin.ports
 
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.hardware.*
 import java.util.*
 

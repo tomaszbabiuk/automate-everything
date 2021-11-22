@@ -6,9 +6,29 @@ import eu.automateeverything.data.localization.Resource
 import kotlin.Exception
 
 object R {
-    var category_this_device = Resource(
-        "This device",
-        "To urządzenie"
+    val field_min_value_hint = Resource(
+        "Mininum value",
+        "Wartość minimalna"
+    )
+
+    val field_max_value_hint = Resource(
+        "Maxinum value",
+        "Wartość maksymalna"
+    )
+
+    val field_default_value_hint = Resource(
+        "Default value",
+        "Wartość domyślna"
+    )
+
+    val field_scenes_hint = Resource(
+        "Scenes",
+        "Sceny"
+    )
+
+    var category_this_object = Resource(
+        "This object",
+        "Ten obiekt"
     )
 
     val category_triggers_conditions = Resource(

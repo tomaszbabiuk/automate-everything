@@ -8,6 +8,7 @@ dependencies {
     shadow project(':modules:data')
     shadow project(':modules:domain')
     shadow project(':modules:devices')
+    shadow project(':modules:scenes')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"

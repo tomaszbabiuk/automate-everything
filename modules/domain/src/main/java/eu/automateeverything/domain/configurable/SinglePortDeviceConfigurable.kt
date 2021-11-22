@@ -1,9 +1,9 @@
 package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.hardware.PortFinder
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.automation.SensorAutomationUnit
 import java.util.*
 
@@ -11,9 +11,9 @@ abstract class SinglePortDeviceConfigurable<T: PortValue>(
     valueClazz: Class<T>,
     private val portField: FieldDefinition<String>,
     private val portFinder: PortFinder
-) : DeviceConfigurable<T>(valueClazz) {
+) : SensorConfigurable<T>(valueClazz) {
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<T> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<T> {
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields[FIELD_NAME]

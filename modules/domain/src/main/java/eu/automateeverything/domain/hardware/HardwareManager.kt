@@ -5,6 +5,7 @@ import eu.automateeverything.domain.automation.PortNotFoundException
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.async

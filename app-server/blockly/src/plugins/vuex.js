@@ -9,8 +9,6 @@ export const SET_PLUGINS = 'SET_PLUGINS'
 export const UPDATE_PLUGIN = 'UPDATE_PLUGIN' 
 
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
-export const SET_FILTERS= 'SET_FILTERS'
-export const SET_CONDITIONS= 'SET_CONDITIONS'
 export const CLEAR_INSTANCES = 'CLEAR_INSTANCES'
 export const ADD_INSTANCE = 'ADD_INSTANCE' 
 export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
@@ -144,14 +142,6 @@ export default new Vuex.Store({
 
     [SET_CONFIGURABLES](state, configurables) {
       state.configurables = configurables
-    },
-
-    [SET_FILTERS](state, payload) {
-      state.filters = payload
-    },
-
-    [SET_CONDITIONS](state, payload) {
-      state.conditions = payload
     },
 
     [ADD_INSTANCE](state, instance) {

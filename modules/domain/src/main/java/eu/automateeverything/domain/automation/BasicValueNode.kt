@@ -1,6 +1,6 @@
 package eu.automateeverything.domain.automation
 
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class BasicValueNode<T: PortValue>(val value: T) : ValueNode {

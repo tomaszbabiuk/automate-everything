@@ -3,10 +3,10 @@ package eu.automateeverything.domain.configurable
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.automation.blocks.BlockCategory
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
@@ -30,12 +30,19 @@ interface ConfigurableWithFields : Configurable {
     val editRes: Resource
 }
 
-abstract class StateDeviceConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State>
-    abstract val states: Map<String, State>
-    override val hasAutomation: Boolean = true
+abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
+    abstract fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<V>
+    override val hasAutomation: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
+}
+
+abstract class SensorConfigurable<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
+    abstract val blocksCategory: BlockCategory
+}
+
+abstract class StateDeviceConfigurable : DeviceConfigurable<State>(State::class.java) {
+    abstract val states: Map<String, State>
 
     companion object {
         const val STATE_UNKNOWN = "unknown"
@@ -47,14 +54,6 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
-}
-
-abstract class DeviceConfigurable<V: PortValue>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
-    abstract fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<V>
-    override val hasAutomation: Boolean = false
-    override val taggable: Boolean = true
-    override val editableIcon: Boolean = true
-    abstract val blocksCategory: BlockCategory
 }
 
 abstract class CategoryConfigurable : Configurable {

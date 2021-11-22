@@ -5,7 +5,7 @@ import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable
@@ -24,7 +24,7 @@ class SceneConfigurable(
     override val parent: Class<out Configurable?>?
         get() = null
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val name = instance.fields[FIELD_NAME]!!
         return SceneAutomationUnit(stateChangeReporter, instance, name, states)
     }

@@ -1,14 +1,14 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.domain.hardware.InputPort
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
     name: String?,
     private val port: InputPort<T>
 ) :
-    DeviceAutomationUnit<T>(name) {
+    AutomationUnit<T>(name) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(port.id)

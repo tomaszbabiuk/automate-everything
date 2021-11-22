@@ -6,10 +6,10 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import org.pf4j.Extension
 
 @Extension
@@ -29,7 +29,7 @@ class AlarmZoneConfigurable<T: PortValue>(
         Duration(0)
     )
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val name = extractFieldValue(instance, nameField)
         val alarmLineIdsRaw = extractFieldValue(instance, alarmLinesField)
         val alarmLineIds = alarmLineIdsRaw.split(",").map { it.toLong() }

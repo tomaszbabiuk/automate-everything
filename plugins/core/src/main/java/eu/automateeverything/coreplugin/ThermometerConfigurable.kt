@@ -27,10 +27,10 @@ class ThermometerConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigur
         get() = R.configurable_thermometer_edit
 
     override val titleRes: Resource
-        get() = R.configurable_thermometer_title
+        get() = R.configurable_thermometers_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_thermometer_description
+        get() = R.configurable_thermometers_description
 
     override val iconRaw: String
         get() = """

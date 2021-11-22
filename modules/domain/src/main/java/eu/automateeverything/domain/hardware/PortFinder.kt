@@ -1,5 +1,7 @@
 package eu.automateeverything.domain.hardware
 
+import eu.automateeverything.data.hardware.PortValue
+
 interface PortFinder {
     fun <T : PortValue> listAllOfAnyType(valueClass: Class<T>) : List<Port<T>>
     fun <T : PortValue> listAllOfInputType(valueClass: Class<T>) : List<InputPort<T>>

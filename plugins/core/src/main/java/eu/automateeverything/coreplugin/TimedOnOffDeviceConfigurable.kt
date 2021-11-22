@@ -4,7 +4,7 @@ import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
@@ -128,7 +128,7 @@ class TimedOnOffDeviceConfigurable(
         }
     })
 
-    override fun buildAutomationUnit(instance: InstanceDto): DeviceAutomationUnit<State> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = extractFieldValue(instance, nameField)

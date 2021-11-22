@@ -1,11 +1,11 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.domain.R
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class SensorAutomationNode(
-    private val deviceUnit: DeviceAutomationUnit<*>
+    private val deviceUnit: AutomationUnit<*>
 ) : ValueNode {
 
     override fun getValue(now: Calendar): PortValue? {

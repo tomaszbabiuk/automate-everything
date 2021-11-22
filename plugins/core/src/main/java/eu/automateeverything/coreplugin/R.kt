@@ -3,6 +3,26 @@ package eu.automateeverything.coreplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val configurable_power_regulators_title = Resource(
+        "Power regulators",
+        "Regulatory mocy"
+    )
+
+    val configurable_power_regulators_description = Resource(
+        "Power regulators are devices that can control its power from 0-100%",
+        "Regulatory mocy to urządzenia, których moc może być regulowana w zakresie 0-100%"
+    )
+
+    val configurable_power_regulator_add = Resource(
+            "Add power regulator",
+            "Dodaj regulator mocy"
+    )
+
+    val configurable_power_regulator_edit = Resource(
+        "Edit power regulator",
+        "Edytuj regulator mocy"
+    )
+
     val validator_max_should_exceed_min_time = Resource(
         "Maximum working time should be greater than minimum working time",
         "Maksymalny czas pracy powinien być większy niż minimalny czas pracy"
@@ -178,12 +198,12 @@ object R {
         "Edytuj termometr"
     )
 
-    val configurable_thermometer_title = Resource(
+    val configurable_thermometers_title = Resource(
         "Thermometers",
         "Termometry"
     )
 
-    val configurable_thermometer_description = Resource(
+    val configurable_thermometers_description = Resource(
         "Temperature sensors",
         "Czujniki temperatury"
     )

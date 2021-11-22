@@ -4,14 +4,14 @@ import eu.automateeverything.data.automation.AutomationUnitDto
 import eu.automateeverything.data.instances.InstanceDto
 import kotlin.Throws
 import eu.automateeverything.rest.MappingException
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import jakarta.inject.Inject
 
 class AutomationUnitDtoMapper @Inject constructor(
     private val evaluationResultDtoMapper: EvaluationResultDtoMapper
 ) {
     @Throws(MappingException::class)
-    fun map(unit: DeviceAutomationUnit<*>, instance: InstanceDto): AutomationUnitDto {
+    fun map(unit: AutomationUnit<*>, instance: InstanceDto): AutomationUnitDto {
         return AutomationUnitDto(
             instance,
             evaluationResultDtoMapper.map(unit.lastEvaluation)

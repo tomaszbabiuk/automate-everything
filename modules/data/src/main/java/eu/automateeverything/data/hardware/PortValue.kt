@@ -1,4 +1,4 @@
-package eu.automateeverything.domain.hardware
+package eu.automateeverything.data.hardware
 
 import eu.automateeverything.data.localization.Resource
 

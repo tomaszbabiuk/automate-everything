@@ -7,7 +7,7 @@ import eu.automateeverything.alarmplugin.AlarmZoneConfigurable.Companion.STATE_L
 import eu.automateeverything.alarmplugin.AlarmZoneConfigurable.Companion.STATE_PREALARM
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
@@ -90,7 +90,7 @@ class AlarmZoneAutomationUnit(
     }
 
 
-    override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, DeviceAutomationUnit<*>>>) {
+    override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>) {
         alarmLineUnits = alarmLineIds.map { automationUnitsCache[it]!!.second as AlarmLineAutomationUnit }
     }
 

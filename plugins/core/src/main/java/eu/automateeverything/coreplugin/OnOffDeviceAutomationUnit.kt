@@ -36,9 +36,9 @@ class OnOffDeviceAutomationUnit(
 
     override fun calculateInternal(now: Calendar) {
         if (controlPort.read().value) {
-            changeState(STATE_ON, null, null)
+            changeState(STATE_ON, null)
         } else {
-            changeState(STATE_OFF, null, null)
+            changeState(STATE_OFF, null)
         }
     }
 

@@ -13,6 +13,6 @@ enum class CommonBlockCategories(
     Wattage(R.category_wattage, 330),
     Humidity(R.category_humidity, 120),
     State(R.category_state, 210),
-    ThisDevice(R.category_this_device, 270),
+    ThisObject(R.category_this_object, 270),
     Conditions(R.category_triggers_conditions, 0);
 }

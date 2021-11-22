@@ -1,7 +1,7 @@
 package eu.automateeverything.timeplugin
 
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 
 class DayOfYearStamp(var value: Double) : PortValue {
     override fun toFormattedString(): Resource {

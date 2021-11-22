@@ -1,7 +1,7 @@
 package eu.automateeverything.timeplugin
 
 import eu.automateeverything.domain.automation.ValueNode
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class TodayValueNode : ValueNode {

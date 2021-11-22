@@ -5,3 +5,4 @@ data class NextStatesDto(
     val current: String,
     val extendedWidth: Boolean
 )
+

@@ -1,7 +1,7 @@
 package eu.automateeverything.onewireplugin
 
 import eu.automateeverything.domain.hardware.InputPort
-import eu.automateeverything.domain.hardware.PortValue
+import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 abstract class OneWirePort<V: PortValue> : InputPort<V> {

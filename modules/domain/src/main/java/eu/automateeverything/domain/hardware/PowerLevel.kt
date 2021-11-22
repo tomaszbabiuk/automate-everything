@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.hardware
 
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 
 class PowerLevel(var value: Int) : PortValue {

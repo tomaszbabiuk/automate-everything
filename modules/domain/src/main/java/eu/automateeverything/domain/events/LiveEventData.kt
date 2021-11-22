@@ -3,7 +3,7 @@ package eu.automateeverything.domain.events
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Language
-import eu.automateeverything.domain.automation.DeviceAutomationUnit
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.Port
@@ -41,7 +41,7 @@ class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
 }
 
 class AutomationUpdateEventData(
-    val unit: DeviceAutomationUnit<*>,
+    val unit: AutomationUnit<*>,
     val instance: InstanceDto,
     val evaluation: EvaluationResult<*>,
 ) : LiveEventData()
