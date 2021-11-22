@@ -13,6 +13,7 @@ class AutomationUnitDtoMapper @Inject constructor(
     @Throws(MappingException::class)
     fun map(unit: AutomationUnit<*>, instance: InstanceDto): AutomationUnitDto {
         return AutomationUnitDto(
+            unit.controlType,
             instance,
             evaluationResultDtoMapper.map(unit.lastEvaluation)
         )

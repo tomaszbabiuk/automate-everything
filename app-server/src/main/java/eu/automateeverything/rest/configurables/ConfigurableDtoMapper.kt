@@ -1,7 +1,6 @@
 package eu.automateeverything.rest.configurables
 
 import eu.automateeverything.data.configurables.ConfigurableDto
-import eu.automateeverything.data.configurables.ConfigurableType
 import eu.automateeverything.data.fields.FieldDefinitionDto
 import eu.automateeverything.rest.MappingException
 import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper
@@ -35,7 +34,6 @@ class ConfigurableDtoMapper @Inject constructor(
             configurable.javaClass.name,
             if (configurable.parent != null) configurable.parent!!.name else null,
             getValueClazz(configurable)?.name,
-            getConfigurableType(configurable),
             fields,
             addNewRes,
             editRes,
@@ -52,14 +50,5 @@ class ConfigurableDtoMapper @Inject constructor(
         }
 
         return null
-    }
-
-    private fun getConfigurableType(configurable: Configurable): ConfigurableType {
-        if (configurable is ConditionConfigurable) {
-            return ConfigurableType.Condition
-        }
-        return if (configurable is StateDeviceConfigurable) {
-            ConfigurableType.StateDevice
-        } else ConfigurableType.Other
     }
 }

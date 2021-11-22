@@ -3,6 +3,8 @@ package eu.automateeverything.rest.automationunits
 import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.data.automation.AutomationUnitDto
+import eu.automateeverything.domain.automation.PowerDeviceAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
 import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.hardware.HardwareManager
@@ -40,9 +42,31 @@ class AutomationUnitsController @Inject constructor(
             .firstOrNull() ?: throw ResourceNotFoundException()
 
         val instance = instanceAndUnitPair.first
-        val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnitBase
+        val unit = instanceAndUnitPair.second as? StateDeviceAutomationUnit
         if (unit != null) {
             unit.changeState(state)
+            hardwareManager.executeAllPendingChanges()
+        } else {
+            throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnitBase::class.java.simpleName} expected")
+        }
+
+        return mapper.map(unit, instance)
+    }
+
+    @PUT
+    @Path("/{instanceId}/powerLevel")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    fun updatePowerLevel(@PathParam("instanceId") id: Long, powerLevel: Int): AutomationUnitDto {
+        val instanceAndUnitPair = automationConductor
+            .automationUnitsCache
+            .filter { it.key == id }
+            .map { it.value }
+            .firstOrNull() ?: throw ResourceNotFoundException()
+
+        val instance = instanceAndUnitPair.first
+        val unit = instanceAndUnitPair.second as? PowerDeviceAutomationUnit
+        if (unit != null) {
+            unit.changePowerLevel(powerLevel)
             hardwareManager.executeAllPendingChanges()
         } else {
             throw Exception("Invalid automation unit class, ${StateDeviceAutomationUnitBase::class.java.simpleName} expected")

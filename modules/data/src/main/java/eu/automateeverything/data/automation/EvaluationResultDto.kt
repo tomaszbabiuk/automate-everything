@@ -4,6 +4,7 @@ import eu.automateeverything.data.localization.Resource
 
 data class EvaluationResultDto(
     val interfaceValue: Resource?,
+    val integerValue: Int?,
     val isSignaled: Boolean,
     val descriptions: List<Resource>?,
     val error: String?,

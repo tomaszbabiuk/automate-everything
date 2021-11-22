@@ -22,6 +22,7 @@ import SettingsStringField from './components/ae/settings/StringField'
 import SettingsPasswordStringField from './components/ae/settings/PasswordStringField'
 
 import PortControl from './components/ae/PortControl'
+import DeviceControl from './components/ae/DeviceControl'
 
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
@@ -44,6 +45,7 @@ Vue.component('settings-passwordstringfield', SettingsPasswordStringField)
 
 //geekhome
 Vue.component('portcontrol', PortControl)
+Vue.component('devicecontrol', DeviceControl)
 
 Vue.config.productionTip = false
 //Add unimported components to ignore list to prevent warnings.

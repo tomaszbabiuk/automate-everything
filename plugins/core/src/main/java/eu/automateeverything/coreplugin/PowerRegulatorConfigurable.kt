@@ -8,7 +8,6 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PowerLevel
-import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
 
 @Extension

@@ -7,6 +7,7 @@ import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_READ
 import eu.automateeverything.actions.ActionConfigurableBase.Companion.STATE_SUCCESS
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
@@ -88,6 +89,7 @@ class ActionAutomationUnit(
 
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = false
+    override val controlType = ControlType.States
 
     companion object {
         const val EVALUATION_OUTPUT = "output"

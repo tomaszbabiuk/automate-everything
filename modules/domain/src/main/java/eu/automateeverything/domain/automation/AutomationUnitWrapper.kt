@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.automation
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.domain.R
 import java.util.*
 
@@ -23,4 +24,5 @@ class AutomationUnitWrapper<T>(
         error = initError,
         descriptions = listOf(initError.localizedMessage)
     )
+    override val controlType = ControlType.NA
 }

@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.automation
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
@@ -10,6 +11,7 @@ abstract class AutomationUnit<T>(var nameOfOrigin: String?) {
     abstract val usedPortsIds: Array<String>
     abstract val recalculateOnTimeChange: Boolean
     abstract val recalculateOnPortUpdate: Boolean
+    abstract val controlType: ControlType
 
     abstract fun calculateInternal(now: Calendar)
 

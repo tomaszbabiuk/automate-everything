@@ -1,8 +1,8 @@
 package eu.automateeverything.actions
 
+import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.CategoryConfigurable
 import eu.automateeverything.domain.configurable.Configurable
-import eu.automateeverything.data.localization.Resource
 import org.pf4j.Extension
 
 @Extension

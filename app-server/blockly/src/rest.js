@@ -359,6 +359,15 @@ export const client = {
     )
   },
 
+  changePowerLevel: async function (instanceId, powerLevel) {
+    await this.handleRestError(
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/powerLevel", powerLevel),
+      (response) => {
+        store.commit(UPDATE_AUTOMATION_UNIT, response.data)
+      }
+    )
+  },
+
   getSettings: async function (pluginId) {
     await this.handleRestError(
       () => axiosInstance.get("rest/settings/" + pluginId),

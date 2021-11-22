@@ -1,5 +1,6 @@
 package eu.automateeverything.domain.automation
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.data.hardware.PortValue
 import java.util.*
@@ -31,4 +32,5 @@ class SensorAutomationUnit<T: PortValue>(
     }
 
     override var lastEvaluation = buildEvaluationResult(port.read())
+    override val controlType = ControlType.NA
 }

@@ -6,7 +6,7 @@ import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.PathParam
-import eu.automateeverything.data.configurables.ConfigurableType
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceBriefDto
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.core.MediaType
@@ -26,7 +26,7 @@ class InstanceBriefsController @Inject constructor(
     @GET
     @Path("/{configurableType}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun getAllInstancesBriefsOfConfigurableType(@PathParam("configurableType") type: ConfigurableType?): List<InstanceBriefDto> {
+    fun getAllInstancesBriefsOfConfigurableType(@PathParam("configurableType") type: ControlType?): List<InstanceBriefDto> {
         val classesOfConfigurableType: List<String> = pluginsCoordinator
             .configurables
             .map { configurable -> configurable.javaClass.name }

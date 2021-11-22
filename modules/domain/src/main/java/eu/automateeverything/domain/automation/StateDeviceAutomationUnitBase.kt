@@ -3,6 +3,7 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.automation.StateType
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.hardware.OutputPort
@@ -12,11 +13,12 @@ import eu.automateeverything.domain.hardware.Relay
 abstract class StateDeviceAutomationUnitBase(
     private val stateChangeReporter: StateChangeReporter,
     private val instanceDto: InstanceDto,
-    name: String,
+    nameOfOrigin: String,
     protected val states: Map<String, State>,
     protected val requiresExtendedWidth: Boolean) :
-    AutomationUnit<State>(name), StateDeviceAutomationUnit {
+    StateDeviceAutomationUnit(nameOfOrigin) {
 
+    override val controlType = ControlType.States
 
     var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {

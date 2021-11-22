@@ -1,5 +1,6 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.ConfigurableWithFields
