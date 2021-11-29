@@ -3,6 +3,7 @@ package eu.automateeverything.crypto.coingeckoapi
 import eu.automateeverything.crypto.CurrencyPair
 import eu.automateeverything.crypto.MarketProxy
 import org.ta4j.core.BaseBar
+import java.math.BigDecimal
 import java.util.*
 
 class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
@@ -31,7 +32,7 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
         return coinFound.symbol
     }
 
-    override suspend fun getTickers(currencyFilter: List<CurrencyPair>): Map<CurrencyPair, Double> {
+    override suspend fun getTickers(currencyFilter: List<CurrencyPair>): Map<CurrencyPair, BigDecimal> {
         val geckoIdsOfBase =  currencyFilter
             .mapNotNull {
                 baseSymbolToGeckoId(it.base.lowercase())
@@ -47,7 +48,7 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
             .map { mainMap ->
                 mainMap.value.map {
                     val pair = CurrencyPair(geckoIdToBaseSymbol(mainMap.key)!!, it.key)
-                    val value = it.value
+                    val value = it.value.toBigDecimal()
                     Pair(pair, value)
                 }
             }

@@ -8,6 +8,7 @@ import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import java.math.BigDecimal
 
 @Path("ports")
 class PortsController @Inject constructor(
@@ -46,22 +47,16 @@ class PortsController @Inject constructor(
     @PUT
     @Path("/{id}/value")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateValue(@PathParam("id") id: String, value: Int) {
+    fun updateValue(@PathParam("id") id: String, value: BigDecimal) {
         val findings = hardwareManager.findPort(id)
         if (findings != null) {
             val port = findings.first
             val bundle = findings.second
 
-            if (port.valueClazz.name == Relay::class.java.name) {
-                val newValue = Relay.fromInteger(value)
-                (port as OutputPort<Relay>).write(newValue)
-            } else if (port.valueClazz.name == PowerLevel::class.java.name) {
-                val newValue = PowerLevel.fromInteger(value)
-                (port as OutputPort<PowerLevel>).write(newValue)
-            } else {
-                //TODO
+            if (port is OutputPort) {
+                port.write(value)
             }
-            //TODO
+
             bundle.adapter.executePendingChanges()
         } else {
             throw ResourceNotFoundException()

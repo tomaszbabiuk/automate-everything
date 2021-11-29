@@ -38,7 +38,7 @@ export default {
       this.$store.state.ports.forEach(element => {
         if (element.id === this.portId) {
           var targetValue = 0
-          if (element.integerValue === 0) {
+          if (element.decimalValue === 0) {
             targetValue = 1
           }
           client.controlPort(this.portId, targetValue)

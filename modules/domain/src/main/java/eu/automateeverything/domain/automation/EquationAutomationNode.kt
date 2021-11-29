@@ -3,13 +3,14 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.domain.automation.blocks.MathOperator
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.hardware.PortValueBuilder
+import java.math.BigDecimal
 import java.util.*
 
 class EquationAutomationNode(
     private val valueType: Class<out PortValue>,
     private val leftValue: ValueNode?,
     private val operator: MathOperator,
-    private val rightValue: Double
+    private val rightValue: BigDecimal
 ) : ValueNode {
 
     override fun getValue(now: Calendar): PortValue? {
@@ -21,17 +22,17 @@ class EquationAutomationNode(
 
         if (leftValue != null) {
             return when (operator) {
-                MathOperator.Plus -> buildValue(leftValue.asDouble() + rightValue)
-                MathOperator.Minus -> buildValue(leftValue.asDouble() - rightValue)
-                MathOperator.Times -> buildValue(leftValue.asDouble() * rightValue)
-                MathOperator.Divide -> buildValue(leftValue.asDouble() / rightValue)
+                MathOperator.Plus -> buildValue(leftValue.asDecimal().add(rightValue))
+                MathOperator.Minus -> buildValue(leftValue.asDecimal().subtract(rightValue))
+                MathOperator.Times -> buildValue(leftValue.asDecimal().times(rightValue))
+                MathOperator.Divide -> buildValue(leftValue.asDecimal().divide(rightValue))
             }
         }
 
         return null
     }
 
-    private fun buildValue(value: Double) : PortValue {
-        return PortValueBuilder.buildFromDouble(valueType, value)
+    private fun buildValue(value: BigDecimal) : PortValue {
+        return PortValueBuilder.buildFromDecimal(valueType, value)
     }
 }

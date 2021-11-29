@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import eu.automateeverything.domain.hardware.PowerLevel
 import eu.automateeverything.shellyplugin.LightBriefDto
 import eu.automateeverything.shellyplugin.LightSetDto
+import java.math.BigDecimal
 
 class ShellyPowerLevelOutputPort(
     id: String,
@@ -13,7 +14,7 @@ class ShellyPowerLevelOutputPort(
 ) : ShellyOutputPort<PowerLevel>(id, PowerLevel::class.java, sleepInterval) {
 
     private val gson = Gson()
-    private val readValue = PowerLevel(0)
+    private val readValue = PowerLevel(BigDecimal.ZERO)
     override var requestedValue : PowerLevel? = null
     override val readTopic = "shellies/$shellyId/light/$channel/status"
     override val writeTopic = "shellies/$shellyId/light/$channel/set"
@@ -33,7 +34,7 @@ class ShellyPowerLevelOutputPort(
 
     fun setValueFromLightResponse(lightResponse: LightBriefDto) {
         val valueInPercent = calculateBrightness(lightResponse)
-        readValue.value = valueInPercent
+        readValue.value = valueInPercent.toBigDecimal()
     }
 
     private fun calculateBrightness(lightResponse: LightBriefDto): Int {
@@ -46,10 +47,10 @@ class ShellyPowerLevelOutputPort(
             return null
         }
 
-        val response: LightSetDto = if (requestedValue!!.value == 0) {
+        val response: LightSetDto = if (requestedValue!!.value == BigDecimal.ZERO) {
             LightSetDto("off", 0)
         } else {
-            LightSetDto("on", requestedValue!!.value)
+            LightSetDto("on", requestedValue!!.value.toInt())
         }
         return gson.toJson(response)
     }

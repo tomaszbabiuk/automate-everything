@@ -7,6 +7,7 @@ import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.automation.PowerDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.PowerLevel
+import java.math.BigDecimal
 import java.util.*
 
 class PowerRegulatorAutomationUnit(
@@ -23,7 +24,7 @@ class PowerRegulatorAutomationUnit(
     override val recalculateOnPortUpdate = true
 
     override fun changePowerLevel(level: Int, actor: String?) {
-        val newPowerLevel = PowerLevel(level)
+        val newPowerLevel = PowerLevel(level.toBigDecimal())
         controlPort.write(newPowerLevel)
         lastEvaluation = buildEvaluationResult(newPowerLevel)
     }
@@ -37,7 +38,7 @@ class PowerRegulatorAutomationUnit(
         return EvaluationResult(
             interfaceValue = Resource.createUniResource("${power.value} %"),
             value = power,
-            isSignaled = power.value > 0,
+            isSignaled = power.value > BigDecimal.ZERO,
             descriptions = lastNotes.values.toList()
         )
     }

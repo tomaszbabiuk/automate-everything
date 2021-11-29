@@ -2,27 +2,27 @@ package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
+import java.math.BigDecimal
 
-class Relay(var value: Boolean) : PortValue {
+class Relay(var value: BigDecimal) : PortValue {
+
+    constructor(fromBoolean: Boolean) : this(
+        if (fromBoolean) {
+            BigDecimal.ONE
+        } else {
+            BigDecimal.ZERO
+        }
+    )
+
     private val on = Resource("On", "Wł")
     private val off = Resource("Off", "Wył")
 
     override fun toFormattedString(): Resource {
-        return if (value) on else off
+        return if (value == BigDecimal.ONE) on else off
     }
 
-    override fun asInteger(): Int {
-        return if (value) 1 else 0
-    }
-
-    override fun asDouble(): Double {
-        return if (value) 1.0 else 0.0
-    }
-
-    companion object {
-        fun fromInteger(from: Int): Relay {
-            return Relay(from == 1)
-        }
+    override fun asDecimal(): BigDecimal {
+        return value
     }
 
     override fun equals(other: Any?): Boolean {
@@ -31,5 +31,10 @@ class Relay(var value: Boolean) : PortValue {
 
     override fun hashCode(): Int {
         return value.hashCode()
+    }
+
+    companion object {
+        val ON = Relay(BigDecimal.ONE)
+        val OFF = Relay(BigDecimal.ZERO)
     }
 }

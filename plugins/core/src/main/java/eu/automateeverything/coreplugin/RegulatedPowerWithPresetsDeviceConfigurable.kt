@@ -61,10 +61,10 @@ class RegulatedPowerWithPresetsDeviceConfigurable(
         """.trimIndent()
 
     private val portField = PowerLevelOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val preset1Field = PowerLevelField(FIELD_PRESET1, R.field_preset1_hint, 25)
-    private val preset2Field = PowerLevelField(FIELD_PRESET2, R.field_preset2_hint, 50)
-    private val preset3Field = PowerLevelField(FIELD_PRESET3, R.field_preset3_hint, 75)
-    private val preset4Field = PowerLevelField(FIELD_PRESET4, R.field_preset4_hint, 100)
+    private val preset1Field = PowerLevelField(FIELD_PRESET1, R.field_preset1_hint, 25.0.toBigDecimal())
+    private val preset2Field = PowerLevelField(FIELD_PRESET2, R.field_preset2_hint, 50.0.toBigDecimal())
+    private val preset3Field = PowerLevelField(FIELD_PRESET3, R.field_preset3_hint, 75.0.toBigDecimal())
+    private val preset4Field = PowerLevelField(FIELD_PRESET4, R.field_preset4_hint, 100.0.toBigDecimal())
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
 

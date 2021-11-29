@@ -24,12 +24,12 @@ class ComparisonAutomationNode(
 
         if (leftValue != null && rightValue != null) {
             return when (operator) {
-                ComparisonOperator.Greater -> leftValue.asDouble() > rightValue.asDouble()
-                ComparisonOperator.Lesser -> leftValue.asDouble() < rightValue.asDouble()
-                ComparisonOperator.Equals -> leftValue.asDouble() == rightValue.asDouble()
-                ComparisonOperator.NotEquals -> leftValue.asDouble() != rightValue.asDouble()
-                ComparisonOperator.GreaterOrEqual -> leftValue.asDouble() >= rightValue.asDouble()
-                ComparisonOperator.LesserOrEqual -> leftValue.asDouble() <= rightValue.asDouble()
+                ComparisonOperator.Greater -> leftValue.asDecimal() > rightValue.asDecimal()
+                ComparisonOperator.Lesser -> leftValue.asDecimal() < rightValue.asDecimal()
+                ComparisonOperator.Equals -> leftValue.asDecimal() == rightValue.asDecimal()
+                ComparisonOperator.NotEquals -> leftValue.asDecimal() != rightValue.asDecimal()
+                ComparisonOperator.GreaterOrEqual -> leftValue.asDecimal() >= rightValue.asDecimal()
+                ComparisonOperator.LesserOrEqual -> leftValue.asDecimal() <= rightValue.asDecimal()
             }
         }
 

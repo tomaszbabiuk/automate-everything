@@ -5,6 +5,7 @@ import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.domain.hardware.Wattage
 import io.ktor.client.*
 import io.ktor.client.request.*
+import java.math.BigDecimal
 import java.net.InetAddress
 import java.util.*
 
@@ -34,7 +35,7 @@ class AforeWattageInputPort(
         }
     }
 
-    private var cachedValue = Wattage(0.0)
+    private var cachedValue = Wattage(BigDecimal.ZERO)
 
     override fun read(): Wattage {
         return cachedValue
@@ -47,16 +48,16 @@ class AforeWattageInputPort(
         }
     }
 
-    private suspend fun readInverterPower(): Double {
+    private suspend fun readInverterPower(): BigDecimal {
         val inverterResponse = httpClient.get<String>("http://$inetAddress/status.html")
         val lines = inverterResponse.split(";").toTypedArray()
         for (line in lines) {
             if (line.contains("webdata_now_p")) {
                 val s = line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\""))
-                return java.lang.Double.valueOf(s)
+                return s.toBigDecimal()
             }
         }
 
-        return 0.0
+        return BigDecimal.ZERO
     }
 }

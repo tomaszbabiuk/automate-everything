@@ -2,10 +2,10 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.hardware.PortValue
-import kotlin.math.roundToInt
+import java.math.BigDecimal
 
 class Ticker(
-    private val price: Double,
+    private val price: BigDecimal,
 ) : PortValue {
 
     override fun toFormattedString(): Resource {
@@ -13,11 +13,7 @@ class Ticker(
         return Resource.createUniResource(multilingualValue)
     }
 
-    override fun asInteger(): Int {
-        return ((price * 100).roundToInt())
-    }
-
-    override fun asDouble(): Double {
+    override fun asDecimal(): BigDecimal {
         return price
     }
 }

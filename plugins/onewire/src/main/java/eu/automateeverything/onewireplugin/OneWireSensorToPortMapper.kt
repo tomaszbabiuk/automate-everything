@@ -79,8 +79,8 @@ class OneWireSensorToPortMapper(
 
         try {
             val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0, "I")
-            val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor)
-            val initialValue = Temperature(initialValueRaw + 273.15)
+            val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor).toBigDecimal() + 273.15.toBigDecimal()
+            val initialValue = Temperature(initialValueRaw)
             return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue))
         } catch (ex: Exception) {
             broadcastMessage("There's been a problem reading container: ${temperatureSensor.name}/${temperatureSensor.addressAsString}")

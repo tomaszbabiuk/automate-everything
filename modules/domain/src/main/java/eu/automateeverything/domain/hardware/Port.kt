@@ -1,6 +1,8 @@
 package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.PortValue
+import java.math.BigDecimal
+import kotlin.reflect.typeOf
 
 interface Port<V: PortValue> : Connectible {
     val id: String
@@ -26,4 +28,9 @@ interface OutputPort<V : PortValue> : InputPort<V> {
     fun write(value : V)
     val requestedValue : V?
     fun reset()
+
+    fun write(value: BigDecimal) {
+        val newValue = PortValueBuilder.buildFromDecimal(valueClazz, value) as V
+        write(newValue)
+    }
 }

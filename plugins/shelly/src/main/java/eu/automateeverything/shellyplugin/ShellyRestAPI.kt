@@ -1,5 +1,7 @@
 package eu.automateeverything.shellyplugin
 
+import java.math.BigDecimal
+
 data class ShellyStatusResponse(
     val relays: List<RelayResponseDto>?,
     val meters: List<MeterBriefDto>?,
@@ -38,15 +40,15 @@ data class LightBriefDto(
 )
 
 data class TemperatureBriefDto(
-    val tC: Double
+    val tC: BigDecimal
 )
 
 data class HumidityBriefDto(
-    val value: Double
+    val value: BigDecimal
 )
 
 data class BatteryBriefDto(
-    val value: Double,
+    val value: BigDecimal,
     val voltage: Double
 )
 

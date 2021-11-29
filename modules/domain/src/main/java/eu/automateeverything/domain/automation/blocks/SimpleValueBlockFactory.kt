@@ -4,6 +4,7 @@ import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.hardware.PortValueBuilder
+import java.math.BigDecimal
 
 open class SimpleValueBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
@@ -64,11 +65,11 @@ open class SimpleValueBlockFactory<T: PortValue>(
         if (valueField == null) {
             throw MalformedBlockException(block.type, "should have <field name=\"VALUE\"> defined")
         } else if (valueField.value != null) {
-            var value = valueField.value.toDouble()
+            var value = BigDecimal(valueField.value.toDouble())
             if (valueConverter != null) {
                 value = valueConverter.convert(value)
             }
-            return BasicValueNode(PortValueBuilder.buildFromDouble(valueType,value))
+            return BasicValueNode(PortValueBuilder.buildFromDecimal(valueType, value))
         }
 
         throw MalformedBlockException(block.type, "cannot extract temperature value")

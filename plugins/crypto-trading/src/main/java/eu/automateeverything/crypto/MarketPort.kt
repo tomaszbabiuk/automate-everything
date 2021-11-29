@@ -2,11 +2,12 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.domain.hardware.InputPort
 import org.ta4j.core.BaseBar
+import java.math.BigDecimal
 
 class MarketPort(
     override val id: String,
     val pair: CurrencyPair,
-    initialValue: Double,
+    initialValue: BigDecimal,
     override var connectionValidUntil: Long) :  InputPort<Ticker>
 {
 
@@ -23,7 +24,7 @@ class MarketPort(
         return Ticker(lastValue)
     }
 
-    fun updateValue(newValue: Double) {
+    fun updateValue(newValue: BigDecimal) {
         lastValue = newValue
     }
 }

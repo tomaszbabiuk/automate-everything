@@ -9,6 +9,6 @@ class TodayValueNode : ValueNode {
         val calCopy = Calendar.getInstance()
         calCopy.set(0, now.get(Calendar.MONTH), now.get(Calendar.DATE))
         val dayOfYear = calCopy.get(Calendar.DAY_OF_YEAR)
-        return DayOfYearStamp(dayOfYear.toDouble())
+        return DayOfYearStamp(dayOfYear.toBigDecimal())
     }
 }

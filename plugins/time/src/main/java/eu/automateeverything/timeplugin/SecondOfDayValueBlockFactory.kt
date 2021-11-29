@@ -212,9 +212,9 @@ open class SecondOfDayValueBlockFactory: ValueBlockFactory {
             ?: throw MalformedBlockException(block.type, "should have <field name=\"SECOND\"> defined")
 
         val totalSecondsRaw =
-            hourField.value!!.toDouble() + minuteField.value!!.toDouble() + secondField.value!!.toDouble()
+            hourField.value!!.toBigDecimal() + minuteField.value!!.toBigDecimal() + secondField.value!!.toBigDecimal()
         val totalSecondsValue =
-            PortValueBuilder.buildFromDouble(SecondOfDayStamp::class.java, totalSecondsRaw) as SecondOfDayStamp
+            PortValueBuilder.buildFromDecimal(SecondOfDayStamp::class.java, totalSecondsRaw) as SecondOfDayStamp
 
         return BasicValueNode(totalSecondsValue)
     }

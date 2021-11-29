@@ -2,14 +2,15 @@ package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.PortValue
 import java.io.InvalidClassException
+import java.math.BigDecimal
 
 
 class PortValueBuilder {
     companion object {
-        fun <T : PortValue> buildFromDouble(valueClazz: Class<T>, x: Double): PortValue {
+        fun <T : PortValue> buildFromDecimal(valueClazz: Class<T>, x: BigDecimal): PortValue {
 
             valueClazz.constructors.forEach {
-                if (it.parameters.size == 1 && it.parameters[0].type == Double::class.java) {
+                if (it.parameters.size == 1 && it.parameters[0].type == BigDecimal::class.java) {
                     return it.newInstance(x) as PortValue
                 }
             }

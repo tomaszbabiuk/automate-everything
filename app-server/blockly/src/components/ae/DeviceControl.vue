@@ -115,7 +115,7 @@ export default {
   methods: {
     controlPowerLevel: function () {
       if (
-        this.automationUnit.evaluationResult.integerValue != this.powerLevel
+        this.automationUnit.evaluationResult.decimalValue != this.powerLevel
       ) {
         client.changePowerLevel(
           this.automationUnit.instance.id,

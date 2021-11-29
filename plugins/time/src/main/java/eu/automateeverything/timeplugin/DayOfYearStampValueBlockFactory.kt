@@ -104,7 +104,7 @@ open class DayOfYearStampValueBlockFactory: ValueBlockFactory {
         val cal = Calendar.getInstance()
         cal.set(0, monthField.value!!.toInt(), dayField.value!!.toInt())
         val totalDays = cal.get(Calendar.DAY_OF_YEAR)
-        val totalDaysValue = PortValueBuilder.buildFromDouble(DayOfYearStamp::class.java, totalDays.toDouble())
+        val totalDaysValue = PortValueBuilder.buildFromDecimal(DayOfYearStamp::class.java, totalDays.toBigDecimal())
 
         return BasicValueNode(totalDaysValue)
     }

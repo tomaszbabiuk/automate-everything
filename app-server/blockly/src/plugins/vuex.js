@@ -386,7 +386,7 @@ export default new Vuex.Store({
       var portFound = false;
       state.ports.forEach(element => {
         if (element.id === portDto.id) {
-          element.integerValue = portDto.integerValue
+          element.decimalValue = portDto.decimalValue
           element.interfaceValue = portDto.interfaceValue
           element.connected = portDto.connected
           portFound = true

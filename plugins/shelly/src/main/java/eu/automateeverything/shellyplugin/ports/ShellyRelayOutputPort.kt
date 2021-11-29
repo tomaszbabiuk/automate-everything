@@ -2,6 +2,7 @@ package eu.automateeverything.shellyplugin.ports
 
 import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.shellyplugin.RelayResponseDto
+import java.math.BigDecimal
 
 class ShellyRelayOutputPort(
     id: String,
@@ -27,8 +28,7 @@ class ShellyRelayOutputPort(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        val valueAsBoolean = payload == "on"
-        readValue.value = valueAsBoolean
+        readValue.value = if (payload == "on") BigDecimal.ONE else BigDecimal.ZERO
     }
 
     override fun getExecutePayload(): String? {
@@ -36,11 +36,11 @@ class ShellyRelayOutputPort(
             return null
         }
 
-        return if (requestedValue!!.value) "on" else "off"
+        return if (requestedValue!!.value == BigDecimal.ONE) "on" else "off"
     }
 
     fun setValueFromRelayResponse(response: RelayResponseDto) {
-        readValue.value = response.ison
+        readValue.value = if (response.ison) BigDecimal.ONE else BigDecimal.ZERO
     }
 
     override fun reset() {

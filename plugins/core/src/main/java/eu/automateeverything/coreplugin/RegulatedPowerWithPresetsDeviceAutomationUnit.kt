@@ -13,6 +13,7 @@ import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.PowerLevel
 import java.lang.Exception
+import java.math.BigDecimal
 import kotlin.Throws
 import java.util.Calendar
 
@@ -20,10 +21,10 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instanceDto: InstanceDto,
     name: String,
-    private val preset1: Int,
-    private val preset2: Int,
-    private val preset3: Int,
-    private val preset4: Int,
+    private val preset1: BigDecimal,
+    private val preset2: BigDecimal,
+    private val preset3: BigDecimal,
+    private val preset4: BigDecimal,
     states: Map<String, State>,
     private val controlPort: OutputPort<PowerLevel>,
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, true) {
@@ -44,7 +45,7 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
                 changePowerLevelIfNeeded(controlPort, PowerLevel(preset4))
             }
             STATE_OFF -> {
-                changePowerLevelIfNeeded(controlPort, PowerLevel(0))
+                changePowerLevelIfNeeded(controlPort, PowerLevel(BigDecimal.ZERO))
             }
         }
     }
@@ -66,7 +67,7 @@ class RegulatedPowerWithPresetsDeviceAutomationUnit(
             preset4 -> {
                 changeState(STATE_PRESET4, null)
             }
-            0 -> {
+            BigDecimal.ZERO -> {
                 changeState(STATE_OFF, null)
             }
             else -> {

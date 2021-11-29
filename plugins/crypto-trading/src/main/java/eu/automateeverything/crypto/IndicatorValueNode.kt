@@ -1,7 +1,7 @@
 package eu.automateeverything.crypto
 
-import eu.automateeverything.domain.automation.ValueNode
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.automation.ValueNode
 import org.ta4j.core.BarSeries
 import org.ta4j.core.BaseBarSeries
 import org.ta4j.core.indicators.*
@@ -100,6 +100,7 @@ class IndicatorValueNode(
             }
         }
 
-        return Ticker(indicator.getValue(indicator.barSeries.barCount - 1).doubleValue())
+        val indicatorValue = indicator.getValue(indicator.barSeries.barCount - 1)
+        return Ticker(indicatorValue.doubleValue().toBigDecimal())
     }
 }

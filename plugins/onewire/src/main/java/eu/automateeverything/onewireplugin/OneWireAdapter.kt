@@ -16,6 +16,7 @@ import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
 import kotlinx.coroutines.*
+import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -52,10 +53,12 @@ class OneWireAdapter(
             val sortedPorts = u.sortedBy { it.channel }
 
             val prevValues = Array(channels) { i ->
-                sortedPorts[i].value.value
+                val bigDecimal = sortedPorts[i].value.value
+                bigDecimal == BigDecimal.ONE
             }
             val newValues = Array(channels) { i ->
-                sortedPorts[i].requestedValue?.value ?: sortedPorts[i].value.value
+                val bigDecimal = sortedPorts[i].requestedValue?.value ?: sortedPorts[i].value.value
+                bigDecimal == BigDecimal.ONE
             }
 
             val changedItems = newValues.filterIndexed { index, newValue -> prevValues[index] != newValue }
@@ -187,8 +190,8 @@ class OneWireAdapter(
                 .filterIsInstance<OneWireTemperatureInputPort>()
                 .filter { port -> port.lastUpdateMs + 30000 < now.timeInMillis }
                 .forEach { port ->
-                    val newTemperatureK = TemperatureContainerHelper.read(container) + 273.15
-                    if (newTemperatureK != port.value.value) {
+                    val newTemperatureK = TemperatureContainerHelper.read(container).toBigDecimal() + 273.15.toBigDecimal()
+                    if (newTemperatureK.equals(port.value.value)) {
                         port.update(now.timeInMillis, Temperature(newTemperatureK))
                         broadcastPortChangedEvent(port)
                     }

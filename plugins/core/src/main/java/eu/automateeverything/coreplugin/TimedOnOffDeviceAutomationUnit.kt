@@ -14,6 +14,7 @@ import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Compani
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
+import java.math.BigDecimal
 import kotlin.Throws
 import java.util.Calendar
 
@@ -35,11 +36,11 @@ class TimedOnOffDeviceAutomationUnit(
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (currentState.id == STATE_ON || currentState.id == STATE_ON_COUNTING) {
-            changeRelayStateIfNeeded(controlPort, Relay(true))
+            changeRelayStateIfNeeded(controlPort, Relay.ON)
             onSince = Calendar.getInstance().timeInMillis
             offSince = 0L
         } else if (currentState.id == STATE_OFF || currentState.id == STATE_OFF_BREAK) {
-            changeRelayStateIfNeeded(controlPort, Relay(false))
+            changeRelayStateIfNeeded(controlPort, Relay.OFF)
             onSince = 0L
             offSince = Calendar.getInstance().timeInMillis
         }
@@ -86,7 +87,7 @@ class TimedOnOffDeviceAutomationUnit(
             }
         }
 
-        val portReading = controlPort.requestedValue?.value ?: controlPort.read().value
+        val portReading = (controlPort.requestedValue?.value ?: controlPort.read().value) == BigDecimal.ONE
 
         val onTime = if (portReading) {
                 now.timeInMillis - onSince
@@ -141,7 +142,7 @@ class TimedOnOffDeviceAutomationUnit(
             }
         }
 
-        val newPortReading = controlPort.requestedValue?.value ?: controlPort.read().value
+        val newPortReading = (controlPort.requestedValue?.value ?: controlPort.read().value) == BigDecimal.ONE
         if (newPortReading) {
             when (currentState.id) {
                 STATE_OFF_BREAK, STATE_OFF -> {

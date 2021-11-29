@@ -3,6 +3,7 @@ package eu.automateeverything.domain.automation.blocks
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
 import eu.automateeverything.data.hardware.PortValue
+import java.math.BigDecimal
 
 open class EquationBlockFactory<T: PortValue>(
     private val valueType: Class<T>,
@@ -69,7 +70,7 @@ open class EquationBlockFactory<T: PortValue>(
 
         val rightValue = block.fields.find { it.name == "RIGHT" }
             ?: throw MalformedBlockException(block.type, "RIGHT value not found")
-        val right = rightValue.value!!.toDouble()
+        val right = rightValue.value!!.toBigDecimal()
 
         val leftValue = block.values?.find { it.name == "LEFT" }
 

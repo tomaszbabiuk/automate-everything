@@ -25,9 +25,9 @@ class OnOffDeviceAutomationUnit(
     @Throws(Exception::class)
     override fun applyNewState(state: String) {
         if (currentState.id == STATE_ON) {
-            changeRelayStateIfNeeded(controlPort, Relay(true))
+            changeRelayStateIfNeeded(controlPort, Relay.ON)
         } else if (currentState.id == STATE_OFF) {
-            changeRelayStateIfNeeded(controlPort, Relay(false))
+            changeRelayStateIfNeeded(controlPort, Relay.OFF)
         }
     }
 
@@ -35,7 +35,7 @@ class OnOffDeviceAutomationUnit(
         get() = arrayOf(controlPort.id)
 
     override fun calculateInternal(now: Calendar) {
-        if (controlPort.read().value) {
+        if (controlPort.read() == Relay.ON) {
             changeState(STATE_ON, null)
         } else {
             changeState(STATE_OFF, null)
