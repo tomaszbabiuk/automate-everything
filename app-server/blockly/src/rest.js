@@ -359,9 +359,9 @@ export const client = {
     )
   },
 
-  changePowerLevel: async function (instanceId, powerLevel) {
+  control: async function (instanceId, level) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/automationunits/" + instanceId + "/control", JSON.stringify(powerLevel)),
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/control", JSON.stringify(level)),
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }

@@ -69,6 +69,6 @@ class PowerRegulatorConfigurable(
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         val readOnly = extractFieldValue(instance, readOnlyField)
-        return PowerRegulatorAutomationUnit(instance, name, port, readOnly)
+        return PowerRegulatorAutomationUnit(name, instance, port, readOnly, stateChangeReporter)
     }
 }

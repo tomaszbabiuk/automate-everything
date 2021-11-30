@@ -20,7 +20,7 @@ abstract class StateDeviceAutomationUnitBase(
 
     override val controlType = ControlType.States
 
-    var currentState: State = states[STATE_UNKNOWN]!!
+    override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
             field = value
             changeState(value.id, null)

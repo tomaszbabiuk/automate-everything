@@ -30,7 +30,7 @@
       <v-list-item-content class="pt-9 pb-0">
         <div>
           <v-slider
-            v-model="powerLevel"
+            v-model="level"
             hint="Changing"
             :max="automationUnit.valueRange.max"
             :min="automationUnit.valueRange.min"
@@ -94,33 +94,43 @@ import { client } from "../../rest.js";
 export default {
   data: function () {
     return {
-      powerLevel: 0,
-      powerLevelThrottlingTimeout: null,
+      level: 0,
+      levelThrottlingTimeout: null,
     };
   },
 
   props: ["automationUnit"],
 
-  computed: {},
-
-  watch: {
-    powerLevel() {
-      clearTimeout(this.powerLevelThrottlingTimeout);
-      this.powerLevelThrottlingTimeout = setTimeout(
-        this.controlPowerLevel,
-        200
-      );
+  computed: {
+    automationUnitInStore() {
+      return this.$store.state.automationUnits.find((element) => {
+        return element.instance.id == this.automationUnit.instance.id;
+      });
     },
   },
 
+  watch: {
+    level() {
+      clearTimeout(this.levelThrottlingTimeout);
+      this.levelThrottlingTimeout = setTimeout(
+        this.controlLevel,
+        200
+      );
+    },
+
+    automationUnitInStore() {
+      this.level = this.automationUnitInStore.evaluationResult.decimalValue
+    }
+  },
+
   methods: {
-    controlPowerLevel: function () {
+    controlLevel: function () {
       if (
-        this.automationUnit.evaluationResult.decimalValue != this.powerLevel
+        this.automationUnit.evaluationResult.decimalValue != this.level
       ) {
-        client.changePowerLevel(
+        client.control(
           this.automationUnit.instance.id,
-          this.powerLevel
+          this.level
         );
       }
     },
@@ -131,7 +141,7 @@ export default {
   },
 
   mounted: function () {
-    this.powerLevel = this.automationUnit.evaluationResult.decimalValue;
+    this.level = this.automationUnit.evaluationResult.decimalValue;
   },
 };
 </script>

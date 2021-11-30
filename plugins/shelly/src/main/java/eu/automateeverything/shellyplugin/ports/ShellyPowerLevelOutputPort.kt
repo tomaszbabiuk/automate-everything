@@ -52,6 +52,9 @@ class ShellyPowerLevelOutputPort(
         } else {
             LightSetDto("on", requestedValue!!.value.toInt())
         }
+
+        requestedValue = null
+
         return gson.toJson(response)
     }
 
