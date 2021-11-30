@@ -3,8 +3,8 @@ package eu.automateeverything.coreplugin
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
-import eu.automateeverything.domain.automation.PowerDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.PowerLevel
 import java.math.BigDecimal
@@ -15,7 +15,7 @@ class PowerRegulatorAutomationUnit(
     nameOfOrigin: String,
     private val controlPort: OutputPort<PowerLevel>,
     readOnly: Boolean
-) : PowerDeviceAutomationUnit(nameOfOrigin) {
+) : ControllerAutomationUnit<PowerLevel>(PowerLevel::class.java, nameOfOrigin) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)
@@ -23,15 +23,10 @@ class PowerRegulatorAutomationUnit(
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = true
 
-    override fun changePowerLevel(level: Int, actor: String?) {
-        val newPowerLevel = PowerLevel(level.toBigDecimal())
-        controlPort.write(newPowerLevel)
-        lastEvaluation = buildEvaluationResult(newPowerLevel)
-    }
-
     override var lastEvaluation = buildEvaluationResult(controlPort.read())
 
     override fun calculateInternal(now: Calendar) {
+        //TODO: recalculate on port update
     }
 
     private fun buildEvaluationResult(power: PowerLevel) : EvaluationResult<PowerLevel> {
@@ -43,5 +38,18 @@ class PowerRegulatorAutomationUnit(
         )
     }
 
-    override val controlType = if (readOnly) ControlType.NA else ControlType.PowerLevel
+    override val controlType = if (readOnly) ControlType.NA else ControlType.Controller
+
+    override fun control(newValue: PowerLevel, actor: String?) {
+        val actualPowerLevel = controlPort.read()
+        if (actualPowerLevel.value != newValue.value) {
+            controlPort.write(newValue)
+            lastEvaluation = buildEvaluationResult(newValue)
+            //TODO: Report change in state reporter
+        }
+    }
+
+    override val min: BigDecimal = BigDecimal.ZERO
+    override val max: BigDecimal = 100.0.toBigDecimal()
+    override val step: BigDecimal = 0.5.toBigDecimal()
 }

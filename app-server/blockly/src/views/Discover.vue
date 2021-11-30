@@ -43,7 +43,7 @@
                   :valueClazz="item.valueClazz"
                   :portId="item.id"
                   :disabled="!item.connected"
-                  :initialValue="item.integerValue"
+                  :initialValue="item.decimalValue"
                 ></portcontrol>
               </div>
               <div v-else>

@@ -352,7 +352,7 @@ export const client = {
 
   changeState: async function (instanceId, state) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", state),
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", JSON.stringify(state)),
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }
@@ -361,7 +361,7 @@ export const client = {
 
   changePowerLevel: async function (instanceId, powerLevel) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/automationunits/" + instanceId + "/powerLevel", powerLevel),
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/control", JSON.stringify(powerLevel)),
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }

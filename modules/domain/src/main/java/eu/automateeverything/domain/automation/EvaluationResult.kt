@@ -9,7 +9,7 @@ class EvaluationResult<T> (
     val isSignaled: Boolean = false,
     val descriptions: List<Resource> = ArrayList(),
     val error: Exception? = null,
-    val nextStates: NextStatesDto? = null
+    val nextStates: NextStatesDto? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -26,14 +26,15 @@
         />
       </v-list-item-avatar>
     </v-list-item>
-    <v-list-item v-if="automationUnit.type == 'PowerLevel'">
+    <v-list-item v-if="automationUnit.type == 'Controller'">
       <v-list-item-content class="pt-9 pb-0">
         <div>
           <v-slider
             v-model="powerLevel"
             hint="Changing"
-            max="100"
-            min="0"
+            :max="automationUnit.valueRange.max"
+            :min="automationUnit.valueRange.min"
+            :step="automationUnit.valueRange.step"
             thumb-label
           ></v-slider>
         </div>
@@ -130,7 +131,7 @@ export default {
   },
 
   mounted: function () {
-    this.powerLevel = this.automationUnit.evaluationResult.integerValue;
+    this.powerLevel = this.automationUnit.evaluationResult.decimalValue;
   },
 };
 </script>

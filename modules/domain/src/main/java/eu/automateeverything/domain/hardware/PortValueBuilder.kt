@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 class PortValueBuilder {
     companion object {
-        fun <T : PortValue> buildFromDecimal(valueClazz: Class<T>, x: BigDecimal): PortValue {
+        fun <T : PortValue> buildFromDecimal(valueClazz: Class<in T>, x: BigDecimal): PortValue {
 
             valueClazz.constructors.forEach {
                 if (it.parameters.size == 1 && it.parameters[0].type == BigDecimal::class.java) {
