@@ -3,6 +3,27 @@ package eu.automateeverything.coreplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+
+    val configurable_temperature_controller_description = Resource(
+        "Temperature controllers are used to control the temperature (eg. in a room). You can define a unique temperature setting for every scene they are bound to.",
+        "Sterowniki temperatury pozwalają kontrolować temperaturę (np. w pomieszeniu). Możesz zdefiniować unikalną wartość nastawy dla każdej sceny, która jest powiązana z danym kontrolerem."
+    )
+
+    val configurable_temperature_controller_title = Resource(
+        "Temperature controllers",
+        "Sterowniki temperatury"
+    )
+
+    val configurable_temperature_controller_edit = Resource(
+        "Edit temperature controller",
+        "Edytuj sterewnik temperatury"
+    )
+
+    val configurable_temperature_controller_add = Resource(
+        "Add temperature controller",
+        "Dodaj sterownik temperatury"
+    )
+
     val configurable_power_regulators_title = Resource(
         "Power regulators",
         "Regulatory mocy"
@@ -51,6 +72,21 @@ object R {
     val field_readonly_hint = Resource(
         "Read only",
         "Tylko do odczytu"
+    )
+
+    val field_min_temp_hint = Resource(
+        "Minimum temperature",
+        "Temperatura minimalna"
+    )
+
+    val field_max_temp_hint = Resource(
+        "Maximum temperature",
+        "Temperatura maksymalna"
+    )
+
+    val field_default_temp_hint = Resource(
+        "Default temperature",
+        "Temperatura domyślna"
     )
 
     val field_min_working_time = Resource(

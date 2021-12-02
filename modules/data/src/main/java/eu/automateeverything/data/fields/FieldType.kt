@@ -4,10 +4,11 @@ enum class FieldType {
     PortReference,
     InstanceReference,
     Duration,
-    Double,
+    BigDecimal,
     PowerLevel,
     String,
     PasswordString,
     Boolean,
-    SingleOptionEnumeration
+    SingleOptionEnumeration,
+    Temperature
 }

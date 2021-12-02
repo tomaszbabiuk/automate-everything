@@ -1,19 +1,32 @@
-package eu.automateeverything.centralheatingplugin
+package eu.automateeverything.coreplugin
 
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
-import eu.automateeverything.domain.configurable.Configurable
-import eu.automateeverything.domain.configurable.SensorConfigurable
+import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.Temperature
 import org.pf4j.Extension
+import java.math.BigDecimal
 
 @Extension
-class TemperatureControllerConfigurable() : SensorConfigurable<Temperature>(Temperature::class.java) {
+class TemperatureControllerConfigurable(
+    private val stateChangeReporter: StateChangeReporter
+) : SensorConfigurable<Temperature>(Temperature::class.java) {
 
     override val parent: Class<out Configurable>? = null
+
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
+        get() {
+            val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
+            result[FIELD_MIN_TEMP] = minField
+            result[FIELD_MAX_TEMP] = maxField
+            result[FIELD_DEFAULT_TEMP] = defaultField
+            result[FIELD_READ_ONLY] = readOnlyField
+            return result
+        }
 
     override val addNewRes: Resource
         get() = R.configurable_temperature_controller_add
@@ -45,10 +58,27 @@ class TemperatureControllerConfigurable() : SensorConfigurable<Temperature>(Temp
             </svg>
         """.trimIndent()
 
+    private val minField = TemperatureField(FIELD_MIN_TEMP, R.field_min_temp_hint, 10, 10.0.toBigDecimal(), RequiredBigDecimalValidator())
+    private val maxField = TemperatureField(FIELD_MAX_TEMP, R.field_max_temp_hint, 10, 20.0.toBigDecimal(), RequiredBigDecimalValidator())
+    private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (-30.0).toBigDecimal(), RequiredBigDecimalValidator())
+    private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
+
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Temperature> {
-        TODO("Not yet implemented")
+        val name = instance.fields[FIELD_NAME]!!
+        val readOnly = extractFieldValue(instance, readOnlyField)
+        val min = extractFieldValue(instance, minField)
+        val max = extractFieldValue(instance, maxField)
+        val default = extractFieldValue(instance, defaultField)
+        return TemperatureControllerAutomationUnit(name, min.wrapped!!, max.wrapped!!, default.wrapped!!, instance, readOnly, stateChangeReporter)
     }
 
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.Temperature
+
+    companion object {
+        const val FIELD_MIN_TEMP = "min_t"
+        const val FIELD_MAX_TEMP = "max_t"
+        const val FIELD_DEFAULT_TEMP = "default_t"
+        const val FIELD_READ_ONLY = "read_only"
+    }
 }

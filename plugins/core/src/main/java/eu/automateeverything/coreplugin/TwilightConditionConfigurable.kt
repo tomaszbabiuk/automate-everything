@@ -6,6 +6,7 @@ import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.conditions.ConditionsConfigurable
 import org.pf4j.Extension
+import java.math.BigDecimal
 import java.util.*
 
 @Extension
@@ -43,14 +44,14 @@ class TwilightConditionConfigurable : ConditionConfigurable() {
             return result
         }
 
-    private val longitudeField = DoubleField(FIELD_LONGITUDE, R.field_longitude_hint, 0, 0.0, RequiredDoubleValidator())
+    private val longitudeField = BigDecimalField(FIELD_LONGITUDE, R.field_longitude_hint, 0, BigDecimal.ZERO, RequiredBigDecimalValidator())
 
-    private val latitudeField = DoubleField(FIELD_LATITUDE, R.field_latitude_hint, 0, 0.0, RequiredDoubleValidator())
+    private val latitudeField = BigDecimalField(FIELD_LATITUDE, R.field_latitude_hint, 0, BigDecimal.ZERO, RequiredBigDecimalValidator())
 
     override fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase {
         val longitude = extractFieldValue(instance, longitudeField)
         val latitude = extractFieldValue(instance, latitudeField)
-        return TwilightConditionAutomationUnit(longitude, latitude)
+        return TwilightConditionAutomationUnit(longitude.wrapped!!.toDouble(), latitude.wrapped!!.toDouble())
     }
 
     companion object {
