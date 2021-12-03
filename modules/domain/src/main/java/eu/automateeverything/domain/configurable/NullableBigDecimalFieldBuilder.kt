@@ -1,6 +1,7 @@
 package eu.automateeverything.domain.configurable
 
 class NullableBigDecimalFieldBuilder : FieldBuilder<NullableBigDecimal> {
+
     override fun fromPersistableString(value: String?): NullableBigDecimal {
         if (value == null) {
             return NullableBigDecimal(null)

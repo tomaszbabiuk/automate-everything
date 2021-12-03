@@ -18,6 +18,22 @@
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
+            {{ temperatureUnit.title }}
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in temperatureSelectorItems"
+            :key="index"
+            @click="selectTemperatureUnit(item)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
             <v-icon v-if="isPolishLocale">$vuetify.icon.flag_pl</v-icon>
             <v-icon v-else>$vuetify.icon.flag_uk</v-icon>
           </v-btn>
@@ -26,7 +42,7 @@
           <v-list-item
             v-for="(item, index) in languageSelectorItems"
             :key="index"
-            @click="selected(item)"
+            @click="selectLanguage(item)"
           >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
@@ -70,7 +86,9 @@
         >
           <v-list-item-action v-if="item.hasBadge && inboxUnreadCount > 0">
             <v-badge color="red" :content="inboxUnreadCount">
-              <v-icon style="fill: #9e9e9e">$vuetify.icon.{{ item.icon }}</v-icon>
+              <v-icon style="fill: #9e9e9e"
+                >$vuetify.icon.{{ item.icon }}</v-icon
+              >
             </v-badge>
           </v-list-item-action>
           <v-list-item-action v-else>
@@ -106,7 +124,9 @@
                 {{ $vuetify.lang.t("$vuetify.app.automation_disabled_info") }}
               </v-col>
               <v-col class="shrink">
-                <v-btn @click="enableAutomation(true)">{{ $vuetify.lang.t("$vuetify.app.enable") }}</v-btn>
+                <v-btn @click="enableAutomation(true)">{{
+                  $vuetify.lang.t("$vuetify.app.enable")
+                }}</v-btn>
               </v-col>
             </v-row>
           </v-alert>
@@ -121,6 +141,10 @@
 import { client } from "./rest.js";
 import { sseClient } from "./sse.js";
 
+var CELSIUS = { title: "°C", code: "c" }
+var KELVIN = { title: "K", code: "k" }
+var FAHRENHEIT = { title: "°F", code: "f" }
+
 export default {
   name: "App",
 
@@ -128,68 +152,77 @@ export default {
     return {
       tab: null,
       drawer: false,
+      temperatureUnit: '',
       navigationItems: [
-        { 
-          title: "$vuetify.navigation.inbox", 
-          route: "/inbox", 
+        {
+          title: "$vuetify.navigation.inbox",
+          route: "/inbox",
           icon: "inbox",
-          hasBadge: true 
+          hasBadge: true,
         },
         {
           title: "$vuetify.navigation.timeline",
           route: "/timeline",
           icon: "timeline",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.control",
           route: "/control",
           icon: "button",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.objects",
           route: "/objects/null",
           icon: "objects",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.tags",
           route: "/tags",
           icon: "tag",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.icons",
           route: "/icons",
           icon: "icons",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.discover",
           route: "/discover/null",
           icon: "crosshair",
-          hasBadge: false
+          hasBadge: false,
         },
         {
           title: "$vuetify.navigation.plugins",
           route: "/plugins",
           icon: "plugin",
-          hasBadge: false
+          hasBadge: false,
         },
       ],
       languageSelectorItems: [
         { title: "English", code: "en" },
         { title: "Polski", code: "pl" },
       ],
+      temperatureSelectorItems: [
+        CELSIUS,
+        KELVIN,
+        FAHRENHEIT,
+      ],
     };
   },
 
   methods: {
-    selected: function (item) {
+    selectLanguage: function (item) {
       this.$vuetify.lang.current = item.code;
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
+    },
+    selectTemperatureUnit: function (item) {
+      this.temperatureUnit = item
     },
     enableAutomation: function (enable) {
       client.enableAutomation(enable);
@@ -204,7 +237,7 @@ export default {
       return this.$store.state.automation;
     },
     inboxUnreadCount() {
-      return this.$store.state.inboxUnreadCount
+      return this.$store.state.inboxUnreadCount;
     },
     factories() {
       return this.$store.state.plugins.filter((element) => {
@@ -214,6 +247,7 @@ export default {
     isPolishLocale: function () {
       return this.$vuetify.lang.current === "pl";
     },
+
     error() {
       return this.$store.state.error;
     },
@@ -230,9 +264,19 @@ export default {
         this.navigationItems[6].route = "/discover/null";
       }
     },
+
+    temperatureUnit(newUnit) {
+      localStorage.temperatureUnit = JSON.stringify(newUnit);
+    }
   },
 
   beforeMount: function () {
+    if (typeof localStorage.temperatureUnit === "undefined") {
+      this.temperatureUnit = CELSIUS
+    } else {
+      this.temperatureUnit = JSON.parse(localStorage.temperatureUnit)
+    }
+
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;
     } else {
@@ -250,4 +294,5 @@ export default {
     sseClient.closeLiveEvents();
   },
 };
+
 </script>
