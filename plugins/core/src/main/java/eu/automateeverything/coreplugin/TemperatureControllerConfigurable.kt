@@ -13,7 +13,7 @@ import org.pf4j.Extension
 @Extension
 class TemperatureControllerConfigurable(
     private val stateChangeReporter: StateChangeReporter
-) : SensorConfigurable<Temperature>(Temperature::class.java) {
+) : DeviceConfigurableWithBlockCategory<Temperature>(Temperature::class.java) {
 
     override val parent: Class<out Configurable>? = null
 
@@ -73,6 +73,9 @@ class TemperatureControllerConfigurable(
 
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.Temperature
+
+    override val hasAutomation: Boolean
+        get() = true
 
     companion object {
         const val FIELD_MIN_TEMP = "min_t"

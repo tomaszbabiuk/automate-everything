@@ -18,7 +18,7 @@ class TemperatureControllerAutomationUnit(
     private val stateChangeReporter: StateChangeReporter
 ) : ControllerAutomationUnit<Temperature>(Temperature::class.java, nameOfOrigin, readOnly) {
 
-    override val step: BigDecimal = 0.5.toBigDecimal()
+    override val step: BigDecimal = (0.05).toBigDecimal()
     override val usedPortsIds: Array<String> = arrayOf()
 
     override fun calculateInternal(now: Calendar) {

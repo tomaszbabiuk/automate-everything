@@ -31,6 +31,11 @@ object R {
         "Ten obiekt"
     )
 
+    var category_power_level = Resource(
+        "Power level",
+        "Poziom mocy"
+    )
+
     val category_triggers_conditions = Resource(
         "Conditions",
         "Warunki"

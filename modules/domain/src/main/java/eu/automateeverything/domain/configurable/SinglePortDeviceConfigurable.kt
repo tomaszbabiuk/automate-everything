@@ -11,7 +11,7 @@ abstract class SinglePortDeviceConfigurable<T: PortValue>(
     valueClazz: Class<T>,
     private val portField: FieldDefinition<String>,
     private val portFinder: PortFinder
-) : SensorConfigurable<T>(valueClazz) {
+) : DeviceConfigurableWithBlockCategory<T>(valueClazz) {
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<T> {
         val portId = extractFieldValue(instance, portField)

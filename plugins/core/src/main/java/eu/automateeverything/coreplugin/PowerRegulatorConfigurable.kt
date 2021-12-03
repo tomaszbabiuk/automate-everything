@@ -5,6 +5,8 @@ import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.devices.DevicesConfigurable
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.automation.blocks.BlockCategory
+import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PowerLevel
@@ -13,7 +15,7 @@ import org.pf4j.Extension
 @Extension
 class PowerRegulatorConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter) : DeviceConfigurable<PowerLevel>(PowerLevel::class.java) {
+    private val stateChangeReporter: StateChangeReporter) : DeviceConfigurableWithBlockCategory<PowerLevel>(PowerLevel::class.java) {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -71,4 +73,7 @@ class PowerRegulatorConfigurable(
         val readOnly = extractFieldValue(instance, readOnlyField)
         return PowerRegulatorAutomationUnit(name, instance, port, readOnly, stateChangeReporter)
     }
+
+    override val blocksCategory: BlockCategory
+        get() = CommonBlockCategories.PowerLevel
 }

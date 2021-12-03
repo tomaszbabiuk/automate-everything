@@ -14,5 +14,6 @@ enum class CommonBlockCategories(
     Humidity(R.category_humidity, 120),
     State(R.category_state, 210),
     ThisObject(R.category_this_object, 270),
+    PowerLevel(R.category_power_level, 33),
     Conditions(R.category_triggers_conditions, 0);
 }

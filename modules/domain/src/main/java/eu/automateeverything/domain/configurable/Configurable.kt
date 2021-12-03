@@ -37,7 +37,7 @@ abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) : NameDescription
     override val editableIcon: Boolean = true
 }
 
-abstract class SensorConfigurable<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
+abstract class DeviceConfigurableWithBlockCategory<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
     abstract val blocksCategory: BlockCategory
 }
 
