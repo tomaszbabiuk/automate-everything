@@ -1,69 +1,36 @@
 <template>
-  <v-row class="ma-0 pa-0">
-    <v-col cols="9" class="ma-0 pa-0">
-      <v-text-field
-        v-model="text"
-        :label="hint"
-        :counter="counter"
-        :error="error"
-        :error-messages="errorMessages"
-        type="number"
-      ></v-text-field>
-    </v-col>
-    <v-col cols="3" class="ma-0 pa-0">
-      <v-btn-toggle
-        v-model="unit"
-        tile
-        color="deep-purple accent-3"
-        group
-        mandatory
-      >
-        <v-btn value="k"> K </v-btn>
-
-        <v-btn value="c"> C </v-btn>
-
-        <v-btn value="f"> F </v-btn>
-      </v-btn-toggle>
-    </v-col>
-  </v-row>
+  <v-text-field
+    v-model="text"
+    :label="hintWithTemperatureUnit"
+    :counter="counter"
+    :error="error"
+    :error-messages="errorMessages"
+    type="number"
+  ></v-text-field>
 </template>
 
 <script>
 import { UPDATE_INSTANCE_FIELD } from "../../../plugins/vuex";
+import { temp } from "../../../temp"
 
 export default {
   data: function () {
     return {
-      unit: "k",
       error: false,
       errorMessages: [],
       text: "",
-      temperature: 0,
+      temperature: "",
     };
   },
   props: ["id", "hint", "required", "counter"],
   methods: {
-    storeTemperatureInKelvins(value) {
-      if (value) {
-        var valueInK;
-        var number = Number(value);
-
-        if (this.unit === "c") {
-          valueInK = number + 273.15;
-        }
-
-        if (this.unit === "f") {
-          valueInK = (number - 32) / 1.8 + 273.15;
-        }
-
-        if (this.unit === "k") {
-          valueInK = number;
-        }
-
-        if (this.storeFieldData != valueInK) {
+    storeTemperatureInKelvins(displayTemp) {
+      var k = temp.displayTemperatureToKelvins(displayTemp);
+      if (k != null) {
+        if (this.storeFieldData != k) {
           this.$store.commit(UPDATE_INSTANCE_FIELD, {
             name: this.id,
-            value: valueInK,
+            value: k,
           });
         }
       } else {
@@ -81,6 +48,12 @@ export default {
     storeFieldData() {
       return this.$store.state.newInstance.fields[this.id];
     },
+    hintWithTemperatureUnit() {
+      return this.hint + " [" + this.temperatureUnit.title + "]";
+    },
+    temperatureUnit() {
+      return temp.obtainTemperatureUnit();
+    },
   },
   watch: {
     validation(val) {
@@ -89,35 +62,9 @@ export default {
     },
 
     storeFieldData(value) {
-      if (this.text !== value || this.unit !== "k") {
-        this.text = value;
-        this.unit = "k";
-      }
-    },
-
-    unit(newUnit) {
-      if (this.text) {
-        var currentTemp = Number(this.text);
-
-        var newTemp = 0;
-        if (newUnit === "c") {
-          newTemp = currentTemp - 273.15;
-        }
-
-        if (newUnit === "f") {
-          newTemp = ((75 * currentTemp + 459.67) * 5) / 9;
-        }
-
-        if (newUnit === "k") {
-          newTemp = currentTemp;
-        }
-
-        if (this.storeFieldData != newTemp) {
-          this.$store.commit(UPDATE_INSTANCE_FIELD, {
-            name: this.id,
-            value: newTemp,
-          });
-        }
+      var displayTemperature = temp.kelvinsToDisplayTemperature(value);
+      if (this.text !== displayTemperature) {
+        this.text = displayTemperature;
       }
     },
 
@@ -126,8 +73,12 @@ export default {
     },
   },
   mounted: function () {
-    this.unit = "k";
-    this.text = this.storeFieldData;
+    var displayTemperature = temp.kelvinsToDisplayTemperature(
+      this.storeFieldData
+    );
+    if (displayTemperature != null) {
+      this.text = displayTemperature;
+    }
   },
 };
 </script>

@@ -252,6 +252,8 @@
 
 <script>
 import { client } from "../rest.js";
+import { temp } from "../temp.js";
+
 import store, {
   CLEAR_INSTANCES,
   CLEAR_DEPENDENCIES,
@@ -371,6 +373,10 @@ export default {
           .split(",")
           .map((x) => this.findInstanceNameById(eval(x)))
           .join(", ");
+      }
+
+      if (fieldDefinition.type == "Temperature") {
+        return temp.kelvinsToDisplayTemperature(fieldValue) + ' ' + temp.obtainTemperatureUnit().title
       }
 
       return fieldValue;

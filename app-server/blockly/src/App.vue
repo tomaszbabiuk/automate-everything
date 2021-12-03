@@ -140,10 +140,7 @@
 <script>
 import { client } from "./rest.js";
 import { sseClient } from "./sse.js";
-
-var CELSIUS = { title: "°C", code: "c" }
-var KELVIN = { title: "K", code: "k" }
-var FAHRENHEIT = { title: "°F", code: "f" }
+import { temp } from "./temp.js";
 
 export default {
   name: "App",
@@ -152,7 +149,7 @@ export default {
     return {
       tab: null,
       drawer: false,
-      temperatureUnit: '',
+      temperatureUnit: "",
       navigationItems: [
         {
           title: "$vuetify.navigation.inbox",
@@ -207,11 +204,7 @@ export default {
         { title: "English", code: "en" },
         { title: "Polski", code: "pl" },
       ],
-      temperatureSelectorItems: [
-        CELSIUS,
-        KELVIN,
-        FAHRENHEIT,
-      ],
+      temperatureSelectorItems: [temp.CELSIUS, temp.KELVIN, temp.FAHRENHEIT],
     };
   },
 
@@ -221,9 +214,12 @@ export default {
       localStorage.selectedLanguage = item.code;
       location.href = location.href + "";
     },
+
     selectTemperatureUnit: function (item) {
-      this.temperatureUnit = item
+      this.temperatureUnit = item;
+      location.href = location.href + "";
     },
+
     enableAutomation: function (enable) {
       client.enableAutomation(enable);
     },
@@ -233,17 +229,21 @@ export default {
     plugins() {
       return this.$store.state.plugins;
     },
+
     automation() {
       return this.$store.state.automation;
     },
+    
     inboxUnreadCount() {
       return this.$store.state.inboxUnreadCount;
     },
+
     factories() {
       return this.$store.state.plugins.filter((element) => {
         return element.enabled && element.isHardwareFactory;
       });
     },
+
     isPolishLocale: function () {
       return this.$vuetify.lang.current === "pl";
     },
@@ -251,6 +251,7 @@ export default {
     error() {
       return this.$store.state.error;
     },
+
     showTabs: function () {
       return this.$route.name === "discover" && this.factories.length > 0;
     },
@@ -266,16 +267,12 @@ export default {
     },
 
     temperatureUnit(newUnit) {
-      localStorage.temperatureUnit = JSON.stringify(newUnit);
-    }
+      temp.storeTemperatureUnit(newUnit);
+    },
   },
 
   beforeMount: function () {
-    if (typeof localStorage.temperatureUnit === "undefined") {
-      this.temperatureUnit = CELSIUS
-    } else {
-      this.temperatureUnit = JSON.parse(localStorage.temperatureUnit)
-    }
+    this.temperatureUnit = temp.obtainTemperatureUnit()
 
     if (typeof localStorage.selectedLanguage === "undefined") {
       localStorage.selectedLanguage = this.$vuetify.lang.current;
@@ -294,5 +291,4 @@ export default {
     sseClient.closeLiveEvents();
   },
 };
-
 </script>

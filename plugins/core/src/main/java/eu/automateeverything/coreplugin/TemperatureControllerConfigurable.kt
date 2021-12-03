@@ -9,7 +9,6 @@ import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.Temperature
 import org.pf4j.Extension
-import java.math.BigDecimal
 
 @Extension
 class TemperatureControllerConfigurable(
@@ -58,9 +57,9 @@ class TemperatureControllerConfigurable(
             </svg>
         """.trimIndent()
 
-    private val minField = TemperatureField(FIELD_MIN_TEMP, R.field_min_temp_hint, 10, 10.0.toBigDecimal(), RequiredBigDecimalValidator())
-    private val maxField = TemperatureField(FIELD_MAX_TEMP, R.field_max_temp_hint, 10, 20.0.toBigDecimal(), RequiredBigDecimalValidator())
-    private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (-30.0).toBigDecimal(), RequiredBigDecimalValidator())
+    private val minField = TemperatureField(FIELD_MIN_TEMP, R.field_min_temp_hint, 10, (273.15 + 10.0).toBigDecimal(), RequiredBigDecimalValidator())
+    private val maxField = TemperatureField(FIELD_MAX_TEMP, R.field_max_temp_hint, 10, (273.15 + 20.0).toBigDecimal(), RequiredBigDecimalValidator())
+    private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (273.15 -30.0).toBigDecimal(), RequiredBigDecimalValidator())
     private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Temperature> {
