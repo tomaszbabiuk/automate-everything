@@ -1,5 +1,6 @@
 package eu.automateeverything.coreplugin
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
@@ -20,6 +21,8 @@ class TemperatureControllerAutomationUnit(
 
     override val step: BigDecimal = (0.05).toBigDecimal()
     override val usedPortsIds: Array<String> = arrayOf()
+
+    override val controlType = if (readOnly) ControlType.NA else ControlType.ControllerTemperature
 
     override fun calculateInternal(now: Calendar) {
     }

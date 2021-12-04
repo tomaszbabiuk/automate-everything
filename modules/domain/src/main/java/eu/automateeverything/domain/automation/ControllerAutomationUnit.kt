@@ -18,5 +18,5 @@ abstract class ControllerAutomationUnit<V: PortValue>(
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = true
 
-    override val controlType = if (readOnly) ControlType.NA else ControlType.Controller
+    override val controlType = if (readOnly) ControlType.NA else ControlType.ControllerOther
 }

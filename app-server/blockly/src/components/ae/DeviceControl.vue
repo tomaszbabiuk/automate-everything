@@ -3,7 +3,7 @@
     <v-list-item three-line>
       <v-list-item-content>
         <v-list-item-title class="headline mb-1">
-          {{ automationUnit.evaluationResult.interfaceValue }}
+          {{ displayValue }}
         </v-list-item-title>
         <v-list-item-subtitle>{{
           automationUnit.instance.fields["name"]
@@ -26,14 +26,28 @@
         />
       </v-list-item-avatar>
     </v-list-item>
-    <v-list-item v-if="automationUnit.type == 'Controller'">
+    <v-list-item v-if="automationUnit.type == 'ControllerOther'">
       <v-list-item-content class="pt-9 pb-0">
         <div>
           <v-slider
-            v-model="level"
+            v-model="otherLevel"
             hint="Changing"
             :max="automationUnit.valueRange.max"
             :min="automationUnit.valueRange.min"
+            :step="automationUnit.valueRange.step"
+            thumb-label
+          ></v-slider>
+        </div>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item v-if="automationUnit.type == 'ControllerTemperature'">
+      <v-list-item-content class="pt-9 pb-0">
+        <div>
+          <v-slider
+            v-model="temperatureLevel"
+            hint="Changing"
+            :min="minTemperature"
+            :max="maxTemperature"
             :step="automationUnit.valueRange.step"
             thumb-label
           ></v-slider>
@@ -90,12 +104,15 @@
 </template>
 <script>
 import { client } from "../../rest.js";
+import { temp } from "../../temp.js";
 
 export default {
   data: function () {
     return {
-      level: 0,
-      levelThrottlingTimeout: null,
+      otherLevel: 0,
+      otherLevelThrottlingTimeout: null,
+      temperatureLevel: 0,
+      temperatureLevelThrottlingTimeout: null,
     };
   },
 
@@ -107,30 +124,75 @@ export default {
         return element.instance.id == this.automationUnit.instance.id;
       });
     },
+
+    minTemperature() {
+      return temp.kelvinsToDisplayTemperature(this.automationUnit.valueRange.min)
+    },
+
+    maxTemperature() {
+      return temp.kelvinsToDisplayTemperature(this.automationUnit.valueRange.max)
+    },
+
+    displayValue() {
+      if (this.automationUnit.type == 'ControllerTemperature') {
+        return temp.kelvinsToDisplayTemperature(this.automationUnit.evaluationResult.decimalValue) + ' ' +
+               temp.obtainTemperatureUnit().title
+      } else {
+        return this.automationUnit.evaluationResult.interfaceValue
+      }
+    }
   },
 
   watch: {
-    level() {
-      clearTimeout(this.levelThrottlingTimeout);
+    otherLevel() {
+      clearTimeout(this.otherLevelThrottlingTimeout);
       this.levelThrottlingTimeout = setTimeout(
-        this.controlLevel,
+        this.controlOtherLevel,
+        200
+      );
+    },
+
+    temperatureLevel() {
+      clearTimeout(this.temperatureLevelThrottlingTimeout);
+      this.temperatureLevelThrottlingTimeout = setTimeout(
+        this.controlTemperatureLevel,
         200
       );
     },
 
     automationUnitInStore() {
-      this.level = this.automationUnitInStore.evaluationResult.decimalValue
+      this.setProperLevel(this.automationUnitInStore)
     }
   },
 
   methods: {
-    controlLevel: function () {
+    setProperLevel: function(unit) {
+      if (this.automationUnit.type == 'ControllerTemperature') {
+        var displayValue = temp.kelvinsToDisplayTemperature(unit.evaluationResult.decimalValue)
+        this.temperatureLevel = displayValue
+      } else {
+        this.otherLevel = unit.evaluationResult.decimalValue
+      }
+    },
+
+    controlOtherLevel: function () {
       if (
-        this.automationUnit.evaluationResult.decimalValue != this.level
+        this.automationUnit.evaluationResult.decimalValue != this.otherLevel
       ) {
         client.control(
           this.automationUnit.instance.id,
-          this.level
+          this.otherLevel
+        );
+      }
+    },
+
+    controlTemperatureLevel: function () {
+      var tempInK = temp.displayTemperatureToKelvins(this.temperatureLevel)
+
+      if (this.automationUnit.evaluationResult.decimalValue != tempInK) {
+        client.control(
+          this.automationUnit.instance.id,
+          tempInK
         );
       }
     },
@@ -141,7 +203,7 @@ export default {
   },
 
   mounted: function () {
-    this.level = this.automationUnit.evaluationResult.decimalValue;
+    this.setProperLevel(this.automationUnit)
   },
 };
 </script>
