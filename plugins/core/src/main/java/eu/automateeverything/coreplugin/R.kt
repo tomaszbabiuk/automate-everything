@@ -16,7 +16,7 @@ object R {
 
     val configurable_temperature_controller_edit = Resource(
         "Edit temperature controller",
-        "Edytuj sterewnik temperatury"
+        "Edytuj sterownik temperatury"
     )
 
     val configurable_temperature_controller_add = Resource(

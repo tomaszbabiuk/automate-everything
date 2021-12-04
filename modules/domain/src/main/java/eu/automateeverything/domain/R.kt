@@ -106,6 +106,11 @@ object R {
         "%1 zmienia stan na %2"
     )
 
+    val block_label_change_value = Resource(
+        "Change defaults to %1 %2",
+        "Zmień domyślne ustawienie na%1 %2"
+    )
+
     val block_label_in_state = Resource(
         "%1 is in state %2",
         "%1 jest w stanie %2"

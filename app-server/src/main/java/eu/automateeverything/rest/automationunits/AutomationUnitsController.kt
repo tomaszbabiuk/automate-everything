@@ -53,10 +53,11 @@ class AutomationUnitsController @Inject constructor(
         return mapper.map(unit, instance)
     }
 
+    @Suppress("UNCHECKED_CAST")
     @PUT
     @Path("/{instanceId}/control")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updatePowerLevel(@PathParam("instanceId") id: Long, newValue: BigDecimal): AutomationUnitDto {
+    fun updateValue(@PathParam("instanceId") id: Long, newValue: BigDecimal): AutomationUnitDto {
         val instanceAndUnitPair = automationConductor
             .automationUnitsCache
             .filter { it.key == id }

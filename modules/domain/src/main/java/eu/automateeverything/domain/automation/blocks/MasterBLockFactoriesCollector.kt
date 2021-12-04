@@ -22,6 +22,7 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
 
         if (thisDevice != null) {
             result.addAll(collectChangeStateBlocks(thisDevice))
+            result.addAll(collectChangeValueBlocks(thisDevice))
         }
 
         result.addAll(collectFromCollectors(thisDevice))
@@ -105,6 +106,14 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
                     ChangeStateBlockFactory(it.value)
                 }
                 .toList()
+        }
+
+        return listOf()
+    }
+
+    private fun collectChangeValueBlocks(thisDevice: Configurable): List<BlockFactory<*>> {
+        if (thisDevice is ControllerConfigurable<*>) {
+            return listOf(ChangeValueBlockFactory(thisDevice.valueClazz))
         }
 
         return listOf()
