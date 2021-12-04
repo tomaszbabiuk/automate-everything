@@ -9,11 +9,12 @@ import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.Temperature
 import org.pf4j.Extension
+import java.math.BigDecimal
 
 @Extension
 class TemperatureControllerConfigurable(
     private val stateChangeReporter: StateChangeReporter
-) : DeviceConfigurableWithBlockCategory<Temperature>(Temperature::class.java) {
+) : ControllerConfigurable<Temperature>(Temperature::class.java) {
 
     override val parent: Class<out Configurable>? = null
 
@@ -82,5 +83,13 @@ class TemperatureControllerConfigurable(
         const val FIELD_MAX_TEMP = "max_t"
         const val FIELD_DEFAULT_TEMP = "default_t"
         const val FIELD_READ_ONLY = "read_only"
+    }
+
+    override fun extractMinValue(instance: InstanceDto): BigDecimal {
+        return extractFieldValue(instance, minField).wrapped!!
+    }
+
+    override fun extractMaxValue(instance: InstanceDto): BigDecimal {
+        return extractFieldValue(instance, maxField).wrapped!!
     }
 }

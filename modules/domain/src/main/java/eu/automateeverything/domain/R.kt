@@ -32,8 +32,8 @@ object R {
     )
 
     var category_power_level = Resource(
-        "Power level",
-        "Poziom mocy"
+        "Power",
+        "Moc"
     )
 
     val category_triggers_conditions = Resource(
@@ -63,7 +63,7 @@ object R {
 
     val category_wattage = Resource(
         "Wattage",
-        "Moc"
+        "Waty"
     )
 
     val category_humidity = Resource(

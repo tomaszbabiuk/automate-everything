@@ -4,6 +4,7 @@ import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.*
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.hardware.Humidity
+import eu.automateeverything.domain.hardware.PowerLevel
 import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.domain.hardware.Wattage
 import org.pf4j.Extension
@@ -28,7 +29,12 @@ class CoreBlocksCollector() : BlockFactoriesCollector {
             //wattage
             ComparisonBlockFactory(Wattage::class.java, CommonBlockCategories.Wattage),
             EquationBlockFactory(Wattage::class.java, CommonBlockCategories.Wattage),
-            WattageValueBlockFactory(CommonBlockCategories.Wattage.color)
+            WattageValueBlockFactory(CommonBlockCategories.Wattage.color),
+
+            //power level
+            ComparisonBlockFactory(PowerLevel::class.java, CommonBlockCategories.PowerLevel),
+            EquationBlockFactory(PowerLevel::class.java, CommonBlockCategories.PowerLevel),
+            PowerLevelValueBlockFactory(CommonBlockCategories.PowerLevel.color)
         )
     }
 }

@@ -8,6 +8,7 @@ import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.data.hardware.PortValue
 import org.pf4j.ExtensionPoint
+import java.math.BigDecimal
 
 interface Configurable : ExtensionPoint {
     val parent: Class<out Configurable>?
@@ -39,6 +40,11 @@ abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) : NameDescription
 
 abstract class DeviceConfigurableWithBlockCategory<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
     abstract val blocksCategory: BlockCategory
+}
+
+abstract class ControllerConfigurable<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurableWithBlockCategory<V>(valueClazz) {
+    abstract fun extractMinValue(instance: InstanceDto): BigDecimal
+    abstract fun extractMaxValue(instance: InstanceDto): BigDecimal
 }
 
 abstract class StateDeviceConfigurable : DeviceConfigurable<State>(State::class.java) {

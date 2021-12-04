@@ -11,11 +11,12 @@ import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PowerLevel
 import org.pf4j.Extension
+import java.math.BigDecimal
 
 @Extension
 class PowerRegulatorConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter) : DeviceConfigurableWithBlockCategory<PowerLevel>(PowerLevel::class.java) {
+    private val stateChangeReporter: StateChangeReporter) : ControllerConfigurable<PowerLevel>(PowerLevel::class.java) {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -76,4 +77,12 @@ class PowerRegulatorConfigurable(
 
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.PowerLevel
+
+    override fun extractMinValue(instance: InstanceDto): BigDecimal {
+        return BigDecimal.ZERO
+    }
+
+    override fun extractMaxValue(instance: InstanceDto): BigDecimal {
+        return 100.0.toBigDecimal()
+    }
 }
