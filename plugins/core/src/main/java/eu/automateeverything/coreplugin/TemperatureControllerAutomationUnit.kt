@@ -2,7 +2,7 @@ package eu.automateeverything.coreplugin
 
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.ControllerAutomationUnit
+import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.hardware.Temperature
@@ -17,7 +17,7 @@ class TemperatureControllerAutomationUnit(
     private val instanceDto: InstanceDto,
     readOnly: Boolean,
     private val stateChangeReporter: StateChangeReporter
-) : ControllerAutomationUnit<Temperature>(Temperature::class.java, nameOfOrigin, readOnly) {
+) : ControllerAutomationUnitBase<Temperature>(nameOfOrigin, readOnly) {
 
     override val step: BigDecimal = (0.05).toBigDecimal()
     override val usedPortsIds: Array<String> = arrayOf()
@@ -44,4 +44,6 @@ class TemperatureControllerAutomationUnit(
             stateChangeReporter.reportDeviceValueChange(this, instanceDto)
         }
     }
+
+    override val valueClazz = Temperature::class.java
 }

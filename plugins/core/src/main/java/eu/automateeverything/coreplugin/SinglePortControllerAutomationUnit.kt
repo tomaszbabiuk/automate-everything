@@ -3,6 +3,7 @@ package eu.automateeverything.coreplugin
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.ControllerAutomationUnit
+import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.hardware.OutputPort
@@ -10,13 +11,12 @@ import java.math.BigDecimal
 import java.util.*
 
 abstract class SinglePortControllerAutomationUnit<V: PortValue>(
-    valueClass: Class<V>,
     nameOfOrigin: String,
     private val instanceDto: InstanceDto,
     private val controlPort: OutputPort<V>,
     readOnly: Boolean,
     private val stateChangeReporter: StateChangeReporter
-) : ControllerAutomationUnit<V>(valueClass, nameOfOrigin, readOnly) {
+) : ControllerAutomationUnitBase<V>(nameOfOrigin, readOnly) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)

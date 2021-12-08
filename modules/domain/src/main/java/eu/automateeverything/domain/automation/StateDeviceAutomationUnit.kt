@@ -2,10 +2,10 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.automation.State
 
-abstract class StateDeviceAutomationUnit(nameOfOrigin: String) : AutomationUnit<State>(nameOfOrigin) {
+interface StateDeviceAutomationUnit : AutomationUnit<State> {
     @Throws(Exception::class)
-    abstract fun changeState(state: String, actor: String? = null)
+    fun changeState(state: String, actor: String? = null)
 
-    abstract val currentState: State
+    val currentState: State
 }
 

@@ -6,10 +6,10 @@ import eu.automateeverything.data.hardware.PortValue
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
-    name: String?,
+    name: String,
     private val port: InputPort<T>
 ) :
-    AutomationUnit<T>(name) {
+    AutomationUnitBase<T>(name, ControlType.NA) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(port.id)
@@ -32,5 +32,4 @@ class SensorAutomationUnit<T: PortValue>(
     }
 
     override var lastEvaluation = buildEvaluationResult(port.read())
-    override val controlType = ControlType.NA
 }

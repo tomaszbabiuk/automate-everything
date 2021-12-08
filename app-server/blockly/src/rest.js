@@ -352,7 +352,7 @@ export const client = {
 
   changeState: async function (instanceId, state) {
     await this.handleRestError(
-      () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", JSON.stringify(state)),
+      () => axiosInstance.put("rest/automationunits/" + instanceId + "/state", state),
       (response) => {
         store.commit(UPDATE_AUTOMATION_UNIT, response.data)
       }

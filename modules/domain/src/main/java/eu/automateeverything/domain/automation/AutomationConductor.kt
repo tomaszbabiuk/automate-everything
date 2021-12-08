@@ -2,7 +2,6 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.automation.State
 import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.WithStartStopScope
@@ -138,13 +137,19 @@ class AutomationConductor(
     }
 
     private fun buildWrappedUnit(originName: String?, configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
+        val name = originName ?: "-----"
+
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                AutomationUnitWrapper(originName, State::class.java, ex)
+                StateDeviceAutomationUnitWrapper(name, ex)
+            }
+
+            is ControllerAutomationUnit<*>  -> {
+                ControllerAutomationUnitWrapper(configurable.valueClazz, name, ex)
             }
 
             is DeviceConfigurable<*> -> {
-                AutomationUnitWrapper(originName, configurable.valueClazz, ex)
+                AutomationUnitWrapper(configurable.valueClazz, name, ex)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")

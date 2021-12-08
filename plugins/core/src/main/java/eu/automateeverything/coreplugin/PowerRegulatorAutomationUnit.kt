@@ -12,9 +12,10 @@ class PowerRegulatorAutomationUnit(
     controlPort: OutputPort<PowerLevel>,
     readOnly: Boolean,
     stateChangeReporter: StateChangeReporter,
-) : SinglePortControllerAutomationUnit<PowerLevel>(PowerLevel::class.java, nameOfOrigin, instanceDto, controlPort, readOnly, stateChangeReporter) {
+) : SinglePortControllerAutomationUnit<PowerLevel>(nameOfOrigin, instanceDto, controlPort, readOnly, stateChangeReporter) {
     override val min: BigDecimal = BigDecimal.ZERO
     override val max: BigDecimal = 100.0.toBigDecimal()
     override val step: BigDecimal = 1.toBigDecimal()
+    override val valueClazz: Class<PowerLevel> = PowerLevel::class.java
 }
 
