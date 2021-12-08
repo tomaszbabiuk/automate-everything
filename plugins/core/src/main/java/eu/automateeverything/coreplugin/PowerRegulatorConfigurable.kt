@@ -22,7 +22,7 @@ class PowerRegulatorConfigurable(
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_PORT] = portField
-            result[FIELD_READ_ONLY] = readOnlyField
+            result[FIELD_AUTOMATION_ONLY] = automationOnlyField
             return result
         }
 
@@ -60,19 +60,19 @@ class PowerRegulatorConfigurable(
     override val taggable: Boolean = true
 
     private val portField = PowerLevelOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
 
     companion object {
         const val FIELD_PORT = "portId"
-        const val FIELD_READ_ONLY = "readOnly"
+        const val FIELD_AUTOMATION_ONLY = "automationOnly"
     }
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<PowerLevel> {
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
-        val readOnly = extractFieldValue(instance, readOnlyField)
-        return PowerRegulatorAutomationUnit(name, instance, port, readOnly, stateChangeReporter)
+        val automationOnly = extractFieldValue(instance, automationOnlyField)
+        return PowerRegulatorAutomationUnit(name, instance, port, automationOnly, stateChangeReporter)
     }
 
     override val blocksCategory: BlockCategory

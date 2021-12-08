@@ -2,7 +2,6 @@ package eu.automateeverything.coreplugin
 
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.automation.StateChangeReporter
@@ -14,9 +13,9 @@ abstract class SinglePortControllerAutomationUnit<V: PortValue>(
     nameOfOrigin: String,
     private val instanceDto: InstanceDto,
     private val controlPort: OutputPort<V>,
-    readOnly: Boolean,
+    automationOnly: Boolean,
     private val stateChangeReporter: StateChangeReporter
-) : ControllerAutomationUnitBase<V>(nameOfOrigin, readOnly) {
+) : ControllerAutomationUnitBase<V>(nameOfOrigin, automationOnly) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)

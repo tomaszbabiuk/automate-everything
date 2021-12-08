@@ -6,6 +6,7 @@ import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.S
 import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON_COUNTING
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
@@ -27,8 +28,8 @@ class TimedOnOffDeviceAutomationUnit(
     private val breakTime: Duration,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
-    private val readOnly: Boolean
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
+    private val automationOnly: Boolean
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, ControlType.States, states, false) {
 
     private var onSince = 0L
     private var offSince = 0L
@@ -48,7 +49,7 @@ class TimedOnOffDeviceAutomationUnit(
 
     @Suppress("SENSELESS_COMPARISON")
     override fun buildNextStates(state: State): NextStatesDto {
-        if (readOnly) {
+        if (automationOnly) {
             return NextStatesDto(listOf(), currentState.id, requiresExtendedWidth)
         }
 

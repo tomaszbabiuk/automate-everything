@@ -7,7 +7,9 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.configurable.BooleanField
 import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.configurable.FieldDefinition
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable
 import org.pf4j.Extension
 import java.util.HashMap
@@ -24,10 +26,21 @@ class SceneConfigurable(
     override val parent: Class<out Configurable?>?
         get() = null
 
+    override val fieldDefinitions: Map<String, FieldDefinition<*>>
+        get() {
+            val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
+            result[FIELD_AUTOMATION_ONLY] = automationOnlyField
+            return result
+        }
+
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
-        val name = instance.fields[FIELD_NAME]!!
-        return SceneAutomationUnit(stateChangeReporter, instance, name, states)
+        val name = extractFieldValue(instance, nameField)
+        val automationOnly = extractFieldValue(instance, automationOnlyField)
+        return SceneAutomationUnit(stateChangeReporter, instance, name, automationOnly, states)
     }
+
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+
 
     override val states: Map<String, State>
         get() {
@@ -75,5 +88,6 @@ class SceneConfigurable(
     companion object {
         const val STATE_ACTIVE = "active"
         const val STATE_INACTIVE = "inactive"
+        const val FIELD_AUTOMATION_ONLY = "automation_only"
     }
 }

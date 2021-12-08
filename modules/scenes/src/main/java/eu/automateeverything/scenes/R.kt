@@ -3,6 +3,11 @@ package eu.automateeverything.scenes
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val field_automation_only_hint = Resource(
+        "Automation control only",
+        "Kontrola tylko przez automatykę"
+    )
+    
     val state_unknown = Resource(
         "Unknown",
         "Nieznany"

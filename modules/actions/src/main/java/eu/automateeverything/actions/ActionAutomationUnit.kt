@@ -24,7 +24,7 @@ class ActionAutomationUnit(
     name: String,
     states: Map<String, State>,
     private val executionCode: () -> Pair<Boolean,Resource>
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, ControlType.States, states, false) {
 
     private var executionScope: CoroutineScope? = null
 

@@ -1,6 +1,7 @@
 package eu.automateeverything.alarmplugin
 
 import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
@@ -17,7 +18,7 @@ class AlarmLineAutomationUnit(
     private val inputPort: InputPort<BinaryInput>,
     private val contactType: ContactType,
     delayTime: Duration
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     private val armingTicks: Int = delayTime.milliseconds
     private var armingStartedAtTicks: Long = 0

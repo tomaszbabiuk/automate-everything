@@ -54,8 +54,8 @@ object R {
     )
 
     val inbox_message_automation_enabled_body = Resource(
-        "Automation loops are now ON. Devices are now controlled by automation blocks",
-        "Pętle automatyki zostały uruchomione. Urządzenia są teraz kontrolowane przez bloki automatyzujące"
+        "Automation is ON.",
+        "Automatyka została uruchomiona."
     )
 
     val inbox_message_automation_disabled_subject = Resource(

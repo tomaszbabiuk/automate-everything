@@ -69,9 +69,9 @@ object R {
         "Port"
     )
 
-    val field_readonly_hint = Resource(
-        "Read only",
-        "Tylko do odczytu"
+    val field_automation_only_hint = Resource(
+        "Automation control only",
+        "Kontrola tylko przez automatykę"
     )
 
     val field_min_temp_hint = Resource(
@@ -102,26 +102,6 @@ object R {
     val field_break_time = Resource(
         "Break time (after max. time elapses)",
         "Czas przerwy (po upłynięciu maksymalnego czasu)"
-    )
-
-    val field_preset1_hint = Resource(
-        "Preset 1 (% of power)",
-        "Ustawienie 1 (% mocy)"
-    )
-
-    val field_preset2_hint = Resource(
-        "Preset 2 (% of power)",
-        "Ustawienie 2 (% mocy)"
-    )
-
-    val field_preset3_hint = Resource(
-        "Preset 3 (% of power)",
-        "Ustawienie 3 (% mocy)"
-    )
-
-    val field_preset4_hint = Resource(
-        "Preset 4 (% of power)",
-        "Ustawienie 4 (% mocy)"
     )
 
     val field_longitude_hint = Resource(
@@ -182,26 +162,6 @@ object R {
     val configurable_timedonoffdevices_description = Resource(
         "More advanvced on/off devices with the possibility of setting min/max/brake times",
         "Bardziej zaawansowane urządzenia z możliwością zdefiniowania czasów minimalnej i maksymalnej pracy oraz przerwy"
-    )
-
-    val configurable_powerdevice_add = Resource(
-        "Add power regulated device",
-        "Dodaj urządzenie z regulacją mocy"
-    )
-
-    val configurable_powerdevice_edit = Resource(
-        "Edit power regulated device",
-        "Edytuj urządzenie z regulacją mocy"
-    )
-
-    val configurable_powerdevice_title = Resource(
-        "Power regulated devices",
-        "Urządzenia z regulacją mocy"
-    )
-
-    val configurable_powerdevices_description = Resource(
-        "A devices which power can be regulated from 0-100%",
-        "Urządzenie, których moc może być regulowana w zakresie od 0-100%"
     )
 
     val configurable_twilightcondition_add = Resource(
@@ -322,30 +282,5 @@ object R {
     val state_off_break = Resource(
         "Off (break)",
         "Wył (przerwa)"
-    )
-
-    val state_preset1 = Resource(
-        "Preset 1",
-        "Ustawienie 1"
-    )
-
-    val state_preset2 = Resource(
-        "Preset 2",
-        "Ustawienie 2"
-    )
-
-    val state_preset3 = Resource(
-        "Preset 3",
-        "Ustawienie 3"
-    )
-
-    val state_preset4 = Resource(
-        "Preset 4",
-        "Ustawienie 4"
-    )
-
-    val state_manual = Resource(
-        "Manual",
-        "Manual"
     )
 }

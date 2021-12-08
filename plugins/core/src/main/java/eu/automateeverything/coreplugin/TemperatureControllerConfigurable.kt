@@ -24,7 +24,7 @@ class TemperatureControllerConfigurable(
             result[FIELD_MIN_TEMP] = minField
             result[FIELD_MAX_TEMP] = maxField
             result[FIELD_DEFAULT_TEMP] = defaultField
-            result[FIELD_READ_ONLY] = readOnlyField
+            result[FIELD_AUTOMATION_ONLY] = automationOnlyField
             return result
         }
 
@@ -61,15 +61,15 @@ class TemperatureControllerConfigurable(
     private val minField = TemperatureField(FIELD_MIN_TEMP, R.field_min_temp_hint, 10, (273.15 + 10.0).toBigDecimal(), RequiredBigDecimalValidator())
     private val maxField = TemperatureField(FIELD_MAX_TEMP, R.field_max_temp_hint, 10, (273.15 + 20.0).toBigDecimal(), RequiredBigDecimalValidator())
     private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (273.15 -30.0).toBigDecimal(), RequiredBigDecimalValidator())
-    private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Temperature> {
         val name = instance.fields[FIELD_NAME]!!
-        val readOnly = extractFieldValue(instance, readOnlyField)
+        val automationOnly = extractFieldValue(instance, automationOnlyField)
         val min = extractFieldValue(instance, minField)
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
-        return TemperatureControllerAutomationUnit(name, min.wrapped!!, max.wrapped!!, default.wrapped!!, instance, readOnly, stateChangeReporter)
+        return TemperatureControllerAutomationUnit(name, min.wrapped!!, max.wrapped!!, default.wrapped!!, instance, automationOnly, stateChangeReporter)
     }
 
     override val blocksCategory: BlockCategory
@@ -82,7 +82,7 @@ class TemperatureControllerConfigurable(
         const val FIELD_MIN_TEMP = "min_t"
         const val FIELD_MAX_TEMP = "max_t"
         const val FIELD_DEFAULT_TEMP = "default_t"
-        const val FIELD_READ_ONLY = "read_only"
+        const val FIELD_AUTOMATION_ONLY = "read_only"
     }
 
     override fun extractMinValue(instance: InstanceDto): BigDecimal {

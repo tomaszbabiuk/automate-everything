@@ -6,6 +6,7 @@ import eu.automateeverything.alarmplugin.AlarmZoneConfigurable.Companion.STATE_D
 import eu.automateeverything.alarmplugin.AlarmZoneConfigurable.Companion.STATE_LEAVING
 import eu.automateeverything.alarmplugin.AlarmZoneConfigurable.Companion.STATE_PREALARM
 import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
@@ -21,7 +22,7 @@ class AlarmZoneAutomationUnit(
     states: Map<String, State>,
     private val leavingTime: Duration,
     private val alarmLineIds: List<Long>,
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     override fun applyNewState(state: String) {
         when (state) {

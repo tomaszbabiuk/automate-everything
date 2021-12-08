@@ -14,8 +14,9 @@ abstract class StateDeviceAutomationUnitBase(
     private val stateChangeReporter: StateChangeReporter,
     private val instanceDto: InstanceDto,
     nameOfOrigin: String,
+    controlType: ControlType,
     protected val states: Map<String, State>,
-    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(nameOfOrigin, ControlType.States), StateDeviceAutomationUnit{
+    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(nameOfOrigin, controlType), StateDeviceAutomationUnit{
 
     override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {

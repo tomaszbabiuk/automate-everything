@@ -12,8 +12,11 @@ class SceneAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instanceDto: InstanceDto,
     name: String,
+    automationOnly: Boolean,
     states: Map<String, State>,
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name,
+        if (automationOnly) { ControlType.NA } else { ControlType.States },
+        states, false) {
 
     init {
         changeState(STATE_INACTIVE)

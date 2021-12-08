@@ -23,7 +23,7 @@ class OnOffDeviceConfigurable(
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_PORT] = portField
-            result[FIELD_READ_ONLY] = readOnlyField
+            result[FIELD_AUTOMATION_ONLY] = automationOnlyField
             return result
         }
 
@@ -52,14 +52,14 @@ class OnOffDeviceConfigurable(
                 </svg>"""
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
-        val readOnly = extractFieldValue(instance, readOnlyField)
-        return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port, readOnly)
+        val automationOnly = extractFieldValue(instance, automationOnlyField)
+        return OnOffDeviceAutomationUnit(stateChangeReporter, instance, name, states, port, automationOnly)
     }
 
     override val states: Map<String, State>
@@ -85,7 +85,7 @@ class OnOffDeviceConfigurable(
 
     companion object {
         const val FIELD_PORT = "portId"
-        const val FIELD_READ_ONLY = "readOnly"
+        const val FIELD_AUTOMATION_ONLY = "automationOnly"
         const val STATE_ON = "on"
         const val STATE_OFF = "off"
     }

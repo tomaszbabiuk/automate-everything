@@ -24,7 +24,7 @@ class TimedOnOffDeviceConfigurable(
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_PORT] = portField
-            result[FIELD_READ_ONLY] = readOnlyField
+            result[FIELD_AUTOMATION_ONLY] = automationOnlyField
             result[FIELD_MIN_TIME] = minTimeField
             result[FIELD_MAX_TIME] = maxTimeField
             result[FIELD_BREAK_TIME] = breakTimeField
@@ -87,7 +87,7 @@ class TimedOnOffDeviceConfigurable(
 
     private val minTimeField = DurationField(FIELD_MIN_TIME, R.field_min_working_time, Duration(0))
 
-    private val readOnlyField = BooleanField(FIELD_READ_ONLY, R.field_readonly_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
 
     private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time, Duration(0), object: Validator<Duration?> {
         override val reason: Resource
@@ -135,7 +135,7 @@ class TimedOnOffDeviceConfigurable(
         val minWorkingTime = extractFieldValue(instance, minTimeField)
         val maxWorkingTime = extractFieldValue(instance, maxTimeField)
         val breakTime = extractFieldValue(instance, breakTimeField)
-        val readOnly = extractFieldValue(instance, readOnlyField)
+        val automationOnly = extractFieldValue(instance, automationOnlyField)
         return TimedOnOffDeviceAutomationUnit(
             stateChangeReporter,
             instance,
@@ -145,7 +145,7 @@ class TimedOnOffDeviceConfigurable(
             breakTime,
             states,
             port,
-            readOnly)
+            automationOnly)
     }
 
     override val states: Map<String, State>
@@ -184,7 +184,7 @@ class TimedOnOffDeviceConfigurable(
         const val FIELD_MAX_TIME = "maxTime"
         const val FIELD_BREAK_TIME = "breakTime"
         const val FIELD_PORT = "portId"
-        const val FIELD_READ_ONLY = "readOnly"
+        const val FIELD_AUTOMATION_ONLY = "automationOnly"
         const val STATE_ON = "on"
         const val STATE_ON_COUNTING = "on_counting"
         const val STATE_OFF = "off"
