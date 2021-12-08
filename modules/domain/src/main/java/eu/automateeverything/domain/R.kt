@@ -181,6 +181,11 @@ object R {
         "Błąd automatyki. Szczegóły błędu: ${cause.message}"
     )
 
+    fun error_device_missing(clazz: String) = Resource(
+        "Automation error. Device of class $clazz is missing! Version mismatch or the plugin defining this device is disabled!",
+        "Błąd automatyki. Urządzenie o klasie $clazz nie istnieje. Może to wynikać z niezgodności wersji, lub plugin który definiuje to urządzenie jest wyłączony!"
+    )
+
     fun error_port_not_found(portId: String): Resource {
         return Resource(
             "Port $portId not found or disconnected",

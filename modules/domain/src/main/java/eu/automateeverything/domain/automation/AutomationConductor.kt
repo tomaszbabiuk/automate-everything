@@ -73,7 +73,6 @@ class AutomationConductor(
         allInstances.forEach { instance ->
             val configurable = allConfigurables.find { instance.clazz == it.javaClass.name }
             if (configurable != null) {
-
                 if (configurable is ConditionConfigurable) {
                     val evaluator = configurable.buildEvaluator(instance)
                     evaluationUnitsCache[instance.id] = evaluator
@@ -92,6 +91,13 @@ class AutomationConductor(
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     }
                 }
+            } else {
+
+                val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
+                val name = originName ?: "-------"
+                val initError = AutomationErrorException(R.error_device_missing(instance.clazz))
+                val wrapper = AutomationUnitWrapper(Nothing::class.java, name, initError)
+                automationUnitsCache[instance.id] = Pair(instance, wrapper)
             }
         }
 
