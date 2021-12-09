@@ -15,7 +15,8 @@ subprojects {
       attributes 'Plugin-Class': "${pluginClass}",
                  'Plugin-Id': "${pluginId}",
                  'Plugin-Version': "${version}",
-                 'Plugin-Provider': "${pluginProvider}"
+                 'Plugin-Provider': "${pluginProvider}",
+                 'Plugin-Dependencies': "${pluginDependencies}"
     }
   }
 
