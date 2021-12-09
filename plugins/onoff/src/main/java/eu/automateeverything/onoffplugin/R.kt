@@ -1,8 +1,27 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.onoffplugin
 
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val plugin_description = Resource(
+        "On/Off devices and power regulators",
+        "Urządzenia włącz/wyłącz oraz regulatory mocy"
+    )
+
+    val plugin_name = Resource(
+        "On/Off devices",
+        "Urzączenia Wł/Wył"
+    )
+
+    val configurable_onoff_devices_title = Resource(
+        "On/Off devices",
+        "Urzączenia Wł/Wył"
+    )
+
+    val configurable_onoff_devices_description = Resource(
+        "Devices that can by controlled by relays, mosfets, etc.",
+        "Urządzenia sterowane przekaźnikami, tranzystorami mocy, itp."
+    )
 
     val configurable_power_regulators_title = Resource(
         "Power regulators",
@@ -32,16 +51,6 @@ object R {
     val validator_break_invalid_if_no_max_time = Resource(
         "Break time is not effective when max working time is zero",
         "Czas przerwy jest nieskuteczny jeśli maksymalny czas pracy jest zerowy"
-    )
-
-    val plugin_description = Resource(
-        "Core definitions of devices and conditions",
-        "Główne definicje urządzeń i warunków"
-    )
-
-    val plugin_name = Resource(
-        "Core automation",
-        "Automatyka podstawowa"
     )
 
     val field_port_hint = Resource(

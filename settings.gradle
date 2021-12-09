@@ -13,7 +13,7 @@ include "modules:repository-sqldelight"
 
 //plugins
 include 'plugins'
-include 'plugins:core'
+include 'plugins:onoff'
 include 'plugins:scenes'
 include 'plugins:sensors-and-controllers'
 include 'plugins:shelly'

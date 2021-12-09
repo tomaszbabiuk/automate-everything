@@ -1,9 +1,9 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.onoffplugin
 
-import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF
-import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF_BREAK
-import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON
-import eu.automateeverything.coreplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON_COUNTING
+import eu.automateeverything.onoffplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF
+import eu.automateeverything.onoffplugin.TimedOnOffDeviceConfigurable.Companion.STATE_OFF_BREAK
+import eu.automateeverything.onoffplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON
+import eu.automateeverything.onoffplugin.TimedOnOffDeviceConfigurable.Companion.STATE_ON_COUNTING
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType

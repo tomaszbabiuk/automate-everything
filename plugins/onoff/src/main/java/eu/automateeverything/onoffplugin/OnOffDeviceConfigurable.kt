@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.onoffplugin
 
 import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
@@ -28,7 +28,7 @@ class OnOffDeviceConfigurable(
         }
 
     override val parent: Class<out Configurable?>
-        get() = DevicesConfigurable::class.java
+        get() = OnOffDevicesConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_onoffdevice_add

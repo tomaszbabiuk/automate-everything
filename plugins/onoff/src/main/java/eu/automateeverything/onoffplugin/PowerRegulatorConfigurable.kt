@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.onoffplugin
 
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
@@ -27,7 +27,7 @@ class PowerRegulatorConfigurable(
         }
 
     override val parent: Class<out Configurable?>
-        get() = DevicesConfigurable::class.java
+        get() = OnOffDevicesConfigurable::class.java
 
     override val addNewRes: Resource
         get() = R.configurable_power_regulator_add
