@@ -14,8 +14,8 @@ object R {
     )
 
     val configurable_onoff_devices_title = Resource(
-        "On/Off devices",
-        "Urzączenia Wł/Wył"
+        "On/Off",
+        "Wł/Wył"
     )
 
     val configurable_onoff_devices_description = Resource(
