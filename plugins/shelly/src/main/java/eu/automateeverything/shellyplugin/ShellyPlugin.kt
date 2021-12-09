@@ -18,11 +18,9 @@ class ShellyPlugin(
     : HardwarePlugin(wrapper), PluginMetadata{
 
     override fun start() {
-        println("Starting SHELLY plugin")
     }
 
     override fun stop() {
-        println("Stopping SHELLY plugin")
     }
 
     override fun createAdapters(): List<HardwareAdapter<*>> {

@@ -21,11 +21,9 @@ class AforePlugin(
     }
 
     override fun start() {
-        println("Starting AFORE plugin")
     }
 
     override fun stop() {
-        println("Stopping AFORE plugin")
     }
 
     override val name: Resource = R.plugin_name

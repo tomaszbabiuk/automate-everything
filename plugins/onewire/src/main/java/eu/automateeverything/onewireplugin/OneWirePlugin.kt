@@ -17,11 +17,9 @@ class OneWirePlugin(
     : HardwarePlugin(wrapper), PluginMetadata{
 
     override fun start() {
-        println("Starting OneWire plugin")
     }
 
     override fun stop() {
-        println("Stopping OneWire plugin")
     }
 
     override fun createAdapters(): List<HardwareAdapter<*>> {

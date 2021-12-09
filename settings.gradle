@@ -8,14 +8,14 @@ include "modules:domain"
 include "modules:data"
 include "modules:actions"
 include "modules:devices"
-include "modules:scenes"
 include "modules:conditions"
 include "modules:repository-sqldelight"
 
 //plugins
 include 'plugins'
 include 'plugins:core'
-include 'plugins:sensors'
+include 'plugins:scenes'
+include 'plugins:sensors-and-controllers'
 include 'plugins:shelly'
 include 'plugins:afore'
 include 'plugins:onewire'
