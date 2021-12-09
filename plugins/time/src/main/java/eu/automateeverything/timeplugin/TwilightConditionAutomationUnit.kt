@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.timeplugin
 
 import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import java.util.*

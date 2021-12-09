@@ -1,4 +1,4 @@
-package eu.automateeverything.coreplugin
+package eu.automateeverything.sensorsplugin
 
 import eu.automateeverything.domain.configurable.HumidityInputPortField
 import eu.automateeverything.domain.configurable.RequiredStringValidator

@@ -1,2 +1,0 @@
-package eu.automateeverything.coreplugin
-

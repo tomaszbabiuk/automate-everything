@@ -15,6 +15,7 @@ include "modules:repository-sqldelight"
 //plugins
 include 'plugins'
 include 'plugins:core'
+include 'plugins:sensors'
 include 'plugins:shelly'
 include 'plugins:afore'
 include 'plugins:onewire'

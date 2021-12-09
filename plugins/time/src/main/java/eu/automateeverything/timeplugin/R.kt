@@ -107,4 +107,35 @@ object R {
         "H: %1 M: %2 S: %3",
         "H: %1 M: %2 S: %3"
     )
+
+    val configurable_twilightcondition_add = Resource(
+        "Add twilight condition",
+        "Dodaj warunek zmierzchowy"
+    )
+
+    val configurable_twilightcondition_edit = Resource(
+        "Edit twilight condition",
+        "Edytuj warunek zmierzchowy"
+    )
+
+    val configurable_twilightcondition_title = Resource(
+        "Twilight conditions",
+        "Warunki zmierzchowe"
+    )
+
+    val configurable_twilightcondition_description = Resource(
+        "Twilight condition can calculate the time of sunset and sunrise based on location data",
+        "Warunek zmierzchowy potrafi obliczyć godzinę wschodu i zachodu słońca na podstawie podanej lokalizacji"
+    )
+
+    val field_longitude_hint = Resource(
+        "Longitude",
+        "Długość geograficzna"
+    )
+
+    val field_latitude_hint = Resource(
+        "Latitude",
+        "Szerekość geograficzna"
+    )
+
 }

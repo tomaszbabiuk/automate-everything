@@ -7,7 +7,7 @@ dependencies {
     //projects
     shadow project(':modules:data')
     shadow project(':modules:domain')
-    shadow project(':modules:conditions')
+    shadow project(':modules:devices')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"
@@ -17,4 +17,10 @@ dependencies {
     //kotlin
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+
+    //ktor
+    shadow "io.ktor:ktor-client-core:$ktorVersion"
+    shadow "io.ktor:ktor-client-cio:$ktorVersion"
+    shadow "io.ktor:ktor-client-gson:$ktorVersion"
+    shadow "io.ktor:ktor-client-auth:$ktorVersion"
 }
