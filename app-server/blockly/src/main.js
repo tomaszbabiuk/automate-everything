@@ -7,7 +7,7 @@ import store from './plugins/vuex'
 import ConfigurableForm from './components/ae/configurable/Form'
 import ConfigurableStringField from './components/ae/configurable/StringField'
 import ConfigurableBooleanField from './components/ae/configurable/BooleanField'
-import ConfigurablePowerLevelField from './components/ae/configurable/PowerLevelField'
+import ConfigurablePercentField from './components/ae/configurable/PercentField'
 import ConfigurableDurationField from './components/ae/configurable/DurationField'
 import ConfigurableBigDecimalField from './components/ae/configurable/BigDecimalField'
 import ConfigurableTemperatureField from './components/ae/configurable/TemperatureField'
@@ -29,7 +29,7 @@ import DeviceControl from './components/ae/DeviceControl'
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
 Vue.component('configurable-booleanfield', ConfigurableBooleanField)
-Vue.component('configurable-powerlevelfield', ConfigurablePowerLevelField)
+Vue.component('configurable-percentfield', ConfigurablePercentField)
 Vue.component('configurable-durationfield', ConfigurableDurationField)
 Vue.component('configurable-bigdecimalfield', ConfigurableBigDecimalField)
 Vue.component('configurable-temperaturefield', ConfigurableTemperatureField)

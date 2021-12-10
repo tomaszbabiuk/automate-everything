@@ -1,10 +1,9 @@
 package eu.automateeverything.onoffplugin
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
-import eu.automateeverything.domain.automation.EvaluationResult
-import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.hardware.OutputPort
 import java.math.BigDecimal
 import java.util.*
@@ -13,9 +12,9 @@ abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
     nameOfOrigin: String,
     private val instanceDto: InstanceDto,
     private val controlPort: OutputPort<V>,
-    automationOnly: Boolean,
+    controlType: ControlType,
     private val stateChangeReporter: StateChangeReporter
-) : ControllerAutomationUnitBase<V>(nameOfOrigin, automationOnly) {
+) : AutomationUnitBase<V>(nameOfOrigin, controlType), ControllerAutomationUnit<V> {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)
@@ -45,4 +44,7 @@ abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
             stateChangeReporter.reportDeviceValueChange(this, instanceDto)
         }
     }
+
+    override val recalculateOnTimeChange = false
+    override val recalculateOnPortUpdate = true
 }

@@ -4,8 +4,8 @@ import eu.automateeverything.data.localization.Resource
 
 object R {
     val configurable_temperature_controller_description = Resource(
-        "Temperature controllers are used to control the temperature (eg. in a room). You can define a unique temperature setting for every scene they are bound to.",
-        "Sterowniki temperatury pozwalają kontrolować temperaturę (np. w pomieszeniu). Możesz zdefiniować unikalną wartość nastawy dla każdej sceny, która jest powiązana z danym kontrolerem."
+        "Temperature controllers are used to control the setting of temperature (eg. in a room).",
+        "Sterowniki temperatury pozwalają regulować nastawę temperatury (np. w pomieszeniu)."
     )
 
     val configurable_temperature_controller_title = Resource(
@@ -21,6 +21,26 @@ object R {
     val configurable_temperature_controller_add = Resource(
         "Add temperature controller",
         "Dodaj sterownik temperatury"
+    )
+
+    val configurable_humidity_controller_description = Resource(
+        "Humidity controllers are used to control the setting of humidity (eg. in a room).",
+        "Sterowniki wilgotności pozwalają regulować nastawę wilgotności (np. w pomieszeniu). "
+    )
+
+    val configurable_humidity_controller_title = Resource(
+        "Humidity controllers",
+        "Sterowniki wilgotności"
+    )
+
+    val configurable_humidity_controller_edit = Resource(
+        "Edit humidity controller",
+        "Edytuj sterownik wilgotności"
+    )
+
+    val configurable_humidity_controller_add = Resource(
+        "Add humidity controller",
+        "Dodaj sterownik wilgotności"
     )
 
     val field_min_temp_hint = Resource(
@@ -41,6 +61,21 @@ object R {
     val field_automation_only_hint = Resource(
         "Automation control only",
         "Kontrola tylko przez automatykę"
+    )
+
+    val field_min_hum_hint = Resource(
+        "Minimum humidity",
+        "Wilgotność minimalna"
+    )
+
+    val field_max_hum_hint = Resource(
+        "Maximum humidity",
+        "Wilgotności maksymalna"
+    )
+
+    val field_default_hum_hint = Resource(
+        "Default humidity",
+        "Wilgotności domyślna"
     )
 
     val plugin_description = Resource(

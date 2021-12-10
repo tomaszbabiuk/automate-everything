@@ -1,6 +1,7 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.configurables.ControlType
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
@@ -67,5 +68,14 @@ abstract class AutomationUnitBase<T>(
     }
 
     override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>) {
+    }
+
+    companion object {
+        fun <T: PortValue> buildEvaluationResult(value: T) : EvaluationResult<T> {
+            return EvaluationResult(
+                interfaceValue = value.toFormattedString(),
+                value = value,
+            )
+        }
     }
 }

@@ -3,20 +3,19 @@ package eu.automateeverything.sensorsandcontrollersplugin
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.hardware.Temperature
+import eu.automateeverything.domain.hardware.Humidity
 import org.pf4j.Extension
 import java.math.BigDecimal
 
 @Extension
-class TemperatureControllerConfigurable(
+class HumidityControllerConfigurable(
     private val stateChangeReporter: StateChangeReporter
-) : ControllerConfigurable<Temperature>(Temperature::class.java) {
+) : ControllerConfigurable<Humidity>(Humidity::class.java) {
 
     override val parent: Class<out Configurable> = ControllersConfigurable::class.java
 
@@ -25,22 +24,22 @@ class TemperatureControllerConfigurable(
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_MIN] = minField
             result[FIELD_MAX] = maxField
-            result[FIELD_DEFAULT_TEMP] = defaultField
+            result[FIELD_DEFAULT] = defaultField
             result[FIELD_AUTOMATION_ONLY] = automationOnlyField
             return result
         }
 
     override val addNewRes: Resource
-        get() = R.configurable_temperature_controller_add
+        get() = R.configurable_humidity_controller_add
 
     override val editRes: Resource
-        get() = R.configurable_temperature_controller_edit
+        get() = R.configurable_humidity_controller_edit
 
     override val titleRes: Resource
-        get() = R.configurable_temperature_controller_title
+        get() = R.configurable_humidity_controller_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_temperature_controller_description
+        get() = R.configurable_humidity_controller_description
 
     override val iconRaw: String
         get() = """
@@ -60,23 +59,23 @@ class TemperatureControllerConfigurable(
             </svg>
         """.trimIndent()
 
-    private val minField = TemperatureField(FIELD_MIN, R.field_min_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
-    private val maxField = TemperatureField(FIELD_MAX, R.field_max_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
-    private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
+    private val minField = PercentField(FIELD_MIN, R.field_min_hum_hint, BigDecimal.ZERO)
+    private val maxField = PercentField(FIELD_MAX, R.field_max_hum_hint, BigDecimal.ZERO)
+    private val defaultField = PercentField(FIELD_DEFAULT, R.field_default_hum_hint, BigDecimal.ZERO)
     private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
 
-    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Temperature> {
-        val name = instance.fields[FIELD_NAME]!!
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Humidity> {
+        val name = extractFieldValue(instance, nameField)
         val automationOnly = extractFieldValue(instance, automationOnlyField)
         val min = extractFieldValue(instance, minField)
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
-        return ControllerAutomationUnitBase(Temperature::class.java, name, instance, automationOnly,
-            min.wrapped!!, max.wrapped!!, 0.1.toBigDecimal(), Temperature(default.wrapped!!), stateChangeReporter)
+        return ControllerAutomationUnitBase(Humidity::class.java, name, instance, automationOnly,
+            min, max, BigDecimal.ONE, Humidity(default), stateChangeReporter)
     }
 
     override val blocksCategory: BlockCategory
-        get() = CommonBlockCategories.Temperature
+        get() = CommonBlockCategories.Humidity
 
     override val hasAutomation: Boolean
         get() = true
@@ -84,15 +83,15 @@ class TemperatureControllerConfigurable(
     companion object {
         const val FIELD_MIN = "min"
         const val FIELD_MAX = "max"
-        const val FIELD_DEFAULT_TEMP = "default"
+        const val FIELD_DEFAULT = "default"
         const val FIELD_AUTOMATION_ONLY = "automation_only"
     }
 
     override fun extractMinValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, minField).wrapped!!
+        return BigDecimal.ZERO
     }
 
     override fun extractMaxValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, maxField).wrapped!!
+        return 100.0.toBigDecimal()
     }
 }

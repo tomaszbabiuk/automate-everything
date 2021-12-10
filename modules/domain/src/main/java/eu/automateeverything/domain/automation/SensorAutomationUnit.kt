@@ -22,14 +22,5 @@ class SensorAutomationUnit<T: PortValue>(
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = true
 
-    companion object {
-        fun <T: PortValue> buildEvaluationResult(value: T) : EvaluationResult<T> {
-            return EvaluationResult(
-                interfaceValue = value.toFormattedString(),
-                value = value,
-            )
-        }
-    }
-
     override var lastEvaluation = buildEvaluationResult(port.read())
 }

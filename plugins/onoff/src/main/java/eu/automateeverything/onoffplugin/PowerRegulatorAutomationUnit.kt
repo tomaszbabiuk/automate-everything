@@ -1,5 +1,6 @@
 package eu.automateeverything.onoffplugin
 
+import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.hardware.OutputPort
@@ -12,7 +13,8 @@ class PowerRegulatorAutomationUnit(
     controlPort: OutputPort<PowerLevel>,
     automationOnly: Boolean,
     stateChangeReporter: StateChangeReporter,
-) : SinglePortRegulatorAutomationUnit<PowerLevel>(nameOfOrigin, instanceDto, controlPort, automationOnly, stateChangeReporter) {
+) : SinglePortRegulatorAutomationUnit<PowerLevel>(nameOfOrigin, instanceDto, controlPort,
+    if (automationOnly) ControlType.NA else ControlType.ControllerOther, stateChangeReporter) {
     override val min: BigDecimal = BigDecimal.ZERO
     override val max: BigDecimal = 100.0.toBigDecimal()
     override val step: BigDecimal = 1.toBigDecimal()

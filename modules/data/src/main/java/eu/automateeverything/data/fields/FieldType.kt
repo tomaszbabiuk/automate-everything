@@ -5,7 +5,7 @@ enum class FieldType {
     InstanceReference,
     Duration,
     BigDecimal,
-    PowerLevel,
+    Percent,
     String,
     PasswordString,
     Boolean,
