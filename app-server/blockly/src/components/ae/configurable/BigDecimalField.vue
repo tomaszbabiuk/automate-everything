@@ -15,7 +15,9 @@ data: function() {
       text: '',
     };
   },
+
   props: ["id", "hint", "required", "counter"],
+
   computed: {
     validation() {
       return this.$store.state.instanceValidation[this.id]
@@ -24,6 +26,7 @@ data: function() {
       return this.$store.state.newInstance.fields[this.id]
     },  
   },
+
   watch: {
     validation(val) {
       this.error = !val.valid
@@ -42,6 +45,10 @@ data: function() {
         value: value
       })
     }
-  }
+  },
+
+  mounted: function () {
+    this.text = this.storeFieldData;
+  },
 };
 </script>

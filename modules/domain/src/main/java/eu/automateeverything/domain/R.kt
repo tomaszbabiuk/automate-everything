@@ -71,6 +71,11 @@ object R {
         "Wilgotność"
     )
 
+    val category_luminosity = Resource(
+        "Luminosity",
+        "Jasność"
+    )
+
     val block_label_delay = Resource(
         "Wait for %1 seconds %2 and than: %3",
         "Poczekaj %1 sekund %2 potem: %3"

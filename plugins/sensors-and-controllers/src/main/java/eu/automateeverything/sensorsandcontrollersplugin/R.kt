@@ -3,6 +3,26 @@ package eu.automateeverything.sensorsandcontrollersplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val configurable_luminosity_controller_description = Resource(
+        "Luminosity controllers are used to control the setting of luminance (eg. in a room).",
+        "Sterowniki jasności pozwalają regulować nastawę natężenia oświetlenia (np. w pomieszeniu)."
+    )
+
+    val configurable_luminosity_controller_title = Resource(
+        "Luminosity controllers",
+        "Sterowniki jasności"
+    )
+
+    val configurable_luminosity_controller_edit = Resource(
+        "Edit luminosity controller",
+        "Edytuj sterownik jasności"
+    )
+
+    val configurable_luminosity_controller_add = Resource(
+        "Add luminosity controller",
+        "Dodaj sterownik oświetlenia"
+    )
+
     val configurable_temperature_controller_description = Resource(
         "Temperature controllers are used to control the setting of temperature (eg. in a room).",
         "Sterowniki temperatury pozwalają regulować nastawę temperatury (np. w pomieszeniu)."
@@ -56,6 +76,21 @@ object R {
     val field_default_temp_hint = Resource(
         "Default temperature",
         "Temperatura domyślna"
+    )
+
+    val field_min_lum_hint = Resource(
+        "Minimum luminosity [lux]",
+        "Jasność minimalna [lux]"
+    )
+
+    val field_max_lum_hint = Resource(
+        "Maximum luminosity [lux]",
+        "Jasność maksymalna [lux]"
+    )
+
+    val field_default_lum_hint = Resource(
+        "Default luminosity [lux]",
+        "Jasność domyślna [lux]"
     )
 
     val field_automation_only_hint = Resource(

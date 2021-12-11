@@ -12,6 +12,7 @@ enum class CommonBlockCategories(
     Temperature(R.category_temperature, 240),
     Wattage(R.category_wattage, 330),
     Humidity(R.category_humidity, 120),
+    Luminosity(R.category_luminosity, 127),
     State(R.category_state, 210),
     ThisObject(R.category_this_object, 270),
     PowerLevel(R.category_power_level, 33),
