@@ -31,10 +31,10 @@ class AlarmZoneAutomationUnit(
             }
             STATE_ARMED -> {
                 armAlarmSensors()
-                _sensorThatCausedTheAlarm = null
+                sensorThatCausedTheAlarm = null
             }
             STATE_LEAVING -> {
-                _leavingStartedAtTicks = Calendar.getInstance().timeInMillis
+                leavingStartedAtTicks = Calendar.getInstance().timeInMillis
             }
             STATE_PREALARM -> {
             }
@@ -45,8 +45,8 @@ class AlarmZoneAutomationUnit(
 
     private lateinit var alarmLineUnits: List<AlarmLineAutomationUnit>
 
-    private var _sensorThatCausedTheAlarm: AlarmLineAutomationUnit? = null
-    private var _leavingStartedAtTicks: Long = Long.MAX_VALUE
+    private var sensorThatCausedTheAlarm: AlarmLineAutomationUnit? = null
+    private var leavingStartedAtTicks: Long = Long.MAX_VALUE
 
     override val usedPortsIds: Array<String>
         get() = arrayOf()
@@ -63,7 +63,7 @@ class AlarmZoneAutomationUnit(
         if (currentState.id == STATE_ARMED) {
             for (alarmSensorAutomationUnit in alarmLineUnits) {
                 if (alarmSensorAutomationUnit.isAlarm()) {
-                    _sensorThatCausedTheAlarm = alarmSensorAutomationUnit
+                    sensorThatCausedTheAlarm = alarmSensorAutomationUnit
                     changeState(STATE_ALARM)
                     return
                 }
@@ -75,7 +75,7 @@ class AlarmZoneAutomationUnit(
         }
 
         if (currentState.id === STATE_LEAVING) {
-            if (now.timeInMillis > _leavingStartedAtTicks + leavingTime.milliseconds) {
+            if (now.timeInMillis > leavingStartedAtTicks + leavingTime.milliseconds) {
                 changeState(STATE_ARMED)
                 return
             }
@@ -83,7 +83,7 @@ class AlarmZoneAutomationUnit(
 
         if (currentState.id === STATE_PREALARM) {
             for (alarmSensorAutomationUnit in alarmLineUnits) if (alarmSensorAutomationUnit.isAlarm()) {
-                _sensorThatCausedTheAlarm = alarmSensorAutomationUnit
+                sensorThatCausedTheAlarm = alarmSensorAutomationUnit
                 changeState(STATE_ALARM)
                 return
             }

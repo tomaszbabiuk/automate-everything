@@ -1,15 +1,19 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.data.automation.ReadOnlyState
+import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
+import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.sensorsandcontrollersplugin.TemperatureControllerConfigurable
 import eu.automateeverything.sensorsandcontrollersplugin.ThermometerConfigurable
 import org.pf4j.Extension
 
 @Extension
-class RadiatorCircuitConfigurable() : NameDescriptionConfigurable(), ConfigurableWithFields {
+class RadiatorCircuitConfigurable() : StateDeviceConfigurable() {
 
     override val hasAutomation = false
     override val editableIcon = false
@@ -32,6 +36,7 @@ class RadiatorCircuitConfigurable() : NameDescriptionConfigurable(), Configurabl
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
             val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
+            result[FIELD_ACTUATOR_PORT] = actuatorPortField
             result[FIELD_THERMOMETER_ID] = thermometerIdField
             result[FIELD_TEMPERATURE_CONTROLLER_ID] = temperatureControllerIdField
             result[FIELD_OPENING_TIME] = openingTimeField
@@ -55,8 +60,35 @@ class RadiatorCircuitConfigurable() : NameDescriptionConfigurable(), Configurabl
         RequiredStringValidator()
     )
 
+    private val actuatorPortField = RelayOutputPortField(FIELD_ACTUATOR_PORT, R.field_actuator_port_hint, RequiredStringValidator())
+
     private val inactiveStateField = ContactTypeField(FIELD_INACTIVE_STATE, R.field_inactive_state_hint)
 
+    override val states: Map<String, State>
+        get() {
+            val states: MutableMap<String, State> = HashMap()
+            states[STATE_UNKNOWN] = ReadOnlyState(
+                STATE_UNKNOWN,
+                R.state_unknown,
+            )
+            states[STATE_OPEN] = ReadOnlyState(
+                STATE_OPEN,
+                R.state_open,
+            )
+            states[STATE_CLOSED] = ReadOnlyState(
+                STATE_CLOSED,
+                R.state_closed,
+            )
+            states[STATE_OFF] = ReadOnlyState(
+                STATE_OFF,
+                R.state_off,
+            )
+            return states
+        }
+
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
+        TODO("Not yet implemented")
+    }
 
     override val iconRaw: String
         get() = """
@@ -74,6 +106,7 @@ class RadiatorCircuitConfigurable() : NameDescriptionConfigurable(), Configurabl
         """.trimIndent()
 
     companion object {
+        const val FIELD_ACTUATOR_PORT = "actuatorPortId"
         const val FIELD_OPENING_TIME = "openingTime"
         const val FIELD_INACTIVE_STATE = "inactivityState"
         const val FIELD_THERMOMETER_ID = "thermometerId"

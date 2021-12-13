@@ -20,7 +20,7 @@ class AlarmLineAutomationUnit(
     delayTime: Duration
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
-    private val armingTicks: Int = delayTime.milliseconds
+    private val armingTicks: Long = delayTime.milliseconds
     private var armingStartedAtTicks: Long = 0
     private var lastBreachedTime: Calendar? = null
     private var lineBreached = false
