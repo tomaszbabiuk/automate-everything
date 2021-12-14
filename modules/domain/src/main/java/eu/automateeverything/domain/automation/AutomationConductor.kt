@@ -82,21 +82,20 @@ class AutomationConductor(
                         automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
                     } catch (ex: AutomationErrorException) {
                         val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
-                        val wrapper = buildWrappedUnit(originName, configurable, ex)
+                        val wrapper = buildWrappedUnit(originName, instance, configurable, ex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     } catch (ex: Exception) {
                         val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                         val aex = AutomationErrorException(R.error_automation(ex), ex)
-                        val wrapper = buildWrappedUnit(originName, configurable, aex)
+                        val wrapper = buildWrappedUnit(originName, instance, configurable, aex)
                         automationUnitsCache[instance.id] = Pair(instance, wrapper)
                     }
                 }
             } else {
-
                 val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                 val name = originName ?: "-------"
                 val initError = AutomationErrorException(R.error_device_missing(instance.clazz))
-                val wrapper = AutomationUnitWrapper(Nothing::class.java, name, initError)
+                val wrapper = AutomationUnitWrapper(Nothing::class.java, stateChangeReporter, name, instance, initError)
                 automationUnitsCache[instance.id] = Pair(instance, wrapper)
             }
         }
@@ -142,20 +141,20 @@ class AutomationConductor(
         }
     }
 
-    private fun buildWrappedUnit(originName: String?, configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
+    private fun buildWrappedUnit(originName: String?, instance: InstanceDto, configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
         val name = originName ?: "-----"
 
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                StateDeviceAutomationUnitWrapper(name, ex)
+                StateDeviceAutomationUnitWrapper(stateChangeReporter, instance, name, ex)
             }
 
             is ControllerAutomationUnit<*>  -> {
-                ControllerAutomationUnitWrapper(configurable.valueClazz, name, ex)
+                ControllerAutomationUnitWrapper(configurable.valueClazz, stateChangeReporter, name, instance, ex)
             }
 
             is DeviceConfigurable<*> -> {
-                AutomationUnitWrapper(configurable.valueClazz, name, ex)
+                AutomationUnitWrapper(configurable.valueClazz, stateChangeReporter, name, instance, ex)
             }
 
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")

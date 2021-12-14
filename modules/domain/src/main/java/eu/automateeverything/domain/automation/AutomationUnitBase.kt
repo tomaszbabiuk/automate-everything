@@ -8,7 +8,9 @@ import eu.automateeverything.domain.R
 import java.util.*
 
 abstract class AutomationUnitBase<T>(
-    override val nameOfOrigin: String,
+    private val stateChangeReporter: StateChangeReporter,
+    override val name: String,
+    private val instance: InstanceDto,
     override val controlType: ControlType
     ) : AutomationUnit<T> {
 
@@ -42,8 +44,8 @@ abstract class AutomationUnitBase<T>(
     }
 
     private fun evaluateAndReportStateUpdate() {
-//        lastEvaluation = buildEvaluationResult(currentState.id, states)
-//        stateChangeReporter.reportDeviceStateUpdated(this, instanceDto)
+        lastEvaluation.descriptions = lastNotes.values.toList()
+        stateChangeReporter.reportDeviceUpdated(this, instance)
     }
 
     override fun calculate(now: Calendar) {

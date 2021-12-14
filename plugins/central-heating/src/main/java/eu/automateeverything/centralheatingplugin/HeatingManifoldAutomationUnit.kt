@@ -50,7 +50,7 @@ class HeatingManifoldAutomationUnit(
     private lateinit var circuitUnits: List<RadiatorCircuitAutomationUnit>
 
     override val usedPortsIds: Array<String>
-        get() = arrayOf()
+        get() = listOfNotNull(pumpPort?.id, transformerPort?.id).toTypedArray()
 
     override val recalculateOnTimeChange = true
     override val recalculateOnPortUpdate = true
@@ -66,7 +66,7 @@ class HeatingManifoldAutomationUnit(
         //calculate opening level of actuators
         for (circuit in circuitUnits) {
             val openingLevel: Int = circuit.calculateOpeningLevel()
-            if (circuit.isActive()) {
+            if (circuit.active) {
                 isAnyLineActive = true
                 if (openingLevel == 100) {
                     isAnyActiveLineOpened = true
@@ -83,14 +83,19 @@ class HeatingManifoldAutomationUnit(
 
         //control actuators (open or close)
         if (isAnyLineActive) {
-            for (actuator in circuitUnits) {
-                if (actuator.isActive()) {
-                    if (actuator.calculateOpeningLevel() < 100) {
-                        actuator.changeState(RadiatorCircuitConfigurable.STATE_OPEN)
+            for (circuit in circuitUnits) {
+                val circuitOpeningLevel = circuit.calculateOpeningLevel()
+                if (circuit.active) {
+                    if (circuitOpeningLevel < 100) {
+                        if (circuit.currentState.id != RadiatorCircuitConfigurable.STATE_FORCED_CLOSE) {
+                            circuit.changeState(RadiatorCircuitConfigurable.STATE_OPEN)
+                        }
                     }
                 } else {
-                    if (actuator.calculateOpeningLevel() > 0) {
-                        actuator.changeState(RadiatorCircuitConfigurable.STATE_CLOSED)
+                    if (circuitOpeningLevel > 0) {
+                        if (circuit.currentState.id != RadiatorCircuitConfigurable.STATE_FORCED_OPEN) {
+                            circuit.changeState(RadiatorCircuitConfigurable.STATE_CLOSED)
+                        }
                     }
                 }
             }
@@ -105,12 +110,12 @@ class HeatingManifoldAutomationUnit(
         } else {
             changeState(HeatingManifoldConfigurable.STATE_STANDBY)
             for (actuator in circuitUnits) {
-                actuator.changeState(RadiatorCircuitConfigurable.STATE_OFF)
+                actuator.changeState(RadiatorCircuitConfigurable.STATE_FORCED_CLOSE)
             }
         }
 
         for (circuit in circuitUnits) {
-            circuit.setCentralHeatingEnabled(heatingEnabled)
+            circuit.centralHeatingEnabled = heatingEnabled
         }
 
         if (pumpPort != null) {

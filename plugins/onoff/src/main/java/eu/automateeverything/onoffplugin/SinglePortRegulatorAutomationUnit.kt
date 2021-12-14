@@ -9,12 +9,12 @@ import java.math.BigDecimal
 import java.util.*
 
 abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
-    nameOfOrigin: String,
-    private val instanceDto: InstanceDto,
+    private val stateChangeReporter: StateChangeReporter,
+    name: String,
+    private val instance: InstanceDto,
     private val controlPort: OutputPort<V>,
-    controlType: ControlType,
-    private val stateChangeReporter: StateChangeReporter
-) : AutomationUnitBase<V>(nameOfOrigin, controlType), ControllerAutomationUnit<V> {
+    controlType: ControlType
+) : AutomationUnitBase<V>(stateChangeReporter, name, instance, controlType), ControllerAutomationUnit<V> {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)
@@ -22,7 +22,7 @@ abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
     override fun calculateInternal(now: Calendar) {
         val actualLevel = controlPort.read()
         lastEvaluation = buildEvaluationResult(actualLevel)
-        stateChangeReporter.reportDeviceValueChange(this, instanceDto)
+        stateChangeReporter.reportDeviceValueChange(this, instance)
     }
 
     override var lastEvaluation = buildEvaluationResult(controlPort.read())
@@ -41,7 +41,7 @@ abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
         if (actualLevel.asDecimal() != newValue.asDecimal()) {
             controlPort.write(newValue)
             lastEvaluation = buildEvaluationResult(newValue)
-            stateChangeReporter.reportDeviceValueChange(this, instanceDto)
+            stateChangeReporter.reportDeviceValueChange(this, instance)
         }
     }
 

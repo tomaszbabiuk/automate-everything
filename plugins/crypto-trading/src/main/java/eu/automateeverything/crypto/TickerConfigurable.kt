@@ -3,6 +3,7 @@ package eu.automateeverything.crypto
 import eu.automateeverything.data.fields.PortReference
 import eu.automateeverything.data.fields.PortReferenceType
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.PortReferenceField
@@ -12,9 +13,18 @@ import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class TickerConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigurable<Ticker>(
+class TickerConfigurable(
+    portFinder: PortFinder,
+    stateChangeReporter: StateChangeReporter
+) : SinglePortDeviceConfigurable<Ticker>(
     Ticker::class.java,
-    PortReferenceField(FIELD_PORT, R.field_port_hint, PortReference(Ticker::class.java, PortReferenceType.Input),RequiredStringValidator()),
+    stateChangeReporter,
+    PortReferenceField(
+        FIELD_PORT,
+        R.field_port_hint,
+        PortReference(Ticker::class.java, PortReferenceType.Input),
+        RequiredStringValidator()
+    ),
     portFinder
 ) {
 

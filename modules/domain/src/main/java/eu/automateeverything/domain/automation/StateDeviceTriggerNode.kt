@@ -21,15 +21,15 @@ class StateDeviceTriggerNode(
         }
     }
 
-    override fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instanceDto: InstanceDto) {
-        if (instanceDto.id == instanceId) {
+    override fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
+        if (instance.id == instanceId) {
             if (deviceUnit.currentState.id == observedStateId) {
                 next?.process(Calendar.getInstance(), false)
             }
         }
     }
 
-    override fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instanceDto: InstanceDto) {
+    override fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto) {
         //not interested
     }
 }

@@ -4,6 +4,7 @@ import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.TemperatureInputPortField
 import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
@@ -12,11 +13,13 @@ import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class ThermometerConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigurable<Temperature>(
-    Temperature::class.java,
-    TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
-    portFinder
-) {
+class ThermometerConfigurable(portFinder: PortFinder, stateChangeReporter: StateChangeReporter) :
+    SinglePortDeviceConfigurable<Temperature>(
+        Temperature::class.java,
+        stateChangeReporter,
+        TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
+        portFinder
+    ) {
     override val parent: Class<out Configurable?>
         get() = SensorsConfigurable::class.java
 

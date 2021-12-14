@@ -1,5 +1,6 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
@@ -54,7 +55,7 @@ class HeatingManifoldConfigurable(
 
     private val circuitIdsField = InstanceReferenceField(
         FIELD_CIRCUITS, R.field_circuits_hint,
-        InstanceReference(ThermometerConfigurable::class.java, InstanceReferenceType.Multiple),
+        InstanceReference(RadiatorCircuitConfigurable::class.java, InstanceReferenceType.Multiple),
         RequiredStringValidator()
     )
 
@@ -69,9 +70,10 @@ class HeatingManifoldConfigurable(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_HEATING] = ReadOnlyState(
+            states[STATE_HEATING] = ControlState(
                 STATE_HEATING,
                 R.state_heating,
+                R.action_heat_on
             )
             states[STATE_REGULATION] = ReadOnlyState(
                 STATE_REGULATION,

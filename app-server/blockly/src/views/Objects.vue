@@ -268,7 +268,9 @@ export default {
       instanceDialog: {
         show: false,
         title: "",
-        action: function () {},
+        action: function () {
+          // this is intentional
+        },
         activeTab: 0,
         overlay: false,
         actionText: "",
@@ -276,7 +278,9 @@ export default {
       deleteDialog: {
         loading: false,
         show: false,
-        action: function () {},
+        action: function () {
+          //this is intentional
+        },
         instanceId: null,
         iconCategoryId: null,
       },

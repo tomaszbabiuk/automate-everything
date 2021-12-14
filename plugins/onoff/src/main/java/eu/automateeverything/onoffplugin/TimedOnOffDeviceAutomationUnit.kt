@@ -21,7 +21,7 @@ import java.util.Calendar
 
 class TimedOnOffDeviceAutomationUnit(
     stateChangeReporter: StateChangeReporter,
-    instanceDto: InstanceDto,
+    instance: InstanceDto,
     name: String,
     private val minWorkingTime: Duration,
     private val maxWorkingTime: Duration,
@@ -29,7 +29,7 @@ class TimedOnOffDeviceAutomationUnit(
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
     private val automationOnly: Boolean
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     private var onSince = 0L
     private var offSince = 0L

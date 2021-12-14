@@ -3,9 +3,34 @@ package eu.automateeverything.centralheatingplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val state_forced_closed = Resource(
+        "Close (forced)",
+        "Zamknięty (wymuszono)"
+    )
+
+    val state_forced_open = Resource(
+        "Open (forced)",
+        "Otwarty (wymuszono)"
+    )
+
+    val action_force_close = Resource(
+        "Force close",
+        "Wymuś zamknięcie"
+    )
+
+    val action_force_open = Resource(
+        "Force open",
+        "Wymuś otwarcie"
+    )
+
     val state_heating = Resource(
         "Heating",
         "Ogrzewanie"
+    )
+
+    val action_heat_on = Resource(
+        "Turn heating on",
+        "Włącz ogrzewanie"
     )
 
     val state_standby = Resource(
@@ -45,6 +70,11 @@ object R {
 
     val state_off = Resource(
         "Off",
+        "Wył"
+    )
+
+    val action_off = Resource(
+        "Off (forced)",
         "Wył"
     )
 
@@ -136,12 +166,12 @@ object R {
     )
 
     val configurable_heating_manifold_add = Resource(
-        "Add heating circuit",
+        "Add heating manifold",
         "Dodaj rozdzielacz c.o."
     )
 
     val configurable_heating_manifold_edit = Resource(
-        "Edit a heating circuit",
+        "Edit a heating manifold",
         "Edytuj rozdzialacz c.o."
     )
 

@@ -7,7 +7,7 @@ class EvaluationResult<T> (
     val interfaceValue: Resource,
     val value: T? = null,
     val isSignaled: Boolean = false,
-    val descriptions: List<Resource> = ArrayList(),
+    var descriptions: List<Resource> = ArrayList(),
     val error: Exception? = null,
     val nextStates: NextStatesDto? = null,
 ) {

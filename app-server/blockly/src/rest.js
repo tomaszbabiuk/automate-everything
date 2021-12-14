@@ -307,8 +307,8 @@ export const client = {
   controlPort: async function (portId, controlValue) {
     await this.handleRestError(
       () => axiosInstance.put("rest/ports/" + encodeURIComponent(portId) + "/value", JSON.stringify(controlValue)),
-      (response) => {
-        console.log(response.data)
+      () => {
+        //this is intentional
       }
     )
   },

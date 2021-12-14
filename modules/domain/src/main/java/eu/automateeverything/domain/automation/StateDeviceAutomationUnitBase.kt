@@ -7,16 +7,15 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.hardware.OutputPort
-import eu.automateeverything.domain.hardware.PowerLevel
 import eu.automateeverything.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnitBase(
     private val stateChangeReporter: StateChangeReporter,
-    private val instanceDto: InstanceDto,
-    nameOfOrigin: String,
+    private val instance: InstanceDto,
+    name: String,
     controlType: ControlType,
     protected val states: Map<String, State>,
-    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(nameOfOrigin, controlType), StateDeviceAutomationUnit{
+    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(stateChangeReporter, name, instance, controlType), StateDeviceAutomationUnit{
 
     override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
@@ -47,7 +46,7 @@ abstract class StateDeviceAutomationUnitBase(
 
     private fun evaluateAndReportStateChange() {
         lastEvaluation = buildEvaluationResult(currentState.id, states)
-        stateChangeReporter.reportDeviceStateChange(this, instanceDto)
+        stateChangeReporter.reportDeviceStateChange(this, instance)
     }
 
     private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {
@@ -76,18 +75,6 @@ abstract class StateDeviceAutomationUnitBase(
         protected fun changeRelayStateIfNeeded(
             port: OutputPort<Relay>,
             state: Relay,
-            invalidate: Boolean = false
-        ) {
-            if (invalidate || state.value != port.read().value) {
-                port.write(state)
-            }
-        }
-
-        @Throws(Exception::class)
-        @JvmStatic
-        protected fun changePowerLevelIfNeeded(
-            port: OutputPort<PowerLevel>,
-            state: PowerLevel,
             invalidate: Boolean = false
         ) {
             if (invalidate || state.value != port.read().value) {

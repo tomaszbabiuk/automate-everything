@@ -10,11 +10,11 @@ import java.util.*
 
 class SceneAutomationUnit(
     stateChangeReporter: StateChangeReporter,
-    instanceDto: InstanceDto,
+    instance: InstanceDto,
     name: String,
     automationOnly: Boolean,
     states: Map<String, State>,
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name,
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name,
         if (automationOnly) { ControlType.NA } else { ControlType.States },
         states, false) {
 

@@ -130,8 +130,9 @@ class OneWireAdapter(
 
     private suspend fun maintenanceLoop() = coroutineScope {
         val now = Calendar.getInstance()
+        var adapter: USerialAdapter? = null
         try {
-            val adapter = initializeAdapter(serialPortName)
+            adapter = initializeAdapter(serialPortName)
 
             maintainExecutionOfRelays(adapter)
 
@@ -148,9 +149,21 @@ class OneWireAdapter(
         }
         catch (ex: OneWireIOException) {
             println(ex)
-            ports.values.forEach {
-                maintainPortConnectivity(now, it, false)
-                broadcastPortChangedEvent(it)
+
+            try {
+                adapter?.reset()
+            } catch (nex: Exception) {
+                println("Trying to reset the adapter has failed!")
+            }
+
+            if (ex.message == "OneWireContainer28-temperature conversion not complete") {
+                //ignoring
+                //TODO: add warning counter... if more than 10 > post to the mailbox
+            } else {
+                ports.values.forEach {
+                    maintainPortConnectivity(now, it, false)
+                    broadcastPortChangedEvent(it)
+                }
             }
         }
     }

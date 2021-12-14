@@ -4,6 +4,7 @@ import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
 import java.math.BigDecimal
@@ -11,9 +12,11 @@ import java.util.*
 
 open class AutomationUnitWrapper<T>(
     @Suppress("UNUSED_PARAMETER") valueClazz: Class<T>,
+    val stateChangeReporter: StateChangeReporter,
     name: String,
+    val instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitBase<T>(name, ControlType.NA) {
+) : AutomationUnitBase<T>(stateChangeReporter, name, instance, ControlType.NA) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf()
@@ -32,9 +35,11 @@ open class AutomationUnitWrapper<T>(
 }
 
 class StateDeviceAutomationUnitWrapper(
+    stateChangeReporter: StateChangeReporter,
+    instance: InstanceDto,
     name: String,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<State>(State::class.java, name, initError),
+) : AutomationUnitWrapper<State>(State::class.java, stateChangeReporter, name, instance, initError),
 StateDeviceAutomationUnit{
     override fun changeState(state: String, actor: String?) {
     }
@@ -47,9 +52,11 @@ StateDeviceAutomationUnit{
 
 class ControllerAutomationUnitWrapper<V: PortValue>(
     override val valueClazz: Class<V>,
+    stateChangeReporter: StateChangeReporter,
     name: String,
+    instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<V>(valueClazz, name, initError), ControllerAutomationUnit<V> {
+) : AutomationUnitWrapper<V>(valueClazz, stateChangeReporter, name, instance, initError), ControllerAutomationUnit<V> {
 
     override var lastEvaluation = EvaluationResult<V>(
         interfaceValue = R.error_initialization,

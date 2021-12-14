@@ -20,11 +20,11 @@ import java.util.Calendar
 
 class ActionAutomationUnit(
     stateChangeReporter: StateChangeReporter,
-    instanceDto: InstanceDto,
+    instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val executionCode: () -> Pair<Boolean,Resource>
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     private var executionScope: CoroutineScope? = null
 

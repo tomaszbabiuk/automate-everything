@@ -6,7 +6,7 @@ import eu.automateeverything.data.localization.Resource
 import java.util.*
 
 interface AutomationUnit<T> {
-    val nameOfOrigin: String
+    val name: String
     var lastEvaluation: EvaluationResult<T>
     val usedPortsIds: Array<String>
     val recalculateOnTimeChange: Boolean

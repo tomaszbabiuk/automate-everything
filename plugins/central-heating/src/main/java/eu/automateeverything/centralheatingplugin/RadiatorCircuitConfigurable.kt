@@ -1,5 +1,6 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
@@ -7,16 +8,22 @@ import eu.automateeverything.data.fields.InstanceReferenceType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.hardware.PortFinder
+import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.sensorsandcontrollersplugin.TemperatureControllerConfigurable
 import eu.automateeverything.sensorsandcontrollersplugin.ThermometerConfigurable
 import org.pf4j.Extension
 
 @Extension
-class RadiatorCircuitConfigurable() : StateDeviceConfigurable() {
+class RadiatorCircuitConfigurable(
+    private val portFinder: PortFinder,
+    private val stateChangeReporter: StateChangeReporter
+) : StateDeviceConfigurable() {
 
-    override val hasAutomation = false
-    override val editableIcon = false
+    override val hasAutomation = true
+    override val editableIcon = true
     override val taggable = true
 
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
@@ -79,15 +86,27 @@ class RadiatorCircuitConfigurable() : StateDeviceConfigurable() {
                 STATE_CLOSED,
                 R.state_closed,
             )
-            states[STATE_OFF] = ReadOnlyState(
-                STATE_OFF,
-                R.state_off,
+            states[STATE_FORCED_CLOSE] = ControlState(
+                STATE_FORCED_CLOSE,
+                R.action_force_close,
+                R.state_forced_closed
+            )
+            states[STATE_FORCED_OPEN] = ControlState(
+                STATE_FORCED_OPEN,
+                R.action_force_open,
+                R.state_forced_open
             )
             return states
         }
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
-        TODO("Not yet implemented")
+        val activationTime = extractFieldValue(instance, openingTimeField)
+        val name = extractFieldValue(instance, nameField)
+        val actuatorPortRaw = extractFieldValue(instance, actuatorPortField)
+        val actuatorPort = portFinder.searchForOutputPort(Relay::class.java, actuatorPortRaw)
+        val inactiveState = extractFieldValue(instance, inactiveStateField)
+
+        return RadiatorCircuitAutomationUnit(stateChangeReporter, instance, name, states, actuatorPort, activationTime, inactiveState)
     }
 
     override val iconRaw: String
@@ -113,6 +132,7 @@ class RadiatorCircuitConfigurable() : StateDeviceConfigurable() {
         const val FIELD_TEMPERATURE_CONTROLLER_ID = "temperatureControllerId"
         const val STATE_OPEN = "open"
         const val STATE_CLOSED = "closed"
-        const val STATE_OFF = "off"
+        const val STATE_FORCED_CLOSE = "forced_close"
+        const val STATE_FORCED_OPEN = "forced_open"
     }
 }

@@ -4,6 +4,7 @@ import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.WattageInputPortField
 import eu.automateeverything.domain.hardware.Wattage
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
@@ -12,11 +13,12 @@ import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class WattmeterConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigurable<Wattage>(
-    Wattage::class.java,
-    WattageInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
-    portFinder
-) {
+class WattmeterConfigurable(portFinder: PortFinder, stateChangeReporter: StateChangeReporter) :
+    SinglePortDeviceConfigurable<Wattage>(
+        Wattage::class.java, stateChangeReporter,
+        WattageInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
+        portFinder
+    ) {
     override val parent: Class<out Configurable?>
         get() = SensorsConfigurable::class.java
 

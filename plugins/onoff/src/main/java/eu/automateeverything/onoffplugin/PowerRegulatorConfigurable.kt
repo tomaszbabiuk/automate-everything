@@ -72,7 +72,7 @@ class PowerRegulatorConfigurable(
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         val automationOnly = extractFieldValue(instance, automationOnlyField)
-        return PowerRegulatorAutomationUnit(name, instance, port, automationOnly, stateChangeReporter)
+        return PowerRegulatorAutomationUnit(stateChangeReporter, name, instance, port, automationOnly)
     }
 
     override val blocksCategory: BlockCategory

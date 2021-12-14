@@ -70,8 +70,8 @@ class TemperatureControllerConfigurable(
         val min = extractFieldValue(instance, minField)
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
-        return ControllerAutomationUnitBase(Temperature::class.java, name, instance, automationOnly,
-            min.wrapped!!, max.wrapped!!, 0.1.toBigDecimal(), Temperature(default.wrapped!!), stateChangeReporter)
+        return ControllerAutomationUnitBase(Temperature::class.java, stateChangeReporter, name, instance, automationOnly,
+            min.wrapped!!, max.wrapped!!, 0.05.toBigDecimal(), Temperature(default.wrapped!!))
     }
 
     override val blocksCategory: BlockCategory

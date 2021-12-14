@@ -73,8 +73,8 @@ class LuminosityControllerConfigurable(
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
         return ControllerAutomationUnitBase(
-            Luminosity::class.java, name, instance, automationOnly,
-            min.wrapped!!, max.wrapped!!, BigDecimal.ONE, Luminosity(default.wrapped!!), stateChangeReporter)
+            Luminosity::class.java, stateChangeReporter, name, instance, automationOnly,
+            min.wrapped!!, max.wrapped!!, BigDecimal.ONE, Luminosity(default.wrapped!!))
     }
 
     override val blocksCategory: BlockCategory

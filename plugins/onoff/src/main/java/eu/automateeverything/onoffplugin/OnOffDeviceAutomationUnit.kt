@@ -16,12 +16,12 @@ import java.util.Calendar
 
 class OnOffDeviceAutomationUnit(
     stateChangeReporter: StateChangeReporter,
-    instanceDto: InstanceDto,
+    instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
     private val automationOnly: Boolean
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instanceDto, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {

@@ -69,8 +69,8 @@ class HumidityControllerConfigurable(
         val min = extractFieldValue(instance, minField)
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
-        return ControllerAutomationUnitBase(Humidity::class.java, name, instance, automationOnly,
-            min, max, BigDecimal.ONE, Humidity(default), stateChangeReporter)
+        return ControllerAutomationUnitBase(Humidity::class.java, stateChangeReporter, name, instance, automationOnly,
+            min, max, BigDecimal.ONE, Humidity(default))
     }
 
     override val blocksCategory: BlockCategory

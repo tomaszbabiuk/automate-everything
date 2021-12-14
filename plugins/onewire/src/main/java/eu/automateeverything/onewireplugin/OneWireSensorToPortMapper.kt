@@ -78,7 +78,7 @@ class OneWireSensorToPortMapper(
         broadcastMessage("${temperatureSensor.name}/${temperatureSensor.addressAsString} discovered as Thermometer!")
 
         try {
-            val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0, "I")
+            val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0, "T")
             val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor).toBigDecimal() + 273.15.toBigDecimal()
             val initialValue = Temperature(initialValueRaw)
             return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue))

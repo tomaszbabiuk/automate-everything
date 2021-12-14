@@ -89,7 +89,7 @@ data: function() {
         if (ids !== actualSelection) {
           this.selected = ids.split(",").map(this.mapSelected)
         }
-      } else {
+      } else if (ids != null && ids.length > 0) {
         var actualSelection2 = ids.id
         if (ids != actualSelection2) {
           this.selected = this.mapSelected(ids)
@@ -113,6 +113,7 @@ data: function() {
   },
 
   mounted: function() {
+    console.log('mounted')
     if (this.isMultiple) {
       this.selected = this.storeFieldData.split(",").map(this.mapSelected)
     } else {

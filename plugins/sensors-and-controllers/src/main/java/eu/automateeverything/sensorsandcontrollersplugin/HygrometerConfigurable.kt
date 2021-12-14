@@ -4,6 +4,7 @@ import eu.automateeverything.domain.configurable.HumidityInputPortField
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.hardware.Humidity
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
@@ -12,8 +13,12 @@ import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class HygrometerConfigurable(portFinder: PortFinder) : SinglePortDeviceConfigurable<Humidity>(
+class HygrometerConfigurable(
+    portFinder: PortFinder,
+    stateChangeReporter: StateChangeReporter
+) : SinglePortDeviceConfigurable<Humidity>(
     Humidity::class.java,
+    stateChangeReporter,
     HumidityInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
     portFinder
 ) {

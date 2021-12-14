@@ -80,7 +80,7 @@ open class ChangeValueBlockFactory<T: PortValue>(
         }
 
         if (context.thisDevice is ControllerConfigurable<*>) {
-            val unit = context.automationUnitsCache[context.instanceDto.id] as? ControllerAutomationUnit<in PortValue>
+            val unit = context.automationUnitsCache[context.instance.id] as? ControllerAutomationUnit<in PortValue>
             if (unit != null) {
                 return ChangeValueAutomationNode(valueNode, unit, next)
             } else {

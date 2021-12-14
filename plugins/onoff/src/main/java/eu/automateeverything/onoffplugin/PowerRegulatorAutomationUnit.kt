@@ -8,13 +8,13 @@ import eu.automateeverything.domain.hardware.PowerLevel
 import java.math.BigDecimal
 
 class PowerRegulatorAutomationUnit(
-    nameOfOrigin: String,
+    stateChangeReporter: StateChangeReporter,
+    name: String,
     instanceDto: InstanceDto,
     controlPort: OutputPort<PowerLevel>,
     automationOnly: Boolean,
-    stateChangeReporter: StateChangeReporter,
-) : SinglePortRegulatorAutomationUnit<PowerLevel>(nameOfOrigin, instanceDto, controlPort,
-    if (automationOnly) ControlType.NA else ControlType.ControllerOther, stateChangeReporter) {
+) : SinglePortRegulatorAutomationUnit<PowerLevel>(stateChangeReporter, name, instanceDto, controlPort,
+    if (automationOnly) ControlType.NA else ControlType.ControllerOther) {
     override val min: BigDecimal = BigDecimal.ZERO
     override val max: BigDecimal = 100.0.toBigDecimal()
     override val step: BigDecimal = 1.toBigDecimal()

@@ -8,15 +8,15 @@ import java.util.*
 
 open class ControllerAutomationUnitBase<V : PortValue>(
     override val valueClazz: Class<V>,
-    val name: String,
-    private val instanceDto: InstanceDto,
+    private val stateChangeReporter: StateChangeReporter,
+    override val name: String,
+    private val instance: InstanceDto,
     automationOnly: Boolean,
     override val min: BigDecimal,
     override val max: BigDecimal,
     override val step: BigDecimal,
     default: V,
-    private val stateChangeReporter: StateChangeReporter,
-) : AutomationUnitBase<V>(name, if (automationOnly) ControlType.NA else ControlType.ControllerOther),
+) : AutomationUnitBase<V>(stateChangeReporter, name, instance, if (automationOnly) ControlType.NA else ControlType.ControllerOther),
     ControllerAutomationUnit<V> {
 
     override val recalculateOnTimeChange = false
@@ -26,11 +26,11 @@ open class ControllerAutomationUnitBase<V : PortValue>(
         val actualLevel = lastEvaluation.value
         if (actualLevel?.asDecimal() != newValue.asDecimal()) {
             lastEvaluation = buildEvaluationResult(newValue)
-            stateChangeReporter.reportDeviceValueChange(this, instanceDto)
+            stateChangeReporter.reportDeviceValueChange(this, instance)
         }
     }
 
-    protected fun buildEvaluationResult(level: V) : EvaluationResult<V> {
+    private fun buildEvaluationResult(level: V) : EvaluationResult<V> {
         return EvaluationResult(
             interfaceValue = level.toFormattedString(),
             value = level,
