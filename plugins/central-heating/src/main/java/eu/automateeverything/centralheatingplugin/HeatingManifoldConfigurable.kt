@@ -1,6 +1,5 @@
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
@@ -12,7 +11,6 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
-import eu.automateeverything.sensorsandcontrollersplugin.ThermometerConfigurable
 import org.pf4j.Extension
 
 @Extension
@@ -70,10 +68,9 @@ class HeatingManifoldConfigurable(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_HEATING] = ControlState(
-                STATE_HEATING,
-                R.state_heating,
-                R.action_heat_on
+            states[STATE_PUMPING] = ReadOnlyState(
+                STATE_PUMPING,
+                R.state_pumping
             )
             states[STATE_REGULATION] = ReadOnlyState(
                 STATE_REGULATION,
@@ -82,10 +79,6 @@ class HeatingManifoldConfigurable(
             states[STATE_STANDBY] = ReadOnlyState(
                 STATE_STANDBY,
                 R.state_standby
-            )
-            states[STATE_OFF] = ReadOnlyState(
-                STATE_OFF,
-                R.state_off,
             )
             return states
         }
@@ -139,9 +132,8 @@ class HeatingManifoldConfigurable(
         const val FIELD_TRANSFORMER_PORT = "transformerPortId"
         const val FIELD_MINIMUM_PUMP_WORKING_TIME = "minWorkingTime"
         const val FIELD_CIRCUITS = "circuitIds"
+        const val STATE_PUMPING = "pumping"
         const val STATE_REGULATION = "regulation"
-        const val STATE_HEATING = "heating"
         const val STATE_STANDBY = "standby"
-        const val STATE_OFF = "off"
     }
 }

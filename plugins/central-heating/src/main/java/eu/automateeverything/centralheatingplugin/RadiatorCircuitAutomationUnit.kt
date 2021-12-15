@@ -1,12 +1,11 @@
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_CLOSED
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_FORCED_CLOSE
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_OPEN
+import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.NOTE_VALVE_OPENING
+import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_DISABLED
+import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_ENABLED
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
@@ -23,72 +22,69 @@ class RadiatorCircuitAutomationUnit(
     states: Map<String, State>,
     private val actuatorPort: OutputPort<Relay>,
     private val activationTime: Duration,
-    private val inactiveState: InactiveState,
+    val inactiveState: InactiveState,
     ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     private var openingLevel: Long = if (inactiveState == InactiveState.NO) activationTime.milliseconds else 0
 
     private var counter: Long = Calendar.getInstance().timeInMillis
     override val usedPortsIds = arrayOf(actuatorPort.id)
-    var centralHeatingEnabled = false
-    var active = false
-        private set
+//    var anyOtherLineIsActive = false
+
+    fun isActive() = currentState.id == STATE_ENABLED
 
     override val recalculateOnTimeChange = true
     override val recalculateOnPortUpdate = true
 
+    init {
+        changeState(STATE_DISABLED)
+    }
+
     override fun applyNewState(state: String) {
-        when (state) {
-            STATE_OPEN -> {
-                if (inactiveState == InactiveState.NC) {
-                    actuatorPort.write(Relay(BigDecimal.ONE))
-                } else {
-                    actuatorPort.write(Relay(BigDecimal.ZERO))
-                }
-            }
+//        when (state) {
+//            STATE_ENABLED -> {
+//                if (calculateOpeningLevel() != 100) {
+//                    if (inactiveState == InactiveState.NC) {
+//                        actuatorPort.write(Relay.ON)
+//                    } else {
+//                        actuatorPort.write(Relay.OFF)
+//                    }
+//                }
+//            }
+//
+//            STATE_DISABLE -> {
+//                if (inactiveState == InactiveState.NO) {
+//                    actuatorPort.write(Relay.ON)
+//                } else {
+//                    actuatorPort.write(Relay.OFF)
+//                }
+//            }
+//
+//            else -> {
+//                actuatorPort.write(Relay.OFF)
+//            }
+//        }
 
-            STATE_CLOSED -> {
-                if (inactiveState == InactiveState.NO) {
-                    actuatorPort.write(Relay(BigDecimal.ONE))
-                } else {
-                    actuatorPort.write(Relay(BigDecimal.ZERO))
-                }
-            }
-
-            STATE_FORCED_CLOSE -> {
-                actuatorPort.write(Relay(BigDecimal.ZERO))
-            }
-        }
+//        if (getStateId().equals("open")) {
+//            if (calculateOpenningLevel() != 100) {
+//                if (getDevice().getInactiveState() === InactiveState.NC) {
+//                    changeOutputPortStateIfNeeded(_outputPort, true)
+//                } else {
+//                    changeOutputPortStateIfNeeded(_outputPort, false)
+//                }
+//            }
+//        }
+//
+//        if (getStateId().equals("closed")) {
+//            if (getDevice().getInactiveState() === InactiveState.NO) {
+//                changeOutputPortStateIfNeeded(_outputPort, true)
+//            } else {
+//                changeOutputPortStateIfNeeded(_outputPort, false)
+//            }
+//        }
     }
 
     override fun calculateInternal(now: Calendar) {
-        forceToActiveIfNeeded()
-        calculateOpening(now)
-    }
-
-    @Throws(Exception::class)
-    private fun forceToActiveIfNeeded() {
-        val forceDisable: Boolean = currentState.id == STATE_FORCED_CLOSE
-        if (forceDisable) {
-            active = false
-        } else {
-            val forceEnable: Boolean = currentState.id == STATE_FORCED_CLOSE
-            val roomRequiresHeating = centralHeatingEnabled && calculateActivity()
-            active = forceEnable || roomRequiresHeating
-        }
-        if (active) {
-            changeState(STATE_OPEN)
-        }
-    }
-
-    private fun calculateActivity(): Boolean {
-        //TODO("Not yet implemented")
-        return true
-    }
-
-
-
-    private fun calculateOpening(now: Calendar) {
         val ticksDelta: Long = now.timeInMillis - counter
         counter = now.timeInMillis
         if (actuatorPort.read().value == BigDecimal.ONE) {
@@ -122,21 +118,32 @@ class RadiatorCircuitAutomationUnit(
         if (openingLevel > activationTime.milliseconds) {
             openingLevel = activationTime.milliseconds
         }
+
+//        val ncActuatorShouldBePowered = (inactiveState == InactiveState.NC) && currentState.id == STATE_ENABLED
+//        val noActuatorShouldBePowered = (inactiveState == InactiveState.NO) && anyOtherLineIsActive
+//        val actuatorShouldBePowered = ncActuatorShouldBePowered || noActuatorShouldBePowered
+//        actuatorPort.write(if (actuatorShouldBePowered) Relay.ON else Relay.OFF)
     }
 
-    fun calculateOpeningLevel(): Int {
+    fun calculateValveLevel(): Int {
         val valveOpening = (openingLevel.toDouble() / activationTime.milliseconds * 100).roundToInt()
-        modifyNote("valveOpening", Resource.createUniResource(valveOpening.toString()))
+        modifyNote(NOTE_VALVE_OPENING, R.note_opening_level(valveOpening))
         return valveOpening
     }
 
-
-
     fun needsPower(): Boolean {
         val ncActuatorNeedsPower =
-            active && (currentState.id == STATE_OPEN) && inactiveState == InactiveState.NC
+            isActive() && (currentState.id == STATE_ENABLED) && inactiveState == InactiveState.NC
         val noActuatorNeedsPower =
-            active && (currentState.id == STATE_CLOSED) && inactiveState == InactiveState.NO
+            isActive() && (currentState.id == STATE_DISABLED) && inactiveState == InactiveState.NO
         return noActuatorNeedsPower || ncActuatorNeedsPower
+    }
+
+    fun disableRelay() {
+        actuatorPort.write(Relay.OFF)
+    }
+
+    fun enableRelay() {
+        actuatorPort.write(Relay.ON)
     }
 }

@@ -31,7 +31,7 @@ class HeatingManifoldAutomationUnit(
                 transformerPort?.write(Relay(BigDecimal.ONE))
                 pumpPort?.write(Relay(BigDecimal.ZERO))
             }
-            HeatingManifoldConfigurable.STATE_HEATING -> {
+            HeatingManifoldConfigurable.STATE_PUMPING -> {
                 transformerPort?.write(Relay(BigDecimal.ONE))
                 pumpPort?.write(Relay(BigDecimal.ONE))
             }
@@ -56,17 +56,16 @@ class HeatingManifoldAutomationUnit(
     override val recalculateOnPortUpdate = true
 
     override fun calculateInternal(now: Calendar) {
-        val heatingEnabled: Boolean = (currentState.id != HeatingManifoldConfigurable.STATE_OFF) &&
-                                      (currentState.id != StateDeviceConfigurable.STATE_UNKNOWN)
+        val heatingEnabled: Boolean = currentState.id != StateDeviceConfigurable.STATE_UNKNOWN
         var isAnyLineActive = false
         var isAnyActiveLineOpened = false
         var isEveryInactiveLineClosed = true
         var actuatorsNeedPower = false
 
-        //calculate opening level of actuators
+        //check if any line is enabled/active
         for (circuit in circuitUnits) {
-            val openingLevel: Int = circuit.calculateOpeningLevel()
-            if (circuit.active) {
+            val openingLevel: Int = circuit.calculateValveLevel()
+            if (circuit.isActive()) {
                 isAnyLineActive = true
                 if (openingLevel == 100) {
                     isAnyActiveLineOpened = true
@@ -81,21 +80,22 @@ class HeatingManifoldAutomationUnit(
             }
         }
 
-        //control actuators (open or close)
-        if (isAnyLineActive) {
-            for (circuit in circuitUnits) {
-                val circuitOpeningLevel = circuit.calculateOpeningLevel()
-                if (circuit.active) {
-                    if (circuitOpeningLevel < 100) {
-                        if (circuit.currentState.id != RadiatorCircuitConfigurable.STATE_FORCED_CLOSE) {
-                            circuit.changeState(RadiatorCircuitConfigurable.STATE_OPEN)
-                        }
+        if (!isAnyLineActive) {
+            //disable relays if there's no active lines
+            circuitUnits.forEach { it.disableRelay() }
+        } else {
+            circuitUnits.forEach {
+                if (it.inactiveState == InactiveState.NC) {
+                    if (it.isActive()) {
+                        it.enableRelay()
+                    } else {
+                        it.disableRelay()
                     }
-                } else {
-                    if (circuitOpeningLevel > 0) {
-                        if (circuit.currentState.id != RadiatorCircuitConfigurable.STATE_FORCED_OPEN) {
-                            circuit.changeState(RadiatorCircuitConfigurable.STATE_CLOSED)
-                        }
+                } else { //NO
+                    if (it.isActive()) {
+                        it.disableRelay()
+                    } else {
+                        it.enableRelay()
                     }
                 }
             }
@@ -106,16 +106,9 @@ class HeatingManifoldAutomationUnit(
         if (enableTransformer && !enablePump) {
             changeState(HeatingManifoldConfigurable.STATE_REGULATION)
         } else if (enablePump) {
-            changeState(HeatingManifoldConfigurable.STATE_HEATING)
+            changeState(HeatingManifoldConfigurable.STATE_PUMPING)
         } else {
             changeState(HeatingManifoldConfigurable.STATE_STANDBY)
-            for (actuator in circuitUnits) {
-                actuator.changeState(RadiatorCircuitConfigurable.STATE_FORCED_CLOSE)
-            }
-        }
-
-        for (circuit in circuitUnits) {
-            circuit.centralHeatingEnabled = heatingEnabled
         }
 
         if (pumpPort != null) {

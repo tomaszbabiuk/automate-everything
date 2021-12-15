@@ -3,8 +3,6 @@ package eu.automateeverything.centralheatingplugin
 import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
-import eu.automateeverything.data.fields.InstanceReference
-import eu.automateeverything.data.fields.InstanceReferenceType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
@@ -12,8 +10,6 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
-import eu.automateeverything.sensorsandcontrollersplugin.TemperatureControllerConfigurable
-import eu.automateeverything.sensorsandcontrollersplugin.ThermometerConfigurable
 import org.pf4j.Extension
 
 @Extension
@@ -44,8 +40,6 @@ class RadiatorCircuitConfigurable(
         get() {
             val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_ACTUATOR_PORT] = actuatorPortField
-            result[FIELD_THERMOMETER_ID] = thermometerIdField
-            result[FIELD_TEMPERATURE_CONTROLLER_ID] = temperatureControllerIdField
             result[FIELD_OPENING_TIME] = openingTimeField
             result[FIELD_INACTIVE_STATE] = inactiveStateField
             return result
@@ -53,18 +47,6 @@ class RadiatorCircuitConfigurable(
 
     private val openingTimeField = DurationField(FIELD_OPENING_TIME, R.field_opening_time_hint,
         Duration(120)
-    )
-
-    private val thermometerIdField = InstanceReferenceField(
-        FIELD_THERMOMETER_ID, R.field_thermometer_hint,
-        InstanceReference(ThermometerConfigurable::class.java, InstanceReferenceType.Single),
-        RequiredStringValidator()
-    )
-
-    private val temperatureControllerIdField = InstanceReferenceField(
-        FIELD_TEMPERATURE_CONTROLLER_ID, R.field_temperature_controller_hint,
-        InstanceReference(TemperatureControllerConfigurable::class.java, InstanceReferenceType.Single),
-        RequiredStringValidator()
     )
 
     private val actuatorPortField = RelayOutputPortField(FIELD_ACTUATOR_PORT, R.field_actuator_port_hint, RequiredStringValidator())
@@ -78,23 +60,16 @@ class RadiatorCircuitConfigurable(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_OPEN] = ReadOnlyState(
-                STATE_OPEN,
-                R.state_open,
+            states[STATE_ENABLED] = ControlState(
+                STATE_ENABLED,
+                R.state_enabled,
+                R.action_enable,
+                isSignaled = true
             )
-            states[STATE_CLOSED] = ReadOnlyState(
-                STATE_CLOSED,
-                R.state_closed,
-            )
-            states[STATE_FORCED_CLOSE] = ControlState(
-                STATE_FORCED_CLOSE,
-                R.action_force_close,
-                R.state_forced_closed
-            )
-            states[STATE_FORCED_OPEN] = ControlState(
-                STATE_FORCED_OPEN,
-                R.action_force_open,
-                R.state_forced_open
+            states[STATE_DISABLED] = ControlState(
+                STATE_DISABLED,
+                R.state_disabled,
+                R.action_disable
             )
             return states
         }
@@ -128,11 +103,8 @@ class RadiatorCircuitConfigurable(
         const val FIELD_ACTUATOR_PORT = "actuatorPortId"
         const val FIELD_OPENING_TIME = "openingTime"
         const val FIELD_INACTIVE_STATE = "inactivityState"
-        const val FIELD_THERMOMETER_ID = "thermometerId"
-        const val FIELD_TEMPERATURE_CONTROLLER_ID = "temperatureControllerId"
-        const val STATE_OPEN = "open"
-        const val STATE_CLOSED = "closed"
-        const val STATE_FORCED_CLOSE = "forced_close"
-        const val STATE_FORCED_OPEN = "forced_open"
+        const val STATE_ENABLED = "enabled"
+        const val STATE_DISABLED = "disabled"
+        const val NOTE_VALVE_OPENING = "valve"
     }
 }

@@ -3,34 +3,36 @@ package eu.automateeverything.centralheatingplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
-    val state_forced_closed = Resource(
-        "Close (forced)",
-        "Zamknięty (wymuszono)"
+
+    @Suppress("FunctionName")
+    fun note_opening_level(value: Int) = Resource(
+        "Valve opening: $value",
+        "Otwarcie zaworu: $value"
     )
 
-    val state_forced_open = Resource(
-        "Open (forced)",
-        "Otwarty (wymuszono)"
+    val state_enabled = Resource(
+        "Enabled",
+        "Aktywne"
     )
 
-    val action_force_close = Resource(
-        "Force close",
-        "Wymuś zamknięcie"
+    val state_disabled = Resource(
+        "Disabled",
+        "Nieaktywne"
     )
 
-    val action_force_open = Resource(
-        "Force open",
-        "Wymuś otwarcie"
+    val action_enable = Resource(
+        "Enable",
+        "Aktywuj"
     )
 
-    val state_heating = Resource(
-        "Heating",
-        "Ogrzewanie"
+    val action_disable = Resource(
+        "Disable",
+        "Deaktywuj"
     )
 
-    val action_heat_on = Resource(
-        "Turn heating on",
-        "Włącz ogrzewanie"
+    val state_pumping = Resource(
+        "Pumping",
+        "Pompowanie"
     )
 
     val state_standby = Resource(
@@ -68,39 +70,9 @@ object R {
         "Port uruchamiający siłownik"
     )
 
-    val state_off = Resource(
-        "Off",
-        "Wył"
-    )
-
-    val action_off = Resource(
-        "Off (forced)",
-        "Wył"
-    )
-
-    val state_on = Resource(
-        "On",
-        "Wł"
-    )
-
-    val state_closed = Resource(
-        "Closed",
-        "Zamknięty"
-    )
-
-    val state_open = Resource(
-        "Open",
-        "Otwarty"
-    )
-
     val state_unknown = Resource(
         "Unknown",
         "Nieznany"
-    )
-
-    val field_temperature_controller_hint = Resource(
-        "Temperature controller",
-        "Sterownik temperatury"
     )
 
     val field_inactive_state_hint = Resource(
@@ -116,11 +88,6 @@ object R {
     val value_nc = Resource(
         "NC (normally closed)",
         "NZ (normalnie zamknięty)"
-    )
-
-    val field_thermometer_hint = Resource(
-        "Ambient thermometer",
-        "Termometr temperatury otoczenia"
     )
 
     val field_opening_time_hint = Resource(
