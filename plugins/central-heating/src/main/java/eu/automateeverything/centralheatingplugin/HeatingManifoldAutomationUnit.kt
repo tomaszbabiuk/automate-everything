@@ -26,20 +26,6 @@ class HeatingManifoldAutomationUnit(
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     override fun applyNewState(state: String) {
-//        when (state) {
-//            HeatingManifoldConfigurable.STATE_REGULATION -> {
-//                transformerPort?.write(Relay(BigDecimal.ONE))
-//                pumpPort?.write(Relay(BigDecimal.ZERO))
-//            }
-//            HeatingManifoldConfigurable.STATE_PUMPING -> {
-//                transformerPort?.write(Relay(BigDecimal.ONE))
-//                pumpPort?.write(Relay(BigDecimal.ONE))
-//            }
-//            else -> {
-//                transformerPort?.write(Relay(BigDecimal.ZERO))
-//                pumpPort?.write(Relay(BigDecimal.ZERO))
-//            }
-//        }
     }
 
     private val minWorkingTimeCounter = if (pumpPort == null) null else MinWorkingTimeCounter(
