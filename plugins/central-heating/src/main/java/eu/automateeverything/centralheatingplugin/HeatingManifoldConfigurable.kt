@@ -43,7 +43,7 @@ class HeatingManifoldConfigurable(
             result[FIELD_TRANSFORMER_PORT] = transformerPortField
             result[FIELD_PUMP_PORT] = pumpPortField
             result[FIELD_MINIMUM_PUMP_WORKING_TIME] = minimumWorkingTimeField
-            result[FIELD_CIRCUITS] = circuitIdsField
+            result[FIELD_THERMAL_ACTUATORS] = thermalActuatorIdsField
             return result
         }
 
@@ -51,9 +51,9 @@ class HeatingManifoldConfigurable(
         Duration(20)
     )
 
-    private val circuitIdsField = InstanceReferenceField(
-        FIELD_CIRCUITS, R.field_circuits_hint,
-        InstanceReference(RadiatorCircuitConfigurable::class.java, InstanceReferenceType.Multiple),
+    private val thermalActuatorIdsField = InstanceReferenceField(
+        FIELD_THERMAL_ACTUATORS, R.field_thermal_actuators_hint,
+        InstanceReference(ThermalActuatorConfigurable::class.java, InstanceReferenceType.Multiple),
         RequiredStringValidator()
     )
 
@@ -101,37 +101,47 @@ class HeatingManifoldConfigurable(
                 null
             }
 
-        val circuitIdsRaw = extractFieldValue(instance, circuitIdsField)
-        val circuitIds = circuitIdsRaw.split(",").map { it.toLong() }
+        val thermalActuatorIdsRaw = extractFieldValue(instance, thermalActuatorIdsField)
+        val thermalActuatorIds = thermalActuatorIdsRaw.split(",").map { it.toLong() }
 
         val minPumpWorkingTime = extractFieldValue(instance, minimumWorkingTimeField)
 
         return HeatingManifoldAutomationUnit(stateChangeReporter, instance, name, states, pumpPort, minPumpWorkingTime,
-            transformerPort, circuitIds)
+            transformerPort, thermalActuatorIds)
     }
 
     override val iconRaw: String
         get() = """
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-                    <g>
-                        <circle cx="50.159" cy="48.501" r="28.063"/>
-                    </g>
-                    <polygon points="11.728,41.943 11.728,55.058 5.16,48.523 "/>
-                    <polygon points="88.591,55.06 88.591,41.945 95.159,48.48 "/>
-                    <polygon points="18.347,71.039 27.62,80.312 18.354,80.336 "/>
-                    <polygon points="81.972,25.964 72.698,16.69 81.965,16.667 "/>
-                    <polygon points="72.697,80.313 81.971,71.04 81.994,80.306 "/>
-                    <polygon points="27.622,16.688 18.349,25.962 18.324,16.695 "/>
-                    <polygon points="56.718,10.07 43.604,10.07 50.138,3.501 "/>
-                    <polygon points="43.601,86.933 56.716,86.933 50.181,93.502 "/>
-                </svg>
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+             <g class="layer">
+              <title>Layer 1</title>
+              <g id="svg_20">
+               <path d="m17.10065,13.42552l66.15062,0l0,6.16584l-66.15062,0l0,-6.16584z" fill="black" id="svg_18"/>
+               <path d="m21.54544,42.88501l-11.92843,0c-0.96203,0.00069 -1.7424,0.78105 -1.74308,1.74308l0,1.1382c0.00069,0.96203 0.78105,1.7424 1.74308,1.74308l11.92631,0c0.96342,0 1.74446,-0.78037 1.74514,-1.74308l0,-1.1382c-0.00069,-0.96203 -0.78105,-1.7424 -1.74308,-1.74308l0.00005,0z" id="svg_12"/>
+               <path d="m12.49751,17.29679l0,22.50531l6.16584,0l0,-15.23437c0.00138,-1.27377 0.50854,-2.49452 1.40933,-3.39526s2.12158,-1.40796 3.39526,-1.40933l1.36117,0l0,-6.16584l-8.63217,0c-0.9813,0 -1.92198,0.38949 -2.61572,1.08383c-0.69434,0.69366 -1.08383,1.63435 -1.08383,2.61572l0.00012,-0.00005z" fill="black" id="svg_11"/>
+               <path d="m12.49751,50.59231l6.16584,0l0,35.98194l-6.16584,0l0,-35.98194z" fill="black" id="svg_13"/>
+               <path d="m30.951,24.57259l0,15.22944l6.16584,0l0,-22.50531c0,-0.9813 -0.38949,-1.92198 -1.08383,-2.61572c-0.69366,-0.69434 -1.63435,-1.08383 -2.61572,-1.08383l-8.63217,0l0,6.16584l1.35634,0c1.27515,0.00138 2.49734,0.50854 3.39879,1.41071c0.90217,0.90148 1.40933,2.12369 1.41071,3.39879l0.00005,0.00009z" fill="black" id="svg_25"/>
+               <path d="m39.99893,42.88512l-11.92843,0c-0.96203,0.00069 -1.7424,0.78105 -1.74308,1.74308l0,1.1382c0.00069,0.96203 0.78105,1.7424 1.74308,1.74308l11.92631,0c0.96342,0 1.74446,-0.78037 1.74514,-1.74308l0,-1.1382c-0.00069,-0.96203 -0.78105,-1.7424 -1.74308,-1.74308l0.00005,0z" fill="black" id="svg_23"/>
+               <path d="m30.951,50.59255l6.16584,0l0,35.98194l-6.16584,0l0,-35.98194z" fill="black" id="svg_24"/>
+               <path d="m47.86343,24.46689l0,15.22944l6.16584,0l0,-22.50531c0,-0.9813 -0.38949,-1.92198 -1.08383,-2.61572c-0.69366,-0.69434 -1.63435,-1.08383 -2.61572,-1.08383l-8.63217,0l0,6.16584l1.35634,0c1.27515,0.00138 2.49734,0.50854 3.39879,1.41071c0.90217,0.90148 1.40933,2.12369 1.41071,3.39879l0.00005,0.00009z" fill="black" id="svg_9"/>
+               <path d="m56.91135,42.77943l-11.92843,0c-0.96203,0.00069 -1.7424,0.78105 -1.74308,1.74308l0,1.1382c0.00069,0.96203 0.78105,1.7424 1.74308,1.74308l11.92631,0c0.96342,0 1.74446,-0.78037 1.74514,-1.74308l0,-1.1382c-0.00069,-0.96203 -0.78105,-1.7424 -1.74308,-1.74308l0.00005,0z" fill="black" id="svg_8"/>
+               <path d="m47.86343,50.48685l6.16584,0l0,35.98194l-6.16584,0l0,-35.98194z" fill="black" id="svg_7"/>
+               <path d="m64.77544,24.46689l0,15.22944l6.16584,0l0,-22.50531c0,-0.9813 -0.38949,-1.92198 -1.08383,-2.61572c-0.69366,-0.69434 -1.63435,-1.08383 -2.61572,-1.08383l-8.63217,0l0,6.16584l1.35634,0c1.27515,0.00138 2.49734,0.50854 3.39879,1.41071c0.90217,0.90148 1.40933,2.12369 1.41071,3.39879l0.00005,0.00009z" fill="black" id="svg_15"/>
+               <path d="m73.82336,42.77943l-11.92843,0c-0.96203,0.00069 -1.7424,0.78105 -1.74308,1.74308l0,1.1382c0.00069,0.96203 0.78105,1.7424 1.74308,1.74308l11.92631,0c0.96342,0 1.74446,-0.78037 1.74514,-1.74308l0,-1.1382c-0.00069,-0.96203 -0.78105,-1.7424 -1.74308,-1.74308l0.00005,0z" fill="black" id="svg_14"/>
+               <path d="m64.77544,50.48685l6.16584,0l0,35.98194l-6.16584,0l0,-35.98194z" fill="black" id="svg_10"/>
+               <path d="m81.33511,24.46689l0,15.22944l6.16584,0l0,-22.50531c0,-0.9813 -0.38949,-1.92198 -1.08383,-2.61572c-0.69366,-0.69434 -1.63435,-1.08383 -2.61572,-1.08383l-8.63217,0l0,6.16584l1.35634,0c1.27515,0.00138 2.49734,0.50854 3.39879,1.41071c0.90217,0.90148 1.40933,2.12369 1.41071,3.39879l0.00005,0.00009z" fill="black" id="svg_19"/>
+               <path d="m90.38304,42.77943l-11.92843,0c-0.96203,0.00069 -1.7424,0.78105 -1.74308,1.74308l0,1.1382c0.00069,0.96203 0.78105,1.7424 1.74308,1.74308l11.92631,0c0.96342,0 1.74446,-0.78037 1.74514,-1.74308l0,-1.1382c-0.00069,-0.96203 -0.78105,-1.7424 -1.74308,-1.74308l0.00005,0z" fill="black" id="svg_17"/>
+               <path d="m81.33511,50.48685l6.16584,0l0,35.98194l-6.16584,0l0,-35.98194z" fill="black" id="svg_16"/>
+              </g>
+             </g>
+            </svg>
         """.trimIndent()
 
     companion object {
         const val FIELD_PUMP_PORT = "pumpPortId"
         const val FIELD_TRANSFORMER_PORT = "transformerPortId"
         const val FIELD_MINIMUM_PUMP_WORKING_TIME = "minWorkingTime"
-        const val FIELD_CIRCUITS = "circuitIds"
+        const val FIELD_THERMAL_ACTUATORS = "thermalActuatorIds"
         const val STATE_PUMPING = "pumping"
         const val STATE_REGULATION = "regulation"
         const val STATE_STANDBY = "standby"

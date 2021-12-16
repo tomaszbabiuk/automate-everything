@@ -22,7 +22,7 @@ class HeatingManifoldAutomationUnit(
     private val pumpPort: OutputPort<Relay>?,
     minimumPumpWorkingTime: Duration,
     private val transformerPort: OutputPort<Relay>?,
-    private val circuitIds: List<Long>,
+    private val thermalActuatorIds: List<Long>,
 ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
 
     override fun applyNewState(state: String) {
@@ -33,7 +33,7 @@ class HeatingManifoldAutomationUnit(
         minimumPumpWorkingTime.milliseconds
     )
 
-    private lateinit var circuitUnits: List<RadiatorCircuitAutomationUnit>
+    private lateinit var actuatorUnits: List<ThermalActuatorAutomationUnit>
 
     override val usedPortsIds: Array<String>
         get() = listOfNotNull(pumpPort?.id, transformerPort?.id).toTypedArray()
@@ -49,9 +49,9 @@ class HeatingManifoldAutomationUnit(
         var actuatorsNeedPower = false
 
         //check if any line is enabled/active
-        for (circuit in circuitUnits) {
-            val openingLevel: Int = circuit.calculateValveLevel()
-            if (circuit.isActive()) {
+        for (actuator in actuatorUnits) {
+            val openingLevel: Int = actuator.calculateValveLevel()
+            if (actuator.isActive()) {
                 isAnyLineActive = true
                 if (openingLevel == 100) {
                     isAnyActiveLineOpened = true
@@ -65,10 +65,10 @@ class HeatingManifoldAutomationUnit(
 
         if (!isAnyLineActive) {
             //disable relays if there's no active lines
-            circuitUnits.forEach { it.disableRelay() }
+            actuatorUnits.forEach { it.disableRelay() }
         } else {
             //control relays
-            circuitUnits.forEach {
+            actuatorUnits.forEach {
                 if (it.needsARelay()) {
                     actuatorsNeedPower = true
                     it.enableRelay()
@@ -103,6 +103,6 @@ class HeatingManifoldAutomationUnit(
     }
 
     override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>) {
-        circuitUnits = circuitIds.map { automationUnitsCache[it]!!.second as RadiatorCircuitAutomationUnit }
+        actuatorUnits = thermalActuatorIds.map { automationUnitsCache[it]!!.second as ThermalActuatorAutomationUnit }
     }
 }

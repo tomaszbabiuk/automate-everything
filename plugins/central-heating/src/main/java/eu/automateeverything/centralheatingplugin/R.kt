@@ -10,6 +10,11 @@ object R {
         "Otwarcie zaworu: $value"
     )
 
+    val field_thermometer_hint = Resource(
+        "Thermometer",
+        "Termometr"
+    )
+
     val state_enabled = Resource(
         "Enabled",
         "Aktywne"
@@ -45,19 +50,24 @@ object R {
         "Regulacja"
     )
 
-    val field_circuits_hint = Resource(
-        "Circuits",
-        "Obiegi"
+    val field_thermal_actuators_hint = Resource(
+        "Thermal actuators",
+        "Siłowniki termiczne"
     )
 
     val field_minimum_pump_working_time_hint = Resource(
-        "Minumum pump working time",
+        "Minimum pump working time",
         "Minimalny czas pracy pompy"
     )
 
+    val field_minimum_working_time_hint = Resource(
+        "Minimum working time",
+        "Minimalny czas pracy"
+    )
+
     val field_pump_port_hint = Resource(
-        "Pump port",
-        "Port pompy c.o."
+        "Pump relay port",
+        "Port przekaźnika pompy"
     )
 
     val field_transformer_port_hint = Resource(
@@ -112,24 +122,24 @@ object R {
 
     var plugin_name = Resource("Central heating", "Centralne ogrzewanie")
 
-    val configurable_radiator_circuit_add = Resource(
-        "Add radiator circuit",
-        "Dodaj obieg grzejnikowy"
+    val configurable_thermal_actuator_add = Resource(
+        "Add thermal actuator",
+        "Dodaj siłownik termiczny"
     )
 
-    val configurable_radiator_circuit_edit = Resource(
-        "Edit a radiator circuit",
-        "Edytuj obieg grzejnikowy"
+    val configurable_thermal_actuator_edit = Resource(
+        "Edit thermal actuator",
+        "Edytuj siłownik termiczny"
     )
 
-    val configurable_radiator_circuits_title = Resource(
-        "Radiator circuits",
-        "Obiegi grzejnikowe"
+    val configurable_thermal_actuators_title = Resource(
+        "Thermal actuators",
+        "Siłowniki termiczne"
     )
 
-    val configurable_radiator_circuits_description = Resource(
-        "Defines an radiator circuit opened by thermal or mechanical actuator.",
-        "Definiuje obieg grzejnikowy otwierany przez siłownik termiczny lub mechaniczny."
+    val configurable_thermal_actuators_description = Resource(
+        "Controls opening and closing of thermal actuator.",
+        "Kontroluje otwieranie i zamykanie siłownika termicznego."
     )
 
     val configurable_heating_manifold_add = Resource(
@@ -138,7 +148,7 @@ object R {
     )
 
     val configurable_heating_manifold_edit = Resource(
-        "Edit a heating manifold",
+        "Edit heating manifold",
         "Edytuj rozdzialacz c.o."
     )
 
@@ -150,5 +160,25 @@ object R {
     val configurable_heating_manifolds_description = Resource(
         "Heating manifolds control thermal actuators and a pump in the central heating system.",
         "Rozdzielacze c.o. kontrolują termo-siłowniki oraz pompę w systemie centralnego ogrzewania ."
+    )
+
+    val configurable_circulation_pump_add = Resource(
+        "Add circulation pump",
+        "Dodaj pompę cyrkulacji"
+    )
+
+    val configurable_circulation_pump_edit = Resource(
+        "Edit circulation pump",
+        "Edytuj pompę cyrkulacji"
+    )
+
+    val configurable_circulation_pumps_title = Resource(
+        "Circulation pumps",
+        "Pompy cyrkulacyjne"
+    )
+
+    val configurable_circulation_pumps_description = Resource(
+        "An automation of circulation pumps. The pump is pumping the water, as long as temperature reported by the thermometer is rising.",
+        "Automatyka pompy cyrkulacyjnej. Pompa pompuje wodę tak długo, jak temperatura mierzona przez termometr rośnie."
     )
 }

@@ -56,7 +56,7 @@ object R {
     )
 
     val configurable_alarmline_edit = Resource(
-        "Edit an alarm line",
+        "Edit alarm line",
         "Edytuj linię alarmową"
     )
 
@@ -136,7 +136,7 @@ object R {
     )
 
     val configurable_combinationlock_edit = Resource(
-        "Edit a combination lock",
+        "Edit combination lock",
         "Edytuj szyfrator alarmowy"
     )
 
@@ -156,7 +156,7 @@ object R {
     )
 
     val configurable_alarmzone_edit = Resource(
-        "Edit an zone line",
+        "Edit alarm zone",
         "Edytuj strefę alarmową"
     )
 

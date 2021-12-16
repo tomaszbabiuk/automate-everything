@@ -1,8 +1,8 @@
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.NOTE_VALVE_OPENING
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_DISABLED
-import eu.automateeverything.centralheatingplugin.RadiatorCircuitConfigurable.Companion.STATE_ENABLED
+import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.NOTE_VALVE_OPENING
+import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.STATE_DISABLED
+import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.STATE_ENABLED
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
@@ -15,7 +15,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.math.roundToInt
 
-class RadiatorCircuitAutomationUnit(
+class ThermalActuatorAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instance: InstanceDto,
     name: String,
