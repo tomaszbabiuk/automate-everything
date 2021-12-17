@@ -157,6 +157,7 @@ class OneWireAdapter(
             }
 
             if (ex.message == "OneWireContainer28-temperature conversion not complete") {
+               println(ex.message)
                 //ignoring
                 //TODO: add warning counter... if more than 10 > post to the mailbox
             } else {
@@ -204,7 +205,7 @@ class OneWireAdapter(
                 .filter { port -> port.lastUpdateMs + 30000 < now.timeInMillis }
                 .forEach { port ->
                     val newTemperatureK = TemperatureContainerHelper.read(container).toBigDecimal() + 273.15.toBigDecimal()
-                    if (newTemperatureK.equals(port.value.value)) {
+                    if (newTemperatureK != port.value.value) {
                         port.update(now.timeInMillis, Temperature(newTemperatureK))
                         broadcastPortChangedEvent(port)
                     }

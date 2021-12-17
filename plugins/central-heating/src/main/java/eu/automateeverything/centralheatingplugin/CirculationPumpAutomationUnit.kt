@@ -34,14 +34,14 @@ class CirculationPumpAutomationUnit(
     override val recalculateOnPortUpdate = false
     private var switchedOffTime = Calendar.getInstance().timeInMillis
 
-    private val oneMinutesMillis = (20 * 1000).toLong()
+    private val temperatureCheckInterval = (90 * 1000).toLong()
     private var lastTemperatureCheck: Long = 0
     private var lastTemperatureMeasured: Temperature? = null
 
     override fun applyNewState(state: String) {
     }
 
-    private var _lastSwitchingOnTime: Calendar? = null
+    private var lastSwitchingOnTime: Calendar? = null
 
     private fun isOn(): Boolean {
         return pumpPort.read().value == BigDecimal.ONE
@@ -63,19 +63,19 @@ class CirculationPumpAutomationUnit(
 
         val nowMillis = now.timeInMillis
         if (currentState.id == STATE_PUMPING || currentState.id == STATE_STANDBY) {
-            if (nowMillis - switchedOffTime > oneMinutesMillis * 3 && !isOn()) {
+            if (nowMillis - switchedOffTime > temperatureCheckInterval * 3 && !isOn()) {
                 lastTemperatureCheck = nowMillis
                 lastTemperatureMeasured = thermometerUnit.lastEvaluation.value
                 changeState(STATE_PUMPING)
             } else {
-                if (nowMillis - lastTemperatureCheck > oneMinutesMillis) {
+                if (nowMillis - lastTemperatureCheck > temperatureCheckInterval) {
                     lastTemperatureCheck = nowMillis
                     val currentTemperature = thermometerUnit.lastEvaluation.value
                     val temperatureDelta = currentTemperature!!.value.subtract(lastTemperatureMeasured!!.value)
                     val keepPumping = temperatureDelta > BigDecimal.ONE
                     if (keepPumping) {
                         if (!isOn()) {
-                            _lastSwitchingOnTime = now
+                            lastSwitchingOnTime = now
                             changeState(STATE_PUMPING)
                         }
                     } else {
