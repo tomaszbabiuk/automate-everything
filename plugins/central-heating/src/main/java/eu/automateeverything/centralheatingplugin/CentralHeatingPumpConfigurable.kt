@@ -14,7 +14,7 @@ import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
 
 @Extension
-class HeatingManifoldConfigurable(
+class CentralHeatingPumpConfigurable(
     private val portFinder: PortFinder,
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
@@ -26,16 +26,16 @@ class HeatingManifoldConfigurable(
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
 
     override val addNewRes: Resource
-        get() = R.configurable_heating_manifold_add
+        get() = R.configurable_central_heating_pump_add
 
     override val editRes: Resource
-        get() = R.configurable_heating_manifold_edit
+        get() = R.configurable_central_heating_pump_edit
 
     override val titleRes: Resource
-        get() = R.configurable_heating_manifolds_title
+        get() = R.configurable_central_heating_pumps_title
 
     override val descriptionRes: Resource
-        get() = R.configurable_heating_manifolds_description
+        get() = R.configurable_central_heating_pumps_description
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -106,7 +106,7 @@ class HeatingManifoldConfigurable(
 
         val minPumpWorkingTime = extractFieldValue(instance, minimumWorkingTimeField)
 
-        return HeatingManifoldAutomationUnit(stateChangeReporter, instance, name, states, pumpPort, minPumpWorkingTime,
+        return CentralHeatingPumpAutomationUnit(stateChangeReporter, instance, name, states, pumpPort, minPumpWorkingTime,
             transformerPort, thermalActuatorIds)
     }
 

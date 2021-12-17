@@ -10,6 +10,16 @@ object R {
         "Otwarcie zaworu: $value"
     )
 
+    val state_off = Resource(
+        "Off",
+        "Wyłączony"
+    )
+
+    val action_off = Resource(
+        "Off",
+        "Wyłącz"
+    )
+
     val field_thermometer_hint = Resource(
         "Thermometer",
         "Termometr"
@@ -111,8 +121,8 @@ object R {
     )
 
     val configurable_central_heating_description = Resource(
-        "Devices that control central heating (radiators, heating manifolds, etc.)",
-        "Urządzenia do sterowania centralnym ogrzewaniem (grzejniki, rozdzielacze c.o. itp.)"
+        "Devices that control central heating (thermal actuators, central heating pumps, circulation pumps, etc.)",
+        "Urządzenia do sterowania centralnym ogrzewaniem (termosiłowniki, pompy c.o., pompy cyrkulacji c.w.u. itp.)"
     )
 
     var plugin_description = Resource(
@@ -142,24 +152,24 @@ object R {
         "Kontroluje otwieranie i zamykanie siłownika termicznego."
     )
 
-    val configurable_heating_manifold_add = Resource(
-        "Add heating manifold",
-        "Dodaj rozdzielacz c.o."
+    val configurable_central_heating_pump_add = Resource(
+        "Add central heating pump",
+        "Dodaj pompę c.o."
     )
 
-    val configurable_heating_manifold_edit = Resource(
-        "Edit heating manifold",
-        "Edytuj rozdzialacz c.o."
+    val configurable_central_heating_pump_edit = Resource(
+        "Edit central heating pump",
+        "Edytuj pompę c.o."
     )
 
-    val configurable_heating_manifolds_title = Resource(
-        "Heating manifolds",
-        "Rozdzialacze c.o."
+    val configurable_central_heating_pumps_title = Resource(
+        "Central heating pumps",
+        "Pompy c.o."
     )
 
-    val configurable_heating_manifolds_description = Resource(
-        "Heating manifolds control thermal actuators and a pump in the central heating system.",
-        "Rozdzielacze c.o. kontrolują termo-siłowniki oraz pompę w systemie centralnego ogrzewania ."
+    val configurable_central_heating_pumps_description = Resource(
+        "Central heating pumps coordinates the opening and closing of thermal actuators and the work of the pump itself.",
+        "Pompy c.o. koordynują otwieranie i zamykanie siłowników termicznych oraz pracę samej pompy."
     )
 
     val configurable_circulation_pump_add = Resource(

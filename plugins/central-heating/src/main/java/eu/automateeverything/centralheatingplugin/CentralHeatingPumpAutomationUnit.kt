@@ -14,7 +14,7 @@ import eu.automateeverything.domain.hardware.Relay
 import java.math.BigDecimal
 import java.util.*
 
-class HeatingManifoldAutomationUnit(
+class CentralHeatingPumpAutomationUnit(
     stateChangeReporter: StateChangeReporter,
     instance: InstanceDto,
     name: String,
@@ -82,11 +82,11 @@ class HeatingManifoldAutomationUnit(
         val needsRegulation = heatingEnabled && (isAnyLineActive || actuatorsNeedPower)
         val enableTransformer = heatingEnabled && actuatorsNeedPower
         if (needsRegulation && !enablePump) {
-            changeState(HeatingManifoldConfigurable.STATE_REGULATION)
+            changeState(CentralHeatingPumpConfigurable.STATE_REGULATION)
         } else if (enablePump) {
-            changeState(HeatingManifoldConfigurable.STATE_PUMPING)
+            changeState(CentralHeatingPumpConfigurable.STATE_PUMPING)
         } else {
-            changeState(HeatingManifoldConfigurable.STATE_STANDBY)
+            changeState(CentralHeatingPumpConfigurable.STATE_STANDBY)
         }
 
         transformerPort?.write(if (enableTransformer) Relay.ON else Relay.OFF)

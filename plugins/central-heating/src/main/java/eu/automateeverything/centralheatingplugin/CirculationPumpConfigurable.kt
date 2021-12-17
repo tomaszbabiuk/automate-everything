@@ -1,5 +1,6 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
@@ -79,6 +80,11 @@ class CirculationPumpConfigurable(
                 STATE_STANDBY,
                 R.state_standby
             )
+            states[STATE_OFF] = ControlState(
+                STATE_OFF,
+                R.state_off,
+                R.action_off
+            )
             return states
         }
 
@@ -87,10 +93,10 @@ class CirculationPumpConfigurable(
         val minWorkingTime = extractFieldValue(instance, minWorkingTimeField)
         val pumpPortRaw = extractFieldValue(instance, pumpPortField)
         val pumpPort = portFinder.searchForOutputPort(Relay::class.java, pumpPortRaw)
+        val thermometerId = extractFieldValue(instance, thermometerIdField)
 
-
-//        return ThermalActuatorAutomationUnit(stateChangeReporter, instance, name, states, actuatorPort, activationTime, inactiveState)
-        throw Exception("not implemented")
+        return CirculationPumpAutomationUnit(stateChangeReporter, instance, name, states, pumpPort,
+            minWorkingTime, thermometerId.toLong())
     }
 
     override val iconRaw: String
@@ -112,5 +118,6 @@ class CirculationPumpConfigurable(
         const val STATE_PUMPING = "pumping"
         const val STATE_WATER_HEATED = "waterHeated"
         const val STATE_STANDBY = "standby"
+        const val STATE_OFF = "off"
     }
 }
