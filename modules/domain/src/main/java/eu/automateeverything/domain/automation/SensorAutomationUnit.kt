@@ -7,8 +7,8 @@ import eu.automateeverything.data.instances.InstanceDto
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
-    private val stateChangeReporter: StateChangeReporter,
-    private val instance: InstanceDto,
+    stateChangeReporter: StateChangeReporter,
+    instance: InstanceDto,
     name: String,
     private val port: InputPort<T>
 ) :

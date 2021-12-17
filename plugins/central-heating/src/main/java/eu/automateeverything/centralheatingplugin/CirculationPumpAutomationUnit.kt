@@ -2,7 +2,7 @@ package eu.automateeverything.centralheatingplugin
 
 import eu.automateeverything.centralheatingplugin.CirculationPumpConfigurable.Companion.STATE_OFF
 import eu.automateeverything.centralheatingplugin.CirculationPumpConfigurable.Companion.STATE_PUMPING
-import eu.automateeverything.centralheatingplugin.CirculationPumpConfigurable.Companion.STATE_WATER_HEATED
+import eu.automateeverything.centralheatingplugin.CirculationPumpConfigurable.Companion.STATE_STANDBY
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
@@ -11,7 +11,6 @@ import eu.automateeverything.domain.automation.SensorAutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
-import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.domain.hardware.Temperature
@@ -33,9 +32,9 @@ class CirculationPumpAutomationUnit(
 
     override val recalculateOnTimeChange = true
     override val recalculateOnPortUpdate = false
-    private var _switchedOffTime = Calendar.getInstance().timeInMillis
+    private var switchedOffTime = Calendar.getInstance().timeInMillis
 
-    private val _oneMinutesMillis = (90 * 1000).toLong()
+    private val oneMinutesMillis = (20 * 1000).toLong()
     private var lastTemperatureCheck: Long = 0
     private var lastTemperatureMeasured: Temperature? = null
 
@@ -63,13 +62,13 @@ class CirculationPumpAutomationUnit(
         }
 
         val nowMillis = now.timeInMillis
-        if (currentState.id != STATE_UNKNOWN && currentState.id != STATE_OFF) {
-            if (nowMillis - _switchedOffTime > _oneMinutesMillis * 3 && !isOn()) {
+        if (currentState.id == STATE_PUMPING || currentState.id == STATE_STANDBY) {
+            if (nowMillis - switchedOffTime > oneMinutesMillis * 3 && !isOn()) {
                 lastTemperatureCheck = nowMillis
                 lastTemperatureMeasured = thermometerUnit.lastEvaluation.value
                 changeState(STATE_PUMPING)
             } else {
-                if (nowMillis - lastTemperatureCheck > _oneMinutesMillis) {
+                if (nowMillis - lastTemperatureCheck > oneMinutesMillis) {
                     lastTemperatureCheck = nowMillis
                     val currentTemperature = thermometerUnit.lastEvaluation.value
                     val temperatureDelta = currentTemperature!!.value.subtract(lastTemperatureMeasured!!.value)
@@ -78,12 +77,11 @@ class CirculationPumpAutomationUnit(
                         if (!isOn()) {
                             _lastSwitchingOnTime = now
                             changeState(STATE_PUMPING)
-
                         }
                     } else {
                         if (isOn()) {
-                            _switchedOffTime = nowMillis
-                            changeState(STATE_WATER_HEATED)
+                            switchedOffTime = nowMillis
+                            changeState(STATE_STANDBY)
                         }
                     }
                     lastTemperatureMeasured = currentTemperature

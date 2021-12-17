@@ -55,6 +55,11 @@ object R {
         "W gotowości"
     )
 
+    val action_standby = Resource(
+        "Standby",
+        "Gotowość"
+    )
+
     val state_regulation = Resource(
         "Regulation",
         "Regulacja"

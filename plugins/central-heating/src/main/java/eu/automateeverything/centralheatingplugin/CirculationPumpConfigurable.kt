@@ -58,7 +58,7 @@ class CirculationPumpConfigurable(
 
     private val minWorkingTimeField = DurationField(
         FIELD_MIN_WORKING_TIME, R.field_minimum_working_time_hint,
-        Duration(120)
+        Duration(10)
     )
 
     override val states: Map<String, State>
@@ -72,13 +72,10 @@ class CirculationPumpConfigurable(
                 STATE_PUMPING,
                 R.state_pumping
             )
-            states[STATE_WATER_HEATED] = ReadOnlyState(
-                STATE_WATER_HEATED,
-                R.state_regulation,
-            )
-            states[STATE_STANDBY] = ReadOnlyState(
+            states[STATE_STANDBY] = ControlState(
                 STATE_STANDBY,
-                R.state_standby
+                R.state_standby,
+                R.action_standby
             )
             states[STATE_OFF] = ControlState(
                 STATE_OFF,
@@ -116,7 +113,6 @@ class CirculationPumpConfigurable(
         const val FIELD_THERMOMETER_ID = "thermometerId"
         const val FIELD_MIN_WORKING_TIME = "minWorkingTime"
         const val STATE_PUMPING = "pumping"
-        const val STATE_WATER_HEATED = "waterHeated"
         const val STATE_STANDBY = "standby"
         const val STATE_OFF = "off"
     }
