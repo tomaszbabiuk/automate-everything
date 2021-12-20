@@ -103,5 +103,6 @@ class ThermalActuatorConfigurable(
         const val STATE_ENABLED = "enabled"
         const val STATE_DISABLED = "disabled"
         const val NOTE_VALVE_OPENING = "valve"
+        const val NOTE_RELAY_STATE = "relay"
     }
 }

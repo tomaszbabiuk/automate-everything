@@ -10,6 +10,16 @@ object R {
         "Otwarcie zaworu: $value"
     )
 
+    val note_relay_state_disengaged = Resource(
+        "Relay state: disengaged",
+        "Stan przekaźnika: rozłączony"
+    )
+
+    val note_relay_state_engaged = Resource(
+        "Relay state: engaged",
+        "Stan przekaźnika: załączony"
+    )
+
     val state_off = Resource(
         "Off",
         "Wyłączony"

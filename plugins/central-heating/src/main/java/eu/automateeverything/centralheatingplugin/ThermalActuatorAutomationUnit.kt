@@ -1,5 +1,6 @@
 package eu.automateeverything.centralheatingplugin
 
+import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.NOTE_RELAY_STATE
 import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.NOTE_VALVE_OPENING
 import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.STATE_DISABLED
 import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Companion.STATE_ENABLED
@@ -93,10 +94,16 @@ class ThermalActuatorAutomationUnit(
     }
 
     fun disableRelay() {
-        actuatorPort.write(Relay.OFF)
+        if (actuatorPort.read().value != BigDecimal.ZERO) {
+            actuatorPort.write(Relay.OFF)
+            modifyNote(NOTE_RELAY_STATE, R.note_relay_state_disengaged)
+        }
     }
 
     fun enableRelay() {
-        actuatorPort.write(Relay.ON)
+        if (actuatorPort.read().value == BigDecimal.ZERO) {
+            actuatorPort.write(Relay.ON)
+            modifyNote(NOTE_RELAY_STATE, R.note_relay_state_engaged)
+        }
     }
 }
