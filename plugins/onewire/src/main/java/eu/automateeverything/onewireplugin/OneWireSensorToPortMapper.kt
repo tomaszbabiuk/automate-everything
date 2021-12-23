@@ -42,7 +42,7 @@ class OneWireSensorToPortMapper(
                 val inputReadings = SwitchContainerHelper.read(switch, false)
                 return (0 until channelsCount)
                     .map { channel ->
-                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel, "R")
+                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel.toString(), "R")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValueInverted = Relay(!initialValueRaw)
                         OneWireRelayPort(inputPortId, channel, switch.address, initialValueInverted)
@@ -55,7 +55,7 @@ class OneWireSensorToPortMapper(
                 val inputReadings = SwitchContainerHelper.read(switch, false)
                 return (0 until channelsCount)
                     .map { channel ->
-                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel, "B")
+                        val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel.toString(), "B")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValue = BinaryInput(initialValueRaw)
                         OneWireBinaryInputPort(inputPortId, channel, switch.address, initialValue)
@@ -78,7 +78,7 @@ class OneWireSensorToPortMapper(
         broadcastMessage("${temperatureSensor.name}/${temperatureSensor.addressAsString} discovered as Thermometer!")
 
         try {
-            val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0, "T")
+            val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0.toString(), "T")
             val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor).toBigDecimal() + 273.15.toBigDecimal()
             val initialValue = Temperature(initialValueRaw)
             return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue))

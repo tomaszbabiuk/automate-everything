@@ -11,7 +11,7 @@ class ShellyTemperatureInputPort(
     : ShellyInputPort<Temperature>(id, Temperature::class.java, sleepInterval) {
 
     private val value = Temperature(BigDecimal.ZERO)
-    override val readTopic = "shellies/$shellyId/temperature"
+    override val readTopic = "shellies/$shellyId/sensor/temperature"
 
     override fun read(): Temperature {
         return value

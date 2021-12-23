@@ -9,6 +9,9 @@ data class ShellyStatusResponse(
     val tmp: TemperatureBriefDto?,
     val hum: HumidityBriefDto?,
     val bat: BatteryBriefDto?,
+    val lux: LuminosityBriefDto?,
+    val sensor: StateBriefDto?,
+    val accel: AccelBriefDto?,
     val inputs: List<InputBriefDto>?,
     val adcs: AdcBriefDto?,
     val mac: String,
@@ -47,13 +50,25 @@ data class HumidityBriefDto(
     val value: BigDecimal
 )
 
+data class LuminosityBriefDto(
+    val value: BigDecimal
+)
+
 data class BatteryBriefDto(
     val value: BigDecimal,
     val voltage: Double
 )
 
 data class InputBriefDto(
-    val input:Int
+    val input: Int
+)
+
+data class StateBriefDto(
+    val state: String
+)
+
+data class AccelBriefDto(
+    val vibration: Int
 )
 
 data class LightSetDto(

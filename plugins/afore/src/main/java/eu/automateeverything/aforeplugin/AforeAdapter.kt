@@ -77,7 +77,7 @@ class AforeAdapter(
 
             aforeDevices.forEach {
                 eventsSink.broadcastDiscoveryEvent(owningPluginId,"AFORE inverter found, IP:${it.first}, s/n:${it.second}")
-                val portId = idBuilder.buildPortId(it.second, 0, "W")
+                val portId = idBuilder.buildPortId(it.second, 0.toString(), "W")
                 val inverterPort = AforeWattageInputPort(portId, httpClient, it.first)
                 result.add(inverterPort)
             }
