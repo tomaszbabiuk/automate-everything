@@ -42,14 +42,9 @@ class CentralHeatingPumpConfigurable(
             val result: MutableMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_TRANSFORMER_PORT] = transformerPortField
             result[FIELD_PUMP_PORT] = pumpPortField
-            result[FIELD_MINIMUM_PUMP_WORKING_TIME] = minimumWorkingTimeField
             result[FIELD_THERMAL_ACTUATORS] = thermalActuatorIdsField
             return result
         }
-
-    private val minimumWorkingTimeField = DurationField(FIELD_MINIMUM_PUMP_WORKING_TIME, R.field_minimum_pump_working_time_hint,
-        Duration(20)
-    )
 
     private val thermalActuatorIdsField = InstanceReferenceField(
         FIELD_THERMAL_ACTUATORS, R.field_thermal_actuators_hint,
@@ -104,9 +99,7 @@ class CentralHeatingPumpConfigurable(
         val thermalActuatorIdsRaw = extractFieldValue(instance, thermalActuatorIdsField)
         val thermalActuatorIds = thermalActuatorIdsRaw.split(",").map { it.toLong() }
 
-        val minPumpWorkingTime = extractFieldValue(instance, minimumWorkingTimeField)
-
-        return CentralHeatingPumpAutomationUnit(stateChangeReporter, instance, name, states, pumpPort, minPumpWorkingTime,
+        return CentralHeatingPumpAutomationUnit(stateChangeReporter, instance, name, states, pumpPort,
             transformerPort, thermalActuatorIds)
     }
 
@@ -140,7 +133,6 @@ class CentralHeatingPumpConfigurable(
     companion object {
         const val FIELD_PUMP_PORT = "pumpPortId"
         const val FIELD_TRANSFORMER_PORT = "transformerPortId"
-        const val FIELD_MINIMUM_PUMP_WORKING_TIME = "minWorkingTime"
         const val FIELD_THERMAL_ACTUATORS = "thermalActuatorIds"
         const val STATE_PUMPING = "pumping"
         const val STATE_REGULATION = "regulation"

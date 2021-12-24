@@ -1,38 +1,32 @@
-package eu.automateeverything.centralheatingplugin;
+package eu.automateeverything.centralheatingplugin
 
-import java.util.Calendar;
+import java.util.Calendar
 
-public class MinWorkingTimeCounter {
-    private boolean _lastState;
-    private long _maxMillis;
-    private long _switchedOnMillis;
-    private long _lastOnMillis;
+class MinimumWorkingTimeCounter(private var lastState: Boolean, private val maxMillis: Long) {
+    private var switchedOnMillis: Long = 0
+    private var lastOnMillis: Long = 0
 
-    public MinWorkingTimeCounter(boolean initialState, long maxMillis) {
-        _lastState = initialState;
-        _maxMillis = maxMillis;
-        reset();
-    }
+    val isExceeded: Boolean
+        get() = switchedOnMillis > maxMillis
 
-    public boolean isExceeded() {
-        return _switchedOnMillis > _maxMillis;
-    }
-
-    public void signal(boolean newState) {
-        if (newState && _lastState) {
-            long now = Calendar.getInstance().getTimeInMillis();
-            long delta = now - _lastOnMillis;
-            _switchedOnMillis += delta;
-            _lastOnMillis = now;
+    fun signal(newState: Boolean) {
+        if (newState && lastState) {
+            val now = Calendar.getInstance().timeInMillis
+            val delta = now - lastOnMillis
+            switchedOnMillis += delta
+            lastOnMillis = now
         } else {
-            reset();
+            reset()
         }
-
-        _lastState = newState;
+        lastState = newState
     }
 
-    private void reset() {
-        _switchedOnMillis = 0;
-        _lastOnMillis = Calendar.getInstance().getTimeInMillis();
+    private fun reset() {
+        switchedOnMillis = 0
+        lastOnMillis = Calendar.getInstance().timeInMillis
+    }
+
+    init {
+        reset()
     }
 }

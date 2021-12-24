@@ -47,7 +47,7 @@ class CirculationPumpAutomationUnit(
         return pumpPort.read().value == BigDecimal.ONE
     }
 
-    private val minWorkingTimeCounter = MinWorkingTimeCounter(
+    private val minWorkingTimeCounter = MinimumWorkingTimeCounter(
         pumpPort.read().value == BigDecimal.ONE,
         minWorkingTime.milliseconds
     )

@@ -80,11 +80,6 @@ object R {
         "Siłowniki termiczne"
     )
 
-    val field_minimum_pump_working_time_hint = Resource(
-        "Minimum pump working time",
-        "Minimalny czas pracy pompy"
-    )
-
     val field_minimum_working_time_hint = Resource(
         "Minimum working time",
         "Minimalny czas pracy"
