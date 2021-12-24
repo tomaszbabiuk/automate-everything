@@ -39,6 +39,7 @@ dependencies {
     implementation "org.eclipse.jetty:jetty-util:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-servlets:$jettyVersion"
     implementation "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+    implementation "org.eclipse.jetty:jetty-rewrite:$jettyVersion"
 
     //jakarta
     implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'

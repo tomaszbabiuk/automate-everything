@@ -5,7 +5,6 @@ import org.eclipse.jetty.server.Server
 import kotlin.jvm.JvmStatic
 import org.eclipse.jetty.server.handler.ContextHandlerCollection
 import org.eclipse.jetty.server.handler.ContextHandler
-import org.eclipse.jetty.server.handler.ResourceHandler
 import org.eclipse.jetty.util.resource.PathResource
 import java.nio.file.Paths
 import org.eclipse.jetty.servlet.ServletContextHandler
@@ -45,7 +44,7 @@ object Main {
     }
 
     private fun buildWebContext(): ContextHandler {
-        val rh0 = ResourceHandler()
+        val rh0 = VuetifyWebAppHandler()
         rh0.isDirectoriesListed = true
         val webContext = ContextHandler()
         webContext.contextPath = "/"

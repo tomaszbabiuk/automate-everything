@@ -49,12 +49,6 @@ sudo update-alternatives --config java
 ```
 and manually select java 11
 
-### Installing RXTX drivers (optional)
-Required only if you're using "USB to 1-wire" adapter or "USB to RS485" adapter.
-```bash
-sudo apt-get install librxtx-java
-sudo reboot
-```
 
 # Building from sources
 "Automate Everything" needs gradle and npm to build. The most usable scripts and gradle tasks are:
