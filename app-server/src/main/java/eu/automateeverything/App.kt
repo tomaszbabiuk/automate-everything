@@ -23,6 +23,7 @@ import eu.automateeverything.domain.extensibility.InjectionRegistry
 import eu.automateeverything.langateway.JavaLanGatewayResolver
 import eu.automateeverything.pluginfeatures.mqtt.MoquetteBroker
 import eu.automateeverything.sqldelightplugin.SqlDelightRepository
+import kotlinx.coroutines.*
 import org.glassfish.jersey.server.ResourceConfig
 
 open class App : ResourceConfig() {
@@ -53,6 +54,23 @@ open class App : ResourceConfig() {
         bootstrapProcedure()
 
         firstRunProcedure()
+
+        waitUntilDiscoveryFinishes()
+    }
+
+    private fun waitUntilDiscoveryFinishes() {
+        val initialDiscoveryScope = CoroutineScope(Dispatchers.IO)
+        initialDiscoveryScope.launch {
+            while (isActive) {
+                delay(5000)
+                val nonOperatingAdaptersCount = hardwareManager.countNonOperatingAdapters()
+                println("Waiting for discovery to finish $nonOperatingAdaptersCount")
+                if (nonOperatingAdaptersCount == 0) {
+                    automationConductor.enable()
+                    cancel("All adapters are not initialized")
+                }
+            }
+        }
     }
 
     private fun fillInjectionRegistry() {

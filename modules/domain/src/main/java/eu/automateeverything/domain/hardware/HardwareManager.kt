@@ -4,6 +4,7 @@ import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.automation.PortNotFoundException
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.data.Repository
+import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.events.EventsSink
@@ -229,6 +230,12 @@ class HardwareManager(
                     discover(it)
                 }
             }
+    }
+
+    fun countNonOperatingAdapters(): Int {
+        return bundles()
+            .filter { it.adapter.state != AdapterState.Operating }
+            .size
     }
 }
 
