@@ -93,7 +93,7 @@ task deploy {
                 execute 'sudo rm -rf /home/pi/ae || true'
                 execute 'mkdir /home/pi/ae'
 
-                put from: "${buildDir}/libs/app-server-all.jar", into: '/home/pi/ae'
+                put from: "${buildDir}/libs/ae-backend-all.jar", into: '/home/pi/ae'
                 put from: "${buildDir}/../plugins", into: '/home/pi/ae'
                 put from: "${buildDir}/../blockly/dist", into: '/home/pi/ae'
 
@@ -116,8 +116,13 @@ task startDebugAgent {
 }
 
 task rebuildWeb(type:Exec) {
-    workingDir '${buildDir}/../blockly'
+    workingDir '${buildDir}/../ae-frontend'
 
     //on windows:
     commandLine 'cmd', '/c', 'npm run build'
+}
+
+task copyJar(type: Copy) {
+    from layout.buildDirectory.dir("libs")
+    into layout.buildDirectory.dir("../../output/bin")
 }

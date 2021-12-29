@@ -6,6 +6,7 @@ dist
 build
 web
 out
+output
 .gradle
 
 #Visual Studio code

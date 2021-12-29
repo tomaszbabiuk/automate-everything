@@ -17,9 +17,10 @@ module.exports = {
       new CopyPlugin([
         {
           from: path.resolve(__dirname, './node_modules/blockly/media'),
-          to: path.resolve(__dirname, 'dist/media')
+          to: path.resolve(__dirname, '../output/web/media')
         }
       ])
     ]
-  }
+  },
+  outputDir: '../output/web'
 }

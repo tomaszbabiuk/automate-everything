@@ -60,28 +60,29 @@ and manually select java 11
 
 * For building frontend (user interface):
 ```
-cd app-server/vuetify
+cd app-frontend
 npm install
 npm run build
 ```
 
 * For building backend (the server):
 ```
-./gradlew :app:shadowjar
+./gradlew :ae-backend:shadowjar
 ```
 
 # Directory structure
 After building, the directory structure should look like this:
 ```
-app
+ae-backend
     |- build
     |   - libs
-    |      - app-geekhome-all.jar
+    |      - ae-backend-all.jar
     |- plugins
     |   - plugin1.jar
     |   - plugin2.jar
     |   - enabled.txt
-    |- vuetify
+
+ae-frontend
     |   - dist
     |       - css
     |           - app.*.css
@@ -98,19 +99,19 @@ app
 # Running
 * To run the server run:
 ```
-cd app-server
-java -jar build/libs/app-server-all.jar
+cd ae-backend
+java -jar build/libs/ae-backend-all.jar
 ```
 * or in debug mode:
 ```
-cd app-server
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar build/libs/app-geekhome-all.jar
+cd ae-backend
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar build/libs/ae-backend-all.jar
 ```
 
 # Running in slow mode (for UI testing purpose)
 When using this option, all requests are going to be delayed for 5 seconds (good for UI testing).
 ```
-cd app-server
-java -jar build/libs/app-geekhome-all.jar -slow
+cd ae-backend
+java -jar build/libs/ae-backend-all.jar -slow
 ```
 After starting, open *http://localhost* in your browser
