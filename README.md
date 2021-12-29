@@ -49,69 +49,72 @@ sudo update-alternatives --config java
 ```
 and manually select java 11
 
+## Getting sources
 
-# Building from sources
+
+## Building from sources
 "Automate Everything" needs gradle and npm to build. The most usable scripts and gradle tasks are:
+Run all the commands from the main directory of the project.
 
-* For building plugins:
+
+* For building the frontend (user interface):
+```
+npm install --prefix ae-frontend
+npm run build --prefix ae-frontend
+```
+
+* For building the backend (the automation server + plugins):
+```
+./gradlew :ae-backend:assembleBackend
+```
+
+* For (re)building plugins only:
 ```
 ./gradlew :plugins:assemblePlugins
 ```
 
-* For building frontend (user interface):
-```
-cd app-frontend
-npm install
-npm run build
-```
-
-* For building backend (the server):
-```
-./gradlew :ae-backend:shadowjar
-```
-
-# Directory structure
+### Directory structure
 After building, the directory structure should look like this:
 ```
-ae-backend
-    |- build
-    |   - libs
-    |      - ae-backend-all.jar
+output
+    |- bin
+    |   - ae-backend-all.jar
     |- plugins
     |   - plugin1.jar
     |   - plugin2.jar
     |   - enabled.txt
-
-ae-frontend
-    |   - dist
-    |       - css
-    |           - app.*.css
-    |           - chunk-vendors.*.css
-    |       - js
-    |           - app.*.js
-    |           - app.*.js.map
-    |           - chunk-vendors.*.js
-    |           - chunk-vendors.*.js.map
-    |       - favicon.ico
-    |       - index.html
+    | - web
+    |   - css
+    |       - app.*.css
+    |       - chunk-vendors.*.css
+    |   - js
+    |       - app.*.js
+    |       - app.*.js.map
+    |       - chunk-vendors.*.js
+    |       - chunk-vendors.*.js.map
+    |   - media
+    |       - (all media files required by blockly)
+    |   - favicon.ico
+    |   - index.html
 ```
 
-# Running
+## Running
 * To run the server run:
 ```
-cd ae-backend
-java -jar build/libs/ae-backend-all.jar
+cd output
+java -jar bin/ae-backend-all.jar
 ```
 * or in debug mode:
 ```
-cd ae-backend
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar build/libs/ae-backend-all.jar
+cd output
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar bin/ae-backend-all.jar
 ```
+After starting, open *http://localhost* in your browser
 
-# Running in slow mode (for UI testing purpose)
+## Running in slow mode (for UI testing purpose)
 When using this option, all requests are going to be delayed for 5 seconds (good for UI testing).
 ```
-cd ae-backend
-java -jar build/libs/ae-backend-all.jar -slow
+cd output
+java -jar bin/ae-backend-all.jar -slow
 ```
 After starting, open *http://localhost* in your browser

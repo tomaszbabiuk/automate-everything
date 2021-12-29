@@ -115,14 +115,8 @@ task startDebugAgent {
     }
 }
 
-task rebuildWeb(type:Exec) {
-    workingDir '${buildDir}/../ae-frontend'
-
-    //on windows:
-    commandLine 'cmd', '/c', 'npm run build'
-}
-
-task copyJar(type: Copy) {
+task assembleBackend(type: Copy) {
+    dependsOn shadowJar
     from layout.buildDirectory.dir("libs")
     into layout.buildDirectory.dir("../../output/bin")
 }
