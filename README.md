@@ -5,116 +5,32 @@ Think of "Automate Everything" as more plugin friendly OpenHab or deeply customi
 
 With correct set of plugins you can automate literally everything!
 
-# Best features
-1. Everything is a plugin
-2. Zero-conf principle
-3. Modern UI
-4. Deeply integrated with Google Blockly
-5. Type-safe automation
-6. Different automation types (event based/ loop based)
-7. Developers haven
-8. More than Home Automation server
-9. Embedded MQTT server
+# 10 Best features of "Automate Everything"
+1. An operating system for automation projects
+2. Everything is a plugin
+3. Zero-conf principle
+4. Modern UI
+5. Deeply integrated with Google Blockly
+6. Type-safe automation
+7. Different automation types (event based/ loop based)
+8. Developers haven
+9. More than Home Automation server
+10. Embedded MQTT server
 
 # A note of history
-The predecessor of "Automate Everything" was called "GeekHOME Server". The origin project was created almost 10 years ago. "Automate Everything" is natural evolution of "GeekHOME Server" and most of the old functionality will be moved here sooner or later (and by that I mean a set of plugins for controlling lights, ventilation, central heating, alarm system and others).
+The work on "Automate Everything" was started in 2012. Yes... almost 10 years ago!. At first the project was called "geekHOME Server". In the beginning geekHOME was written in C# Micro Framework (running on FEZ Cobra!). It's been a dark times for DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
+In 2015 the code was ported to Java and run on Raspberry Pi 1. It was able to control the lights, central heating, alarm and ventilation at my own house. It has never been published.
+
+In 2020, I decided to give the project another shot. "Automate Everything" is now a full-blown automation server. Everything has been rewritten (only the original concept hasn't changed).
+I didn't focus on Home Automation this time... I wanted to create an "Operating System" for every type of automation project. I wanted to create something that will be really easy to extend by the others. That's why every single aspect of "Automate Everything" can be controlled or extended by plugins everybody can write. I hope the project will be useful for the other "DIY Tinkerers" like me.
+
 
 # State of the project
-The project is still in development.
+The project is still in development. But despite that fact it grows every day and becomes a pretty useful for me. You are welcome to try it out. 
+If you find it useful, please share with the others.
 
-# Installing on Raspberry Pi
-The recommended version of Raspberry Pi is *Raspberry Pi 4*.
-The setup below assumes you have a fresh installation of Raspbian/Ubuntu and you can connect to the board with SSH:
-```bash
-ssh pi@x.x.x.x
-```
-Where x.x.x.x is the IP address of your Pi in your local network.
+# For regular users
+[Quick install on Raspberry Pi](Quick-install-on-Raspberry-Pi.md)
 
-### Installing java
-```bash
-sudo apt update
-sudo apt install openjdk-11-jdk
-java -version
-```
-
-### Java troubleshooting.
-If you have problem running multiple java versions, or getting errors like that:
-```
-Error occurred during initialization of VM
-Server VM is only supported on ARMv7+ VFP
-```
-run
-```bash 
-sudo update-alternatives --config java
-```
-and manually select java 11
-
-## Getting sources
-
-
-## Building from sources
-"Automate Everything" needs gradle and npm to build. The most usable scripts and gradle tasks are:
-Run all the commands from the main directory of the project.
-
-
-* For building the frontend (user interface):
-```
-npm install --prefix ae-frontend
-npm run build --prefix ae-frontend
-```
-
-* For building the backend (the automation server + plugins):
-```
-./gradlew :ae-backend:assembleBackend
-```
-
-* For (re)building plugins only:
-```
-./gradlew :plugins:assemblePlugins
-```
-
-### Directory structure
-After building, the directory structure should look like this:
-```
-output
-    |- bin
-    |   - ae-backend-all.jar
-    |- plugins
-    |   - plugin1.jar
-    |   - plugin2.jar
-    |   - enabled.txt
-    | - web
-    |   - css
-    |       - app.*.css
-    |       - chunk-vendors.*.css
-    |   - js
-    |       - app.*.js
-    |       - app.*.js.map
-    |       - chunk-vendors.*.js
-    |       - chunk-vendors.*.js.map
-    |   - media
-    |       - (all media files required by blockly)
-    |   - favicon.ico
-    |   - index.html
-```
-
-## Running
-* To run the server run:
-```
-cd output
-java -jar bin/ae-backend-all.jar
-```
-* or in debug mode:
-```
-cd output
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar bin/ae-backend-all.jar
-```
-After starting, open *http://localhost* in your browser
-
-## Running in slow mode (for UI testing purpose)
-When using this option, all requests are going to be delayed for 5 seconds (good for UI testing).
-```
-cd output
-java -jar bin/ae-backend-all.jar -slow
-```
-After starting, open *http://localhost* in your browser
+# For Developers
+[Installing from sources on Raspberry Pi](Installing-from-sources-on-Raspberry-Pi.md)

@@ -26,7 +26,6 @@ dependencies {
 
     //plugin specific
     implementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
-
 }
 
 repositories {
