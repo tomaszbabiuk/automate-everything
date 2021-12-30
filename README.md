@@ -5,17 +5,16 @@ Think of "Automate Everything" as more plugin friendly OpenHab or deeply customi
 
 With correct set of plugins you can automate literally everything!
 
-# 10 Best features of "Automate Everything"
-1. An operating system for automation projects
+# Best features of "Automate Everything"
+1. [An operating system for automation projects](OS-for-automation-projects.md)
 2. Everything is a plugin
 3. Zero-conf principle
 4. Modern UI
 5. Deeply integrated with Google Blockly
 6. Type-safe automation
 7. Different automation types (event based/ loop based)
-8. Developers haven
-9. More than Home Automation server
-10. Embedded MQTT server
+8. Developers haven 
+9. Embedded MQTT server
 
 # A note of history
 The work on "Automate Everything" was started in 2012. Yes... almost 10 years ago!. At first the project was called "geekHOME Server". In the beginning geekHOME was written in C# Micro Framework (running on FEZ Cobra!). It's been a dark times for DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
