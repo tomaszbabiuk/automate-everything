@@ -41,8 +41,6 @@ class NumberedEventsSink : EventsSink {
             target.removeAt(0)
         }
 
-        println(payload)
-
         eventCounter++
         val now = Calendar.getInstance().timeInMillis
         val event = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)

@@ -26,6 +26,7 @@ import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.events.*
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.*
+import org.slf4j.LoggerFactory
 import java.util.*
 
 class AutomationConductor(
@@ -42,6 +43,7 @@ class AutomationConductor(
         liveEvents.addAdapterEventListener(this)
     }
 
+    private val logger = LoggerFactory.getLogger(AutomationConductor::class.java)
     private var automationJob: Job? = null
     private var enabled: Boolean = false
     private var firstLoop: Boolean = false
@@ -70,7 +72,7 @@ class AutomationConductor(
             automationUnitsCache.clear()
             evaluationUnitsCache.clear()
 
-            println("Enabling automation")
+            logger.info("Enabling automation")
             start()
         } else {
             stop()
@@ -191,12 +193,12 @@ class AutomationConductor(
 
                 if (hasNewPorts || hasUpdatedInstance) {
                     if (hasNewPorts) {
-                        println("Hardware manager has new ports... rebuilding automation")
+                        logger.debug("Hardware manager has new ports... rebuilding automation")
                         hardwareManager.clearNewPortsFlag()
                     }
 
                     if (hasUpdatedInstance) {
-                        println("Repository has updated instance... rebuilding automation")
+                        logger.debug("Repository has updated instance... rebuilding automation")
                         repository.clearInstanceUpdatedFlag()
                     }
 
@@ -209,7 +211,7 @@ class AutomationConductor(
                     .forEach { it.calculate(now) }
 
                 if (hasAutomations) {
-                    println("Processing maintenance + automation loop")
+                    logger.debug("Processing maintenance + automation loop")
 
                     automations
                         .forEach { (instanceId,automationList) ->
@@ -217,7 +219,7 @@ class AutomationConductor(
                                 try {
                                     it.process(now, firstLoop)
                                 } catch (ex: AutomationErrorException) {
-                                    println("Exception during automation $instanceId")
+                                    logger.error("Exception during automation $instanceId", ex)
                                     automationUnitsCache[instanceId]!!.second.markExternalError(ex)
                                 }
                             }
@@ -226,7 +228,7 @@ class AutomationConductor(
                     firstLoop = false
                     hardwareManager.executeAllPendingChanges()
                 } else {
-                    println("Processing maintenance loop")
+                    logger.debug("Processing maintenance loop")
                 }
 
                 hardwareManager.afterAutomationLoop()
@@ -240,7 +242,7 @@ class AutomationConductor(
         enabled = false
         automationUnitsCache.clear()
         evaluationUnitsCache.clear()
-        println("Disabling automation")
+        logger.debug("Disabling automation")
 
         broadcastAutomationUpdate()
     }

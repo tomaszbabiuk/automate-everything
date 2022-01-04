@@ -24,10 +24,12 @@ import org.eclipse.jetty.util.resource.PathResource
 import java.nio.file.Paths
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.glassfish.jersey.servlet.ServletContainer
+import org.slf4j.LoggerFactory
 import java.lang.Exception
 
 object Main {
     private const val DEFAULT_PORT = 80
+    private val logger = LoggerFactory.getLogger(Main::class.java)
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -46,7 +48,7 @@ object Main {
             server.start()
             server.join()
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error("Starting automation server failed!", e)
         }
     }
 

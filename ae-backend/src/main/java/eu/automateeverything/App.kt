@@ -40,8 +40,11 @@ import eu.automateeverything.pluginfeatures.mqtt.MoquetteBroker
 import eu.automateeverything.sqldelightplugin.SqlDelightRepository
 import kotlinx.coroutines.*
 import org.glassfish.jersey.server.ResourceConfig
+import org.slf4j.LoggerFactory
 
 open class App : ResourceConfig() {
+
+    private val logger = LoggerFactory.getLogger(App::class.java)
 
     //manual injection of common services
     private val injectionRegistry: InjectionRegistry = InjectionRegistry()
@@ -79,7 +82,7 @@ open class App : ResourceConfig() {
             while (isActive) {
                 delay(5000)
                 val nonOperatingAdaptersCount = hardwareManager.countNonOperatingAdapters()
-                println("Waiting for discovery to finish $nonOperatingAdaptersCount")
+                logger.info("Waiting for discovery to finish $nonOperatingAdaptersCount")
                 if (nonOperatingAdaptersCount == 0) {
                     automationConductor.enable()
                     cancel("All adapters are not initialized")

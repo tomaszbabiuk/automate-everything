@@ -67,7 +67,6 @@ class MoquetteBroker : MqttBrokerService {
                 size++
             }
             val msgAsString = String(buffer, 0, size)
-            println("Received on topic: " + msg.topicName + ", content: " + msgAsString)
             for (listener in listeners) {
                 listener.onPublish(msg.clientID, msg.topicName, msgAsString)
             }

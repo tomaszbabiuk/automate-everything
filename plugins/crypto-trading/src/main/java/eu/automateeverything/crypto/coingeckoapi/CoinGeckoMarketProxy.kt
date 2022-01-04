@@ -84,8 +84,6 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
     }
 
     private suspend fun getChartData(pair: CurrencyPair, fromTimestamp: Long, toTimestamp: Long, chartRange: ChartRange): List<BaseBar> {
-        println("${pair.base}/${pair.counter}, $chartRange")
-
         val marketChart201d = api.marketChart(
             baseSymbolToGeckoId(pair.base.lowercase())!!,
             pair.counter.lowercase(),
@@ -121,7 +119,6 @@ class CoinGeckoMarketProxy(private val api: CoinGeckoApi) : MarketProxy {
 
                 val closeTime = grouped.value.last().first.toZonedDateTime()
 
-                println("$closeTime,$openPrice,$closePrice,$minPrice,$maxPrice,$totalVol")
                 BaseBar(chartRange.duration, closeTime, openPrice, maxPrice, minPrice, closePrice, totalVol)
             }
     }

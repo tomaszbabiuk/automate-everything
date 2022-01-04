@@ -31,6 +31,7 @@ import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
 import kotlinx.coroutines.*
+import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -43,6 +44,7 @@ class OneWireAdapter(
 )
     : HardwareAdapterBase<OneWirePort<*>>() {
 
+    private val logger = LoggerFactory.getLogger(OneWireAdapter::class.java)
     private var mapper: OneWireSensorToPortMapper
     override val id: String = "1-WIRE $serialPortName"
 
@@ -78,7 +80,6 @@ class OneWireAdapter(
 
             val changedItems = newValues.filterIndexed { index, newValue -> prevValues[index] != newValue }
             if (changedItems.isNotEmpty()) {
-                println("Changed! $address")
                 val valueSnapshot = ValueSnapshot(address, prevValues, newValues)
                 executionQueue.add(valueSnapshot)
             }
@@ -163,16 +164,16 @@ class OneWireAdapter(
             freeAdapter(adapter)
         }
         catch (ex: OneWireIOException) {
-            println(ex)
+            logger.error("Unhandled exception from OneWire", ex)
 
             try {
                 adapter?.reset()
             } catch (nex: Exception) {
-                println("Trying to reset the adapter has failed!")
+                logger.info("Trying to reset the adapter that has failed!")
             }
 
             if (ex.message == "OneWireContainer28-temperature conversion not complete") {
-               println(ex.message)
+               logger.info(ex.message)
                 //ignoring
                 //TODO: add warning counter... if more than 10 > post to the mailbox
             } else {

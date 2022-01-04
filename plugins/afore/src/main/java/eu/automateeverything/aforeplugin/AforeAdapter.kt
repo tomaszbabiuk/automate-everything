@@ -15,7 +15,6 @@
 
 package eu.automateeverything.aforeplugin
 
-import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
