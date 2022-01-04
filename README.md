@@ -6,8 +6,8 @@ Think of "Automate Everything" as more plugin friendly OpenHab or deeply customi
 With correct set of plugins you can automate literally everything!
 
 # Best features of "Automate Everything"
-1. [An operating system for automation projects](OS-for-automation-projects.md)
-2. Everything is a plugin
+1. [An operating system for automation projects](doc/features/OS-for-automation-projects.md)
+2. [Everything is a plugin](doc/features/Everything-is-a-plugin.md)
 3. Zero-conf principle
 4. Modern UI
 5. Deeply integrated with Google Blockly
@@ -28,8 +28,9 @@ I didn't focus on Home Automation this time... I wanted to create an "Operating 
 The project is still in development. But despite that fact it grows every day and becomes a pretty useful for me. You are welcome to try it out. 
 If you find it useful, please share with the others.
 
-# For regular users
-[Quick install on Raspberry Pi](Quick-install-on-Raspberry-Pi.md)
+# How to...
+[Quick install on Raspberry Pi](doc/howtos/Quick-install-on-Raspberry-Pi.md)
 
-# For Developers
-[Installing from sources on Raspberry Pi](Installing-from-sources-on-Raspberry-Pi.md)
+# For Developers and Contributors
+[Installing from sources on Raspberry Pi](doc/dev/Installing-from-sources-on-Raspberry-Pi.md)
+[Logging](doc/dev/Logging.md)
