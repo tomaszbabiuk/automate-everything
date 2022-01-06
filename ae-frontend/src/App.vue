@@ -5,7 +5,7 @@
 
       <v-toolbar-title
         >{{ $vuetify.lang.t("$vuetify.application.name") }} -
-        {{ $route.name }}</v-toolbar-title
+        {{ $vuetify.lang.t("" + $route.meta.titleRes) }}</v-toolbar-title
       >
       <v-spacer></v-spacer>
 

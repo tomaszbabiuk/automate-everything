@@ -16,51 +16,61 @@ const routes = [
   {
     path: '/control',
     name: 'control',
-    component: Control
+    component: Control,
+    meta: { titleRes: '$vuetify.navigation.control' }
   },
   {
     path: '/discover/:clazz',
     name: 'discover',
-    component: Discover
+    component: Discover,
+    meta: { titleRes: '$vuetify.navigation.discover' }
   },
   {
     path: '/timeline',
     name: 'timeline',
-    component: Timeline
+    component: Timeline,
+    meta: { titleRes: '$vuetify.navigation.timeline' }
   },
   {
     path: '/inbox',
     name: 'inbox',
-    component: Inbox
+    component: Inbox,
+    meta: { titleRes: '$vuetify.navigation.inbox' }
   },
   {
     path: '/plugins',
     name: 'plugins',
-    component: Plugins
+    component: Plugins,
+    meta: { titleRes: '$vuetify.navigation.plugins' }
   },
   {
     path: '/plugins/:id',
     name: 'pluginSettings',
-    component: PluginSettings
+    component: PluginSettings,
+    meta: { titleRes: '$vuetify.navigation.plugin_settings' }
   },
   {
     path: '/objects/:clazz',
     name: 'objects',
-    component: Objects
+    component: Objects,
+    meta: { titleRes: '$vuetify.navigation.objects' }
   },
   {
     path: '/tags',
     name: 'tags',
-    component: Tags
+    component: Tags,
+    meta: { titleRes: '$vuetify.navigation.tags' }
   },
   {
     path: '/icons',
     name: 'icons',
-    component: Icons
+    component: Icons,
+    meta: { titleRes: '$vuetify.navigation.icons' }
   },
   {
     path: '/',
-    redirect: '/inbox'
+    redirect: '/inbox',
+    meta: { titleRes: '$vuetify.navigation.inbox' }
   }
 ]
 

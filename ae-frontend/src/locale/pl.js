@@ -1,7 +1,7 @@
 export default {
     application: {
-        name: "[manufacturer name]",
-        subtitle: "[product name]",
+        name: "Automate Everything",
+        subtitle: "od geekHOME",
     },
     navigation: {
         inbox:      "Skrzynka odbiorcza",
@@ -12,6 +12,7 @@ export default {
         icons:      "Ikony",
         discover:   "Odkrywanie",
         plugins:    "Rozszerzenia",
+        plugin_settings: "Settings"
     },
     plugins_list: {
         name:           "Nazwa",
