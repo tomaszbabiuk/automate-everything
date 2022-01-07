@@ -28,7 +28,7 @@ Automate Everything is using "objects" to model physical devices. The objects ca
 The example of objects: 
  - Circulation pump that controls the relay turning the physical pump on and off and a thermometer that measures the temperature after the pump. Circulation pump turns the pump on as long as temperature is rising (which means the water in the pipes is cold). When the temperature stabilizes, the pump is turned off. This was the pump is not working all the time and the energy for powering the pump is saved. After some time... the cycle repeats. You can define a custom automation blocks that will decide when the pumping cycle should be active (like every morning) but you don't need to specify the details of pumping (measuring the temperature, calculating temperature deltas and so on).
  
- - Timed On/Off device. This is a simple object that controls the relay. It contains few additional parameters like maximum working time, break time, etc. User can define automation blocks that turn the device on and off but the logic of the objects turns the object off if maximum working time is reached.
+ - Timed On/Off device. This is a simple object that controls the relay. It contains few additional parameters like maximum working time, break time, etc. User can define automation blocks that turn the device on and off but the logic that turns the object off (if maximum working time is reached) is contained in the object.
 
  - Alarm line and alarm zones. Those objects can emulate a complete alarm system. Alarm zone is watching the state of alarm lines and fires the alarm if any line is breached and the zone is armed. The user can define when the zone is armed but all the logic for keeping the lines in sync is done by the objects.
 
