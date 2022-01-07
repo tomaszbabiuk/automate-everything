@@ -5,7 +5,7 @@ Nobody likes configuration. That's why Automate Everything is following "Zero-co
 Let's see the examples of Zero-conf principle.
 
 Example 1: "Shelly" devices
-1. _All "Shelly" devices that are in your network will be automatically hijacked and added to the system as ports. All you need to do is to connect them to local network, Automate Everything will take care of the rest._
+_All "Shelly" devices that are in your network will be automatically hijacked and added to the system as ports. All you need to do is to connect them to local network, Automate Everything will take care of the rest._
 
 Example 2: "One-wire" devices
 _Automate Everything is automateically scannig for all available serial ports on every restart. When there's a 1-wire adapter connected to any USB ports, it will be immediatelly queried and all matching devices will be exposed as ports._
