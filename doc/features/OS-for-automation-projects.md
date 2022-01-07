@@ -1,6 +1,6 @@
 # Automate Everything is an operating system for automation projects
 
-Automate Everything does not limit to home automation only. As regular operating system provides drivers and resources (memory and cpu) to programs, Automate Everything provides ports and services for plugins.
+Automate Everything does not limit to home automation only. As regular operating system provides drivers and resources (memory and cpu) to programs, Automate Everything provides ports and services for plugins. By selecting a proper set of plugins you can perform different automation tasks.
 
 ## Ports
 
