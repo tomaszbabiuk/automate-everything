@@ -12,7 +12,7 @@ export default {
         icons:      "Ikony",
         discover:   "Odkrywanie",
         plugins:    "Rozszerzenia",
-        plugin_settings: "Settings"
+        plugin_settings: "Ustawienia",
     },
     plugins_list: {
         name:           "Nazwa",

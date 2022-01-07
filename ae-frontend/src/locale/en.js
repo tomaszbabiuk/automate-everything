@@ -12,6 +12,7 @@ export default {
         icons:      "Icons",
         discover:   "Discovery",
         plugins:    "Plugins",
+        plugin_settings: "Settings"
     },
     plugins_list: {
         name: "Name",
