@@ -4,7 +4,7 @@ import store, {
   UPDATE_AUTOMATION_UNIT,
   SET_ERROR, SET_PLUGINS, UPDATE_PLUGIN,
   SET_CONFIGURABLES,
-  SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE,
+  ADD_INSTANCE, SET_INSTANCES, SET_INSTANCE_VALIDATION, REMOVE_INSTANCE,
   CLEAR_TAGS, ADD_TAG, UPDATE_TAG, REMOVE_TAG,
   CLEAR_ICON_CATEGORIES, ADD_ICON_CATEGORY, UPDATE_ICON_CATEGORY, REMOVE_ICON_CATEGORY,
   ADD_ICON, UPDATE_ICON, REMOVE_ICON,
@@ -131,6 +131,13 @@ export const client = {
     await this.handleRestError(
       () => axiosInstance.get("rest/configurables"),
       (response) => store.commit(SET_CONFIGURABLES, response.data)
+    )
+  },
+
+  generateConfigurable: async function(clazz) {
+    await this.handleRestError(
+      () => axiosInstance.post("rest/configurables/"+ clazz +"/generate"),
+      (response) => store.commit(ADD_INSTANCE, response.data)
     )
   },
 

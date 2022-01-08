@@ -13,13 +13,8 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.instances
+package eu.automateeverything.domain
 
-data class InstanceDto(
-    var id: Long,
-    val iconId: Long?,
-    val tagIds: List<Long>,
-    val clazz: String,
-    val fields: Map<String, String?>,
-    val automation: String?
-)
+import java.lang.Exception
+
+class ServerException(message: String) : Exception(message)

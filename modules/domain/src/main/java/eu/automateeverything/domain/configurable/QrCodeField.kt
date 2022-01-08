@@ -13,13 +13,17 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.instances
+package eu.automateeverything.domain.configurable
 
-data class InstanceDto(
-    var id: Long,
-    val iconId: Long?,
-    val tagIds: List<Long>,
-    val clazz: String,
-    val fields: Map<String, String?>,
-    val automation: String?
-)
+import eu.automateeverything.data.fields.FieldType
+import eu.automateeverything.data.localization.Resource
+
+class QrCodeField(
+    name: String,
+    hint: Resource,
+    maxSize: Int,
+    initialValue: String,
+    vararg validators: Validator<String?>
+) : FieldDefinition<String>(
+    FieldType.QrCode, name, hint, maxSize, initialValue, String::class.java,
+    StringFieldBuilder(), null, null, *validators)

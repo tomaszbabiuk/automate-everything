@@ -98,6 +98,7 @@ open class App : ResourceConfig() {
         injectionRegistry.put(StateChangeReporter::class.java, stateChangeReporter)
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
+        injectionRegistry.put(Repository::class.java, repository)
     }
 
     private fun firstRunProcedure() {
@@ -129,6 +130,7 @@ open class App : ResourceConfig() {
         register(GsonMessageBodyHandler())
         register(CORSFilter())
         register(ResourceNotFoundExceptionMapper())
+        register(ServerExceptionMapper())
     }
 
     companion object {

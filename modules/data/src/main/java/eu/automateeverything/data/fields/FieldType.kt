@@ -25,5 +25,6 @@ enum class FieldType {
     PasswordString,
     Boolean,
     SingleOptionEnumeration,
-    Temperature
+    Temperature,
+    QrCode
 }

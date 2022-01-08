@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -13,13 +13,21 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.instances
+package eu.automateeverything.mobileaccessplugin
 
-data class InstanceDto(
-    var id: Long,
-    val iconId: Long?,
-    val tagIds: List<Long>,
-    val clazz: String,
-    val fields: Map<String, String?>,
-    val automation: String?
-)
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import org.pf4j.PluginWrapper
+import eu.automateeverything.data.localization.Resource
+import org.pf4j.Plugin
+
+class MobileAccessPlugin(wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
+
+    override fun start() {
+    }
+
+    override fun stop() {
+    }
+
+    override val name: Resource = R.plugin_name
+    override val description: Resource = R.plugin_description
+}

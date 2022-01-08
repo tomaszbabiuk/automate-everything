@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -13,13 +13,16 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.instances
+package eu.automateeverything.rest
 
-data class InstanceDto(
-    var id: Long,
-    val iconId: Long?,
-    val tagIds: List<Long>,
-    val clazz: String,
-    val fields: Map<String, String?>,
-    val automation: String?
-)
+import eu.automateeverything.domain.ServerException
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.ext.ExceptionMapper
+
+class ServerExceptionMapper : ExceptionMapper<ServerException?> {
+    override fun toResponse(ex: ServerException?): Response {
+        return Response
+            .status(500)
+            .build()
+    }
+}

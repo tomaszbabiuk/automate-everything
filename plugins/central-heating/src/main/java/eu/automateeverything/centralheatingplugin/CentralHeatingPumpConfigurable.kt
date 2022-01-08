@@ -33,11 +33,6 @@ class CentralHeatingPumpConfigurable(
     private val portFinder: PortFinder,
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
-
-    override val hasAutomation = false
-    override val editableIcon = false
-    override val taggable = true
-
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
 
     override val addNewRes: Resource

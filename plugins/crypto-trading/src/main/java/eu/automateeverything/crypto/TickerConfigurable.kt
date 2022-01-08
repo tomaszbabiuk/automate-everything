@@ -42,10 +42,7 @@ class TickerConfigurable(
     ),
     portFinder
 ) {
-
     override val hasAutomation: Boolean = false
-    override val editableIcon: Boolean = true
-    override val taggable: Boolean = false
 
     override val parent: Class<out Configurable>?
         get() = null

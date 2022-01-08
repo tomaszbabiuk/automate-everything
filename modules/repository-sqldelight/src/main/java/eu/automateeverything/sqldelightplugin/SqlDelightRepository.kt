@@ -70,9 +70,12 @@ class SqlDelightRepository : Repository {
     private val settingsFieldInstanceListToSettingsDtoList:  Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
         SettingsFieldInstanceListToSettingsDtoListMapper()
 
-    override fun saveInstance(instanceDto: InstanceDto) {
+    override fun saveInstance(instanceDto: InstanceDto) : Long {
+        var id: Long = 0
         database.transaction {
             database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId, instanceDto.automation)
+            id = database.generalQueries.lastInsertRowId().executeAsOne()
+
             val insertedDtoId = database.generalQueries.lastInsertRowId().executeAsOne()
             instanceDto.fields.forEach {
                 database.configurableFieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
@@ -82,6 +85,8 @@ class SqlDelightRepository : Repository {
                 database.instanceTaggingQueries.insert(it, insertedDtoId)
             }
         }
+
+        return id
     }
 
     override fun updateInstance(instanceDto: InstanceDto) {

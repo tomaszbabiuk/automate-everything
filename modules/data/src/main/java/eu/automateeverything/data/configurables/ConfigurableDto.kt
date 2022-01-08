@@ -31,4 +31,5 @@ data class ConfigurableDto(
     val hasAutomation: Boolean,
     val editableIcon: Boolean,
     val taggable: Boolean,
+    val generable : Boolean
 )

@@ -21,9 +21,8 @@ import eu.automateeverything.data.localization.Resource
 class BooleanField(
     name: String,
     hint: Resource,
-    maxSize: Int,
     initialValue: Boolean,
     vararg validators: Validator<Boolean?>
 ) : FieldDefinition<Boolean>(
-    FieldType.Boolean, name, hint, maxSize, initialValue, Boolean::class.java,
+    FieldType.Boolean, name, hint, 0, initialValue, Boolean::class.java,
     BooleanFieldBuilder(), null, null, *validators)

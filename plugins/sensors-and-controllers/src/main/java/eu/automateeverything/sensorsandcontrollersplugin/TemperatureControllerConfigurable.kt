@@ -77,7 +77,7 @@ class TemperatureControllerConfigurable(
     private val minField = TemperatureField(FIELD_MIN, R.field_min_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
     private val maxField = TemperatureField(FIELD_MAX, R.field_max_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
     private val defaultField = TemperatureField(FIELD_DEFAULT_TEMP, R.field_default_temp_hint, 10, (273.15).toBigDecimal(), RequiredBigDecimalValidator())
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Temperature> {
         val name = instance.fields[FIELD_NAME]!!
@@ -91,9 +91,6 @@ class TemperatureControllerConfigurable(
 
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.Temperature
-
-    override val hasAutomation: Boolean
-        get() = true
 
     companion object {
         const val FIELD_MIN = "min"

@@ -15,22 +15,31 @@
 
 package eu.automateeverything.rest.configurables
 
+import eu.automateeverything.data.configurables.ConfigurableDto
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.ServerException
+import eu.automateeverything.domain.configurable.GeneratedConfigurable
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import jakarta.inject.Inject
-import jakarta.ws.rs.GET
-import jakarta.ws.rs.Produces
-import eu.automateeverything.data.configurables.ConfigurableDto
-import jakarta.servlet.http.HttpServletRequest
-import java.util.stream.Collectors
-import jakarta.ws.rs.Path
-import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import java.util.stream.Collectors
 
 @Path("configurables")
 class ConfigurableController @Inject constructor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val configurableDtoMapper: ConfigurableDtoMapper
 ) {
+
+    private fun findConfigurable(clazz: String): GeneratedConfigurable? {
+    return pluginsCoordinator
+        .configurables
+        .filter { x -> x.javaClass.name.equals(clazz) }
+        .filterIsInstance<GeneratedConfigurable>()
+        .firstOrNull()
+}
+
+
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getConfigurables(): List<ConfigurableDto> {
@@ -39,5 +48,17 @@ class ConfigurableController @Inject constructor(
             .stream()
             .map { configurableDtoMapper.map(it) }
             .collect(Collectors.toList())
+    }
+
+    @POST
+    @Path("/{clazz}/generate")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun generate(@PathParam("clazz") clazz: String): InstanceDto {
+        val configurable = findConfigurable(clazz)
+        if (configurable != null) {
+            return configurable.generate()
+        }
+
+        throw ServerException("This configurable clazz cannot be generated automatically")
     }
 }

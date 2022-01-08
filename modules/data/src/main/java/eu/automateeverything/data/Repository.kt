@@ -26,7 +26,7 @@ import eu.automateeverything.data.tags.TagDto
 
 interface Repository {
 
-    fun saveInstance(instanceDto: InstanceDto)
+    fun saveInstance(instanceDto: InstanceDto): Long
     fun updateInstance(instanceDto: InstanceDto)
     fun getAllInstances(): List<InstanceDto>
     fun getAllInstanceBriefs() : List<InstanceBriefDto>

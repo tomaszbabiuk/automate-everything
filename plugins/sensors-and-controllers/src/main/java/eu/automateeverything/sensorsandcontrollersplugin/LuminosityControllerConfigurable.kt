@@ -79,7 +79,7 @@ class LuminosityControllerConfigurable(
     private val minField = BigDecimalField(FIELD_MIN, R.field_min_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
     private val maxField = BigDecimalField(FIELD_MAX, R.field_max_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
     private val defaultField = BigDecimalField(FIELD_DEFAULT, R.field_default_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint,false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Luminosity> {
         val name = extractFieldValue(instance, nameField)
@@ -95,21 +95,18 @@ class LuminosityControllerConfigurable(
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.Luminosity
 
-    override val hasAutomation: Boolean
-        get() = true
-
-    companion object {
-        const val FIELD_MIN = "min"
-        const val FIELD_MAX = "max"
-        const val FIELD_DEFAULT = "default"
-        const val FIELD_AUTOMATION_ONLY = "automation_only"
-    }
-
     override fun extractMinValue(instance: InstanceDto): BigDecimal {
         return BigDecimal.ZERO
     }
 
     override fun extractMaxValue(instance: InstanceDto): BigDecimal {
         return 100.0.toBigDecimal()
+    }
+
+    companion object {
+        const val FIELD_MIN = "min"
+        const val FIELD_MAX = "max"
+        const val FIELD_DEFAULT = "default"
+        const val FIELD_AUTOMATION_ONLY = "automation_only"
     }
 }

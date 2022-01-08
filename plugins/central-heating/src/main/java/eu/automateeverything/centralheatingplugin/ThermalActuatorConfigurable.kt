@@ -33,10 +33,6 @@ class ThermalActuatorConfigurable(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
-    override val hasAutomation = true
-    override val editableIcon = true
-    override val taggable = true
-
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
 
     override val addNewRes: Resource

@@ -67,7 +67,7 @@ class OnOffDeviceConfigurable(
                 </svg>"""
 
     private val portField = RelayOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val portId = extractFieldValue(instance, portField)

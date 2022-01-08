@@ -70,12 +70,8 @@ class PowerRegulatorConfigurable(
             </svg>
         """.trimIndent()
 
-    override val hasAutomation: Boolean = true
-    override val editableIcon: Boolean = true
-    override val taggable: Boolean = true
-
     private val portField = PowerLevelOutputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator())
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
     companion object {
         const val FIELD_PORT = "portId"

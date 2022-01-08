@@ -123,12 +123,16 @@
 
       <div v-if="canAddInstances()">
         <v-card tile v-for="instance in filteredInstances" :key="instance.id">
-          <v-list>
+          <v-list v-if="configurable.generable">
             <v-list-item two-line>
-              <v-list-item-icon v-if="instance.iconId === null">
+              <v-list-item-icon
+                v-if="instance.iconId === null && configurable.editableIcon"
+              >
                 <v-icon x-large left>$vuetify.icon.empty</v-icon>
               </v-list-item-icon>
-              <v-list-item-icon v-else>
+              <v-list-item-icon
+                v-if="instance.iconId !== null && configurable.editableIcon"
+              >
                 <img
                   left
                   :src="'/rest/icons/' + instance.iconId + '/raw'"
@@ -137,34 +141,45 @@
                 />
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{
+                <v-list-item-title v-if="instance.fields['name'] != null">{{
                   instance.fields["name"]
                 }}</v-list-item-title>
-                <v-list-item-subtitle class="mb-4"
+                <v-list-item-subtitle
+                  v-if="instance.fields['description'] != null"
+                  class="mb-4"
                   >{{ instance.fields["description"] }}
                 </v-list-item-subtitle>
                 <v-list-item-subtitle
-                  v-for="configurable in configurable.fields"
-                  :key="configurable.name"
-                  ><div
+                  v-for="field in configurable.fields"
+                  :key="field.name"
+                >
+                  <div v-if="field.type === 'QrCode'">
+                    <p class="text-center">
+                        {{ field.hint }}
+                    </p>
+                    <p class="text-center">
+                      <external-qrcode
+                          :value="instance.fields[field.name]"
+                        ></external-qrcode>
+                    </p>
+                  </div>
+
+                  <div
                     v-if="
-                      configurable.name !== 'name' &&
-                      configurable.name !== 'description'
+                      field.name !== 'name' &&
+                      field.name !== 'description' &&
+                      field.type !== 'QrCode'
                     "
                   >
-                    {{ configurable.hint }}:
-                    {{
-                      displayField(
-                        configurable,
-                        instance.fields[configurable.name]
-                      )
-                    }}
+                    {{ field.hint }}:
+                    {{ displayField(field, instance.fields[field.name]) }}
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-btn icon>
-                <v-icon @click="showEditInstanceDialog(instance)"
+              <v-btn icon v-if="!configurable.generable">
+                <v-icon
+                  @click="showEditInstanceDialog(instance)"
                   >mdi-pencil</v-icon
                 >
               </v-btn>
@@ -242,7 +257,7 @@
         right
         bottom
         class="ma-4"
-        @click="showAddNewInstanceDialog()"
+        @click="addOrGenerateNewInstance()"
       >
         <v-icon dark>mdi-plus</v-icon>
       </v-btn>
@@ -380,7 +395,11 @@ export default {
       }
 
       if (fieldDefinition.type == "Temperature") {
-        return temp.kelvinsToDisplayTemperature(fieldValue) + ' ' + temp.obtainTemperatureUnit().title
+        return (
+          temp.kelvinsToDisplayTemperature(fieldValue) +
+          " " +
+          temp.obtainTemperatureUnit().title
+        );
       }
 
       return fieldValue;
@@ -468,6 +487,14 @@ export default {
       });
 
       return result;
+    },
+
+    addOrGenerateNewInstance: function() {
+      if (this.configurable.generable) {
+        client.generateConfigurable(this.getConfigurableClazz());
+      } else {
+        this.showAddNewInstanceDialog();
+      }
     },
 
     showAddNewInstanceDialog: function () {

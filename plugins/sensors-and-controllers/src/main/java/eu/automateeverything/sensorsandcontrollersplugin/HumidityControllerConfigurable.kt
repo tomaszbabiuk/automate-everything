@@ -76,7 +76,7 @@ class HumidityControllerConfigurable(
     private val minField = PercentField(FIELD_MIN, R.field_min_hum_hint, BigDecimal.ZERO)
     private val maxField = PercentField(FIELD_MAX, R.field_max_hum_hint, BigDecimal.ZERO)
     private val defaultField = PercentField(FIELD_DEFAULT, R.field_default_hum_hint, BigDecimal.ZERO)
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Humidity> {
         val name = extractFieldValue(instance, nameField)
@@ -90,9 +90,6 @@ class HumidityControllerConfigurable(
 
     override val blocksCategory: BlockCategory
         get() = CommonBlockCategories.Humidity
-
-    override val hasAutomation: Boolean
-        get() = true
 
     companion object {
         const val FIELD_MIN = "min"

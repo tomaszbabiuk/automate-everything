@@ -55,7 +55,8 @@ class ConfigurableDtoMapper @Inject constructor(
             configurable.iconRaw,
             configurable.hasAutomation,
             configurable.editableIcon,
-            configurable.taggable
+            configurable.taggable,
+            configurable.generable
         )
     }
 

@@ -33,11 +33,6 @@ import java.util.HashMap
 class SceneConfigurable(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
-
-    override val hasAutomation: Boolean = true
-    override val editableIcon: Boolean = true
-    override val taggable: Boolean = false
-
     override val parent: Class<out Configurable?>?
         get() = null
 
@@ -54,7 +49,7 @@ class SceneConfigurable(
         return SceneAutomationUnit(stateChangeReporter, instance, name, automationOnly, states)
     }
 
-    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, 0, false)
+    private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
 
     override val states: Map<String, State>

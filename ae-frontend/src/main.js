@@ -25,6 +25,8 @@ import SettingsPasswordStringField from './components/ae/settings/PasswordString
 import PortControl from './components/ae/PortControl'
 import DeviceControl from './components/ae/DeviceControl'
 
+import QrcodeVue from 'qrcode.vue'
+
 //configurables
 Vue.component('configurable-form', ConfigurableForm)
 Vue.component('configurable-stringfield', ConfigurableStringField)
@@ -48,6 +50,9 @@ Vue.component('settings-passwordstringfield', SettingsPasswordStringField)
 //geekhome
 Vue.component('portcontrol', PortControl)
 Vue.component('devicecontrol', DeviceControl)
+
+//external
+Vue.component('external-qrcode', QrcodeVue)
 
 Vue.config.productionTip = false
 //Add unimported components to ignore list to prevent warnings.

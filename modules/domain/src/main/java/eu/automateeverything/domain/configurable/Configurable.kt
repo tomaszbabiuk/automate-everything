@@ -33,6 +33,7 @@ interface Configurable : ExtensionPoint {
     val hasAutomation: Boolean
     val editableIcon: Boolean
     val taggable: Boolean
+    val generable: Boolean
 
     fun <T> extractFieldValue(instance: InstanceDto, field: FieldDefinition<T>) : T {
         val rawValue = instance.fields[field.name]
@@ -46,11 +47,20 @@ interface ConfigurableWithFields : Configurable {
     val editRes: Resource
 }
 
+abstract class GeneratedConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
+    abstract fun generate(): InstanceDto
+    override val generable: Boolean = true
+    override val hasAutomation: Boolean = false
+    override val taggable: Boolean = false
+    override val editableIcon: Boolean = false
+}
+
 abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<V>
-    override val hasAutomation: Boolean = false
+    override val hasAutomation: Boolean = true
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
+    override val generable: Boolean = false
 }
 
 abstract class DeviceConfigurableWithBlockCategory<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
@@ -75,16 +85,19 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
+    override val generable: Boolean = false
 }
 
 abstract class CategoryConfigurable : Configurable {
     override val hasAutomation: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
+    override val generable: Boolean = false
 }
 
 abstract class ActionConfigurable: StateDeviceConfigurable() {
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
+    override val generable: Boolean = false
 }
 
