@@ -159,7 +159,7 @@
                     </p>
                     <p class="text-center">
                       <external-qrcode
-                          :value="instance.fields[field.name]"
+                          :value="instance.fields[field.name]" size="150"
                         ></external-qrcode>
                     </p>
                   </div>

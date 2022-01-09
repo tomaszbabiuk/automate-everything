@@ -11,6 +11,7 @@
         :id="field.name"
         :clazz="settingGroup.clazz"
         :disabled="disabled"
+        :initialValue="field.initialValue"
         v-bind:is="fieldClassToFormComponent(field.type)"
       >
       </component>

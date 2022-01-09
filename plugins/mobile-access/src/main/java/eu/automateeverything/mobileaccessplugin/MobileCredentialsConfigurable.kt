@@ -20,8 +20,10 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.*
 import org.pf4j.Extension
-import java.util.*
-import kotlin.collections.LinkedHashMap
+import saltchannel.CryptoLib
+import saltchannel.util.Hex
+import saltchannel.util.Rand
+import java.security.SecureRandom
 
 @Extension
 class MobileCredentialsConfigurable(
@@ -32,6 +34,7 @@ class MobileCredentialsConfigurable(
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_ACTIVATED] = activatedField
+            result[FIELD_PUBKEY] = pubKeyField
             result[FIELD_QR_CODE] = qrCodeField
             return result
         }
@@ -67,22 +70,59 @@ class MobileCredentialsConfigurable(
 
     private val qrCodeField = QrCodeField(FIELD_QR_CODE, R.field_invitation_hint, 0, "")
     private val activatedField = BooleanField(FIELD_ACTIVATED, R.field_activated_hint, false)
+    private val pubKeyField = StringField(FIELD_PUBKEY, R.field_public_key, 32,"")
 
     override fun generate(): InstanceDto {
-        val nameField = Pair(FIELD_NAME, "#ID: " + Calendar.getInstance().timeInMillis)
+        val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
+        val keyPair = CryptoLib.createSigKeys(random)
+        val pubKeyHexString = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
+
+        val bindingIdBytes = ByteArray(10) { 0.toByte() }
+        random.randomBytes(bindingIdBytes)
+        val bindingIdHexString = String(Hex.toHexCharArray(bindingIdBytes, 0, bindingIdBytes.size))
+
+        val nameField = Pair(FIELD_NAME, "#ID: $bindingIdHexString")
         val descriptionField = Pair(FIELD_DESCRIPTION, null)
-        val qrCodeField = Pair(FIELD_QR_CODE, "//TODO fill this with channel data")
+        val qrCodeField = Pair(FIELD_QR_CODE, "http://automateeverything.eu?bindingId=$bindingIdHexString&pubkey=$pubKeyHexString")
         val activatedField = Pair(FIELD_ACTIVATED, false.toString())
+        val pubKeyField = Pair(FIELD_PUBKEY, pubKeyHexString)
 
         val newInstance = InstanceDto(0, null, listOf(), MobileCredentialsConfigurable::class.java.name,
-            mapOf(nameField, descriptionField, qrCodeField, activatedField), null)
+            mapOf(nameField, descriptionField, qrCodeField, activatedField, pubKeyField), null)
         val newId = repository.saveInstance(newInstance)
         newInstance.id = newId
+
+        val keyStorePassword = "dupa"
+        val aliasPassword = "i kamieni kupa"
+        val storage = SecretStorage()
+        storage.storeSecret(keyStorePassword, aliasPassword, pubKeyHexString, keyPair.sec())
+
+        val dupa = storage.loadSecret(keyStorePassword, aliasPassword, pubKeyHexString)
+        println(dupa)
+
+
+//        val  client = SaltClientSession(keypair, object : ByteChannel {
+//            override fun read(): ByteArray {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun write(vararg messages: ByteArray?) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun write(isLast: Boolean, vararg messages: ByteArray?) {
+//                TODO("Not yet implemented")
+//            }
+//        })
+//        client.setEncKeyPair(random)
+//        client.handshake()
+
         return newInstance
     }
 
     companion object {
         const val FIELD_QR_CODE = "qrCode"
         const val FIELD_ACTIVATED = "activated"
+        const val FIELD_PUBKEY = "pubkey"
     }
 }

@@ -93,7 +93,7 @@ class AutomationConductor(
                 if (configurable is ConditionConfigurable) {
                     val evaluator = configurable.buildEvaluator(instance)
                     evaluationUnitsCache[instance.id] = evaluator
-                } else {
+                } else if (configurable !is GeneratedConfigurable) {
                     try {
                         val physicalUnit = buildPhysicalUnit(configurable, instance)
                         automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
@@ -173,7 +173,6 @@ class AutomationConductor(
             is DeviceConfigurable<*> -> {
                 AutomationUnitWrapper(configurable.valueClazz, stateChangeReporter, name, instance, ex)
             }
-
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
         }
     }

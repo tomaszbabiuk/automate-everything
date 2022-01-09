@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 Tomasz Babiuk
+ * Copyright (c) 2019-2021 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,21 +15,18 @@
 
 package eu.automateeverything.mobileaccessplugin
 
-import eu.automateeverything.domain.extensibility.PluginMetadata
-import org.pf4j.PluginWrapper
-import eu.automateeverything.data.localization.Resource
-import org.pf4j.Plugin
+import eu.automateeverything.domain.configurable.*
 
-class MobileAccessPlugin(wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
+class KeystoreSettingGroup : SettingGroup {
 
-    override fun start() {
+    override val titleRes = R.keystore_settings_title
+    override val descriptionRes = R.keystore_settings_description
+
+    override val fieldDefinitions: Map<String, FieldDefinition<*>> = mapOf(
+        Pair(FIELD_PASSWORD, PasswordStringField(FIELD_PASSWORD, R.field_password_hint, 0, "change-me", RequiredStringValidator())),
+    )
+
+    companion object {
+        const val FIELD_PASSWORD = "password"
     }
-
-    override fun stop() {
-    }
-
-    override val name: Resource = R.plugin_name
-    override val description: Resource = R.plugin_description
-
-    override val settingGroups = listOf(KeystoreSettingGroup())
 }

@@ -18,6 +18,26 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val keystore_settings_title = Resource(
+        "Secrets protection",
+        "Ochrona haseł"
+    )
+
+    val keystore_settings_description = Resource(
+        "Password for protecting access secrets.",
+        "Hasło chroniące klucze dostępu."
+    )
+
+    val field_password_hint = Resource(
+        "Password",
+        "Hasło"
+    )
+
+    val field_public_key = Resource(
+        "Public key",
+        "Klucz publiczny"
+    )
+
     val field_activated_hint= Resource(
         "Activated",
         "Aktywowany"
