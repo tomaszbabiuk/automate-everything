@@ -1,6 +1,16 @@
 <template>
   <div>
-      <v-text-field v-model="text" :label="hint" :counter="counter" :error="error" :error-messages="errorMessages" :disabled="disabled" type="password"></v-text-field>
+      <v-text-field 
+        v-model="text" 
+        :label="hint" 
+        :counter="counter" 
+        :error="error" 
+        :error-messages="errorMessages" 
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+        :type="showPassword ? 'text' : 'password'"
+        :disabled="disabled">
+      </v-text-field>
   </div>
 </template>
 
@@ -13,10 +23,11 @@ export default {
       error: false,
       errorMessages: [],
       text: '',
+      showPassword: false
     };
   },
 
-  props: ["id", "hint", "counter", "clazz", "disabled"],
+  props: ["id", "hint", "counter", "clazz", "disabled", "initialValue"],
 
   computed: {
     validation() {
@@ -43,7 +54,9 @@ export default {
 
   mounted: function() {
     var settings = this.$store.state.settings[this.clazz]
-    if (settings != null) {
+    if (settings == null) {
+      this.text = this.initialValue
+    } else {
       this.text=settings[this.id]
     }
   }

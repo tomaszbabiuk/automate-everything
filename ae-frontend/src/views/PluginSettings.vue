@@ -92,7 +92,6 @@ export default {
 
   methods: {
     dataLoaded() {
-      console.log('data loaded')
       this.plugin = this.findPlugin(this.getPluginId());
       this.breadcrumbs = this.calculateBreadcrumbs(this.plugin);
     },
