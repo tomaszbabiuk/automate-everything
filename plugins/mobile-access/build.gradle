@@ -32,6 +32,10 @@ dependencies {
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
+// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+
+
     //ktor
     shadow "io.ktor:ktor-client-core:$ktorVersion"
     shadow "io.ktor:ktor-client-cio:$ktorVersion"

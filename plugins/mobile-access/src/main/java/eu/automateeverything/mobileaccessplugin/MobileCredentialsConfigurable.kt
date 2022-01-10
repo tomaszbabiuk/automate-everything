@@ -19,6 +19,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.Extension
 import saltchannel.CryptoLib
 import saltchannel.util.Hex
@@ -27,7 +28,8 @@ import java.security.SecureRandom
 
 @Extension
 class MobileCredentialsConfigurable(
-    private val repository: Repository
+    private val repository: Repository,
+    private val settingsResolver: SettingsResolver
 ) : GeneratedConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
@@ -73,6 +75,13 @@ class MobileCredentialsConfigurable(
     private val pubKeyField = StringField(FIELD_PUBKEY, R.field_public_key, 32,"")
 
     override fun generate(): InstanceDto {
+        val pluginSettings = settingsResolver.resolve()
+        val secretsPassword:String = if (pluginSettings.size == 1) {
+            pluginSettings[0].fields[SecretsProtectionSettingGroup.FIELD_PASSWORD]!!
+        } else {
+            SecretsProtectionSettingGroup.DEFAULT_PASSWORD
+        }
+
         val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
         val keyPair = CryptoLib.createSigKeys(random)
         val pubKeyHexString = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
@@ -92,30 +101,8 @@ class MobileCredentialsConfigurable(
         val newId = repository.saveInstance(newInstance)
         newInstance.id = newId
 
-        val keyStorePassword = "dupa"
-        val aliasPassword = "i kamieni kupa"
         val storage = SecretStorage()
-        storage.storeSecret(keyStorePassword, aliasPassword, pubKeyHexString, keyPair.sec())
-
-        val dupa = storage.loadSecret(keyStorePassword, aliasPassword, pubKeyHexString)
-        println(dupa)
-
-
-//        val  client = SaltClientSession(keypair, object : ByteChannel {
-//            override fun read(): ByteArray {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun write(vararg messages: ByteArray?) {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun write(isLast: Boolean, vararg messages: ByteArray?) {
-//                TODO("Not yet implemented")
-//            }
-//        })
-//        client.setEncKeyPair(random)
-//        client.handshake()
+        storage.storeSecret(secretsPassword, pubKeyHexString, keyPair.sec())
 
         return newInstance
     }

@@ -25,7 +25,7 @@ export default {
         settings:       "Ustawienia",
     },
     plugin_settings: {
-        saved_message: "Zapisano! Zmiany zostaną wprowadzone po zrestartowaniu pluginu."
+        saved_message: "Zapisano! Niektóre zmiany mogą wymagać zrestartowaniu pluginu."
     },
     common: {
         retry: "Ponów",

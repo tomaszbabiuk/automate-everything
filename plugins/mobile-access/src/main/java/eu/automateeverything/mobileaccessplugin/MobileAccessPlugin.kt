@@ -18,18 +18,99 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import org.pf4j.PluginWrapper
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.settings.SettingsDto
+import eu.automateeverything.domain.settings.SettingsResolver
+import kotlinx.coroutines.*
 import org.pf4j.Plugin
+import saltchannel.util.Hex
+import saltchannel.util.Rand
+import saltchannel.v2.SaltServerSession
+import java.security.SecureRandom
 
-class MobileAccessPlugin(wrapper: PluginWrapper) : Plugin(wrapper), PluginMetadata {
+class MobileAccessPlugin(wrapper: PluginWrapper,
+                         private val settingsResolver: SettingsResolver
+) : Plugin(wrapper), PluginMetadata {
+    var startStopScope = createNewScope()
+
+//    override fun start() {
+//
+//
+//        println(brokerAddress)
+//
+//        val storage = SecretStorage()
+//        val secrets = storage.loadAllSecrets(secretsPassword)
+//
+//
+
+//        val keypair = KeyPair.fromHex("xx", "xx")
+//        val saltServerSession = SaltServerSession(keypair, object: ByteChannel {
+//            override fun read(): ByteArray {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun write(vararg messages: ByteArray) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun write(isLast: Boolean, vararg messages: ByteArray?) {
+//                TODO("Not yet implemented")
+//            }
+//        })
+//
+//    }
 
     override fun start() {
+        startStopScope = createNewScope()
+
+        startStopScope.launch {
+            delay(10000)
+            val pluginSettings = settingsResolver.resolve()
+            val brokerAddress = extractBrokerAddress(pluginSettings)
+            val secretsPassword = extractSecretsPassword(pluginSettings)
+            val storage = SecretStorage()
+            val sessions = storage
+                .loadAllSecrets(secretsPassword)
+                .map {
+                    val topic = String(Hex.toHexCharArray(it.pub(), 0, it.pub().size))
+                    val byteChannel = MqttByteChannel(brokerAddress, topic, topic)
+                    byteChannel.establishConnection()
+                    SaltServerSession(it, byteChannel)
+                }
+
+            val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
+            sessions.forEach {
+                it.setEncKeyPair(random)
+                it.handshake()
+            }
+        }
     }
 
     override fun stop() {
+        startStopScope.cancel("Stopping ${this.javaClass.name}")
     }
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
 
-    override val settingGroups = listOf(KeystoreSettingGroup())
+    override val settingGroups = listOf(SecretsProtectionSettingGroup())
+
+    private fun createNewScope() : CoroutineScope {
+        return CoroutineScope(Dispatchers.IO)
+    }
+
+    private fun extractBrokerAddress(pluginSettings: List<SettingsDto>): String {
+        return if (pluginSettings.size == 1) {
+            pluginSettings[0].fields[SecretsProtectionSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!
+        } else {
+            SecretsProtectionSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS
+        }
+    }
+
+    private fun extractSecretsPassword(pluginSettings: List<SettingsDto>): String {
+        return if (pluginSettings.size == 1) {
+            pluginSettings[0].fields[SecretsProtectionSettingGroup.FIELD_PASSWORD]!!
+        } else {
+            SecretsProtectionSettingGroup.DEFAULT_PASSWORD
+        }
+    }
 }

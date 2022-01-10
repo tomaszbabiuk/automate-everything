@@ -15,9 +15,11 @@
 
 package eu.automateeverything.mobileaccessplugin
 
+import saltchannel.util.Hex
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.security.KeyPair
 import java.security.KeyStore
 import java.security.KeyStore.PasswordProtection
 import java.security.KeyStore.ProtectionParameter
@@ -28,27 +30,28 @@ import javax.crypto.spec.SecretKeySpec
 class SecretStorage {
     companion object {
         const val KEYSTORE_PATH = "mobilecredentials.jks"
+        const val KEYSTORE_PASS = "Using @l!as p@ssw0rdz"
     }
 
     @Throws(Exception::class)
-    private fun loadKeyStore(keyStorePassword: String): KeyStore {
+    private fun loadKeyStore(): KeyStore {
         val file = File(KEYSTORE_PATH)
         val keyStore = KeyStore.getInstance("JCEKS")
         if (file.exists()) {
-            keyStore.load(FileInputStream(file), keyStorePassword.toCharArray())
+            keyStore.load(FileInputStream(file), KEYSTORE_PASS.toCharArray())
         } else {
             keyStore.load(null, null)
         }
         return keyStore
     }
 
-    private fun saveKeyStore(keyStore: KeyStore, keyStorePassword: String) {
+    private fun saveKeyStore(keyStore: KeyStore, ) {
         val file = File(KEYSTORE_PATH)
-        keyStore.store(FileOutputStream(file), keyStorePassword.toCharArray())
+        keyStore.store(FileOutputStream(file), KEYSTORE_PASS.toCharArray())
     }
 
-    fun storeSecret(keyStorePassword: String, aliasPassword: String, alias: String, secret: ByteArray) {
-        val keyStore = loadKeyStore(keyStorePassword)
+    fun storeSecret(aliasPassword: String, alias: String, secret: ByteArray) {
+        val keyStore = loadKeyStore()
         val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
 
         val mySecretKey: SecretKey = SecretKeySpec(secret, "DSA")
@@ -56,12 +59,27 @@ class SecretStorage {
         val secretKeyEntry = KeyStore.SecretKeyEntry(mySecretKey)
         keyStore.setEntry(alias, secretKeyEntry, protectionParam)
 
-        saveKeyStore(keyStore, keyStorePassword)
+        saveKeyStore(keyStore)
     }
 
-    fun loadSecret(keyStorePassword: String, aliasPassword: String, alias: String): KeyStore.Entry {
-        val keyStore = loadKeyStore(keyStorePassword)
+    fun loadSecret(aliasPassword: String, alias: String): KeyStore.Entry {
+        val keyStore = loadKeyStore()
         val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
         return keyStore.getEntry(alias, protectionParam)
+    }
+
+    fun loadAllSecrets(aliasPassword: String): List<saltchannel.util.KeyPair> {
+        val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
+        val keyStore = loadKeyStore()
+
+        return keyStore
+            .aliases()
+            .toList()
+            .map { pub ->
+                val secretEntry = keyStore.getEntry(pub, protectionParam) as KeyStore.SecretKeyEntry
+                val secretKeySpec = secretEntry.secretKey as SecretKeySpec
+                val secretKey = secretKeySpec.encoded
+                saltchannel.util.KeyPair(secretKey, Hex.toBytes(pub))
+            }
     }
 }

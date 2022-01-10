@@ -18,19 +18,24 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
-    val keystore_settings_title = Resource(
+    val secrets_protection_title = Resource(
         "Secrets protection",
         "Ochrona haseł"
     )
 
-    val keystore_settings_description = Resource(
-        "Password for protecting access secrets.",
-        "Hasło chroniące klucze dostępu."
+    val secrets_protection_description = Resource(
+        "Password for protecting access secrets. Note that you'll need to remove all existing mobile credentials if the password will change. The new password will be applied to new credentials only.",
+        "Hasło chroniące klucze dostępu. Wszystkie istniejące poświadczenia mobilne przestaną działać i będą musiały zostać usunięte. Nowe hasło będzie stosowane tylko do nowych poświadczeń."
     )
 
     val field_password_hint = Resource(
         "Password",
         "Hasło"
+    )
+
+    val field_mqtt_broker_address = Resource(
+        "MQTT broker address",
+        "Adres brokera MQTT"
     )
 
     val field_public_key = Resource(

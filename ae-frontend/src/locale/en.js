@@ -25,7 +25,7 @@ export default {
         settings: "Settings",
     },
     plugin_settings: {
-        saved_message: "Saved! Changes will take place after plugin is restarted."
+        saved_message: "Saved! Some changes requires the plugin to be restarted."
     },
     common: {
         retry: "Retry",
