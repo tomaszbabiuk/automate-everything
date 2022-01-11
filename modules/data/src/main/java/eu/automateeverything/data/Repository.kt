@@ -35,8 +35,10 @@ interface Repository {
     fun deleteInstances(ids: List<Long>)
     fun getInstance(id: Long): InstanceDto
     fun clearInstanceUpdatedFlag()
-
+    fun addInstanceInterceptor(interceptor: InstanceInterceptor)
+    fun removeInstanceInterceptor(interceptor: InstanceInterceptor)
     fun hasUpdatedInstance(): Boolean
+
     fun getAllTags(): List<TagDto>
     fun saveTag(tag: TagDto): Long
 

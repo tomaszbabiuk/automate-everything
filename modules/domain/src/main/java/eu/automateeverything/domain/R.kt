@@ -21,24 +21,34 @@ import eu.automateeverything.data.localization.Resource
 import kotlin.Exception
 
 object R {
-    val field_min_value_hint = Resource(
-        "Mininum value",
-        "Wartość minimalna"
+    val inbox_message_automation_enabled_subject = Resource(
+        "Automation has been enabled",
+        "Automatyka została włączona"
     )
 
-    val field_max_value_hint = Resource(
-        "Maxinum value",
-        "Wartość maksymalna"
+    val inbox_message_automation_enabled_body = Resource(
+        "Automation is ON.",
+        "Automatyka została uruchomiona."
     )
 
-    val field_default_value_hint = Resource(
-        "Default value",
-        "Wartość domyślna"
+    val inbox_message_automation_disabled_subject = Resource(
+        "Automation has been disabled",
+        "Automatyka została wyłączona"
     )
 
-    val field_scenes_hint = Resource(
-        "Scenes",
-        "Sceny"
+    val inbox_message_automation_disabled_body = Resource(
+        "Automation loops are now OFF",
+        "Pętle automatyki zostały wstrzymane"
+    )
+
+    val inbox_message_new_port_found_subject = Resource(
+        "New port has been found!",
+        "Znaleziono nowy port."
+    )
+
+    fun inbox_message_port_found_body(newPortId: String?) = Resource (
+        "It's unique ID is $newPortId",
+        "Jego oznaczenie to $newPortId"
     )
 
     var category_this_object = Resource(
@@ -218,29 +228,14 @@ object R {
         "Błąd inicjalizacji"
     )
 
-    val error_other_device_failure = Resource(
-        "Automation of this device uses another device that's not available",
-        "Automatyka tego urządzenia używa innego urządzenia, które jest niedostępne"
-    )
-
     fun error_other_device_failure(unknownName: String) = Resource(
         "Automation of this device uses another device ($unknownName) that's not available",
         "Automatyka tego urządzenia używa innego urządzenia ($unknownName), które jest niedostępne"
     )
     
-    val error_unknown_device_name = Resource(
-        "no name",
-        "bez nazwy"
-    )
-    
     val validator_required_field = Resource(
         "This field is required",
         "To pole jest wymagane"
-    )
-
-    val validator_invalid_field = Resource(
-        "Invalid field",
-        "To pole jest nieprawidłowe"
     )
 
     val state_unknown = Resource(

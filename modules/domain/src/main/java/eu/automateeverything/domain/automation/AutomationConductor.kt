@@ -37,7 +37,7 @@ class AutomationConductor(
     private val inbox: Inbox,
     private val repository: Repository,
     private val stateChangeReporter: StateChangeReporter
-) : WithStartStopScope(), LiveEventsListener {
+) : WithStartStopScope<Void?>(), LiveEventsListener {
 
     init {
         liveEvents.addAdapterEventListener(this)
@@ -59,9 +59,9 @@ class AutomationConductor(
     private fun broadcastAutomationUpdate() {
         liveEvents.broadcastEvent(AutomationStateEventData(enabled))
         if (enabled) {
-            inbox.sendAutomationStarted()
+            inbox.sendMessage(R.inbox_message_automation_enabled_subject, R.inbox_message_automation_enabled_body)
         } else {
-            inbox.sendAutomationStopped()
+            inbox.sendMessage(R.inbox_message_automation_disabled_subject, R.inbox_message_automation_disabled_body)
         }
     }
 
@@ -73,7 +73,7 @@ class AutomationConductor(
             evaluationUnitsCache.clear()
 
             logger.info("Enabling automation")
-            start()
+            start(null)
         } else {
             stop()
         }
@@ -177,8 +177,8 @@ class AutomationConductor(
         }
     }
 
-    override fun start() {
-        super.start()
+    override fun start(params: Void?) {
+        super.start(params)
 
         var automations = rebuildAutomations()
 

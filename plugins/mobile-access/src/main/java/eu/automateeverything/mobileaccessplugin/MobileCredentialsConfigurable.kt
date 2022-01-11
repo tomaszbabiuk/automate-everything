@@ -96,13 +96,13 @@ class MobileCredentialsConfigurable(
         val activatedField = Pair(FIELD_ACTIVATED, false.toString())
         val pubKeyField = Pair(FIELD_PUBKEY, pubKeyHexString)
 
+        val storage = SecretStorage()
+        storage.storeSecret(secretsPassword, pubKeyHexString, keyPair.sec())
+
         val newInstance = InstanceDto(0, null, listOf(), MobileCredentialsConfigurable::class.java.name,
             mapOf(nameField, descriptionField, qrCodeField, activatedField, pubKeyField), null)
         val newId = repository.saveInstance(newInstance)
         newInstance.id = newId
-
-        val storage = SecretStorage()
-        storage.storeSecret(secretsPassword, pubKeyHexString, keyPair.sec())
 
         return newInstance
     }

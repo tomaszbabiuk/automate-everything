@@ -27,10 +27,11 @@ import java.util.*
 class Pulsar(
     val eventsSink: EventsSink,
     val inbox: Inbox,
-    val automationConductor: AutomationConductor
-    ) : WithStartStopScope() {
-    override fun start() {
-        super.start()
+    private val automationConductor: AutomationConductor
+    ) : WithStartStopScope<Void?>() {
+
+    override fun start(params: Void?) {
+        super.start(params)
         startStopScope.launch {
             while (isActive) {
                 sendHeartbeatEvent()

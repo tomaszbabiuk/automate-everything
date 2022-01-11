@@ -19,10 +19,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 
-abstract  class WithStartStopScope {
+abstract  class WithStartStopScope<T> {
     var startStopScope = createNewScope()
 
-    open fun start() {
+    open fun start(params: T) {
         startStopScope = createNewScope()
     }
 

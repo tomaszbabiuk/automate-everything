@@ -22,6 +22,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.R
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.async
@@ -37,7 +38,7 @@ class HardwareManager(
     private val eventsSink: EventsSink,
     private val inbox: Inbox,
     private val repository: Repository,
-) : WithStartStopScope(), PluginStateListener, PortFinder {
+) : WithStartStopScope<Void?>(), PluginStateListener, PortFinder {
 
     private val factories: MutableMap<HardwarePlugin, List<AdapterBundle>> = HashMap()
 
@@ -90,7 +91,7 @@ class HardwareManager(
 
                     val portNotReported = repository.getPortById(it.id) == null
                     if (portNotReported) {
-                        inbox.sendNewPortDiscovered(it.id)
+                        inbox.sendMessage(R.inbox_message_new_port_found_subject, R.inbox_message_port_found_body(it.id))
                     }
                 }
             }

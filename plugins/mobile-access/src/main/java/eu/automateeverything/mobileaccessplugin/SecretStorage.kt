@@ -19,7 +19,6 @@ import saltchannel.util.Hex
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.security.KeyPair
 import java.security.KeyStore
 import java.security.KeyStore.PasswordProtection
 import java.security.KeyStore.ProtectionParameter
@@ -45,11 +44,6 @@ class SecretStorage {
         return keyStore
     }
 
-    private fun saveKeyStore(keyStore: KeyStore, ) {
-        val file = File(KEYSTORE_PATH)
-        keyStore.store(FileOutputStream(file), KEYSTORE_PASS.toCharArray())
-    }
-
     fun storeSecret(aliasPassword: String, alias: String, secret: ByteArray) {
         val keyStore = loadKeyStore()
         val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
@@ -62,24 +56,25 @@ class SecretStorage {
         saveKeyStore(keyStore)
     }
 
-    fun loadSecret(aliasPassword: String, alias: String): KeyStore.Entry {
+    fun loadSecret(aliasPassword: String, pubKeyAsAlias: String): saltchannel.util.KeyPair? {
         val keyStore = loadKeyStore()
-        val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
-        return keyStore.getEntry(alias, protectionParam)
+        if (keyStore.containsAlias(pubKeyAsAlias)) {
+            val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
+            val secretEntry = keyStore.getEntry(pubKeyAsAlias, protectionParam) as KeyStore.SecretKeyEntry
+            return secretEntryToKeyPair(secretEntry, pubKeyAsAlias)
+        }
+
+        return null
     }
 
-    fun loadAllSecrets(aliasPassword: String): List<saltchannel.util.KeyPair> {
-        val protectionParam: ProtectionParameter = PasswordProtection(aliasPassword.toCharArray())
-        val keyStore = loadKeyStore()
+    private fun saveKeyStore(keyStore: KeyStore, ) {
+        val file = File(KEYSTORE_PATH)
+        keyStore.store(FileOutputStream(file), KEYSTORE_PASS.toCharArray())
+    }
 
-        return keyStore
-            .aliases()
-            .toList()
-            .map { pub ->
-                val secretEntry = keyStore.getEntry(pub, protectionParam) as KeyStore.SecretKeyEntry
-                val secretKeySpec = secretEntry.secretKey as SecretKeySpec
-                val secretKey = secretKeySpec.encoded
-                saltchannel.util.KeyPair(secretKey, Hex.toBytes(pub))
-            }
+    private fun secretEntryToKeyPair(secretEntry: KeyStore.SecretKeyEntry, pubKey: String): saltchannel.util.KeyPair {
+        val secretKeySpec = secretEntry.secretKey as SecretKeySpec
+        val secretKey = secretKeySpec.encoded
+        return saltchannel.util.KeyPair(secretKey, Hex.toBytes(pubKey))
     }
 }

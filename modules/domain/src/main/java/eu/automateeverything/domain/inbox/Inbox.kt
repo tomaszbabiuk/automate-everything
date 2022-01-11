@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,14 +15,10 @@
 
 package eu.automateeverything.domain.inbox
 
+import eu.automateeverything.data.localization.Resource
+
 interface Inbox {
-
-    fun sendCustomMessage(message: String)
-    fun sendAppStarted()
-    fun sendNewPortDiscovered(newPortId: String)
-    fun sendAutomationStarted()
-    fun sendAutomationStopped()
-
+    fun sendMessage(subject: Resource, body: Resource)
     val unreadMessagesCount : Int
     fun refreshUnreadMessages()
 }

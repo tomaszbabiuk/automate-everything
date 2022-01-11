@@ -13,12 +13,11 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.inbox
+package eu.automateeverything.data
 
-enum class InboxItemKind {
-    CustomMessage,
-    WelcomeMessage,
-    NewPortFound,
-    AutomationEnabled,
-    AutomationDisabled,
+interface InstanceInterceptor {
+    enum class Action {
+        Saved, Updated, Deleted
+    }
+    fun changed(action: Action)
 }

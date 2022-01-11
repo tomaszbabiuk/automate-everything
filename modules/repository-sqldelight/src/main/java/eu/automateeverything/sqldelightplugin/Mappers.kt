@@ -110,10 +110,9 @@ class InboxItemToInboxDtoMapper : Mapper<InboxItem, InboxItemDto> {
     override fun map(from: InboxItem): InboxItemDto {
         return InboxItemDto(
             from.id,
-            from.message,
+            from.subject,
+            from.body,
             from.timestamp,
-            from.kind,
-            from.port_id,
             from.read == 1L)
     }
 }

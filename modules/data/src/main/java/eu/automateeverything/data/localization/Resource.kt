@@ -15,13 +15,16 @@
 
 package eu.automateeverything.data.localization
 
+import com.google.gson.Gson
 import java.util.Hashtable
 import java.util.Arrays
 import java.util.stream.Collectors
 import java.util.Objects
 
+class ResourceMap : Hashtable<Language, String>()
+
 class Resource(englishValue: String, polishValue: String) {
-    private val _values: Hashtable<Language, String> = Hashtable()
+    private val _values = ResourceMap()
 
     fun getValue(language: Language): String? {
         return _values[language]
@@ -55,14 +58,25 @@ class Resource(englishValue: String, polishValue: String) {
         return Objects.hash(_values)
     }
 
-    companion object {
-        fun createUniResource(uniValue: String): Resource {
-            return Resource(uniValue, uniValue)
-        }
-    }
-
     init {
         _values[Language.EN] = englishValue
         _values[Language.PL] = polishValue
+    }
+
+    fun serialize(): String {
+        return gson.toJson(_values)
+    }
+
+    companion object {
+        private val gson = Gson()
+
+        fun createUniResource(uniValue: String): Resource {
+            return Resource(uniValue, uniValue)
+        }
+
+        fun deserialize(json: String): Resource {
+            val resourceMap = gson.fromJson(json, ResourceMap::class.java)
+            return Resource(resourceMap[Language.EN]!!, resourceMap[Language.PL]!!)
+        }
     }
 }

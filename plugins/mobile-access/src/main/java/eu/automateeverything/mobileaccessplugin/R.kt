@@ -18,6 +18,16 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val inbox_message_mqtt_server_error_missing_keypair = Resource(
+        "Connection error. Missing key-pair that's used to cipher the data channel!",
+        "Błąd połączenia. Para kluczy do szyfrowania kanału danych została usunięta!"
+    )
+
+    val inbox_message_mqtt_server_error_subject = Resource(
+        "Mobile access plugin error",
+        "Błąd pluginu 'Dostęp zdalny'"
+    )
+
     val secrets_protection_title = Resource(
         "Secrets protection",
         "Ochrona haseł"

@@ -103,16 +103,16 @@ open class App : ResourceConfig() {
 
     private fun firstRunProcedure() {
         if (firstRunService.isFirstRun()) {
-            inbox.sendAppStarted()
+            inbox.sendMessage(R.inbox_message_welcome_subject, R.inbox_message_welcome_body)
             firstRunService.markFirstRunHappened()
         }
     }
 
     private fun bootstrapProcedure() {
-        pluginsCoordinator.startPlugins()
-        hardwareManager.start()
         mqttBrokerService.start()
-        pulsar.start()
+        pluginsCoordinator.startPlugins()
+        hardwareManager.start(null)
+        pulsar.start(null)
     }
 
     private fun loadPlugins() {

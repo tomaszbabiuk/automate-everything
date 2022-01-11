@@ -24,10 +24,18 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import saltchannel.ByteChannel
 import java.util.concurrent.LinkedBlockingQueue
 
-class MqttByteChannel(private val brokerAddress: String, private val topic: String, clientId: String) : ByteChannel, IMqttMessageListener {
-    private val q = LinkedBlockingQueue <ByteArray>()
-    var qos = 2
+class MqttByteChannel(brokerAddress: String,
+                      topic: String,
+                      clientId: String)
+    : ByteChannel, IMqttMessageListener {
+
+    private val qos = 2
+    private val queue = LinkedBlockingQueue <ByteArray>()
     private val client = MqttClient(brokerAddress, clientId, MemoryPersistence())
+
+    private val rxTopic = "$topic-rx"
+    private val txTopic = "$topic-tx"
+
 
     fun establishConnection() {
         connect()
@@ -45,17 +53,15 @@ class MqttByteChannel(private val brokerAddress: String, private val topic: Stri
     }
 
     private fun subscribe() {
-        println("Subscribing to: $topic")
-        client.subscribe(topic, this)
-
-        publish(topic, byteArrayOf())
+        println("Subscribing to: $rxTopic")
+        client.subscribe(rxTopic, this)
     }
 
-    private fun publish(topic: String, content: ByteArray) {
+    private fun publish(content: ByteArray) {
         println("Publishing message: $content")
         val message = MqttMessage(content)
         message.qos = qos
-        client.publish(topic, message)
+        client.publish(txTopic, message)
         println("Message published")
     }
 
@@ -64,7 +70,7 @@ class MqttByteChannel(private val brokerAddress: String, private val topic: Stri
     }
 
     override fun read(): ByteArray {
-        return q.take()
+        return queue.take()
     }
 
     override fun write(vararg messages: ByteArray) {
@@ -73,7 +79,7 @@ class MqttByteChannel(private val brokerAddress: String, private val topic: Stri
 
     override fun write(isLast: Boolean, vararg messages: ByteArray) {
         messages.forEach {
-            publish(topic, it)
+            publish(it)
         }
 
         if (isLast) {
@@ -82,8 +88,8 @@ class MqttByteChannel(private val brokerAddress: String, private val topic: Stri
     }
 
     override fun messageArrived(topic: String, message: MqttMessage) {
-        if (topic == this.topic) {
-            q.add(message.payload)
+        if (topic == this.rxTopic) {
+            queue.add(message.payload)
         }
         message.payload
     }

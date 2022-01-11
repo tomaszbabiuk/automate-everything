@@ -15,88 +15,46 @@
 
 package eu.automateeverything.mobileaccessplugin
 
-import eu.automateeverything.domain.extensibility.PluginMetadata
-import org.pf4j.PluginWrapper
+import eu.automateeverything.data.InstanceInterceptor
+import eu.automateeverything.data.Repository
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.settings.SettingsDto
+import eu.automateeverything.domain.extensibility.PluginMetadata
+import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.settings.SettingsResolver
-import kotlinx.coroutines.*
 import org.pf4j.Plugin
-import saltchannel.util.Hex
-import saltchannel.util.Rand
-import saltchannel.v2.SaltServerSession
-import java.security.SecureRandom
+import org.pf4j.PluginWrapper
 
 class MobileAccessPlugin(wrapper: PluginWrapper,
-                         private val settingsResolver: SettingsResolver
-) : Plugin(wrapper), PluginMetadata {
-    var startStopScope = createNewScope()
+                         settingsResolver: SettingsResolver,
+                         private val repository: Repository,
+                         private val inbox: Inbox
+) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
+    val server: MqttSaltServer by lazy {
+        createServer(settingsResolver)
+    }
 
-//    override fun start() {
-//
-//
-//        println(brokerAddress)
-//
-//        val storage = SecretStorage()
-//        val secrets = storage.loadAllSecrets(secretsPassword)
-//
-//
-
-//        val keypair = KeyPair.fromHex("xx", "xx")
-//        val saltServerSession = SaltServerSession(keypair, object: ByteChannel {
-//            override fun read(): ByteArray {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun write(vararg messages: ByteArray) {
-//                TODO("Not yet implemented")
-//            }
-//
-//            override fun write(isLast: Boolean, vararg messages: ByteArray?) {
-//                TODO("Not yet implemented")
-//            }
-//        })
-//
-//    }
+    private fun createServer(settingsResolver: SettingsResolver): MqttSaltServer {
+        val settings = settingsResolver.resolve()
+        val brokerAddress = extractBrokerAddress(settings)
+        val secretsPassword = extractSecretsPassword(settings)
+        return MqttSaltServer(brokerAddress, secretsPassword, inbox)
+    }
 
     override fun start() {
-        startStopScope = createNewScope()
-
-        startStopScope.launch {
-            delay(10000)
-            val pluginSettings = settingsResolver.resolve()
-            val brokerAddress = extractBrokerAddress(pluginSettings)
-            val secretsPassword = extractSecretsPassword(pluginSettings)
-            val storage = SecretStorage()
-            val sessions = storage
-                .loadAllSecrets(secretsPassword)
-                .map {
-                    val topic = String(Hex.toHexCharArray(it.pub(), 0, it.pub().size))
-                    val byteChannel = MqttByteChannel(brokerAddress, topic, topic)
-                    byteChannel.establishConnection()
-                    SaltServerSession(it, byteChannel)
-                }
-
-            val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
-            sessions.forEach {
-                it.setEncKeyPair(random)
-                it.handshake()
-            }
-        }
+        repository.addInstanceInterceptor(this)
+        server.start(loadPublicKeysFromRepository())
     }
 
     override fun stop() {
-        startStopScope.cancel("Stopping ${this.javaClass.name}")
+        server.stop()
+        repository.removeInstanceInterceptor(this)
     }
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
 
     override val settingGroups = listOf(SecretsProtectionSettingGroup())
-
-    private fun createNewScope() : CoroutineScope {
-        return CoroutineScope(Dispatchers.IO)
-    }
 
     private fun extractBrokerAddress(pluginSettings: List<SettingsDto>): String {
         return if (pluginSettings.size == 1) {
@@ -112,5 +70,19 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         } else {
             SecretsProtectionSettingGroup.DEFAULT_PASSWORD
         }
+    }
+
+    private fun loadPublicKeysFromRepository(): List<String> {
+        return repository
+            .getInstancesOfClazz(MobileCredentialsConfigurable::class.java.name)
+            .map { it.fields[MobileCredentialsConfigurable.FIELD_PUBKEY]!! }
+    }
+
+    override fun changed(action: InstanceInterceptor.Action) {
+        println("The number of instances has changed... stopping server")
+        server.stop()
+
+        println("The number of instances has changed... starting server")
+        server.start(loadPublicKeysFromRepository())
     }
 }

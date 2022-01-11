@@ -13,20 +13,9 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.inbox
+package eu.automateeverything.domain.extensibility
 
-import eu.automateeverything.data.inbox.InboxItemDto
-import eu.automateeverything.data.inbox.InboxMessageDto
-import eu.automateeverything.data.localization.Resource
 
-class InboxMessageDtoMapper {
-    fun map(from: InboxItemDto): InboxMessageDto {
-        return InboxMessageDto(
-            from.id,
-            Resource.deserialize(from.subject),
-            Resource.deserialize(from.body),
-            from.timestamp,
-            from.read
-        )
-    }
+interface ExtendedLifecycleListener {
+    fun started()
 }

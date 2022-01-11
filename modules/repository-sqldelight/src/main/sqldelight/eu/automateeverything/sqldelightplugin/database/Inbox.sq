@@ -1,13 +1,9 @@
-import eu.automateeverything.data.inbox.InboxItemKind;
-
 CREATE TABLE IF NOT EXISTS inboxItem (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   timestamp INTEGER NOT NULL,
-  kind TEXT AS InboxItemKind NOT NULL,
-  message TEXT,
-  read INTEGER NOT NULL,
-  port_id TEXT,
-  FOREIGN KEY(port_id) REFERENCES portSnapshot(id) ON DELETE SET NULL
+  subject TEXT NOT NULL,
+  body TEXT NOT NULL,
+  read INTEGER NOT NULL
 );
 
 countItems:
@@ -30,8 +26,8 @@ FROM inboxItem
 WHERE id = ?;
 
 insert:
-INSERT INTO inboxItem(timestamp, kind, message, read, port_id)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO inboxItem(timestamp, subject, body, read)
+VALUES (?, ?, ?, ?);
 
 delete:
 DELETE FROM inboxItem

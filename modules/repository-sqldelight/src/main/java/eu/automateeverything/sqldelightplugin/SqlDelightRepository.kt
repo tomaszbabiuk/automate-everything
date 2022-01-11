@@ -15,8 +15,8 @@
 
 package eu.automateeverything.sqldelightplugin
 
-import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import eu.automateeverything.data.InstanceInterceptor
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.icons.IconCategoryDto
@@ -27,11 +27,13 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
 import eu.automateeverything.sqldelightplugin.database.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 class SqlDelightRepository : Repository {
 
     private var database: Database
     private var hasUpdatedInstance = false
+    private val instanceInterceptors = CopyOnWriteArrayList<InstanceInterceptor>()
 
     init {
         Class.forName("org.sqlite.JDBC")
@@ -39,10 +41,7 @@ class SqlDelightRepository : Repository {
         Database.Schema.create(driver)
         driver.execute(null, "PRAGMA foreign_keys=ON", 0)
         database = Database(
-            driver,
-            inboxItemAdapter = InboxItem.Adapter(
-                kindAdapter = EnumColumnAdapter()
-            )
+            driver
         )
     }
 
@@ -86,6 +85,8 @@ class SqlDelightRepository : Repository {
             }
         }
 
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Saved) }
+
         return id
     }
 
@@ -105,6 +106,8 @@ class SqlDelightRepository : Repository {
 
             hasUpdatedInstance = true
         }
+
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Updated) }
     }
 
     override fun getAllInstances(): List<InstanceDto> {
@@ -135,6 +138,8 @@ class SqlDelightRepository : Repository {
         database.transaction {
             database.configurableInstanceQueries.delete(id)
         }
+
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Deleted) }
     }
 
     override fun deleteInstances(ids: List<Long>) {
@@ -156,6 +161,14 @@ class SqlDelightRepository : Repository {
 
     override fun clearInstanceUpdatedFlag() {
         hasUpdatedInstance = false
+    }
+
+    override fun addInstanceInterceptor(interceptor: InstanceInterceptor) {
+        instanceInterceptors.add(interceptor)
+    }
+
+    override fun removeInstanceInterceptor(interceptor: InstanceInterceptor) {
+        instanceInterceptors.remove(interceptor)
     }
 
     override fun hasUpdatedInstance(): Boolean {
@@ -358,10 +371,9 @@ class SqlDelightRepository : Repository {
         database.transaction {
             database.inboxQueries.insert(
                 message.timestamp,
-                message.kind,
-                message.message,
-                if (message.read) 1 else 0,
-                message.newPortId)
+                message.subject,
+                message.body,
+                if (message.read) 1 else 0)
         }
 
         return database.generalQueries.lastInsertRowId().executeAsOne()
