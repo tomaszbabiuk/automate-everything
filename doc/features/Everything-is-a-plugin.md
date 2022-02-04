@@ -11,10 +11,10 @@ Every plugin can have its dedicated settings. You don't need to change the scrip
 ![Plugin settings](screenshot_plugin_settings.png)
 
 ## Every object is a plugin
-Every object category and every object itself is a plugin:
+Every object is a plugin:
 ![Objects](screenshot_objects.png)
 
-Every object is configured in the GUI:
+Every object can be configured in the GUI:
 ![Editing the object](screenshot_objects_edit.png)
 
 ## Every Automation block is a plugin

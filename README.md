@@ -10,11 +10,9 @@ With correct set of plugins you can automate literally everything!
 2. [Everything is a plugin](doc/features/Everything-is-a-plugin.md)
 3. [Zero-conf principle](doc/features/Zero-conf-principle.md)
 4. [Modern UI](doc/features/Modern-UI.md)
-5. [Deeply integrated with Google Blockly](doc/features/Blockly-integration.md)
-6. [Type-safe automation](doc/features/Type-safe-automation.md)
-7. [Different automation types (event based/ loop based)](doc/features/Automation-types.md)
-8. [Developers haven](doc/features/Developers-haven.md) 
-9. [Embedded MQTT server](doc/features/Embedded-mqtt-server.md)
+5. [Powerful automation engine](doc/features/Powerful-automation-engine.md)
+6. [Developers haven](doc/features/Developers-haven.md) 
+7. [Embedded MQTT server](doc/features/Embedded-mqtt-server.md)
 
 # A note from the author
 The work on "Automate Everything" was started in 2012. Yes... almost 10 years ago!. At first the project was called "geekHOME Server". In the beginning geekHOME was written in C# Micro Framework (it was running on a dedicated microcontroller called "FEZ Cobra"!). It's been the beginning of DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.

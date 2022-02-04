@@ -81,6 +81,11 @@ class MobileCredentialsConfigurable(
         } else {
             SecretsProtectionSettingGroup.DEFAULT_PASSWORD
         }
+        val brokerAddress:String = if (pluginSettings.size == 1) {
+            pluginSettings[0].fields[SecretsProtectionSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!
+        } else {
+            SecretsProtectionSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS
+        }
 
         val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
         val keyPair = CryptoLib.createSigKeys(random)
@@ -92,7 +97,10 @@ class MobileCredentialsConfigurable(
 
         val nameField = Pair(FIELD_NAME, "#ID: $bindingIdHexString")
         val descriptionField = Pair(FIELD_DESCRIPTION, null)
-        val qrCodeField = Pair(FIELD_QR_CODE, "http://automateeverything.eu?bindingId=$bindingIdHexString&pubkey=$pubKeyHexString")
+        val qrCodeField = Pair(FIELD_QR_CODE, "ae://mobileaccess/connectiondetails" +
+                "?bid=$bindingIdHexString" +
+                "&pub=$pubKeyHexString" +
+                "&broker=$brokerAddress")
         val activatedField = Pair(FIELD_ACTIVATED, false.toString())
         val pubKeyField = Pair(FIELD_PUBKEY, pubKeyHexString)
 

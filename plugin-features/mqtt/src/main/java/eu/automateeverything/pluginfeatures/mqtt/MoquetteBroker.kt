@@ -61,7 +61,7 @@ class MoquetteBroker : MqttBrokerService {
 
         override fun onPublish(msg: InterceptPublishMessage) {
             var size = 0
-            val buffer = ByteArray(1024)
+            val buffer = ByteArray(2048)
             while (msg.payload.isReadable) {
                 buffer[size] = msg.payload.readByte()
                 size++
