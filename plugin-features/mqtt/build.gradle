@@ -27,5 +27,5 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
     //project specific
-    implementation 'io.moquette:moquette-broker:0.12.1'
+    implementation 'io.moquette:moquette-broker:0.15'
 }
