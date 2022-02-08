@@ -15,7 +15,11 @@
 
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
 }
+
+group = 'com.github.tomaszbabiuk'
+version = '1.0'
 
 dependencies {
     //projects

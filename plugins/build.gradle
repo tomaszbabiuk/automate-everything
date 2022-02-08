@@ -4,11 +4,13 @@ buildscript {
   }
   dependencies {
     classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
+    classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
   }
 }
 
 subprojects {
   apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
   jar {
     manifest {

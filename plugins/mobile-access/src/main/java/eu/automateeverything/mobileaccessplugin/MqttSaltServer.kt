@@ -17,7 +17,11 @@ package eu.automateeverything.mobileaccessplugin
 
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.decodeFromByteArray
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
 import java.security.SecureRandom
@@ -30,11 +34,12 @@ class MqttSaltServer(
 
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun start(params: List<String>) {
         super.start(params)
         startStopScope.launch {
             val storage = SecretStorage()
-            val sessions = params
+            val clientSessions = params
                 .map {
                     val keyPair = storage.loadSecret(secretsPassword, it)
                     if (keyPair != null) {
@@ -47,11 +52,22 @@ class MqttSaltServer(
                     }
                 }
 
-            sessions
-                .filterNotNull()
+            val notNullSessions = clientSessions.filterNotNull()
+
+
+            notNullSessions
                 .forEach {
-                it.setEncKeyPair(random)
-                it.handshake()
+                    it.setEncKeyPair(random)
+                    it.handshake()
+                    println("Session successfully open with ${it.clientSigKey}")
+                    //TODO: Move that to separate jobs
+                    while (!it.isDone) {
+                        val incomingData = it.channel.read()
+                        delay(10)
+                        val data = Cbor.decodeFromByteArray<HttpRequestWrapper>(incomingData)
+                        println(data)
+                    }
+                    println("Session is done")
             }
         }
     }

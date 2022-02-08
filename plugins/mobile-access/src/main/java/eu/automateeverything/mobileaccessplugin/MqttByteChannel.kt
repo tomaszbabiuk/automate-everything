@@ -88,9 +88,10 @@ class MqttByteChannel(brokerAddress: String,
     }
 
     override fun messageArrived(topic: String, message: MqttMessage) {
+        println("Message Arrived (${message.payload.size})")
+
         if (topic == this.rxTopic) {
             queue.add(message.payload)
         }
-        message.payload
     }
 }
