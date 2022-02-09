@@ -20,8 +20,8 @@ plugins {
 
 dependencies {
     //common
-    shadow project(':modules:data')
-    shadow project(':modules:domain')
+    shadow project(':module-data')
+    shadow project(':module-domain')
 
     //pf4j
     shadow "org.pf4j:pf4j:$pf4jVersion"

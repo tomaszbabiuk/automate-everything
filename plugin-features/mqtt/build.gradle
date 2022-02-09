@@ -20,7 +20,7 @@ plugins {
 
 dependencies {
     //common
-    implementation project(':modules:domain')
+    implementation project(':module-domain')
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

@@ -4,12 +4,12 @@ rootProject.name = 'automate-everything'
 include "ae-backend"
 
 //modules
-include "modules:domain"
-include "modules:data"
-include "modules:actions"
-include "modules:devices"
-include "modules:conditions"
-include "modules:repository-sqldelight"
+include "module-domain"
+include "module-data"
+include "module-actions"
+include "module-devices"
+include "module-conditions"
+include "module-repository-sqldelight"
 
 //plugins
 include 'plugins'

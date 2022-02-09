@@ -19,12 +19,12 @@ remotes {
 
 dependencies {
     //common
-    implementation project(":modules:data")
-    implementation project(":modules:domain")
-    implementation project(":modules:actions")
-    implementation project(":modules:devices")
-    implementation project(":modules:conditions")
-    implementation project(":modules:repository-sqldelight")
+    implementation project(":module-data")
+    implementation project(":module-domain")
+    implementation project(":module-actions")
+    implementation project(":module-devices")
+    implementation project(":module-conditions")
+    implementation project(":module-repository-sqldelight")
     implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
 
