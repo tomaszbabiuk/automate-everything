@@ -18,6 +18,7 @@ package eu.automateeverything.sensorsandcontrollersplugin
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory

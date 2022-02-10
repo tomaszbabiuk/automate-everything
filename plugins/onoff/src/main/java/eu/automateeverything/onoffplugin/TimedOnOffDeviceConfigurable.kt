@@ -25,6 +25,7 @@ import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
+import eu.automateeverything.devices.DevicesConfigurable
 import org.pf4j.Extension
 import kotlin.collections.LinkedHashMap
 

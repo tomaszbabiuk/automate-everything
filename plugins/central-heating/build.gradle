@@ -20,9 +20,9 @@ plugins {
 
 dependencies {
     //projects
-    shadow project(':module-data')
-    shadow project(':module-domain')
-    shadow project(':module-devices')
+    shadow project(':modules:data')
+    shadow project(':modules:domain')
+    shadow project(':modules:devices')
     shadow project(':plugins:sensors-and-controllers')
 
     //pf4j

@@ -17,6 +17,7 @@ package eu.automateeverything.onoffplugin
 
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.devices.DevicesConfigurable
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory

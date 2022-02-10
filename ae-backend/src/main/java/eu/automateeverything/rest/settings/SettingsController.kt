@@ -21,8 +21,10 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.configurable.FieldValidationResult
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.extensibility.PluginMetadata
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
+import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
 import kotlin.collections.HashMap
 

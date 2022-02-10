@@ -17,6 +17,7 @@ package eu.automateeverything.shellyplugin.ports
 
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.shellyplugin.AccelBriefDto
+import eu.automateeverything.shellyplugin.StateBriefDto
 
 class ShellyVibrationInputPort(
     id: String,

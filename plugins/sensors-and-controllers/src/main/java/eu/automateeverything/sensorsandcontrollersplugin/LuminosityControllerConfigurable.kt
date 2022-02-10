@@ -23,6 +23,7 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.hardware.Humidity
 import eu.automateeverything.domain.hardware.Luminosity
 import org.pf4j.Extension
 import java.math.BigDecimal

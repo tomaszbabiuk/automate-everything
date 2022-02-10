@@ -15,6 +15,7 @@
 
 package eu.automateeverything.rest.dependencies
 
+import eu.automateeverything.data.Repository
 import eu.automateeverything.domain.dependencies.Dependency
 import eu.automateeverything.domain.dependencies.DependencyChecker
 import jakarta.inject.Inject
