@@ -28,6 +28,6 @@ include 'plugins:time'
 include 'plugins:mobile-access'
 
 //features used by the plugins
-include 'feature-lan-gateway'
-include 'feature-mqtt'
-include 'feature-rxtx'
+include 'plugin-features:lan-gateway'
+include 'plugin-features:mqtt'
+include "plugin-features:rxtx"
