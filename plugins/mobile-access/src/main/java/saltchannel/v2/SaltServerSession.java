@@ -7,6 +7,7 @@ import saltchannel.ByteChannel;
 import saltchannel.CryptoLib;
 import saltchannel.a1a2.A1Packet;
 import saltchannel.a1a2.A2Packet;
+//import saltchannel.TweetNaCl;
 import saltaa.*;
 import saltchannel.util.KeyPair;
 import saltchannel.util.NullTimeChecker;
