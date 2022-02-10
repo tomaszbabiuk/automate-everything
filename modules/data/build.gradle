@@ -12,18 +12,31 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+//file:noinspection GroovyAssignabilityCheck
 
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'eu.automateeverything'
+            artifactId = 'data'
+            version = '0.1'
+
+            from components.java
+        }
+    }
 }
 
 dependencies {
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
-
-    //gson
-    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
 }
 
 repositories {
