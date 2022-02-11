@@ -32,6 +32,9 @@ dependencies {
     shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     shadow "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
+    //crypto
+    implementation 'com.github.joshjdevl.libsodiumjni:libsodium-jni:2.0.1'
+
 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
