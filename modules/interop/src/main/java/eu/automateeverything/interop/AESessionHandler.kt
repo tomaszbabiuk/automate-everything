@@ -16,6 +16,7 @@
 package eu.automateeverything.interop
 
 import eu.automateeverything.data.Repository
+import eu.automateeverything.data.inbox.InboxMessageDto
 import eu.automateeverything.data.instances.InstanceDto
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
@@ -25,18 +26,28 @@ import kotlinx.serialization.encodeToByteArray
 class AESessionHandler(private val repository: Repository) : AccessSessionHandler {
 
     @OptIn(ExperimentalSerializationApi::class)
-    override fun handleIncomingPacket(bytes: ByteArray) : ByteArray {
+    override fun handleIncomingPacket(bytes: ByteArray) : ByteArray? {
         val request = Cbor.decodeFromByteArray<JsonRpc2Request>(bytes)
         if (request.id == null) {
             //TODO: handle notification
+            return null
         } else {
-            if (request.method == InstanceDto::class.java.simpleName) {
-                val instances = repository.getAllInstances()
-                val response = JsonRpc2Response(request.id, instances, null)
-                return Cbor.encodeToByteArray(response)
-            }
-        }
+            when (request.method) {
+                InstanceDto::class.java.simpleName -> {
+                    val instances = repository.getAllInstances()
+                    val response = JsonRpc2Response(request.id, instances, null)
+                    return Cbor.encodeToByteArray(response)
+                }
 
-        throw Error("Illegal state")
+                InboxMessageDto::class.java.simpleName -> {
+                    val instances = repository.getInboxItems(100, 0)
+                    val response = JsonRpc2Response(request.id, instances, null)
+                    return Cbor.encodeToByteArray(response)
+                }
+            }
+
+            val response = JsonRpc2Response(request.id, null, JsonRpc2Error(0, "Method not supported"))
+            return Cbor.encodeToByteArray(response)
+        }
     }
 }

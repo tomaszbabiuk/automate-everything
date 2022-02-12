@@ -15,12 +15,7 @@
 
 package eu.automateeverything.interop
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 
 @Serializable
 data class JsonRpc2Request(
@@ -51,7 +46,7 @@ data class JsonRpc2Error(
 @Serializable
 data class JsonRpc2Response<T>(
     val id: String,
-    val result: List<T>,
+    val result: T,
     val error: JsonRpc2Error?
 )
 

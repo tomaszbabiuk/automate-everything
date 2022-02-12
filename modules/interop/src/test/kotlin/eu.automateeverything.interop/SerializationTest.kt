@@ -46,10 +46,8 @@ internal class SerializationTest {
     fun testSerialization() {
         val instancesRequest = createRequestFromType(InstanceDto::class.java)
         val request1Cbor = Cbor.encodeToByteArray(instancesRequest)
-
         val responseSerialized = tested.handleIncomingPacket(request1Cbor)
-
-        val responseDeserialized = Cbor.decodeFromByteArray<JsonRpc2Response<InstanceDto>>(responseSerialized)
+        val responseDeserialized = Cbor.decodeFromByteArray<JsonRpc2Response<List<InstanceDto>>>(responseSerialized)
         println(responseDeserialized)
     }
 
