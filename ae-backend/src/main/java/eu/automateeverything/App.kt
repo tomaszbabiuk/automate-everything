@@ -35,6 +35,8 @@ import eu.automateeverything.domain.heartbeat.Pulsar
 import eu.automateeverything.domain.inbox.BroadcastingInbox
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.extensibility.InjectionRegistry
+import eu.automateeverything.interop.AESessionHandler
+import eu.automateeverything.interop.AccessSessionHandler
 import eu.automateeverything.langateway.JavaLanGatewayResolver
 import eu.automateeverything.pluginfeatures.mqtt.MoquetteBroker
 import eu.automateeverything.sqldelightplugin.SqlDelightRepository
@@ -61,6 +63,7 @@ open class App : ResourceConfig() {
     private val pulsar = Pulsar(eventsSink, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
+    private val sessionHandler: AccessSessionHandler = AESessionHandler(repository)
 
     init {
         fillInjectionRegistry()
@@ -99,6 +102,7 @@ open class App : ResourceConfig() {
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
         injectionRegistry.put(Repository::class.java, repository)
+        injectionRegistry.put(AccessSessionHandler::class.java, sessionHandler)
     }
 
     private fun firstRunProcedure() {

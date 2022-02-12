@@ -3,6 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'org.hidetake.ssh' version '2.10.1'
     id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
 }
 
 run {
@@ -25,6 +26,7 @@ dependencies {
     implementation project(":modules:devices")
     implementation project(":modules:conditions")
     implementation project(":modules:repository-sqldelight")
+    implementation project(":modules:interop")
     implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
 
@@ -61,6 +63,11 @@ dependencies {
 
     //gson
     implementation "com.google.code.gson:gson:$gsonVersion"
+
+    //serialization
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
 
     //slf4j
     implementation "org.slf4j:slf4j-api:2.0.0-alpha5"

@@ -24,7 +24,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'eu.automateeverything'
-            artifactId = 'data'
+            artifactId = 'interop'
             version = '0.1'
 
             from components.java
@@ -33,15 +33,33 @@ publishing {
 }
 
 dependencies {
+    //projects
+    implementation project(":modules:data")
+
+    //pf4j
+    implementation "org.pf4j:pf4j:${pf4jVersion}"
+
+    //serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
-    //serialization
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:3.2.0"
 }
 
 repositories {
     mavenCentral()
+}
+
+test {
+    useJUnit()
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
 }

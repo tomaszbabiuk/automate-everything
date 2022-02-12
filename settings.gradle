@@ -10,6 +10,7 @@ include "modules:actions"
 include "modules:devices"
 include "modules:conditions"
 include "modules:repository-sqldelight"
+include "modules:interop"
 
 //plugins
 include 'plugins'
@@ -30,4 +31,3 @@ include 'plugins:mobile-access'
 //features used by the plugins
 include 'plugin-features:lan-gateway'
 include 'plugin-features:mqtt'
-include "plugin-features:rxtx"

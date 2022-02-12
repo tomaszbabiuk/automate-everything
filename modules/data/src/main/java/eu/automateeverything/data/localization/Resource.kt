@@ -15,12 +15,16 @@
 
 package eu.automateeverything.data.localization
 
-import com.google.gson.Gson
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.Hashtable
 import java.util.Arrays
 import java.util.stream.Collectors
 import java.util.Objects
 
+@Serializable
 class ResourceMap : Hashtable<Language, String>()
 
 class Resource(englishValue: String, polishValue: String) {
@@ -64,18 +68,16 @@ class Resource(englishValue: String, polishValue: String) {
     }
 
     fun serialize(): String {
-        return gson.toJson(_values)
+        return Json.encodeToString(_values)
     }
 
     companion object {
-        private val gson = Gson()
-
         fun createUniResource(uniValue: String): Resource {
             return Resource(uniValue, uniValue)
         }
 
         fun deserialize(json: String): Resource {
-            val resourceMap = gson.fromJson(json, ResourceMap::class.java)
+            val resourceMap =  Json.decodeFromString<ResourceMap>(json)
             return Resource(resourceMap[Language.EN]!!, resourceMap[Language.PL]!!)
         }
     }

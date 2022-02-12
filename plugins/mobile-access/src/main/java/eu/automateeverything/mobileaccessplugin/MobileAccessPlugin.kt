@@ -22,12 +22,14 @@ import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.settings.SettingsResolver
+import eu.automateeverything.interop.AccessSessionHandler
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
 class MobileAccessPlugin(wrapper: PluginWrapper,
                          settingsResolver: SettingsResolver,
                          private val repository: Repository,
+                         private val sessionHandler: AccessSessionHandler,
                          private val inbox: Inbox
 ) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
     val server: MqttSaltServer by lazy {
@@ -38,7 +40,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         val settings = settingsResolver.resolve()
         val brokerAddress = extractBrokerAddress(settings)
         val secretsPassword = extractSecretsPassword(settings)
-        return MqttSaltServer(brokerAddress, secretsPassword, inbox)
+        return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler)
     }
 
     override fun start() {

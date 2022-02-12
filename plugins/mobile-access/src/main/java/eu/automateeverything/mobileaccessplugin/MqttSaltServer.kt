@@ -17,6 +17,10 @@ package eu.automateeverything.mobileaccessplugin
 
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
+import eu.automateeverything.interop.AccessSessionHandler
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
@@ -25,7 +29,9 @@ import java.security.SecureRandom
 class MqttSaltServer(
     private val brokerAddress: String,
     private val secretsPassword: String,
-    private val inbox: Inbox)
+    private val inbox: Inbox,
+    private val sessionHandler: AccessSessionHandler
+)
     : WithStartStopScope<List<String>>() {
 
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
@@ -34,7 +40,7 @@ class MqttSaltServer(
         super.start(params)
         startStopScope.launch {
             val storage = SecretStorage()
-            val sessions = params
+            val clientSessions = params
                 .map {
                     val keyPair = storage.loadSecret(secretsPassword, it)
                     if (keyPair != null) {
@@ -47,12 +53,23 @@ class MqttSaltServer(
                     }
                 }
 
-            sessions
+            val sessionJobs = clientSessions
                 .filterNotNull()
-                .forEach {
-                it.setEncKeyPair(random)
-                it.handshake()
-            }
+                .map {
+                    async {
+                        it.setEncKeyPair(random)
+                        it.handshake()
+
+                        while (!it.isDone) {
+                            val incomingData = it.channel.read()
+                            delay(10)
+
+                            sessionHandler.handleIncomingPacket(incomingData)
+                        }
+                    }
+                }
+
+            sessionJobs.awaitAll()
         }
     }
 }

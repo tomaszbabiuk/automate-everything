@@ -13,16 +13,8 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.data.instances
+package eu.automateeverything.interop
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class InstanceDto(
-    var id: Long,
-    val iconId: Long?,
-    val tagIds: List<Long>,
-    val clazz: String,
-    val fields: Map<String, String?>,
-    val automation: String?
-)
+interface AccessSessionHandler {
+    fun handleIncomingPacket(bytes: ByteArray): ByteArray
+}
