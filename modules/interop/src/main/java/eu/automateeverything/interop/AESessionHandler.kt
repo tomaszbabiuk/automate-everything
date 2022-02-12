@@ -18,7 +18,6 @@ package eu.automateeverything.interop
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -33,7 +32,7 @@ class AESessionHandler(private val repository: Repository) : AccessSessionHandle
         } else {
             if (request.method == InstanceDto::class.java.simpleName) {
                 val instances = repository.getAllInstances()
-                val response = JsonRpc2Response(request.id, Box(instances), null)
+                val response = JsonRpc2Response(request.id, instances, null)
                 return Cbor.encodeToByteArray(response)
             }
         }

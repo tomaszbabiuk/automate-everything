@@ -15,12 +15,12 @@
 
 package eu.automateeverything.interop
 
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.serialDescriptor
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 @Serializable
 data class JsonRpc2Request(
@@ -48,20 +48,10 @@ data class JsonRpc2Error(
     val message: String
 )
 
-@Serializable(with = BoxSerializer::class)
-data class Box<T>(val contents: List<T>)
-
-class BoxSerializer<T>(private val dataSerializer: KSerializer<T>) : KSerializer<Box<T>> {
-    override val descriptor: SerialDescriptor = ListSerializer(dataSerializer).descriptor
-    override fun serialize(encoder: Encoder, value: Box<T>) = ListSerializer(dataSerializer).serialize(encoder, value.contents)
-    override fun deserialize(decoder: Decoder) = Box(ListSerializer(dataSerializer).deserialize(decoder))
-}
-
 @Serializable
 data class JsonRpc2Response<T>(
     val id: String,
-    @Serializable(with = BoxSerializer::class)
-    val result: Box<T>,
+    val result: List<T>,
     val error: JsonRpc2Error?
 )
 
