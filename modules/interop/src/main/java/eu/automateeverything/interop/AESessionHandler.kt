@@ -13,41 +13,61 @@
  *  limitations under the License.
  */
 
+@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+
 package eu.automateeverything.interop
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.inbox.InboxMessageDto
+import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
-class AESessionHandler(private val repository: Repository) : AccessSessionHandler {
+class AESessionHandler(repository: Repository) : AccessSessionHandler {
 
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun handleIncomingPacket(bytes: ByteArray) : ByteArray? {
-        val request = Cbor.decodeFromByteArray<JsonRpc2Request>(bytes)
-        if (request.id == null) {
-            //TODO: handle notification
-            return null
+    private val methodHandlers = listOf(
+        InstancesHandler(repository),
+        MessagesHandler(repository)
+    )
+
+    override fun handleRequest(request: JsonRpc2Request): JsonRpc2Response {
+        val handler = methodHandlers.firstOrNull { it.matches(request.method) }
+        return if (handler != null) {
+            val data = handler.handle(request.id!!)
+            JsonRpc2Response(id = request.id, result = data)
         } else {
-            when (request.method) {
-                InstanceDto::class.java.simpleName -> {
-                    val instances = repository.getAllInstances()
-                    val response = JsonRpc2Response(request.id, instances, null)
-                    return Cbor.encodeToByteArray(response)
-                }
+            val error = JsonRpc2Error(404, "Method handler not found!")
+            JsonRpc2Response(id = request.id!!, error = error)
+        }
+    }
 
-                InboxMessageDto::class.java.simpleName -> {
-                    val instances = repository.getInboxItems(100, 0)
-                    val response = JsonRpc2Response(request.id, instances, null)
-                    return Cbor.encodeToByteArray(response)
-                }
-            }
+    interface MethodHandler {
+        fun matches(method: String): Boolean
+        fun handle(id: String): ByteArray
+    }
 
-            val response = JsonRpc2Response(request.id, null, JsonRpc2Error(0, "Method not supported"))
-            return Cbor.encodeToByteArray(response)
+    class InstancesHandler(val repository: Repository) : MethodHandler {
+        override fun matches(method: String): Boolean {
+            return method == InstanceDto::class.java.simpleName
+        }
+
+        @OptIn(ExperimentalSerializationApi::class)
+        override fun handle(id: String): ByteArray {
+            val result = repository.getAllInstances()
+            return Cbor.encodeToByteArray(result)
+        }
+    }
+
+    class MessagesHandler(val repository: Repository) : MethodHandler {
+        override fun matches(method: String): Boolean {
+            return method == InboxItemDto::class.java.simpleName
+        }
+
+        @OptIn(ExperimentalSerializationApi::class)
+        override fun handle(id: String): ByteArray {
+            val result = repository.getInboxItems(100, 0)
+            return Cbor.encodeToByteArray(result)
         }
     }
 }

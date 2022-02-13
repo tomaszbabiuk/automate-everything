@@ -22,20 +22,33 @@ data class JsonRpc2Request(
     val jsonRpc: String = "2.0",
     val method: String,
     val id: String? = null,
-    val params: List<JsonRpc2Param>? = null
-)
+    val params: ByteArray? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-@Serializable
-enum class JsonRpc2ParamType {
-    Int, String
+        other as JsonRpc2Request
+
+        if (jsonRpc != other.jsonRpc) return false
+        if (method != other.method) return false
+        if (id != other.id) return false
+        if (params != null) {
+            if (other.params == null) return false
+            if (!params.contentEquals(other.params)) return false
+        } else if (other.params != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = jsonRpc.hashCode()
+        result = 31 * result + method.hashCode()
+        result = 31 * result + (id?.hashCode() ?: 0)
+        result = 31 * result + (params?.contentHashCode() ?: 0)
+        return result
+    }
 }
-
-@Serializable
-data class JsonRpc2Param(
-    val name: String,
-    val value: String,
-    val type: JsonRpc2ParamType
-)
 
 @Serializable
 data class JsonRpc2Error(
@@ -44,11 +57,37 @@ data class JsonRpc2Error(
 )
 
 @Serializable
-data class JsonRpc2Response<T>(
+data class JsonRpc2Response(
     val id: String,
-    val result: T,
-    val error: JsonRpc2Error?
-)
+    val subscription: String? = null,
+    val result: ByteArray? = null,
+    val error: JsonRpc2Error? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as JsonRpc2Response
+
+        if (id != other.id) return false
+        if (subscription != other.subscription) return false
+        if (result != null) {
+            if (other.result == null) return false
+            if (!result.contentEquals(other.result)) return false
+        } else if (other.result != null) return false
+        if (error != other.error) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result1 = id.hashCode()
+        result1 = 31 * result1 + (subscription?.hashCode() ?: 0)
+        result1 = 31 * result1 + (result?.contentHashCode() ?: 0)
+        result1 = 31 * result1 + (error?.hashCode() ?: 0)
+        return result1
+    }
+}
 
 fun <T> createRequestFromType(clazz: Class<T>): JsonRpc2Request {
     val simpleName = clazz.simpleName

@@ -16,18 +16,17 @@
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.interop.AESessionHandler
-import eu.automateeverything.interop.JsonRpc2Response
 import eu.automateeverything.interop.createRequestFromType
-import kotlinx.serialization.*
-import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.cbor.Cbor.Default.decodeFromByteArray
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.decodeFromByteArray
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 internal class SerializationTest {
 
@@ -39,30 +38,35 @@ internal class SerializationTest {
         on { getAllInstances() } doReturn mockedInstances
     }
 
-    val tested = AESessionHandler(repository = repositoryMock)
+    private val target = AESessionHandler(repository = repositoryMock)
+
+    @Serializable
+    data class UnknownDto(
+        val someEntity: String
+    )
 
     @OptIn(ExperimentalSerializationApi::class)
     @Test
-    fun testSerialization() {
+    fun testExistingMethod() {
         val instancesRequest = createRequestFromType(InstanceDto::class.java)
-        val request1Cbor = Cbor.encodeToByteArray(instancesRequest)
-        val responseSerialized = tested.handleIncomingPacket(request1Cbor)
-        val responseDeserialized = Cbor.decodeFromByteArray<JsonRpc2Response<List<InstanceDto>>>(responseSerialized)
-        println(responseDeserialized)
+        val response = target.handleRequest(instancesRequest)
+        println(response)
+
+        val decoded = Cbor.decodeFromByteArray<List<InstanceDto>>(response.result!!)
+        assertNotNull(response.result)
+        assertNull(response.error)
+        assertEquals(2, decoded.size)
     }
 
     @OptIn(ExperimentalSerializationApi::class)
     @Test
-    fun testSerialization2() {
-//        val repositoryTypes = SerializersModule {
-////            contextual(ListSerializer(InstanceDto.serializer()))
-////            contextual(Any::class) { args -> ListSerializer(args[0]) }
-//        }
-//        val format = Json { serializersModule = repositoryTypes }
-//        val instance1 = InstanceDto(1, 1, listOf(), "clazz1", mapOf(), "automation1")
-//        val instance2 = InstanceDto(2, 2, listOf(), "clazz1", mapOf(), "automation2")
-//        val response = JsonRpc2Response("ajdi", listOf(instance1, instance2), null)
-//        val request1Json = format.encodeToString(response)
-//        println(request1Json)
+    fun testFailedMethod() {
+        val instancesRequest = createRequestFromType(UnknownDto::class.java)
+        val response = target.handleRequest(instancesRequest)
+        println(response)
+
+        assertNull(response.result)
+        assertNotNull(response.error)
+        assertEquals(404, response.error!!.code)
     }
 }

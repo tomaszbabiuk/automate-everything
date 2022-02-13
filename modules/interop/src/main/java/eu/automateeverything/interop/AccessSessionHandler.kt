@@ -16,5 +16,5 @@
 package eu.automateeverything.interop
 
 interface AccessSessionHandler {
-    fun handleIncomingPacket(bytes: ByteArray): ByteArray
+    fun handleRequest(request: JsonRpc2Request) : JsonRpc2Response
 }

@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.inbox
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class InboxItemDto(
     var id: Long = 0L,
     val subject: String,

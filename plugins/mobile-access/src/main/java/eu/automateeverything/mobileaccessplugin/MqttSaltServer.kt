@@ -64,7 +64,9 @@ class MqttSaltServer(
                             val incomingData = it.channel.read()
                             delay(10)
 
-                            sessionHandler.handleIncomingPacket(incomingData)
+
+
+                            sessionHandler.handleRequest(incomingData)
                         }
                     }
                 }
