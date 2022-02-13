@@ -13,18 +13,15 @@
  *  limitations under the License.
  */
 
-@file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-
 package eu.automateeverything.interop
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class AESessionHandler(repository: Repository) : AccessSessionHandler {
+class AESessionHandler(repository: Repository, private val format: BinaryFormat) : AccessSessionHandler {
 
     private val methodHandlers = listOf(
         InstancesHandler(repository),
@@ -34,8 +31,8 @@ class AESessionHandler(repository: Repository) : AccessSessionHandler {
     override fun handleRequest(request: JsonRpc2Request): JsonRpc2Response {
         val handler = methodHandlers.firstOrNull { it.matches(request.method) }
         return if (handler != null) {
-            val data = handler.handle(request.id!!)
-            JsonRpc2Response(id = request.id, result = data)
+            val data = handler.handle(format)
+            JsonRpc2Response(id = request.id!!, result = data)
         } else {
             val error = JsonRpc2Error(404, "Method handler not found!")
             JsonRpc2Response(id = request.id!!, error = error)
@@ -44,7 +41,7 @@ class AESessionHandler(repository: Repository) : AccessSessionHandler {
 
     interface MethodHandler {
         fun matches(method: String): Boolean
-        fun handle(id: String): ByteArray
+        fun handle(format: BinaryFormat) : ByteArray
     }
 
     class InstancesHandler(val repository: Repository) : MethodHandler {
@@ -52,10 +49,9 @@ class AESessionHandler(repository: Repository) : AccessSessionHandler {
             return method == InstanceDto::class.java.simpleName
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        override fun handle(id: String): ByteArray {
+        override fun handle(format: BinaryFormat): ByteArray {
             val result = repository.getAllInstances()
-            return Cbor.encodeToByteArray(result)
+            return format.encodeToByteArray(result)
         }
     }
 
@@ -64,10 +60,9 @@ class AESessionHandler(repository: Repository) : AccessSessionHandler {
             return method == InboxItemDto::class.java.simpleName
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        override fun handle(id: String): ByteArray {
+        override fun handle(format: BinaryFormat): ByteArray {
             val result = repository.getInboxItems(100, 0)
-            return Cbor.encodeToByteArray(result)
+            return format.encodeToByteArray(result)
         }
     }
 }

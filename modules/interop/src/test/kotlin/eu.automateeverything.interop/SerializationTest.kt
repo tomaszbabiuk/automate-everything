@@ -38,14 +38,13 @@ internal class SerializationTest {
         on { getAllInstances() } doReturn mockedInstances
     }
 
-    private val target = AESessionHandler(repository = repositoryMock)
+    private val target = AESessionHandler(repository = repositoryMock, Cbor)
 
     @Serializable
     data class UnknownDto(
         val someEntity: String
     )
 
-    @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun testExistingMethod() {
         val instancesRequest = createRequestFromType(InstanceDto::class.java)
@@ -58,7 +57,6 @@ internal class SerializationTest {
         assertEquals(2, decoded.size)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun testFailedMethod() {
         val instancesRequest = createRequestFromType(UnknownDto::class.java)
