@@ -45,6 +45,12 @@ class PortUpdateEventData(val factoryId: String,
     }
 }
 
+class InstanceUpdateEventData(val instanceDto: InstanceDto) : LiveEventData() {
+    override fun toString(): String {
+        return "Instance (id: ${instanceDto.id}) update"
+    }
+}
+
 class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
     override fun toString(): String {
         return if (enabled) {

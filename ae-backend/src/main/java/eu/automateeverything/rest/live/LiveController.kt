@@ -114,6 +114,11 @@ class LiveController @Inject constructor(
                 val mapped = inboxMessageDtoMapper.map(payload.inboxItemDto)
                 broadcast(mapped.javaClass, mapped)
             }
+            is InstanceUpdateEventData -> {
+                val payload = event.data as InstanceUpdateEventData
+                val mapped = payload.instanceDto
+                broadcast(mapped.javaClass, mapped)
+            }
         }
 
 

@@ -10,7 +10,8 @@ export const UPDATE_PLUGIN = 'UPDATE_PLUGIN'
 
 export const SET_CONFIGURABLES= 'SET_CONFIGURABLES' 
 export const CLEAR_INSTANCES = 'CLEAR_INSTANCES'
-export const ADD_INSTANCE = 'ADD_INSTANCE' 
+export const ADD_INSTANCE = 'ADD_INSTANCE'
+export const UPDATE_INSTANCE = 'UPDATE_INSTANCE' 
 export const EDIT_INSTANCE = 'EDIT_INSTANCE' 
 export const RESET_INSTANCE = 'RESET_INSTANCE'
 export const REMOVE_INSTANCE = 'REMOVE_INSTANCE' 
@@ -146,6 +147,14 @@ export default new Vuex.Store({
 
     [ADD_INSTANCE](state, instance) {
       state.instances.push(instance)
+    },
+
+    [UPDATE_INSTANCE](state, instanceDto) {
+      state.instances.forEach( instanceElement => {
+        if (instanceElement.id === instanceDto.id) {
+          Vue.set(instanceElement, "fields", instanceDto.fields)
+        }
+      })
     },
 
     [CLEAR_INSTANCES](state) {

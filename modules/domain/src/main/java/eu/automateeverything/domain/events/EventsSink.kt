@@ -16,6 +16,7 @@
 package eu.automateeverything.domain.events
 
 import eu.automateeverything.data.inbox.InboxItemDto
+import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.hardware.Port
 import java.util.function.Predicate
 
@@ -39,6 +40,11 @@ interface EventsSink {
 
     fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
         val event = PortUpdateEventData(factoryId, adapterId, port)
+        broadcastEvent(event)
+    }
+
+    fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto) {
+        val event = InstanceUpdateEventData(instanceDto)
         broadcastEvent(event)
     }
 

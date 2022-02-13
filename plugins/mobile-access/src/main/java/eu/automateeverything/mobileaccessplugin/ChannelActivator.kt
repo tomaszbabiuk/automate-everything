@@ -17,9 +17,14 @@ package eu.automateeverything.mobileaccessplugin
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.domain.configurable.BooleanFieldBuilder
+import eu.automateeverything.domain.events.EventsSink
 import saltchannel.util.Hex
 
-class ChannelActivator(private val repository: Repository) {
+class ChannelActivator(
+    private val repository: Repository,
+    private val eventsSink: EventsSink)
+{
+
     fun activateChannel(serverSignPub: ByteArray, clientSigPub: ByteArray) {
         val allMobileCredentials = repository.getInstancesOfClazz(MobileCredentialsConfigurable::class.java.name)
         val serverPubKeyHex = String(Hex.toHexCharArray(serverSignPub, 0, serverSignPub.size))
@@ -33,6 +38,8 @@ class ChannelActivator(private val repository: Repository) {
                 newFields[MobileCredentialsConfigurable.FIELD_QR_CODE] = ""
                 val instanceToUpdate = it.copy(it.id, it.iconId, it.tagIds, it.clazz, newFields, it.automation)
                 repository.updateInstance(instanceToUpdate)
+
+                eventsSink.broadcastInstanceUpdateEvent(instanceToUpdate)
             }
     }
 }
