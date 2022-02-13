@@ -36,7 +36,8 @@ class MobileCredentialsConfigurable(
         get() {
             val result: LinkedHashMap<String, FieldDefinition<*>> = LinkedHashMap(super.fieldDefinitions)
             result[FIELD_ACTIVATED] = activatedField
-            result[FIELD_PUBKEY] = pubKeyField
+            result[FIELD_SERVER_PUB] = serverPubKeyField
+            result[FIELD_CLIENT_PUB] = clientPubKeyField
             result[FIELD_QR_CODE] = qrCodeField
             return result
         }
@@ -72,7 +73,8 @@ class MobileCredentialsConfigurable(
 
     private val qrCodeField = QrCodeField(FIELD_QR_CODE, R.field_invitation_hint, 0, "")
     private val activatedField = BooleanField(FIELD_ACTIVATED, R.field_activated_hint, false)
-    private val pubKeyField = StringField(FIELD_PUBKEY, R.field_public_key, 32,"")
+    private val serverPubKeyField = StringField(FIELD_SERVER_PUB, R.field_server_public_key, 32,"")
+    private val clientPubKeyField = StringField(FIELD_CLIENT_PUB, R.field_client_public_key, 32,"")
 
     override fun generate(): InstanceDto {
         val pluginSettings = settingsResolver.resolve()
@@ -102,13 +104,14 @@ class MobileCredentialsConfigurable(
                 "&pub=$pubKeyHexString" +
                 "&broker=$brokerAddress")
         val activatedField = Pair(FIELD_ACTIVATED, false.toString())
-        val pubKeyField = Pair(FIELD_PUBKEY, pubKeyHexString)
+        val serverPubKeyField = Pair(FIELD_SERVER_PUB, pubKeyHexString)
+        val clientPubKeyField = Pair(FIELD_CLIENT_PUB, "")
 
         val storage = SecretStorage()
         storage.storeSecret(secretsPassword, pubKeyHexString, keyPair.sec())
 
         val newInstance = InstanceDto(0, null, listOf(), MobileCredentialsConfigurable::class.java.name,
-            mapOf(nameField, descriptionField, qrCodeField, activatedField, pubKeyField), null)
+            mapOf(nameField, descriptionField, qrCodeField, activatedField, serverPubKeyField, clientPubKeyField), null)
         val newId = repository.saveInstance(newInstance)
         newInstance.id = newId
 
@@ -118,6 +121,7 @@ class MobileCredentialsConfigurable(
     companion object {
         const val FIELD_QR_CODE = "qrCode"
         const val FIELD_ACTIVATED = "activated"
-        const val FIELD_PUBKEY = "pubkey"
+        const val FIELD_SERVER_PUB = "server_pub"
+        const val FIELD_CLIENT_PUB = "client_pub"
     }
 }

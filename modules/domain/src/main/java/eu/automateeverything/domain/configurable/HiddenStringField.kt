@@ -15,22 +15,15 @@
 
 package eu.automateeverything.domain.configurable
 
-class BooleanFieldBuilder : FieldBuilder<Boolean> {
+import eu.automateeverything.data.fields.FieldType
+import eu.automateeverything.data.localization.Resource
 
-    override fun fromPersistableString(value: String?): Boolean {
-        return value == TRUE
-    }
-
-    override fun toPersistableString(value: Boolean): String {
-        return if (value) {
-            TRUE
-        } else {
-            FALSE
-        }
-    }
-
-    companion object {
-        const val TRUE = "1"
-        const val FALSE = "0"
-    }
-}
+class HiddenStringField(
+    name: String,
+    hint: Resource,
+    maxSize: Int,
+    initialValue: String,
+    vararg validators: Validator<String?>
+) : FieldDefinition<String>(
+    FieldType.HiddenString, name, hint, maxSize, initialValue, String::class.java,
+    StringFieldBuilder(), null, null, *validators)

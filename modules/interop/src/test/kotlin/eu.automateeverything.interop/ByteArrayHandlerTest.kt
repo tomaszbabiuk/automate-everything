@@ -15,20 +15,22 @@
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.interop.AESessionHandler
+import eu.automateeverything.interop.ByteArraySessionHandler
+import eu.automateeverything.interop.JsonRpc2Response
+import eu.automateeverything.interop.JsonRpc2SessionHandler
 import eu.automateeverything.interop.createRequestFromType
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
-internal class SerializationTest {
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
+internal class ByteArrayHandlerTest {
 
     private val instanceDto1 = InstanceDto(0, null, listOf(), "ConfigurableClazz", mapOf(), null)
     private val instanceDto2 = InstanceDto(1, null, listOf(), "ConfigurableClazz", mapOf(), null)
@@ -38,33 +40,27 @@ internal class SerializationTest {
         on { getAllInstances() } doReturn mockedInstances
     }
 
-    private val target = AESessionHandler(repository = repositoryMock, Cbor)
+    private val processorPart = JsonRpc2SessionHandler(repository = repositoryMock, Cbor)
+    private val targetPart = ByteArraySessionHandler(processorPart, Cbor)
 
     @Serializable
     data class UnknownDto(
         val someEntity: String
     )
 
+    @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun testExistingMethod() {
-        val instancesRequest = createRequestFromType(InstanceDto::class.java)
-        val response = target.handleRequest(instancesRequest)
-        println(response)
+        val instancesRequest = createRequestFromType(InstanceDto::class.java, "one")
+        val instancesRequest2 = createRequestFromType(InstanceDto::class.java, "two")
+        val requests = listOf(instancesRequest, instancesRequest2)
+        val requestsSerialized = Cbor.encodeToByteArray(requests)
 
-        val decoded = Cbor.decodeFromByteArray<List<InstanceDto>>(response.result!!)
-        assertNotNull(response.result)
-        assertNull(response.error)
-        assertEquals(2, decoded.size)
-    }
+        val responsesSerialized = targetPart.handleRequest(requestsSerialized)
+        val responses = Cbor.decodeFromByteArray<List<JsonRpc2Response>>(responsesSerialized)
+        val responseOneSerialised = responses.first { it.id == "one"}
+        val responseOne = Cbor.decodeFromByteArray<List<InstanceDto>>(responseOneSerialised.result!!)
 
-    @Test
-    fun testFailedMethod() {
-        val instancesRequest = createRequestFromType(UnknownDto::class.java)
-        val response = target.handleRequest(instancesRequest)
-        println(response)
-
-        assertNull(response.result)
-        assertNotNull(response.error)
-        assertEquals(404, response.error!!.code)
+        assertEquals(2, responseOne.size)
     }
 }

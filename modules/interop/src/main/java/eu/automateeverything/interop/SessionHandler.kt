@@ -15,6 +15,6 @@
 
 package eu.automateeverything.interop
 
-interface AccessSessionHandler {
-    fun handleRequest(request: JsonRpc2Request) : JsonRpc2Response
+interface SessionHandler<X, Y> {
+    fun handleRequest(input: X) : Y
 }

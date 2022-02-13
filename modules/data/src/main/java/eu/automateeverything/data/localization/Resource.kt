@@ -19,24 +19,31 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.util.Hashtable
-import java.util.Arrays
+import java.util.*
 import java.util.stream.Collectors
-import java.util.Objects
 
 @Serializable
-class ResourceMap : Hashtable<Language, String>()
+data class ResourceMap(
+    var EN: String,
+    var PL: String
+)
 
 class Resource(englishValue: String, polishValue: String) {
-    private val _values = ResourceMap()
+    private val _values = ResourceMap(englishValue, polishValue)
 
-    fun getValue(language: Language): String? {
-        return _values[language]
+    constructor(map: ResourceMap) :
+        this(map.EN, map.PL)
+
+    fun getValue(language: Language): String {
+        return when (language) {
+            Language.EN -> _values.EN
+            Language.PL -> _values.PL
+        }
     }
 
     fun split(delimiter: String?): List<Resource> {
         if (isUniResource()) {
-            val split = _values[Language.EN]!!
+            val split = _values.EN
                 .split(delimiter!!).toTypedArray()
             return Arrays
                 .stream(split)
@@ -48,7 +55,7 @@ class Resource(englishValue: String, polishValue: String) {
     }
 
     private fun isUniResource(): Boolean {
-        return _values[Language.EN] == _values[Language.PL]
+        return _values.EN == _values.PL
     }
 
     override fun equals(other: Any?): Boolean {
@@ -62,11 +69,6 @@ class Resource(englishValue: String, polishValue: String) {
         return Objects.hash(_values)
     }
 
-    init {
-        _values[Language.EN] = englishValue
-        _values[Language.PL] = polishValue
-    }
-
     fun serialize(): String {
         return Json.encodeToString(_values)
     }
@@ -78,7 +80,7 @@ class Resource(englishValue: String, polishValue: String) {
 
         fun deserialize(json: String): Resource {
             val resourceMap =  Json.decodeFromString<ResourceMap>(json)
-            return Resource(resourceMap[Language.EN]!!, resourceMap[Language.PL]!!)
+            return Resource(resourceMap)
         }
     }
 }

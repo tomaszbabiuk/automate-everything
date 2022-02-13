@@ -23,6 +23,7 @@ enum class FieldType {
     Percent,
     String,
     PasswordString,
+    HiddenString,
     Boolean,
     SingleOptionEnumeration,
     Temperature,

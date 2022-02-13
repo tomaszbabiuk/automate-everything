@@ -17,7 +17,7 @@ package eu.automateeverything.mobileaccessplugin
 
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
-import eu.automateeverything.interop.AccessSessionHandler
+import eu.automateeverything.interop.ByteArraySessionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -30,7 +30,8 @@ class MqttSaltServer(
     private val brokerAddress: String,
     private val secretsPassword: String,
     private val inbox: Inbox,
-    private val sessionHandler: AccessSessionHandler
+    private val sessionHandler: ByteArraySessionHandler,
+    private val channelActivator: ChannelActivator
 )
     : WithStartStopScope<List<String>>() {
 
@@ -46,7 +47,8 @@ class MqttSaltServer(
                     if (keyPair != null) {
                         val byteChannel = MqttByteChannel(brokerAddress, it, it)
                         byteChannel.establishConnection()
-                        SaltServerSession(keyPair, byteChannel)
+
+                        Pair(keyPair.pub(), SaltServerSession(keyPair, byteChannel))
                     } else {
                         inbox.sendMessage(R.inbox_message_mqtt_server_error_subject, R.inbox_message_mqtt_server_error_missing_keypair)
                         null
@@ -56,17 +58,22 @@ class MqttSaltServer(
             val sessionJobs = clientSessions
                 .filterNotNull()
                 .map {
+                    val serverPub = it.first
+                    val serverSession = it.second
                     async {
-                        it.setEncKeyPair(random)
-                        it.handshake()
+                        serverSession.setEncKeyPair(random)
+                        serverSession.handshake()
 
-                        while (!it.isDone) {
-                            val incomingData = it.channel.read()
+                        channelActivator.activateChannel(serverPub, serverSession.clientSigKey)
+
+                        while (true) {
+                            val incomingData = serverSession.channel.read()
                             delay(10)
 
+                            val responses = sessionHandler.handleRequest(incomingData)
+                            serverSession.channel.write(false, responses)
 
-
-                            sessionHandler.handleRequest(incomingData)
+                            //TODO: maintenance part of this loop
                         }
                     }
                 }

@@ -21,21 +21,21 @@ import eu.automateeverything.data.instances.InstanceDto
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class AESessionHandler(repository: Repository, private val format: BinaryFormat) : AccessSessionHandler {
+class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryFormat) : SessionHandler<JsonRpc2Request, JsonRpc2Response> {
 
     private val methodHandlers = listOf(
         InstancesHandler(repository),
         MessagesHandler(repository)
     )
 
-    override fun handleRequest(request: JsonRpc2Request): JsonRpc2Response {
-        val handler = methodHandlers.firstOrNull { it.matches(request.method) }
+    override fun handleRequest(input: JsonRpc2Request): JsonRpc2Response {
+        val handler = methodHandlers.firstOrNull { it.matches(input.method) }
         return if (handler != null) {
             val data = handler.handle(format)
-            JsonRpc2Response(id = request.id!!, result = data)
+            JsonRpc2Response(id = input.id!!, result = data)
         } else {
             val error = JsonRpc2Error(404, "Method handler not found!")
-            JsonRpc2Response(id = request.id!!, error = error)
+            JsonRpc2Response(id = input.id!!, error = error)
         }
     }
 

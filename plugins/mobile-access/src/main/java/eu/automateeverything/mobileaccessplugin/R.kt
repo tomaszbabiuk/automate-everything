@@ -48,9 +48,14 @@ object R {
         "Adres brokera MQTT"
     )
 
-    val field_public_key = Resource(
-        "Public key",
-        "Klucz publiczny"
+    val field_server_public_key = Resource(
+        "Public key of the server",
+        "Klucz publiczny serwera"
+    )
+
+    val field_client_public_key = Resource(
+        "Public key of the client",
+        "Klucz publiczny klienta"
     )
 
     val field_activated_hint= Resource(

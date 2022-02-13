@@ -22,14 +22,14 @@ import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.settings.SettingsResolver
-import eu.automateeverything.interop.AccessSessionHandler
+import eu.automateeverything.interop.ByteArraySessionHandler
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
 class MobileAccessPlugin(wrapper: PluginWrapper,
                          settingsResolver: SettingsResolver,
                          private val repository: Repository,
-                         private val sessionHandler: AccessSessionHandler,
+                         private val sessionHandler: ByteArraySessionHandler,
                          private val inbox: Inbox
 ) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
     val server: MqttSaltServer by lazy {
@@ -40,7 +40,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         val settings = settingsResolver.resolve()
         val brokerAddress = extractBrokerAddress(settings)
         val secretsPassword = extractSecretsPassword(settings)
-        return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler)
+        return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler, repository)
     }
 
     override fun start() {
@@ -77,7 +77,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
     private fun loadPublicKeysFromRepository(): List<String> {
         return repository
             .getInstancesOfClazz(MobileCredentialsConfigurable::class.java.name)
-            .map { it.fields[MobileCredentialsConfigurable.FIELD_PUBKEY]!! }
+            .map { it.fields[MobileCredentialsConfigurable.FIELD_SERVER_PUB]!! }
     }
 
     override fun changed(action: InstanceInterceptor.Action) {

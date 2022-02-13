@@ -89,7 +89,7 @@ data class JsonRpc2Response(
     }
 }
 
-fun <T> createRequestFromType(clazz: Class<T>): JsonRpc2Request {
+fun <T> createRequestFromType(clazz: Class<T>, id: String): JsonRpc2Request {
     val simpleName = clazz.simpleName
-    return JsonRpc2Request(method = simpleName, id = simpleName)
+    return JsonRpc2Request(method = simpleName, id = id)
 }

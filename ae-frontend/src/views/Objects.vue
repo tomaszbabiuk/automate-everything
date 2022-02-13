@@ -153,7 +153,7 @@
                   v-for="field in configurable.fields"
                   :key="field.name"
                 >
-                  <div v-if="field.type === 'QrCode'">
+                  <div v-if="field.type === 'QrCode' && instance.fields[field.name].length > 0">
                     <p class="text-center">
                         {{ field.hint }}
                     </p>
