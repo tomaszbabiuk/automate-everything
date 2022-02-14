@@ -86,8 +86,8 @@ public class EncryptedChannelV2 implements ByteChannel {
     }
 
     @Override
-    public byte[] read(AtomicBoolean cancellationToken) throws ComException, BadPeer {
-        byte[] message = readOrTakePushback(cancellationToken);
+    public byte[] read(AtomicBoolean cancellationToken, String debugMessage) throws ComException, BadPeer {
+        byte[] message = readOrTakePushback(cancellationToken, debugMessage);
         this.lastReadEncryptedPacket = unwrap(message);
         byte[] encrypted = lastReadEncryptedPacket.body;
         byte[] clear = decrypt(encrypted);
@@ -103,14 +103,14 @@ public class EncryptedChannelV2 implements ByteChannel {
         return lastReadEncryptedPacket == null ? false : lastReadEncryptedPacket.lastFlag();
     }
     
-    private byte[] readOrTakePushback(AtomicBoolean cancellationToken) {
+    private byte[] readOrTakePushback(AtomicBoolean cancellationToken, String debugMessage) {
         byte[] bytes;
         
         if (this.pushbackMessage != null) {
             bytes = this.pushbackMessage;
             this.pushbackMessage = null;
         } else {
-            bytes = channel.read(cancellationToken);
+            bytes = channel.read(cancellationToken, debugMessage);
         }
         
         return bytes;

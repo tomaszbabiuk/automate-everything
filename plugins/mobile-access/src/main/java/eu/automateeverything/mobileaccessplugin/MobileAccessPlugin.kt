@@ -84,10 +84,12 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
     }
 
     override fun changed(action: InstanceInterceptor.Action) {
-        println("The number of instances has changed... stopping server")
-        server.stop()
+        if (action != InstanceInterceptor.Action.Updated) {
+            println("The number of instances has changed... stopping server")
+            server.stop()
 
-        println("The number of instances has changed... starting server")
-        server.start(loadPublicKeysFromRepository())
+            println("The number of instances has changed... starting server")
+            server.start(loadPublicKeysFromRepository())
+        }
     }
 }

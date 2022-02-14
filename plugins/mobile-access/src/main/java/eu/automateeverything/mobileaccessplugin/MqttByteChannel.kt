@@ -37,11 +37,12 @@ class MqttByteChannel(brokerAddress: String,
 
     private val rxTopic = "$topic-rx"
     private val txTopic = "$topic-tx"
+    private val syncTopic = "$topic-sync"
 
 
-    fun establishConnection() {
+    fun establishConnection(cancellationToken: AtomicBoolean) {
         connect()
-        subscribe()
+        subscribe(cancellationToken)
     }
 
     private fun connect() {
@@ -54,9 +55,13 @@ class MqttByteChannel(brokerAddress: String,
         println("Connected")
     }
 
-    private fun subscribe() {
+    private fun subscribe(cancellationToken: AtomicBoolean) {
         println("Subscribing to: $rxTopic")
         client.subscribe(rxTopic, this)
+        client.subscribe(syncTopic) { topic, message ->
+            println("channel shold be abandoned")
+            cancellationToken.set(true)
+        }
     }
 
     private fun publish(content: ByteArray) {
@@ -67,11 +72,16 @@ class MqttByteChannel(brokerAddress: String,
         println("Message published")
     }
 
-    private fun disconnect() {
-        client.disconnect()
+    fun disconnect() {
+        try {
+            client.disconnect()
+        } catch (ex: Exception) {
+            println(ex.toString())
+        }
     }
 
-    override fun read(cancellationToken: AtomicBoolean): ByteArray {
+    override fun read(cancellationToken: AtomicBoolean, debugMessage: String): ByteArray {
+        println("Reading $debugMessage")
         while (!cancellationToken.get()) {
             val bytes =  queue.poll(1, TimeUnit.SECONDS)
             if (bytes != null) {
@@ -89,10 +99,6 @@ class MqttByteChannel(brokerAddress: String,
     override fun write(isLast: Boolean, vararg messages: ByteArray) {
         messages.forEach {
             publish(it)
-        }
-
-        if (isLast) {
-            disconnect()
         }
     }
 

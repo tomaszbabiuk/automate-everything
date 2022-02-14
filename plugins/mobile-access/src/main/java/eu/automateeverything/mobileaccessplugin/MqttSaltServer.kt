@@ -18,10 +18,9 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import saltchannel.util.Hex
+import saltchannel.util.KeyPair
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
 import java.security.SecureRandom
@@ -36,65 +35,105 @@ class MqttSaltServer(
 )
     : WithStartStopScope<List<String>>() {
 
+    private var contexts: List<SessionContext>? = null
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
-
-    private val cancellationToken = AtomicBoolean(false)
+    private val serviceCancellationToken = AtomicBoolean(false)
 
     override fun start(params: List<String>) {
         super.start(params)
+        serviceCancellationToken.set(false)
 
-        startStopScope.launch {
-            try {
-                val storage = SecretStorage()
-                val clientSessions = params
-                    .map {
-                        val keyPair = storage.loadSecret(secretsPassword, it)
-                        if (keyPair != null) {
-                            val byteChannel = MqttByteChannel(brokerAddress, it, it)
-                            byteChannel.establishConnection()
+        if (params.isNotEmpty()) {
+            startStopScope.launch {
+                while (!serviceCancellationToken.get()) {
+                    contexts = buildContext(params)
 
-                            Pair(keyPair.pub(), SaltServerSession(keyPair, byteChannel))
-                        } else {
-                            inbox.sendMessage(
-                                R.inbox_message_mqtt_server_error_subject,
-                                R.inbox_message_mqtt_server_error_missing_keypair
-                            )
-                            null
+                    val x = contexts!!
+                        .map {
+                            it.begin()
+                            it.job!!
                         }
-                    }
 
-                val sessionJobs = clientSessions
-                    .filterNotNull()
-                    .map {
-                        val serverPub = it.first
-                        val serverSession = it.second
-                        async {
-                            serverSession.setEncKeyPair(random)
-                            serverSession.handshake(cancellationToken)
+                    x.awaitAll()
+                }
+            }
+        }
+    }
 
-                            channelActivator.activateChannel(serverPub, serverSession.clientSigKey)
-
-                            while (true) {
-                                val incomingData = serverSession.channel.read(cancellationToken)
-                                delay(10)
-
-                                val responses = sessionHandler.handleRequest(incomingData)
-                                serverSession.channel.write(false, responses)
-
-                                //TODO: maintenance part of this loop
-                            }
-                        }
-                    }
-
-                sessionJobs.awaitAll()
-            } catch (ex:Exception) {
-                println(ex)
+    private fun buildContext(params: List<String>): List<SessionContext> {
+        val storage = SecretStorage()
+        return params.mapNotNull { serverSignPubKeyHex ->
+            val keyPair = storage.loadSecret(secretsPassword, serverSignPubKeyHex)
+            if (keyPair != null) {
+                SessionContext(keyPair)
+            } else {
+                inbox.sendMessage(
+                    R.inbox_message_mqtt_server_error_subject,
+                    R.inbox_message_mqtt_server_error_missing_keypair
+                )
+                null
             }
         }
     }
 
     override fun stop() {
-        cancellationToken.set(true)
+        contexts?.forEach {
+            it.cancel()
+        }
         super.stop()
+    }
+
+    inner class SessionContext(val keyPair: KeyPair) {
+        private val byteChannel: MqttByteChannel
+        val session: SaltServerSession
+        var job: Deferred<Unit>? = null
+        private val connectionCancellationToken = AtomicBoolean(false)
+
+        init {
+            val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
+            byteChannel = MqttByteChannel(brokerAddress, serverSignPubKeyHex, serverSignPubKeyHex)
+            session = SaltServerSession(keyPair, byteChannel)
+            session.setEncKeyPair(random)
+        }
+
+        fun cancel() {
+            connectionCancellationToken.set(true)
+        }
+
+        suspend fun begin() = coroutineScope {
+            job = async {
+                try {
+                    connectionCancellationToken.set(false)
+                    byteChannel.establishConnection(connectionCancellationToken)
+
+                    session.handshake(connectionCancellationToken)
+                    channelActivator.activateChannel(keyPair.pub(), session.clientSigKey)
+
+                    while (!connectionCancellationToken.get()) {
+                        val incomingData = session.channel.read(connectionCancellationToken, "incoming packets")
+                        val isLast = session.channel.lastFlag()
+
+                        if (isLast) {
+                            println("got last data")
+                        } else {
+                            println("got data")
+                        }
+
+                        val responses = sessionHandler.handleRequest(incomingData)
+                        session.channel.write(false, responses)
+
+                        if (isLast) {
+                            break
+                        }
+                    }
+
+                    println("context finishes")
+                } catch (ex: Exception) {
+                    println("context has failed")
+                    byteChannel.disconnect()
+                    println(ex)
+                }
+            }
+        }
     }
 }

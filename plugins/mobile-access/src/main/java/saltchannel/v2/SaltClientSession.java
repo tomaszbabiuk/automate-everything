@@ -195,7 +195,7 @@ public class SaltClientSession {
     }
     
     private void readM2Bytes(AtomicBoolean cancellationToken) {
-        this.m2Bytes = clearChannel.read(cancellationToken);
+        this.m2Bytes = clearChannel.read(cancellationToken, "M2");
         this.m2Header = V2Util.parseHeader(m2Bytes);
     }
     
@@ -220,7 +220,7 @@ public class SaltClientSession {
     }
     
     private void m3(AtomicBoolean cancellationToken) {
-        this.m3 = M3Packet.fromBytes(encryptedChannel.read(cancellationToken), 0);
+        this.m3 = M3Packet.fromBytes(encryptedChannel.read(cancellationToken, "M3"), 0);
         this.timeChecker.checkTime(m3.time);
     }
     
@@ -251,7 +251,7 @@ public class SaltClientSession {
         
         encryptedChannel.pushback(this.m2Bytes);
         
-        byte[] bytes = encryptedChannel.read(cancellationToken);
+        byte[] bytes = encryptedChannel.read(cancellationToken, "TT1");
         TTPacket tt = TTPacket.fromBytes(bytes, 0);
         
         this.newTicketData = new ClientTicketData();
@@ -265,7 +265,7 @@ public class SaltClientSession {
      */
     private void tt2(AtomicBoolean cancellationToken) {
         if (m1.ticketRequested && m2.resumeSupported) {
-            byte[] bytes = encryptedChannel.read(cancellationToken);
+            byte[] bytes = encryptedChannel.read(cancellationToken, "TT2");
             tt = TTPacket.fromBytes(bytes, 0);
             newTicketData = new ClientTicketData();
             newTicketData.ticket = tt.ticket;

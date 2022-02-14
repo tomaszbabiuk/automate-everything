@@ -165,7 +165,7 @@ public class SaltServerSession {
     }
     
     private void readM1(AtomicBoolean cancellationToken) {
-        m1Bytes = clearChannel.read(cancellationToken);
+        m1Bytes = clearChannel.read(cancellationToken, "M1");
         m1Header = V2Util.parseHeader(m1Bytes);
     }
 
@@ -309,7 +309,7 @@ public class SaltServerSession {
     }
     
     private void m4(AtomicBoolean cancellationToken) {
-        this.m4 = M4Packet.fromBytes(encryptedChannel.read(cancellationToken), 0);
+        this.m4 = M4Packet.fromBytes(encryptedChannel.read(cancellationToken, "M4"), 0);
         this.timeChecker.checkTime(m4.time);
         this.clientSigKey = m4.clientSigKey;
     }
