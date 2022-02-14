@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
 import java.security.SecureRandom
+import java.util.concurrent.atomic.AtomicBoolean
 
 class MqttSaltServer(
     private val brokerAddress: String,
@@ -37,48 +38,63 @@ class MqttSaltServer(
 
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
 
+    private val cancellationToken = AtomicBoolean(false)
+
     override fun start(params: List<String>) {
         super.start(params)
+
         startStopScope.launch {
-            val storage = SecretStorage()
-            val clientSessions = params
-                .map {
-                    val keyPair = storage.loadSecret(secretsPassword, it)
-                    if (keyPair != null) {
-                        val byteChannel = MqttByteChannel(brokerAddress, it, it)
-                        byteChannel.establishConnection()
+            try {
+                val storage = SecretStorage()
+                val clientSessions = params
+                    .map {
+                        val keyPair = storage.loadSecret(secretsPassword, it)
+                        if (keyPair != null) {
+                            val byteChannel = MqttByteChannel(brokerAddress, it, it)
+                            byteChannel.establishConnection()
 
-                        Pair(keyPair.pub(), SaltServerSession(keyPair, byteChannel))
-                    } else {
-                        inbox.sendMessage(R.inbox_message_mqtt_server_error_subject, R.inbox_message_mqtt_server_error_missing_keypair)
-                        null
-                    }
-                }
-
-            val sessionJobs = clientSessions
-                .filterNotNull()
-                .map {
-                    val serverPub = it.first
-                    val serverSession = it.second
-                    async {
-                        serverSession.setEncKeyPair(random)
-                        serverSession.handshake()
-
-                        channelActivator.activateChannel(serverPub, serverSession.clientSigKey)
-
-                        while (true) {
-                            val incomingData = serverSession.channel.read()
-                            delay(10)
-
-                            val responses = sessionHandler.handleRequest(incomingData)
-                            serverSession.channel.write(false, responses)
-
-                            //TODO: maintenance part of this loop
+                            Pair(keyPair.pub(), SaltServerSession(keyPair, byteChannel))
+                        } else {
+                            inbox.sendMessage(
+                                R.inbox_message_mqtt_server_error_subject,
+                                R.inbox_message_mqtt_server_error_missing_keypair
+                            )
+                            null
                         }
                     }
-                }
 
-            sessionJobs.awaitAll()
+                val sessionJobs = clientSessions
+                    .filterNotNull()
+                    .map {
+                        val serverPub = it.first
+                        val serverSession = it.second
+                        async {
+                            serverSession.setEncKeyPair(random)
+                            serverSession.handshake(cancellationToken)
+
+                            channelActivator.activateChannel(serverPub, serverSession.clientSigKey)
+
+                            while (true) {
+                                val incomingData = serverSession.channel.read(cancellationToken)
+                                delay(10)
+
+                                val responses = sessionHandler.handleRequest(incomingData)
+                                serverSession.channel.write(false, responses)
+
+                                //TODO: maintenance part of this loop
+                            }
+                        }
+                    }
+
+                sessionJobs.awaitAll()
+            } catch (ex:Exception) {
+                println(ex)
+            }
         }
+    }
+
+    override fun stop() {
+        cancellationToken.set(true)
+        super.stop()
     }
 }

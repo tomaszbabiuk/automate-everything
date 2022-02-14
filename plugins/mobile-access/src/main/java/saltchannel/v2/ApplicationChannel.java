@@ -1,6 +1,8 @@
 package saltchannel.v2;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import saltchannel.BadPeer;
 import saltchannel.ByteChannel;
 import saltchannel.ComException;
@@ -46,9 +48,8 @@ public class ApplicationChannel implements ByteChannel {
     }
 
     @Override
-    public byte[] read() throws ComException {
-        //
-        // Note, APP_PACKET and TYPE_MULTI_APP_PACKET do not contain the 
+    public byte[] read(AtomicBoolean cancellationToken) throws ComException {
+        // Note, APP_PACKET and TYPE_MULTI_APP_PACKET do not contain the
         // lastFlag; it is included in ENCRYPTED_MESSAGE.
         //
         
@@ -60,7 +61,7 @@ public class ApplicationChannel implements ByteChannel {
             }
         }
         
-        byte[] bytes = channel.read();
+        byte[] bytes = channel.read(cancellationToken);
         if (encryptedChannel != null) {
             this.readLast = encryptedChannel.lastFlag();
         }

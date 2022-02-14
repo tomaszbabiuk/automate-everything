@@ -1,5 +1,7 @@
 package saltchannel;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * A two-way, reliable communication channel.
  * Byte arrays can be read and written; a simple blocking model.
@@ -22,7 +24,7 @@ public interface ByteChannel {
      *          If there is an IO error or data format error in 
      *          the underlying layer.
      */
-    public byte[] read() throws ComException;
+    public byte[] read(AtomicBoolean cancellationToken) throws ComException;
 
     /**
      * Writes a sequence of non-last application messages to the byte channel.

@@ -19,6 +19,8 @@ import saltchannel.v2.packets.Packet;
 import saltchannel.v2.packets.PacketHeader;
 import saltchannel.v2.packets.TTPacket;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Client-side implementation of a Salt Channel v2 session.
  * Usage: create object, set or create ephemeral key, 
@@ -111,27 +113,27 @@ public class SaltClientSession {
      * @throws saltchannel.v2.NoSuchServer
      * @throws saltchannel.BadPeer
      */
-    public void handshake() {
+    public void handshake(AtomicBoolean cancellationToken) {
         checkThatEncKeyPairWasSet();        
         
         m1();
         
-        readM2Bytes();   // M2 or TT message
+        readM2Bytes(cancellationToken);   // M2 or TT message
         
         if (m2Header.getType() == Packet.TYPE_ENCRYPTED_MESSAGE) {
-            tt1();
+            tt1(cancellationToken);
             return;
         }
         
         m2();
         createEncryptedChannelForNewSession();
         
-        m3();
+        m3(cancellationToken);
         validateSignature1();
         
         m4();
         
-        tt2();
+        tt2(cancellationToken);
     }
     
     /**
@@ -192,8 +194,8 @@ public class SaltClientSession {
         }
     }
     
-    private void readM2Bytes() {
-        this.m2Bytes = clearChannel.read();
+    private void readM2Bytes(AtomicBoolean cancellationToken) {
+        this.m2Bytes = clearChannel.read(cancellationToken);
         this.m2Header = V2Util.parseHeader(m2Bytes);
     }
     
@@ -217,8 +219,8 @@ public class SaltClientSession {
         this.m2Hash = CryptoLib.sha512(m2.toBytes());
     }
     
-    private void m3() {
-        this.m3 = M3Packet.fromBytes(encryptedChannel.read(), 0);
+    private void m3(AtomicBoolean cancellationToken) {
+        this.m3 = M3Packet.fromBytes(encryptedChannel.read(cancellationToken), 0);
         this.timeChecker.checkTime(m3.time);
     }
     
@@ -238,7 +240,7 @@ public class SaltClientSession {
     /**
      * Reads expected TT message.
      */
-    private void tt1() {
+    private void tt1(AtomicBoolean cancellationToken) {
         if (encryptedChannel == null) {
             throw new BadPeer("got Packet.TYPE_ENCRYPTED_MESSAGE but not resumed channel exists");
         }
@@ -249,7 +251,7 @@ public class SaltClientSession {
         
         encryptedChannel.pushback(this.m2Bytes);
         
-        byte[] bytes = encryptedChannel.read();
+        byte[] bytes = encryptedChannel.read(cancellationToken);
         TTPacket tt = TTPacket.fromBytes(bytes, 0);
         
         this.newTicketData = new ClientTicketData();
@@ -261,9 +263,9 @@ public class SaltClientSession {
     /**
      * Reads TT packet from server after 3-way handshake.
      */
-    private void tt2() {
+    private void tt2(AtomicBoolean cancellationToken) {
         if (m1.ticketRequested && m2.resumeSupported) {
-            byte[] bytes = encryptedChannel.read();
+            byte[] bytes = encryptedChannel.read(cancellationToken);
             tt = TTPacket.fromBytes(bytes, 0);
             newTicketData = new ClientTicketData();
             newTicketData.ticket = tt.ticket;

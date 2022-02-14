@@ -23,6 +23,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import saltchannel.ByteChannel
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class MqttByteChannel(brokerAddress: String,
                       topic: String,
@@ -69,8 +71,15 @@ class MqttByteChannel(brokerAddress: String,
         client.disconnect()
     }
 
-    override fun read(): ByteArray {
-        return queue.take()
+    override fun read(cancellationToken: AtomicBoolean): ByteArray {
+        while (!cancellationToken.get()) {
+            val bytes =  queue.poll(1, TimeUnit.SECONDS)
+            if (bytes != null) {
+                return bytes
+            }
+        }
+
+        throw Exception("Cancelled")
     }
 
     override fun write(vararg messages: ByteArray) {

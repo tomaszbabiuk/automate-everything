@@ -1,6 +1,8 @@
 package saltchannel.v2;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import saltaa.BadEncryptedDataException;
 import saltaa.SaltLib;
 import saltaa.SaltLibFactory;
@@ -84,8 +86,8 @@ public class EncryptedChannelV2 implements ByteChannel {
     }
 
     @Override
-    public byte[] read() throws ComException, BadPeer {
-        byte[] message = readOrTakePushback();
+    public byte[] read(AtomicBoolean cancellationToken) throws ComException, BadPeer {
+        byte[] message = readOrTakePushback(cancellationToken);
         this.lastReadEncryptedPacket = unwrap(message);
         byte[] encrypted = lastReadEncryptedPacket.body;
         byte[] clear = decrypt(encrypted);
@@ -101,14 +103,14 @@ public class EncryptedChannelV2 implements ByteChannel {
         return lastReadEncryptedPacket == null ? false : lastReadEncryptedPacket.lastFlag();
     }
     
-    private byte[] readOrTakePushback() {
+    private byte[] readOrTakePushback(AtomicBoolean cancellationToken) {
         byte[] bytes;
         
         if (this.pushbackMessage != null) {
             bytes = this.pushbackMessage;
             this.pushbackMessage = null;
         } else {
-            bytes = channel.read();
+            bytes = channel.read(cancellationToken);
         }
         
         return bytes;
