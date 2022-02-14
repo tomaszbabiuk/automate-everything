@@ -112,7 +112,7 @@ class MqttSaltServer(
 
         init {
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
-            byteChannel = MqttByteChannel(serverSignPubKeyHex, client)
+            byteChannel = MqttByteChannel(serverSignPubKeyHex, client, connectionCancellationToken)
             session = SaltServerSession(keyPair, byteChannel)
             session.setEncKeyPair(random)
         }
@@ -125,21 +125,14 @@ class MqttSaltServer(
             job = async {
                 try {
                     connectionCancellationToken.set(false)
-                    byteChannel.establishConnection(connectionCancellationToken)
+                    byteChannel.subscribe()
 
-                    session.handshake(connectionCancellationToken)
+                    session.handshake()
                     channelActivator.activateChannel(keyPair.pub(), session.clientSigKey)
 
                     while (!connectionCancellationToken.get()) {
-                        val incomingData = session.channel.read(connectionCancellationToken, "incoming packets")
+                        val incomingData = session.channel.read("incoming packets")
                         val isLast = session.channel.lastFlag()
-
-                        if (isLast) {
-                            println("got last data")
-                        } else {
-                            println("got data")
-                        }
-
                         val responses = sessionHandler.handleRequest(incomingData)
                         session.channel.write(false, responses)
                         //TODO: handle case when message is too big
@@ -150,6 +143,8 @@ class MqttSaltServer(
                     }
 
                     println("context finishes")
+                } catch (ex: ChannelTerminatedException) {
+                    //ignored
                 } catch (ex: Exception) {
                     println("context has failed, $ex")
                 }

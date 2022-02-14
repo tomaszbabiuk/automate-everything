@@ -126,10 +126,10 @@ public class SaltServerSession {
      *          a public key and such a server does not exist.
      * @throws saltchannel.BadPeer
      */
-    public void handshake(AtomicBoolean cancellationToken) {
+    public void handshake() {
         checkThatEncKeyPairWasSet();        
         
-        readM1(cancellationToken);
+        readM1();
         
         if (m1Header.getType() == Packet.TYPE_A1) {
             a2();
@@ -149,7 +149,7 @@ public class SaltServerSession {
         
         m3();
         
-        m4(cancellationToken);
+        m4();
         validateSignature2();
         
         tt();
@@ -164,8 +164,8 @@ public class SaltServerSession {
         return isDone;
     }
     
-    private void readM1(AtomicBoolean cancellationToken) {
-        m1Bytes = clearChannel.read(cancellationToken, "M1");
+    private void readM1() {
+        m1Bytes = clearChannel.read("M1");
         m1Header = V2Util.parseHeader(m1Bytes);
     }
 
@@ -308,8 +308,8 @@ public class SaltServerSession {
         }
     }
     
-    private void m4(AtomicBoolean cancellationToken) {
-        this.m4 = M4Packet.fromBytes(encryptedChannel.read(cancellationToken, "M4"), 0);
+    private void m4() {
+        this.m4 = M4Packet.fromBytes(encryptedChannel.read("M4"), 0);
         this.timeChecker.checkTime(m4.time);
         this.clientSigKey = m4.clientSigKey;
     }

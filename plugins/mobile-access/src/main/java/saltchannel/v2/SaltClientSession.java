@@ -113,27 +113,27 @@ public class SaltClientSession {
      * @throws saltchannel.v2.NoSuchServer
      * @throws saltchannel.BadPeer
      */
-    public void handshake(AtomicBoolean cancellationToken) {
+    public void handshake() {
         checkThatEncKeyPairWasSet();        
         
         m1();
         
-        readM2Bytes(cancellationToken);   // M2 or TT message
+        readM2Bytes();   // M2 or TT message
         
         if (m2Header.getType() == Packet.TYPE_ENCRYPTED_MESSAGE) {
-            tt1(cancellationToken);
+            tt1();
             return;
         }
         
         m2();
         createEncryptedChannelForNewSession();
         
-        m3(cancellationToken);
+        m3();
         validateSignature1();
         
         m4();
         
-        tt2(cancellationToken);
+        tt2();
     }
     
     /**
@@ -194,8 +194,8 @@ public class SaltClientSession {
         }
     }
     
-    private void readM2Bytes(AtomicBoolean cancellationToken) {
-        this.m2Bytes = clearChannel.read(cancellationToken, "M2");
+    private void readM2Bytes() {
+        this.m2Bytes = clearChannel.read("M2");
         this.m2Header = V2Util.parseHeader(m2Bytes);
     }
     
@@ -219,8 +219,8 @@ public class SaltClientSession {
         this.m2Hash = CryptoLib.sha512(m2.toBytes());
     }
     
-    private void m3(AtomicBoolean cancellationToken) {
-        this.m3 = M3Packet.fromBytes(encryptedChannel.read(cancellationToken, "M3"), 0);
+    private void m3() {
+        this.m3 = M3Packet.fromBytes(encryptedChannel.read("M3"), 0);
         this.timeChecker.checkTime(m3.time);
     }
     
@@ -240,7 +240,7 @@ public class SaltClientSession {
     /**
      * Reads expected TT message.
      */
-    private void tt1(AtomicBoolean cancellationToken) {
+    private void tt1() {
         if (encryptedChannel == null) {
             throw new BadPeer("got Packet.TYPE_ENCRYPTED_MESSAGE but not resumed channel exists");
         }
@@ -251,7 +251,7 @@ public class SaltClientSession {
         
         encryptedChannel.pushback(this.m2Bytes);
         
-        byte[] bytes = encryptedChannel.read(cancellationToken, "TT1");
+        byte[] bytes = encryptedChannel.read("TT1");
         TTPacket tt = TTPacket.fromBytes(bytes, 0);
         
         this.newTicketData = new ClientTicketData();
@@ -263,9 +263,9 @@ public class SaltClientSession {
     /**
      * Reads TT packet from server after 3-way handshake.
      */
-    private void tt2(AtomicBoolean cancellationToken) {
+    private void tt2() {
         if (m1.ticketRequested && m2.resumeSupported) {
-            byte[] bytes = encryptedChannel.read(cancellationToken, "TT2");
+            byte[] bytes = encryptedChannel.read("TT2");
             tt = TTPacket.fromBytes(bytes, 0);
             newTicketData = new ClientTicketData();
             newTicketData.ticket = tt.ticket;

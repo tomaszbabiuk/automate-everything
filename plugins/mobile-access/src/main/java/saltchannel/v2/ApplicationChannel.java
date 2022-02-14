@@ -48,7 +48,7 @@ public class ApplicationChannel implements ByteChannel {
     }
 
     @Override
-    public byte[] read(AtomicBoolean cancellationToken, String debugMessage) throws ComException {
+    public byte[] read(String debugMessage) throws ComException {
         // Note, APP_PACKET and TYPE_MULTI_APP_PACKET do not contain the
         // lastFlag; it is included in ENCRYPTED_MESSAGE.
         //
@@ -61,7 +61,7 @@ public class ApplicationChannel implements ByteChannel {
             }
         }
         
-        byte[] bytes = channel.read(cancellationToken, debugMessage);
+        byte[] bytes = channel.read(debugMessage);
         if (encryptedChannel != null) {
             this.readLast = encryptedChannel.lastFlag();
         }

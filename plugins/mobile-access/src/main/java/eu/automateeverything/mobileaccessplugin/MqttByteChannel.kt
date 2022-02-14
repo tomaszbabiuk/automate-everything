@@ -24,29 +24,39 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MqttByteChannel(topic: String, private val client: MqttClient)
+class ChannelTerminatedException: Exception("Mqtt channel has been terminated!")
+
+class MqttByteChannel(
+    topic: String,
+    private val client: MqttClient,
+    private val cancellationToken: AtomicBoolean)
     : ByteChannel, IMqttMessageListener {
 
     private val qos = 2
     private val queue = LinkedBlockingQueue <ByteArray>()
 
-    private val rxTopic = "$topic-rx"
-    private val txTopic = "$topic-tx"
-    private val syncTopic = "$topic-sync"
+    private val rxTopic = "$topic/rx"
+    private val txTopic = "$topic/tx"
+    private val syncTopic = "$topic/sync"
 
 
-    fun establishConnection(cancellationToken: AtomicBoolean) {
-        subscribe(cancellationToken)
-    }
-
-    private fun subscribe(cancellationToken: AtomicBoolean) {
+    fun subscribe() {
         println("Subscribing to: $rxTopic")
         client.subscribe(rxTopic, this)
-        client.subscribe(syncTopic) { topic, message ->
-            println("channel shold be abandoned")
-            cancellationToken.set(true)
+
+        client.subscribe(syncTopic) { _, message ->
+            if (isResetSignal(message)) {
+                cancellationToken.set(true)
+            }
         }
     }
+
+    private fun isResetSignal(message: MqttMessage) = message.payload.size == 5 &&
+            message.payload[0] == 0x52.toByte() &&
+            message.payload[1] == 0x45.toByte() &&
+            message.payload[2] == 0x53.toByte() &&
+            message.payload[3] == 0x45.toByte() &&
+            message.payload[4] == 0x54.toByte()
 
     private fun publish(content: ByteArray) {
         println("Publishing message: $content")
@@ -56,7 +66,7 @@ class MqttByteChannel(topic: String, private val client: MqttClient)
         println("Message published")
     }
 
-    override fun read(cancellationToken: AtomicBoolean, debugMessage: String): ByteArray {
+    override fun read(debugMessage: String): ByteArray {
         println("Reading $debugMessage")
         while (!cancellationToken.get()) {
             val bytes =  queue.poll(1, TimeUnit.SECONDS)
@@ -65,7 +75,7 @@ class MqttByteChannel(topic: String, private val client: MqttClient)
             }
         }
 
-        throw Exception("Cancelled")
+        throw ChannelTerminatedException()
     }
 
     override fun write(vararg messages: ByteArray) {
