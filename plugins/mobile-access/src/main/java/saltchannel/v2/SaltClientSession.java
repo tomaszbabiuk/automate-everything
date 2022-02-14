@@ -200,7 +200,7 @@ public class SaltClientSession {
     /**
      * Handles M2 message.
      * 
-     * @throws saltchannel.v2.NoSuchServer.
+     * @throws saltchannel.v2.NoSuchServer
      */
     private void m2() {
         this.m2 = M2Message.fromBytes(m2Bytes, 0);
