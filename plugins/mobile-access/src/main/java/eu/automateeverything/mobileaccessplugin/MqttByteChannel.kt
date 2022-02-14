@@ -18,22 +18,17 @@ package eu.automateeverything.mobileaccessplugin
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import saltchannel.ByteChannel
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MqttByteChannel(brokerAddress: String,
-                      topic: String,
-                      clientId: String)
+class MqttByteChannel(topic: String, private val client: MqttClient)
     : ByteChannel, IMqttMessageListener {
 
     private val qos = 2
     private val queue = LinkedBlockingQueue <ByteArray>()
-    private val client = MqttClient(brokerAddress, clientId, MemoryPersistence())
 
     private val rxTopic = "$topic-rx"
     private val txTopic = "$topic-tx"
@@ -41,18 +36,7 @@ class MqttByteChannel(brokerAddress: String,
 
 
     fun establishConnection(cancellationToken: AtomicBoolean) {
-        connect()
         subscribe(cancellationToken)
-    }
-
-    private fun connect() {
-        val options = MqttConnectOptions()
-        options.isAutomaticReconnect = true
-        options.isCleanSession = true
-        options.connectionTimeout = 10
-        println("Connecting")
-        client.connect(options)
-        println("Connected")
     }
 
     private fun subscribe(cancellationToken: AtomicBoolean) {
@@ -70,14 +54,6 @@ class MqttByteChannel(brokerAddress: String,
         message.qos = qos
         client.publish(txTopic, message)
         println("Message published")
-    }
-
-    fun disconnect() {
-        try {
-            client.disconnect()
-        } catch (ex: Exception) {
-            println(ex.toString())
-        }
     }
 
     override fun read(cancellationToken: AtomicBoolean, debugMessage: String): ByteArray {

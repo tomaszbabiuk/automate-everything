@@ -19,6 +19,9 @@ import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
 import kotlinx.coroutines.*
+import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
@@ -27,7 +30,7 @@ import java.security.SecureRandom
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MqttSaltServer(
-    private val brokerAddress: String,
+    brokerAddress: String,
     private val secretsPassword: String,
     private val inbox: Inbox,
     private val sessionHandler: ByteArraySessionHandler,
@@ -39,6 +42,18 @@ class MqttSaltServer(
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
     private val serviceCancellationToken = AtomicBoolean(false)
 
+    private val client = MqttClient(brokerAddress, "Automate Everything - Mobile Access", MemoryPersistence())
+
+    private fun connect() {
+        val options = MqttConnectOptions()
+        options.isAutomaticReconnect = true
+        options.isCleanSession = true
+        options.connectionTimeout = 10
+        println("Connecting")
+        client.connect(options)
+        println("Connected")
+    }
+
     override fun start(params: List<String>) {
         super.start(params)
         serviceCancellationToken.set(false)
@@ -46,6 +61,10 @@ class MqttSaltServer(
         if (params.isNotEmpty()) {
             startStopScope.launch {
                 while (!serviceCancellationToken.get()) {
+                    if (!client.isConnected) {
+                        connect()
+                    }
+
                     contexts = buildContext(params)
 
                     val x = contexts!!
@@ -57,6 +76,8 @@ class MqttSaltServer(
                     x.awaitAll()
                 }
             }
+
+            //TODO: add mqtt client connection supervisor
         }
     }
 
@@ -91,7 +112,7 @@ class MqttSaltServer(
 
         init {
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
-            byteChannel = MqttByteChannel(brokerAddress, serverSignPubKeyHex, serverSignPubKeyHex)
+            byteChannel = MqttByteChannel(serverSignPubKeyHex, client)
             session = SaltServerSession(keyPair, byteChannel)
             session.setEncKeyPair(random)
         }
@@ -121,6 +142,7 @@ class MqttSaltServer(
 
                         val responses = sessionHandler.handleRequest(incomingData)
                         session.channel.write(false, responses)
+                        //TODO: handle case when message is too big
 
                         if (isLast) {
                             break
@@ -129,9 +151,7 @@ class MqttSaltServer(
 
                     println("context finishes")
                 } catch (ex: Exception) {
-                    println("context has failed")
-                    byteChannel.disconnect()
-                    println(ex)
+                    println("context has failed, $ex")
                 }
             }
         }
