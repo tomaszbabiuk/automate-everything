@@ -19,5 +19,5 @@ interface InstanceInterceptor {
     enum class Action {
         Saved, Updated, Deleted
     }
-    fun changed(action: Action)
+    fun changed(action: Action, clazz: String?)
 }

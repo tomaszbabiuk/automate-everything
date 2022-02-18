@@ -21,6 +21,7 @@ import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceBriefDto
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
 import eu.automateeverything.sqldelightplugin.database.*
@@ -47,14 +48,14 @@ class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
 
 class IconToIconDtoMapper: Mapper<Icon, IconDto> {
     override fun map(from: Icon): IconDto {
-        return IconDto(from.id, from.icon_category_id, from.raw)
+        return IconDto(from.id, from.icon_category_id, from.owner, from.raw)
     }
 }
 
 class SelectAllWithIconsToIconCategoryDtoMapper: Mapper<SelectAllWithIcons, IconCategoryDto> {
     override fun map(from: SelectAllWithIcons): IconCategoryDto {
         val iconIds = convertStringOfIdsToList(from.iconIds)
-        return IconCategoryDto(from.id, from.name, iconIds)
+        return IconCategoryDto(from.id, Resource.deserialize(from.name), from.readonly == 1L, iconIds)
     }
 }
 

@@ -123,7 +123,7 @@
 
       <div v-if="canAddInstances()">
         <v-card tile v-for="instance in filteredInstances" :key="instance.id">
-          <v-list v-if="configurable.generable">
+          <v-list v-if="configurable">
             <v-list-item two-line>
               <v-list-item-icon
                 v-if="instance.iconId === null && configurable.editableIcon"

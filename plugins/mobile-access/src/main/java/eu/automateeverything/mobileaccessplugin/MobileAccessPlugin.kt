@@ -83,12 +83,11 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
             .map { it.fields[MobileCredentialsConfigurable.FIELD_SERVER_PUB]!! }
     }
 
-    override fun changed(action: InstanceInterceptor.Action) {
-        if (action != InstanceInterceptor.Action.Updated) {
-            println("The number of instances has changed... stopping server")
+    override fun changed(action: InstanceInterceptor.Action, clazz: String?) {
+        if (action != InstanceInterceptor.Action.Updated && clazz == MobileCredentialsConfigurable::class.java.name) {
+            println("The number of mobile credentials has changed... restarting server")
             server.stop()
 
-            println("The number of instances has changed... starting server")
             server.start(loadPublicKeysFromRepository())
         }
     }

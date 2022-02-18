@@ -18,27 +18,13 @@ package eu.automateeverything.actions
 import eu.automateeverything.data.automation.ControlState
 import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
-import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.ActionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
-import java.util.HashMap
 
-abstract class ActionConfigurableBase(
-    private val stateChangeReporter: StateChangeReporter
-) : ActionConfigurable() {
+abstract class ActionConfigurableBase: ActionConfigurable() {
 
     override val parent: Class<out Configurable?>
         get() = ActionsConfigurable::class.java
-
-    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
-        val name = instance.fields[FIELD_NAME]!!
-        return ActionAutomationUnit(stateChangeReporter, instance, name, states) {
-            executionCode(instance)
-        }
-    }
 
     override val states: Map<String, State>
         get() {
@@ -72,8 +58,6 @@ abstract class ActionConfigurableBase(
             )
             return states
         }
-
-    protected abstract fun executionCode(instance: InstanceDto) : Pair<Boolean, Resource>
 
     companion object {
         const val STATE_READY = "ready"

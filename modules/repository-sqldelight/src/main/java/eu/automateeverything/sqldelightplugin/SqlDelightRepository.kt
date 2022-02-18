@@ -85,7 +85,7 @@ class SqlDelightRepository : Repository {
             }
         }
 
-        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Saved) }
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Saved, instanceDto.clazz) }
 
         return id
     }
@@ -107,7 +107,7 @@ class SqlDelightRepository : Repository {
             hasUpdatedInstance = true
         }
 
-        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Updated) }
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Updated, instanceDto.clazz) }
     }
 
     override fun getAllInstances(): List<InstanceDto> {
@@ -139,7 +139,7 @@ class SqlDelightRepository : Repository {
             database.configurableInstanceQueries.delete(id)
         }
 
-        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Deleted) }
+        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Deleted, null) }
     }
 
     override fun deleteInstances(ids: List<Long>) {
@@ -216,7 +216,10 @@ class SqlDelightRepository : Repository {
     override fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long {
         var id: Long = 0
         database.transaction {
-            database.iconCategoryQueries.insert(iconCategoryDto.name)
+            database.iconCategoryQueries.insert(
+                iconCategoryDto.name.serialize(),
+                if (iconCategoryDto.readonly) 1 else 0
+            )
             id = database.generalQueries.lastInsertRowId().executeAsOne()
         }
 
@@ -231,7 +234,7 @@ class SqlDelightRepository : Repository {
 
     override fun updateIconCategory(iconCategoryDto: IconCategoryDto) {
         database.transaction {
-            database.iconCategoryQueries.update(iconCategoryDto.name, iconCategoryDto.id)
+            database.iconCategoryQueries.update(iconCategoryDto.name.serialize(), iconCategoryDto.id)
         }
     }
 
@@ -254,7 +257,7 @@ class SqlDelightRepository : Repository {
     override fun saveIcon(iconDto: IconDto): Long {
         var id: Long = 0
         database.transaction {
-            database.iconQueries.insert(iconDto.iconCategoryId, iconDto.raw)
+            database.iconQueries.insert(iconDto.iconCategoryId, iconDto.owner, iconDto.raw)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
         }
 

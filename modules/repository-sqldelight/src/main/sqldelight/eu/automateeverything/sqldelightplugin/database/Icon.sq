@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS icon (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   icon_category_id INTEGER NOT NULL,
+  owner TEXT,
   raw TEXT NOT NULL,
 
   FOREIGN KEY(icon_category_id) REFERENCES iconCategory(id) ON DELETE CASCADE
@@ -16,8 +17,8 @@ FROM icon
 WHERE id = ?;
 
 insert:
-INSERT INTO icon(icon_category_id, raw)
-VALUES (?,?);
+INSERT INTO icon(icon_category_id, owner, raw)
+VALUES (?,?, ?);
 
 delete:
 DELETE FROM icon

@@ -20,13 +20,12 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import eu.automateeverything.data.localization.Language
 import eu.automateeverything.data.localization.Resource
-import java.lang.UnsupportedOperationException
 import kotlin.Throws
 import java.io.IOException
 
 class ResourceGsonTypeAdapter(private val _language: Language) : TypeAdapter<Resource>() {
     override fun read(`in`: JsonReader): Resource {
-        throw UnsupportedOperationException()
+        return Resource.createUniResource(`in`.nextString())
     }
 
     @Throws(IOException::class)

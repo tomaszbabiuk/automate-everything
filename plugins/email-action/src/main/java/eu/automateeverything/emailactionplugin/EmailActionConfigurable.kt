@@ -15,10 +15,13 @@
 
 package eu.automateeverything.emailactionplugin
 
+import eu.automateeverything.actions.ActionAutomationUnit
 import eu.automateeverything.actions.ActionConfigurableBase
+import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.settings.SettingsResolver
@@ -26,8 +29,8 @@ import org.pf4j.Extension
 
 @Extension
 class EmailActionConfigurable(
-    stateChangeReporter: StateChangeReporter,
-    private val settingsResolver: SettingsResolver) : ActionConfigurableBase(stateChangeReporter) {
+    private val stateChangeReporter: StateChangeReporter,
+    private val settingsResolver: SettingsResolver) : ActionConfigurableBase() {
 
     override val titleRes: Resource
         get() = R.configurable_email_action_title
@@ -59,7 +62,14 @@ class EmailActionConfigurable(
             return result
         }
 
-    override fun executionCode(instance: InstanceDto): Pair<Boolean,Resource> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
+        val name = instance.fields[FIELD_NAME]!!
+        return ActionAutomationUnit(stateChangeReporter, instance, name, states) {
+            sendEmail(instance)
+        }
+    }
+
+    private fun sendEmail(instance: InstanceDto): Pair<Boolean,Resource> {
         val recipient = extractFieldValue(instance, recipientField)
         val subject = extractFieldValue(instance, subjectField)
         val body = extractFieldValue(instance, bodyField)

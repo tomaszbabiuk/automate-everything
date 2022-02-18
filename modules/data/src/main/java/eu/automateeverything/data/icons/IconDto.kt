@@ -18,4 +18,5 @@ package eu.automateeverything.data.icons
 data class IconDto(
     val id: Long,
     val iconCategoryId: Long,
+    val owner: String?,
     val raw: String)

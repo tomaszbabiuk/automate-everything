@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS iconCategory (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  readonly INTEGER NOT NULL
 );
 
 selectAll:
@@ -14,8 +15,8 @@ SELECT iconCategory.*,
 
 
 insert:
-INSERT INTO iconCategory(name)
-VALUES (?);
+INSERT INTO iconCategory(name, readonly)
+VALUES (?, ?);
 
 delete:
 DELETE FROM iconCategory

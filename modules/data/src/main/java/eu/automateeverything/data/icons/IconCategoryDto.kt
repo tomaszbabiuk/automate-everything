@@ -15,8 +15,11 @@
 
 package eu.automateeverything.data.icons
 
+import eu.automateeverything.data.localization.Resource
+
 data class IconCategoryDto(
     val id: Long,
-    val name: String,
+    val name: Resource,
+    val readonly: Boolean,
     val iconIds: List<Long>
 )

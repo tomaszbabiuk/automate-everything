@@ -170,7 +170,7 @@
         </v-chip>
       </template>
       <template v-slot:[`item.actions`]="{ item }" }>
-        <nobr>
+        <nobr v-if="!item.readonly">
           <v-icon class="mr-2" @click="openAddIconDialog(item)"
             >mdi-plus</v-icon
           >

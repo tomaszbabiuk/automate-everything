@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
 
 package eu.automateeverything.bashactionplugin
 
+import eu.automateeverything.actions.ActionAutomationUnit
 import eu.automateeverything.actions.ActionConfigurableBase
+import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.FieldDefinition
 import eu.automateeverything.domain.configurable.RequiredStringValidator
@@ -31,8 +34,8 @@ import java.util.stream.Collectors
 
 @Extension
 class BashScriptActionConfigurable(
-    stateChangeReporter: StateChangeReporter
-) : ActionConfigurableBase(stateChangeReporter) {
+    private val stateChangeReporter: StateChangeReporter
+) : ActionConfigurableBase() {
 
     override val titleRes: Resource
         get() = R.configurable_bash_script_action_title
@@ -60,7 +63,14 @@ class BashScriptActionConfigurable(
             return result
         }
 
-    override fun executionCode(instance: InstanceDto): Pair<Boolean,Resource> {
+    override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
+        val name = instance.fields[FIELD_NAME]!!
+        return ActionAutomationUnit(stateChangeReporter, instance, name, states) {
+            executeScript(instance)
+        }
+    }
+
+    private fun executeScript(instance: InstanceDto): Pair<Boolean,Resource> {
         val cmd = extractFieldValue(instance, commandField)
         val run = Runtime.getRuntime()
         try {
