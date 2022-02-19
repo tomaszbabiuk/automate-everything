@@ -23,6 +23,7 @@ export default {
         enable: "Enable",
         disable: "Disable",
         settings: "Settings",
+        copyright: "Copyright"
     },
     plugin_settings: {
         saved_message: "Saved! Some changes requires the plugin to be restarted."

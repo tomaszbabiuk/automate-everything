@@ -21,6 +21,8 @@ import eu.automateeverything.data.localization.Resource
 interface PluginMetadata {
     val name: Resource
     val description: Resource
+    val copyright: Resource?
+        get() = null
     val settingGroups: List<SettingGroup>
         get() = listOf()
 }

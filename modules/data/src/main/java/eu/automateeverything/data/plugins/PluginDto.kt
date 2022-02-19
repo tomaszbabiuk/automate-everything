@@ -22,6 +22,7 @@ data class PluginDto(
     val id: String,
     val name: Resource,
     val description: Resource,
+    val copyright: Resource?,
     val provider: String,
     val version: String,
     val isHardwareFactory: Boolean,

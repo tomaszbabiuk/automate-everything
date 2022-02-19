@@ -119,6 +119,7 @@ class HomeAutomationIconsPlugin(
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    override val copyright: Resource = R.plugin_copyright
 
     private fun loadTextFromResources(path: String): String? {
         val stream = javaClass.classLoader.getResourceAsStream(path)

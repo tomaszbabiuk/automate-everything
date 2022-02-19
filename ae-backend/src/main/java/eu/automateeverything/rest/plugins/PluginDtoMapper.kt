@@ -37,9 +37,9 @@ class PluginDtoMapper @Inject constructor(
         return if (plugin is PluginMetadata) {
             val metadata = plugin as PluginMetadata
             val settingGroups = metadata.settingGroups.map { settingsGroupDtoMapper.map(it) }
-            PluginDto(id, metadata.name, metadata.description, provider, version, isHardwareFactory, enabled, settingGroups)
+            PluginDto(id, metadata.name, metadata.description, metadata.copyright, provider, version, isHardwareFactory, enabled, settingGroups)
         } else {
-            PluginDto(id, R.plugin_no_name, R.plugin_no_description, provider, version, isHardwareFactory, enabled, listOf())
+            PluginDto(id, R.plugin_no_name, R.plugin_no_description, null, provider, version, isHardwareFactory, enabled, listOf())
         }
     }
 }
