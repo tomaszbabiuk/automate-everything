@@ -19,7 +19,6 @@ import eu.automateeverything.actions.ActionAutomationUnit
 import eu.automateeverything.actions.ActionConfigurableBase
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
@@ -48,7 +47,7 @@ class EmailActionConfigurable(
             </svg>
         """.trimIndent()
 
-    private val recipientField = StringField(FIELD_RECIPIENT, R.field_recipient_hint, 0, "", RequiredStringValidator())
+    private val recipientField = StringField(FIELD_RECIPIENT, R.field_recipient_hint, 0, "", RequiredStringValidator(), EmailAddressValidator())
     private val subjectField = StringField(FIELD_SUBJECT, R.field_subject_hint, 0, "", RequiredStringValidator())
     private val bodyField = StringField(FIELD_BODY, R.field_body_hint, 0, "", RequiredStringValidator())
 
@@ -81,18 +80,18 @@ class EmailActionConfigurable(
             val passwordFromSettings = settings[0].fields[SMTPSettingGroup.FIELD_PASSWORD]
 
             if (hostFromSettings == null) {
-                throw LocalizedException(R.error_host_not_defined)
+                return Pair(false, R.error_host_not_defined)
             }
             if (usernameFromSettings == null) {
-                throw LocalizedException(R.error_username_not_defined)
+                return Pair(false, R.error_username_not_defined)
             }
             if (passwordFromSettings == null) {
-                throw LocalizedException(R.error_password_not_defined)
+                return Pair(false, R.error_password_not_defined)
             }
 
             EmailSender.sendEmailInternal(hostFromSettings, usernameFromSettings, passwordFromSettings, recipient, subject, body)
         } else {
-            throw LocalizedException(R.error_no_settings)
+            return Pair(false, R.error_no_settings)
         }
 
         return Pair(true, Resource.createUniResource("ok"))

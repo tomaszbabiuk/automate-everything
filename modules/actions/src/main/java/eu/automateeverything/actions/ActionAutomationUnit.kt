@@ -24,7 +24,6 @@ import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.localization.LocalizedException
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
@@ -63,9 +62,6 @@ class ActionAutomationUnit(
                             changeState(STATE_FAILURE)
                         }
                     }
-                } catch (ex: LocalizedException) {
-                    modifyNote(EVALUATION_OUTPUT, ex.localizedMessage)
-                    changeState(STATE_FAILURE)
                 } catch (ex: Exception) {
                     modifyNote(EVALUATION_OUTPUT, Resource.createUniResource(ex.message!!))
                     changeState(STATE_FAILURE)
@@ -98,15 +94,15 @@ class ActionAutomationUnit(
     override fun calculateInternal(now: Calendar) {
     }
 
-    init {
-        changeState(STATE_READY)
-    }
-
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = false
     override val controlType = ControlType.States
 
     companion object {
         const val EVALUATION_OUTPUT = "output"
+    }
+
+    init {
+        changeState(STATE_READY)
     }
 }
