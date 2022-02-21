@@ -17,10 +17,12 @@ package eu.automateeverything.domain.extensibility
 
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 
 interface PluginMetadata {
     val name: Resource
     val description: Resource
+    val category: PluginCategory
     val copyright: Resource?
         get() = null
     val settingGroups: List<SettingGroup>

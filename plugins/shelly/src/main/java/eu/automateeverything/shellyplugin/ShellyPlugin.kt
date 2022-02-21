@@ -19,6 +19,7 @@ import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwarePlugin
 import eu.automateeverything.domain.langateway.LanGatewayResolver
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import eu.automateeverything.domain.mqtt.MqttBrokerService
@@ -47,4 +48,5 @@ class ShellyPlugin(
 
     override val name: Resource =  R.plugin_name
     override val description: Resource = R.plugin_description
+    override val category: PluginCategory = PluginCategory.Hardware
 }

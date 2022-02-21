@@ -17,6 +17,7 @@ package eu.automateeverything.onewireplugin
 
 import com.dalsemi.onewire.adapter.USerialAdapter
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwareAdapter
@@ -102,6 +103,7 @@ class OneWirePlugin(
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    override val category: PluginCategory = PluginCategory.Hardware
 
     override val settingGroups = listOf(DS2408RolesSettingGroup())
 }

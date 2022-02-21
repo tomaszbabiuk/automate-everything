@@ -23,7 +23,12 @@ export default {
         enable: "Enable",
         disable: "Disable",
         settings: "Settings",
-        copyright: "Copyright"
+        copyright: "Copyright",
+        category_objects: "Objects",
+        category_hardware: "Hardware",
+        category_access: "Access",
+        category_icons: "Icons",
+        category_others: "Others",
     },
     plugin_settings: {
         saved_message: "Saved! Some changes requires the plugin to be restarted."

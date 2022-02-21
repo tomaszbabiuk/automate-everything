@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,18 +15,10 @@
 
 package eu.automateeverything.data.plugins
 
-import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.data.settings.SettingGroupDto
-
-data class PluginDto(
-    val id: String,
-    val name: Resource,
-    val description: Resource,
-    val copyright: Resource?,
-    val category: PluginCategory,
-    val provider: String,
-    val version: String,
-    val isHardwareFactory: Boolean,
-    val enabled: Boolean,
-    val settingGroups: List<SettingGroupDto>
-)
+enum class PluginCategory {
+    Hardware,
+    Objects,
+    Icons,
+    Access,
+    Others
+}

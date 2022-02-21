@@ -18,6 +18,7 @@ package eu.automateeverything.crypto
 import eu.automateeverything.crypto.coingeckoapi.CoinGeckoApi
 import eu.automateeverything.crypto.coingeckoapi.CoinGeckoMarketProxy
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
@@ -48,6 +49,7 @@ class CryptoTradingPlugin(
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    override val category: PluginCategory = PluginCategory.Objects
     override val settingGroups: List<SettingGroup> = listOf(
         MarketPairsSettingGroup()
     )

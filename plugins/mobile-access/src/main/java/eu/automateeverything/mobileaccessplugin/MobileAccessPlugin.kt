@@ -18,6 +18,7 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.data.InstanceInterceptor
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.extensibility.PluginMetadata
@@ -58,6 +59,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    override val category: PluginCategory = PluginCategory.Access
 
     override val settingGroups = listOf(SecretsProtectionSettingGroup())
 

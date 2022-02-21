@@ -16,6 +16,7 @@
 package eu.automateeverything.rest.plugins
 
 import eu.automateeverything.R
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.data.plugins.PluginDto
 import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper
 import org.pf4j.PluginWrapper
@@ -37,9 +38,9 @@ class PluginDtoMapper @Inject constructor(
         return if (plugin is PluginMetadata) {
             val metadata = plugin as PluginMetadata
             val settingGroups = metadata.settingGroups.map { settingsGroupDtoMapper.map(it) }
-            PluginDto(id, metadata.name, metadata.description, metadata.copyright, provider, version, isHardwareFactory, enabled, settingGroups)
+            PluginDto(id, metadata.name, metadata.description, metadata.copyright, metadata.category, provider, version, isHardwareFactory, enabled, settingGroups)
         } else {
-            PluginDto(id, R.plugin_no_name, R.plugin_no_description, null, provider, version, isHardwareFactory, enabled, listOf())
+            PluginDto(id, R.plugin_no_name, R.plugin_no_description, null, PluginCategory.Others, provider, version, isHardwareFactory, enabled, listOf())
         }
     }
 }

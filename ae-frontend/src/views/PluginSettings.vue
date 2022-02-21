@@ -124,7 +124,7 @@ export default {
       breadcrumbs.push({
         text: this.$vuetify.lang.t("$vuetify.navigation.plugins"),
         disabled: false,
-        href: "/plugins",
+        href: "/plugins/hardware",
       });
 
       return breadcrumbs.reverse();

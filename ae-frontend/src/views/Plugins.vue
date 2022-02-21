@@ -68,6 +68,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <div v-if="plugins.length == 0 && !loading" class="text-center">
+      {{ $vuetify.lang.t("$vuetify.noDataText") }}
+    </div>
   </div>
 </template>
 
@@ -122,7 +125,13 @@ export default {
 
   computed: {
     plugins() {
-      return this.$store.state.plugins;
+      var selectedCategory = this.$route.params.category
+
+      function isInSelectedCategory(element) {
+        return (element.category.toLowerCase() == selectedCategory);
+      }
+
+      return this.$store.state.plugins.filter(isInSelectedCategory);
     },
 
     matchPluginActionColor: function(plugin) {

@@ -12,7 +12,7 @@ export default {
         icons:      "Ikony",
         discover:   "Odkrywanie",
         plugins:    "Rozszerzenia",
-        plugin_settings: "Ustawienia",
+        plugin_settings: "Ustawienia"
     },
     plugins_list: {
         name:           "Nazwa",
@@ -23,7 +23,12 @@ export default {
         enable:         "Włącz",
         disable:        "Wyłącz",
         settings:       "Ustawienia",
-        copyright:      "Prawa autorskie"
+        copyright:      "Prawa autorskie",
+        category_objects: "Obiekty",
+        category_hardware: "Sprzęt",
+        category_access: "Dostęp",
+        category_icons: "Ikony",
+        category_others: "Inne",
     },
     plugin_settings: {
         saved_message: "Zapisano! Niektóre zmiany mogą wymagać zrestartowaniu pluginu."

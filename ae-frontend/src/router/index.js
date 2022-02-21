@@ -38,13 +38,13 @@ const routes = [
     meta: { titleRes: '$vuetify.navigation.inbox' }
   },
   {
-    path: '/plugins',
+    path: '/plugins/:category',
     name: 'plugins',
     component: Plugins,
     meta: { titleRes: '$vuetify.navigation.plugins' }
   },
   {
-    path: '/plugins/:id',
+    path: '/pluginSettings/:id',
     name: 'pluginSettings',
     component: PluginSettings,
     meta: { titleRes: '$vuetify.navigation.plugin_settings' }

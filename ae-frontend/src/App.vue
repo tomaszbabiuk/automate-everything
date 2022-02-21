@@ -53,11 +53,11 @@
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
           <v-tab
-            v-for="factory in factories"
-            :key="factory.id"
-            :to="'/discover/' + factory.id"
+            v-for="tab in tabs"
+            :key="tab.id"
+            :to="tab.to"
           >
-            {{ factory.name }}
+            {{ tab.name }}
           </v-tab>
         </v-tabs>
       </template>
@@ -195,7 +195,7 @@ export default {
         },
         {
           title: "$vuetify.navigation.plugins",
-          route: "/plugins",
+          route: "/plugins/hardware",
           icon: "plugin",
           hasBadge: false,
         },
@@ -226,6 +226,26 @@ export default {
   },
 
   computed: {
+    tabs() {
+      var isPluginsRoute = this.$route.name == "plugins";
+      var result = []
+      if (isPluginsRoute) {
+          result=[
+            {"id": "hardware",  "name": this.$vuetify.lang.t("$vuetify.plugins_list.category_hardware"), "to": "/plugins/hardware"},
+            {"id": "objects",   "name": this.$vuetify.lang.t("$vuetify.plugins_list.category_objects"),  "to": "/plugins/objects"},
+            {"id": "access",    "name": this.$vuetify.lang.t("$vuetify.plugins_list.category_access"),   "to": "/plugins/access"},
+            {"id": "icons",     "name": this.$vuetify.lang.t("$vuetify.plugins_list.category_icons"),    "to": "/plugins/icons"},
+            {"id": "others",    "name": this.$vuetify.lang.t("$vuetify.plugins_list.category_others"),   "to": "/plugins/others"}
+          ]
+      } else {
+        this.factories.forEach(element => {
+          result.push({"id": element.id, "name": element.name, "to": "/discover/" + element.id })
+        });
+      }
+
+      return result;
+    },
+
     plugins() {
       return this.$store.state.plugins;
     },
@@ -253,7 +273,10 @@ export default {
     },
 
     showTabs: function () {
-      return this.$route.name === "discover" && this.factories.length > 0;
+      console.log(this.$route)
+      var isDiscoveryRoute = this.$route.name == "discover";
+      var isPluginsRoute = this.$route.name == "plugins";
+      return (isDiscoveryRoute || isPluginsRoute) && this.factories.length > 0;
     },
   },
 

@@ -19,6 +19,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.icons.IconCategoryDto
 import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
@@ -119,6 +120,7 @@ class HomeAutomationIconsPlugin(
 
     override val name: Resource = R.plugin_name
     override val description: Resource = R.plugin_description
+    override val category: PluginCategory = PluginCategory.Icons
     override val copyright: Resource = R.plugin_copyright
 
     private fun loadTextFromResources(path: String): String? {
