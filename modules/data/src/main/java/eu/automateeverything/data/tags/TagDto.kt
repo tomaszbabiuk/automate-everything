@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.tags
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class TagDto(
     val id: Long,
     val parentId: Long?,

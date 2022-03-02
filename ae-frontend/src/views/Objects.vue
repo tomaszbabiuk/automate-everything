@@ -490,6 +490,7 @@ export default {
     },
 
     addOrGenerateNewInstance: function() {
+      console.log('generate')
       if (this.configurable.generable) {
         client.generateConfigurable(this.getConfigurableClazz());
       } else {

@@ -274,9 +274,9 @@ export default {
 
     showTabs: function () {
       console.log(this.$route)
-      var isDiscoveryRoute = this.$route.name == "discover";
+      var isDiscoveryRoute = this.$route.name == "discover" && this.factories.length > 0;
       var isPluginsRoute = this.$route.name == "plugins";
-      return (isDiscoveryRoute || isPluginsRoute) && this.factories.length > 0;
+      return (isDiscoveryRoute || isPluginsRoute);
     },
   },
 

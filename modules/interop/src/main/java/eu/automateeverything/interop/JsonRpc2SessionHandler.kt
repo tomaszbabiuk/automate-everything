@@ -16,22 +16,31 @@
 package eu.automateeverything.interop
 
 import eu.automateeverything.data.Repository
+import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.tags.TagDto
+import eu.automateeverything.interop.handlers.IconsHandler
+import eu.automateeverything.interop.handlers.InstancesHandler
+import eu.automateeverything.interop.handlers.MessagesHandler
+import eu.automateeverything.interop.handlers.TagsHandler
 import kotlinx.serialization.BinaryFormat
+import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
 class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryFormat) : SessionHandler<JsonRpc2Request, JsonRpc2Response> {
 
     private val methodHandlers = listOf(
         InstancesHandler(repository),
-        MessagesHandler(repository)
+        MessagesHandler(repository),
+        IconsHandler(repository),
+        TagsHandler(repository)
     )
 
     override fun handleRequest(input: JsonRpc2Request): JsonRpc2Response {
         val handler = methodHandlers.firstOrNull { it.matches(input.method) }
         return if (handler != null) {
-            val data = handler.handle(format)
+            val data = handler.handle(format, input.params)
             JsonRpc2Response(id = input.id!!, result = data)
         } else {
             val error = JsonRpc2Error(404, "Method handler not found!")
@@ -41,28 +50,12 @@ class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryF
 
     interface MethodHandler {
         fun matches(method: String): Boolean
-        fun handle(format: BinaryFormat) : ByteArray
+        fun handle(format: BinaryFormat, params: ByteArray?) : ByteArray
     }
 
-    class InstancesHandler(val repository: Repository) : MethodHandler {
-        override fun matches(method: String): Boolean {
-            return method == InstanceDto::class.java.simpleName
-        }
 
-        override fun handle(format: BinaryFormat): ByteArray {
-            val result = repository.getAllInstances()
-            return format.encodeToByteArray(result)
-        }
-    }
 
-    class MessagesHandler(val repository: Repository) : MethodHandler {
-        override fun matches(method: String): Boolean {
-            return method == InboxItemDto::class.java.simpleName
-        }
 
-        override fun handle(format: BinaryFormat): ByteArray {
-            val result = repository.getInboxItems(100, 0)
-            return format.encodeToByteArray(result)
-        }
-    }
+
+
 }

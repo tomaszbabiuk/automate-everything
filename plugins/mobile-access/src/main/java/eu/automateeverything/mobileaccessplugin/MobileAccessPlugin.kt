@@ -29,15 +29,14 @@ import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
 
 class MobileAccessPlugin(wrapper: PluginWrapper,
-                         settingsResolver: SettingsResolver,
+                         private val settingsResolver: SettingsResolver,
                          private val repository: Repository,
                          private val sessionHandler: ByteArraySessionHandler,
                          private val inbox: Inbox,
                          private val eventsSink: EventsSink
 ) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
-    val server: MqttSaltServer by lazy {
-        createServer(settingsResolver)
-    }
+
+    var server: MqttSaltServer? = null
 
     private fun createServer(settingsResolver: SettingsResolver): MqttSaltServer {
         val settings = settingsResolver.resolve()
@@ -49,11 +48,12 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
 
     override fun start() {
         repository.addInstanceInterceptor(this)
-        server.start(loadPublicKeysFromRepository())
+        server = createServer(settingsResolver)
+        server?.start(loadPublicKeysFromRepository())
     }
 
     override fun stop() {
-        server.stop()
+        server?.stop()
         repository.removeInstanceInterceptor(this)
     }
 
@@ -88,9 +88,9 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
     override fun changed(action: InstanceInterceptor.Action, clazz: String?) {
         if (action != InstanceInterceptor.Action.Updated && clazz == MobileCredentialsConfigurable::class.java.name) {
             println("The number of mobile credentials has changed... restarting server")
-            server.stop()
+            server?.stop()
 
-            server.start(loadPublicKeysFromRepository())
+            server?.start(loadPublicKeysFromRepository())
         }
     }
 }

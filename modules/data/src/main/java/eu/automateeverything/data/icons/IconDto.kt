@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.icons
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class IconDto(
     val id: Long,
     val iconCategoryId: Long,
