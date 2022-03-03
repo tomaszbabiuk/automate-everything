@@ -112,6 +112,7 @@ public class ApplicationChannel implements ByteChannel {
      * @deprecated Deprecated from 2017-10-31, use write(isLast, messages) instead.
      */
     @Override
+    @Deprecated
     public void write(byte[]... messages) throws ComException {
         write(false, messages);
     }

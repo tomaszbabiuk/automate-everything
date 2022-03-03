@@ -38,6 +38,7 @@ public interface ByteChannel {
      *          Thrown if there is a communication error.
      * @deprecated Starting 2017-10-03.
      */
+    @Deprecated
     public void write(byte[]... messages) throws ComException;
    
     /**

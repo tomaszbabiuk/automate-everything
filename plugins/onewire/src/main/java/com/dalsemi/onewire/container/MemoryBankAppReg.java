@@ -339,6 +339,7 @@ class MemoryBankAppReg
     *
     * @deprecated  As of 1-Wire API 0.01, replaced by {@link #hasExtraInfo()}
     */
+   @Deprecated
    public boolean haveExtraInfo ()
    {
       return true;
@@ -940,6 +941,7 @@ class MemoryBankAppReg
     *
     * @deprecated  As of 1-Wire API 0.01, replaced by {@link #getRedirectedPage(int)}
     */
+   @Deprecated
    public int isPageRedirected (int page)
       throws OneWireIOException, OneWireException
    {

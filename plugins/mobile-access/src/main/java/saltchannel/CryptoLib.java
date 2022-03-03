@@ -119,6 +119,7 @@ public class CryptoLib {
     /**
      * @deprecated Use function instead.
      */
+    @Deprecated
     public KeyPair createEncKeys() {
         byte[] sec = new byte[SaltLib.crypto_box_SECRETKEYBYTES];
         byte[] pub = new byte[SaltLib.crypto_box_PUBLICKEYBYTES];
