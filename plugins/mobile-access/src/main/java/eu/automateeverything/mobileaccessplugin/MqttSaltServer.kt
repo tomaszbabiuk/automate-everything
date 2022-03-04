@@ -23,6 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import org.slf4j.LoggerFactory
 import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
@@ -40,30 +41,83 @@ class MqttSaltServer(
 )
     : WithStartStopScope<List<String>>() {
 
+    private val logger = LoggerFactory.getLogger(MqttSaltServer::class.java)
     private var contexts: List<ConnectorContext>? = null
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
+
+    private var lastConnectionState = true
+    private var lastStartParams: List<String>? = null
 
     private val client = MqttClient(brokerAddress, "Automate Everything - Mobile Access", MemoryPersistence())
 
     private fun connect() {
-        val options = MqttConnectOptions()
-        options.isAutomaticReconnect = true
-        options.isCleanSession = true
-        options.connectionTimeout = 10
-        println("Connecting to: $brokerAddress")
-        client.connect(options)
-        println("Connected")
+        try {
+            val options = MqttConnectOptions()
+            options.isAutomaticReconnect = true
+            options.isCleanSession = true
+            options.connectionTimeout = 10
+            logger.debug("Connecting to: $brokerAddress")
+            client.connect(options)
+            logger.debug("Connected")
+        } catch (ex: Exception) {
+            logger.error("A problem connecting to mqtt broker: $brokerAddress", ex)
+        }
     }
 
     override fun start(params: List<String>) {
         super.start(params)
+        lastStartParams = params
 
-        if (!client.isConnected) {
-            connect()
+        startStopScope.launch {
+            try {
+                if (!client.isConnected) {
+                    connect()
+                }
+
+                if (client.isConnected && params.isNotEmpty()) {
+                    rebuildContexts(params)
+                }
+            } catch (ex: Exception) {
+                logger.error("A problem connecting to MQTT broker", ex)
+            }
+
+            mqttBrokerSupervisorLoop()
         }
+    }
 
-        if (params.isNotEmpty()) {
-            contexts = buildContext(params, startStopScope)
+    private suspend fun mqttBrokerSupervisorLoop() = coroutineScope {
+        while (isActive) {
+            delay(1000 * 30L)
+
+            try {
+                if (!client.isConnected) {
+                    connect()
+                }
+
+                if (!client.isConnected && lastConnectionState) {
+                    inbox.sendMessage(
+                        R.inbox_message_mqtt_server_error_subject,
+                        R.inbox_message_broker_disconnected
+                    )
+
+                    cancelContexts()
+                }
+
+                if (client.isConnected && !lastConnectionState) {
+                    inbox.sendMessage(
+                        R.inbox_message_mqtt_server_error_subject,
+                        R.inbox_message_broker_connected
+                    )
+
+                    if (lastStartParams != null) {
+                        rebuildContexts(lastStartParams!!)
+                    }
+                }
+            } catch (ex: Exception) {
+                logger.error("Unhandled exception during supervising MQTT connection", ex)
+            }
+
+            lastConnectionState = client.isConnected
         }
     }
 
@@ -84,12 +138,19 @@ class MqttSaltServer(
     }
 
     override fun stop() {
+        cancelContexts()
+        client.disconnect()
+        super.stop()
+    }
+
+    private fun cancelContexts() {
         contexts?.forEach {
             it.cancel()
         }
+    }
 
-        client.disconnect()
-        super.stop()
+    private fun rebuildContexts(params: List<String>) {
+        contexts = buildContext(params, startStopScope)
     }
 
     inner class SingleSessionContext(
@@ -131,7 +192,7 @@ class MqttSaltServer(
 
                     while (isActive && !sessionCancellationToken.get()) {
                         val incomingData = session.channel.read("incoming packets")
-                        println("Incoming session data ${incomingData.toHexString()}")
+                        logger.debug("Incoming session data ${incomingData.toHexString()}")
                         val isLast = session.channel.lastFlag()
                         val responses = sessionHandler.handleRequest(incomingData)
                         session.channel.write(false, responses)
@@ -141,13 +202,11 @@ class MqttSaltServer(
                         }
                     }
 
-                    println("context finishes")
+                    logger.debug("Unhandled exception from MQTT server")
                 } catch (ex: ChannelTerminatedException) {
-                    println("channel terminated")
+                    logger.debug("Unhandled exception from MQTT server", ex)
                 } catch (ex: Exception) {
-                    //TODO: handle case when message is too big
-
-                    println("context has failed, $ex")
+                    logger.error("Unhandled exception from MQTT server", ex)
                 }
             }
         }
@@ -160,7 +219,7 @@ class MqttSaltServer(
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
 
             val inboundTopic = "$serverSignPubKeyHex/+/rx"
-            println("Subscribing to $inboundTopic")
+            logger.debug("Subscribing to $inboundTopic")
             client.subscribe(inboundTopic) { topic, message ->
                 val discriminator = topic.split("/")[1]
 
@@ -177,7 +236,6 @@ class MqttSaltServer(
                     cleanupSessions()
                     sessions[discriminator] = newContext
                     newContext.push(message.payload)
-                    println(sessions)
                 }
             }
         }

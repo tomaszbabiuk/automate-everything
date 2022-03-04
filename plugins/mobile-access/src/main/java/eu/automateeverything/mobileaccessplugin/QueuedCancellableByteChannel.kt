@@ -16,6 +16,7 @@
 package eu.automateeverything.mobileaccessplugin
 
 
+import org.slf4j.LoggerFactory
 import saltchannel.ByteChannel
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
@@ -28,6 +29,8 @@ class QueuedCancellableByteChannel(
     private val writer: (ByteArray) -> Unit
 ) : ByteChannel {
 
+    private val logger = LoggerFactory.getLogger(QueuedCancellableByteChannel::class.java)
+
     private val queue = LinkedBlockingQueue <ByteArray>()
 
     fun offer(data: ByteArray) {
@@ -35,7 +38,7 @@ class QueuedCancellableByteChannel(
     }
 
     override fun read(debugMessage: String): ByteArray {
-        println("Reading $debugMessage")
+        logger.debug("Reading $debugMessage")
         while (!cancellationToken.get()) {
             val bytes =  queue.poll(1, TimeUnit.SECONDS)
             if (bytes != null) {
