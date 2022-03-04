@@ -61,13 +61,26 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
     override val description: Resource = R.plugin_description
     override val category: PluginCategory = PluginCategory.Access
 
-    override val settingGroups = listOf(SecretsProtectionSettingGroup())
+    override val settingGroups = listOf(
+        SecretsProtectionSettingGroup(),
+        MqttBrokerSettingGroup()
+    )
 
-    private fun extractBrokerAddress(pluginSettings: List<SettingsDto>): String {
-        return if (pluginSettings.size == 1) {
-            pluginSettings[0].fields[SecretsProtectionSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!
+    private fun extractBrokerAddress(pluginSettings: List<SettingsDto>): BrokerAddress {
+        return if (pluginSettings.size == 2) {
+            val mqttSettings = pluginSettings.first { it.clazz == MqttBrokerSettingGroup::class.java.name }
+
+            BrokerAddress(
+                host = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!,
+                user = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_USER]!!,
+                password = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_PASSWORD]!!
+            )
         } else {
-            SecretsProtectionSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS
+            BrokerAddress(
+                host = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS,
+                user = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_USER,
+                password = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_PASSWORD
+            )
         }
     }
 

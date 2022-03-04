@@ -18,6 +18,26 @@ package eu.automateeverything.mobileaccessplugin
 import eu.automateeverything.data.localization.Resource
 
 object R {
+    val mqtt_settings_title = Resource(
+        "MQTT broker settings",
+        "Ustawienia brokera MQTT"
+    )
+
+    val mqtt_settings_description = Resource(
+        "The MQTT broker is a communication proxy between Automate-Everything server and mobile clients (Android, iOS).",
+        "Broker MQTT pośredniczy w wymianie danych pomiędzy serverem Automate-Everything i klientami mobilnymi (Android, iOS)."
+    )
+
+    val field_username = Resource(
+        "Username",
+        "Nazwa użytkownika"
+    )
+
+    val field_password = Resource(
+        "Password",
+        "Hasło"
+    )
+
     val inbox_message_mqtt_server_error_missing_keypair = Resource(
         "Connection error. Missing key-pair that's used to cipher the data channel!",
         "Błąd połączenia. Para kluczy do szyfrowania kanału danych została usunięta!"

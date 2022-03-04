@@ -24,13 +24,11 @@ class SecretsProtectionSettingGroup : SettingGroup {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>> = mapOf(
         Pair(FIELD_PASSWORD, PasswordStringField(FIELD_PASSWORD, R.field_password_hint, 0, DEFAULT_PASSWORD, RequiredStringValidator())),
-        Pair(FIELD_MQTT_BROKER_ADDRESS, StringField(FIELD_MQTT_BROKER_ADDRESS, R.field_mqtt_broker_address, 0, DEFAULT_MQTT_BROKER_ADDRESS, RequiredStringValidator()))
     )
 
     companion object {
         const val FIELD_PASSWORD = "password"
-        const val FIELD_MQTT_BROKER_ADDRESS = "broker-address"
         const val DEFAULT_PASSWORD = "change-me"
-        const val DEFAULT_MQTT_BROKER_ADDRESS = "tcp://localhost:1883"
     }
 }
+
