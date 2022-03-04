@@ -27,6 +27,7 @@ import eu.automateeverything.domain.settings.SettingsResolver
 import eu.automateeverything.interop.ByteArraySessionHandler
 import org.pf4j.Plugin
 import org.pf4j.PluginWrapper
+import org.slf4j.LoggerFactory
 
 class MobileAccessPlugin(wrapper: PluginWrapper,
                          private val settingsResolver: SettingsResolver,
@@ -36,6 +37,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
                          private val eventsSink: EventsSink
 ) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
 
+    private val logger = LoggerFactory.getLogger(MobileAccessPlugin::class.java)
     var server: MqttSaltServer? = null
 
     private fun createServer(settingsResolver: SettingsResolver): MqttSaltServer {
@@ -87,7 +89,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
 
     override fun changed(action: InstanceInterceptor.Action, clazz: String?) {
         if (action != InstanceInterceptor.Action.Updated && clazz == MobileCredentialsConfigurable::class.java.name) {
-            println("The number of mobile credentials has changed... restarting server")
+            logger.debug("The number of mobile credentials has changed... restarting server")
             server?.stop()
 
             server?.start(loadPublicKeysFromRepository())

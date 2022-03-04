@@ -28,6 +28,16 @@ object R {
         "Błąd pluginu 'Dostęp zdalny'"
     )
 
+    val inbox_message_broker_disconnected = Resource(
+        "Cannot connect to the MQTT broker. The system will auto-retry every two minutes.",
+        "Nie można uzyskać połączenia z brokerem MQTT. System będzie próbował ponownie co dwie minuty."
+    )
+
+    val inbox_message_broker_connected = Resource(
+        "The connection to the MQTT broker has been established.",
+        "Połączenie z brokerem MQTT zostało ustabilizowane."
+    )
+
     val secrets_protection_title = Resource(
         "Secrets protection",
         "Ochrona haseł"
