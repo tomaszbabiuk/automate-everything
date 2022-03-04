@@ -15,22 +15,23 @@
 
 package eu.automateeverything.mobileaccessplugin
 
+import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.MqttGlobalPublishFilter
+import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
 import kotlinx.coroutines.*
-import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttMessage
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.slf4j.LoggerFactory
 import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
+import java.nio.charset.StandardCharsets.UTF_8
 import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 class MqttSaltServer(
     private val brokerAddress: BrokerAddress,
@@ -41,28 +42,42 @@ class MqttSaltServer(
 )
     : WithStartStopScope<List<String>>() {
 
+    enum class ConnectionState {
+        Initialization, Disconnected, Connecting, Connected
+    }
+
     private val logger = LoggerFactory.getLogger(MqttSaltServer::class.java)
     private var contexts: List<ConnectorContext>? = null
     private val random = Rand { b -> SecureRandom.getInstanceStrong().nextBytes(b) }
 
     private var lastConnectionState = true
     private var lastStartParams: List<String>? = null
+    private var connectionState = ConnectionState.Initialization
 
-    private val client = MqttClient(brokerAddress.host, "Automate Everything - Mobile Access", MemoryPersistence())
+    private val client =  MqttClient.builder()
+        .useMqttVersion5()
+        .serverHost(brokerAddress.host)
+        .serverPort(8883)
+        .sslWithDefaultConfig()
+        .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
+        .buildBlocking()
+
 
     private fun connect() {
+        connectionState = ConnectionState.Connecting
         try {
-            val options = MqttConnectOptions()
-            options.isAutomaticReconnect = true
-            options.isCleanSession = true
-            options.connectionTimeout = 10
-            options.userName = brokerAddress.user
-            options.password = brokerAddress.password.toCharArray()
-            logger.debug("Connecting to: $brokerAddress")
-            client.connect(options)
-            logger.debug("Connected")
+            logger.info("Connecting to: $brokerAddress")
+
+            client.connectWith()
+                .simpleAuth()
+                .username(brokerAddress.user)
+                .password(UTF_8.encode(brokerAddress.password))
+                .applySimpleAuth()
+                .send()
+
+            connectionState = ConnectionState.Connected
         } catch (ex: Exception) {
-            logger.error("A problem connecting to mqtt broker: $brokerAddress", ex)
+            logger.info("A problem connecting to mqtt broker: ${brokerAddress.host}", ex)
         }
     }
 
@@ -72,11 +87,11 @@ class MqttSaltServer(
 
         startStopScope.launch {
             try {
-                if (!client.isConnected) {
+                if (connectionState == ConnectionState.Disconnected || connectionState == ConnectionState.Initialization) {
                     connect()
                 }
 
-                if (client.isConnected && params.isNotEmpty()) {
+                if (connectionState == ConnectionState.Connected && params.isNotEmpty()) {
                     rebuildContexts(params)
                 }
             } catch (ex: Exception) {
@@ -92,11 +107,11 @@ class MqttSaltServer(
             delay(1000 * 30L)
 
             try {
-                if (!client.isConnected) {
+                if (connectionState == ConnectionState.Disconnected) {
                     connect()
                 }
 
-                if (!client.isConnected && lastConnectionState) {
+                if (connectionState == ConnectionState.Disconnected && lastConnectionState) {
                     inbox.sendMessage(
                         R.inbox_message_mqtt_server_error_subject,
                         R.inbox_message_broker_disconnected
@@ -105,7 +120,7 @@ class MqttSaltServer(
                     cancelContexts()
                 }
 
-                if (client.isConnected && !lastConnectionState) {
+                if (connectionState == ConnectionState.Connected && !lastConnectionState) {
                     inbox.sendMessage(
                         R.inbox_message_mqtt_server_error_subject,
                         R.inbox_message_broker_connected
@@ -119,7 +134,7 @@ class MqttSaltServer(
                 logger.error("Unhandled exception during supervising MQTT connection", ex)
             }
 
-            lastConnectionState = client.isConnected
+            lastConnectionState = connectionState == ConnectionState.Connected
         }
     }
 
@@ -140,8 +155,14 @@ class MqttSaltServer(
     }
 
     override fun stop() {
-        cancelContexts()
-        client.disconnect()
+        try {
+            cancelContexts()
+            if (connectionState == ConnectionState.Connected || connectionState == ConnectionState.Connecting) {
+                client.disconnect()
+            }
+        } catch (ex: Exception) {
+            logger.error("A problem while stopping MQTT Salt Server", ex)
+        }
         super.stop()
     }
 
@@ -222,22 +243,28 @@ class MqttSaltServer(
 
             val inboundTopic = "$serverSignPubKeyHex/+/rx"
             logger.debug("Subscribing to $inboundTopic")
-            client.subscribe(inboundTopic) { topic, message ->
-                val discriminator = topic.split("/")[1]
+
+            client.subscribeWith()
+                .topicFilter(inboundTopic)
+                .send()
+
+            client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish: Mqtt5Publish ->
+                val discriminator = publish.topic.levels[1]
 
                 if (sessions.containsKey(discriminator)) {
                     val context = sessions[discriminator]!!
-                    context.push(message.payload)
+                    context.push(publish.payloadAsBytes)
                 } else {
                     val newContext = SingleSessionContext(keyPair, scope) { payload ->
                         val txTopic = "$serverSignPubKeyHex/$discriminator/tx"
-                        val outboundMessage = MqttMessage(payload)
-                        outboundMessage.qos = 2
-                        client.publish(txTopic, outboundMessage)
+                        client.publishWith()
+                            .topic(txTopic)
+                            .payload(payload)
+                            .send()
                     }
                     cleanupSessions()
                     sessions[discriminator] = newContext
-                    newContext.push(message.payload)
+                    newContext.push(publish.payloadAsBytes)
                 }
             }
         }
