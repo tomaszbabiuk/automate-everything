@@ -33,7 +33,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MqttSaltServer(
-    private val brokerAddress: String,
+    private val brokerAddress: BrokerAddress,
     private val secretsPassword: String,
     private val inbox: Inbox,
     private val sessionHandler: ByteArraySessionHandler,
@@ -48,7 +48,7 @@ class MqttSaltServer(
     private var lastConnectionState = true
     private var lastStartParams: List<String>? = null
 
-    private val client = MqttClient(brokerAddress, "Automate Everything - Mobile Access", MemoryPersistence())
+    private val client = MqttClient(brokerAddress.host, "Automate Everything - Mobile Access", MemoryPersistence())
 
     private fun connect() {
         try {
@@ -56,6 +56,8 @@ class MqttSaltServer(
             options.isAutomaticReconnect = true
             options.isCleanSession = true
             options.connectionTimeout = 10
+            options.userName = brokerAddress.user
+            options.password = brokerAddress.password.toCharArray()
             logger.debug("Connecting to: $brokerAddress")
             client.connect(options)
             logger.debug("Connected")

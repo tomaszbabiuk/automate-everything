@@ -42,7 +42,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
 
     private fun createServer(settingsResolver: SettingsResolver): MqttSaltServer {
         val settings = settingsResolver.resolve()
-        val brokerAddress = extractBrokerAddress(settings)
+        val brokerAddress = BrokerAddress(settings)
         val secretsPassword = extractSecretsPassword(settings)
         val channelActivator = ChannelActivator(repository, eventsSink)
         return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler, channelActivator)
@@ -67,24 +67,6 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         SecretsProtectionSettingGroup(),
         MqttBrokerSettingGroup()
     )
-
-    private fun extractBrokerAddress(pluginSettings: List<SettingsDto>): BrokerAddress {
-        return if (pluginSettings.size == 2) {
-            val mqttSettings = pluginSettings.first { it.clazz == MqttBrokerSettingGroup::class.java.name }
-
-            BrokerAddress(
-                host = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!,
-                user = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_USER]!!,
-                password = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_PASSWORD]!!
-            )
-        } else {
-            BrokerAddress(
-                host = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS,
-                user = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_USER,
-                password = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_PASSWORD
-            )
-        }
-    }
 
     private fun extractSecretsPassword(pluginSettings: List<SettingsDto>): String {
         return if (pluginSettings.size == 1) {
