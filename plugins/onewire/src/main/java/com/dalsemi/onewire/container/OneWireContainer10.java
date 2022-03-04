@@ -687,6 +687,7 @@ public class OneWireContainer10
     *
     * @see com.dalsemi.onewire.utils.Convert#toFahrenheit(double)
     */
+   @Deprecated
    static public double convertToFahrenheit (double celsiusTemperature)
    {
       return Convert.toFahrenheit(celsiusTemperature);
@@ -703,6 +704,7 @@ public class OneWireContainer10
     *
     * @see com.dalsemi.onewire.utils.Convert#toCelsius(double)
     */
+   @Deprecated
    static public double convertToCelsius (double fahrenheitTemperature)
    {
       return Convert.toCelsius(fahrenheitTemperature);

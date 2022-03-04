@@ -120,6 +120,7 @@ public class EncryptedChannelV2 implements ByteChannel {
      * @deprecated
      */
     @Override
+    @Deprecated
     public void write(byte[]...messages) throws ComException {
         write(false, messages);
     }

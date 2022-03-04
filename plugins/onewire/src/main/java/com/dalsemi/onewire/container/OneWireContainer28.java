@@ -1095,6 +1095,7 @@ public class OneWireContainer28
     *
     * @see com.dalsemi.onewire.utils.Convert#toFahrenheit(double)
     */
+   @Deprecated
    public float convertToFahrenheit (float celsiusTemperature)
    {
       return (float)Convert.toFahrenheit(celsiusTemperature);
