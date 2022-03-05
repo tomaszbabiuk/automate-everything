@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,20 +15,21 @@
 
 package eu.automateeverything.domain.configurable
 
-import java.lang.NumberFormatException
+class NullableBigDecimalFieldBuilder : FieldBuilder<NullableBigDecimal> {
 
-class LongFieldBuilder : FieldBuilder<Long?> {
-    override fun fromPersistableString(value: String?): Long {
-        return if (value == null) {
-            0L
-        } else try {
-            value.toLong()
-        } catch (nfe: NumberFormatException) {
-            0L
+    override fun fromPersistableString(value: String?): NullableBigDecimal {
+        if (value == null || value == "") {
+            return NullableBigDecimal(null)
         }
+
+        return NullableBigDecimal(value.toBigDecimal())
     }
 
-    override fun toPersistableString(value: Long?): String {
-        return value.toString()
+    override fun toPersistableString(value: NullableBigDecimal): String {
+        if (value.wrapped == null) {
+            return ""
+        }
+
+        return value.wrapped.toString()
     }
 }

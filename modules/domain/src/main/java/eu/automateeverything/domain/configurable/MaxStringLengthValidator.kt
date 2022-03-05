@@ -17,7 +17,7 @@ package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.localization.Resource
 
-class MaxStringLengthValidator(val maxLength: Int) : Validator<String?> {
+class MaxStringLengthValidator(private val maxLength: Int) : Validator<String> {
     override val reason: Resource
         get() = Resource(
             "Max length is $maxLength characters",

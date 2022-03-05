@@ -28,7 +28,7 @@ enum class InactiveState(val raw: String, private val translation: Resource) {
     }
 }
 
-class ContactTypeField(name: String, hint: Resource, vararg validators: Validator<InactiveState?>) :
+class ContactTypeField(name: String, hint: Resource, vararg validators: Validator<InactiveState>) :
     FieldDefinition<InactiveState>(
         FieldType.SingleOptionEnumeration, name, hint, 0, InactiveState.NC, InactiveState::class.java,
         ContactTypeFieldBuilder(), null, mapOf(InactiveState.NO.toPair(), InactiveState.NC.toPair()), *validators) {

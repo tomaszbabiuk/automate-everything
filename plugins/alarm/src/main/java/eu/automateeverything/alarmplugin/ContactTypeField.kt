@@ -28,7 +28,7 @@ enum class ContactType(val raw: String, private val translation: Resource) {
     }
 }
 
-class ContactTypeField(name: String, hint: Resource, vararg validators: Validator<ContactType?>) :
+class ContactTypeField(name: String, hint: Resource, vararg validators: Validator<ContactType>) :
     FieldDefinition<ContactType>(
         FieldType.SingleOptionEnumeration, name, hint, 0, ContactType.NC, ContactType::class.java,
         ContactTypeFieldBuilder(), null, mapOf(ContactType.NO.toPair(), ContactType.NC.toPair()), *validators) {

@@ -140,8 +140,6 @@ export default {
     },
 
     handleValidationResult: function (validationResult) {
-      console.log(validationResult)
-      
       var isFormValid = true;
       for (const clazz in validationResult) {
         var validationGroup = validationResult[clazz]

@@ -23,7 +23,7 @@ class QrCodeField(
     hint: Resource,
     maxSize: Int,
     initialValue: String,
-    vararg validators: Validator<String?>
+    vararg validators: Validator<String>
 ) : FieldDefinition<String>(
     FieldType.QrCode, name, hint, maxSize, initialValue, String::class.java,
     StringFieldBuilder(), null, null, *validators)

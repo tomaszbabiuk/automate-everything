@@ -11,15 +11,13 @@ class MqttBrokerSettingGroup : SettingGroup {
         Pair(FIELD_MQTT_BROKER_ADDRESS, StringField(FIELD_MQTT_BROKER_ADDRESS, R.field_mqtt_broker_address, 0,
                 DEFAULT_MQTT_BROKER_ADDRESS,
                 RequiredStringValidator())),
-        Pair(FIELD_MQTT_BROKER_PORT, BigDecimalField(FIELD_MQTT_BROKER_PORT, R.field_port, BigDecimal(DEFAULT_MQTT_BROKER_PORT), RequiredBigDecimalValidator(), IsIntegerValidator())),
+        Pair(FIELD_MQTT_BROKER_PORT, NullableBigDecimalField(FIELD_MQTT_BROKER_PORT, R.field_port, BigDecimal(DEFAULT_MQTT_BROKER_PORT), RequiredBigDecimalValidator(), IsIntegerValidator())),
         Pair(FIELD_MQTT_BROKER_USER, StringField(FIELD_MQTT_BROKER_USER, R.field_username, 0,
             DEFAULT_MQTT_BROKER_USER)),
         Pair(FIELD_MQTT_BROKER_PASSWORD, PasswordStringField(FIELD_MQTT_BROKER_PASSWORD, R.field_password, 0,
             DEFAULT_MQTT_BROKER_PASSWORD)),
         Pair(FIELD_MQTT_BROKER_TLS_REQUIRED, BooleanField(MobileCredentialsConfigurable.FIELD_ACTIVATED, R.field_tls_required,
             DEFAULT_MQTT_BROKER_TLS_REQUIRED))
-
-
     )
 
     companion object {

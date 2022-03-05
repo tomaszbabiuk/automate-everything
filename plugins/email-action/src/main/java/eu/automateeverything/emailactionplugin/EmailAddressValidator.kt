@@ -20,7 +20,7 @@ import eu.automateeverything.domain.configurable.Validator
 import javax.mail.internet.AddressException
 import javax.mail.internet.InternetAddress
 
-class EmailAddressValidator : Validator<String?> {
+class EmailAddressValidator : Validator<String> {
     override val reason: Resource
         get() = Resource(
             "The value should be greater than zero",

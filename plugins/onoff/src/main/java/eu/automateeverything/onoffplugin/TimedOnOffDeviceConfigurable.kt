@@ -104,7 +104,7 @@ class TimedOnOffDeviceConfigurable(
 
     private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)
 
-    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time, Duration(0), object: Validator<Duration?> {
+    private val maxTimeField = DurationField(FIELD_MAX_TIME, R.field_max_working_time, Duration(0), object: Validator<Duration> {
         override val reason: Resource
             get() = R.validator_max_should_exceed_min_time
 
@@ -124,7 +124,7 @@ class TimedOnOffDeviceConfigurable(
         }
     })
 
-    private val breakTimeField = DurationField(FIELD_BREAK_TIME, R.field_break_time, Duration(0), object: Validator<Duration?> {
+    private val breakTimeField = DurationField(FIELD_BREAK_TIME, R.field_break_time, Duration(0), object: Validator<Duration> {
         override val reason: Resource
             get() = R.validator_break_invalid_if_no_max_time
 

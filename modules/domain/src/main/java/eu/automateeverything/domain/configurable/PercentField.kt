@@ -23,7 +23,7 @@ class PercentField(
     name: String,
     hint: Resource,
     initialValue: BigDecimal,
-    vararg validators: Validator<BigDecimal?>
-) : FieldDefinition<BigDecimal>(
-    FieldType.Percent, name, hint, 0, initialValue, BigDecimal::class.java,
-    BigDecimalFieldBuilder(), null, null, *validators)
+    vararg validators: Validator<NullableBigDecimal>
+) : FieldDefinition<NullableBigDecimal>(
+    FieldType.Percent, name, hint, 0, NullableBigDecimal(initialValue), NullableBigDecimal::class.java,
+    NullableBigDecimalFieldBuilder(), null, null, *validators)

@@ -22,7 +22,7 @@ class BooleanField(
     name: String,
     hint: Resource,
     initialValue: Boolean,
-    vararg validators: Validator<Boolean?>
+    vararg validators: Validator<Boolean>
 ) : FieldDefinition<Boolean>(
     FieldType.Boolean, name, hint, 0, initialValue, Boolean::class.java,
     BooleanFieldBuilder(), null, null, *validators)

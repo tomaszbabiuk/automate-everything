@@ -23,7 +23,7 @@ class PasswordStringField(
     hint: Resource,
     maxSize: Int,
     initialValue: String,
-    vararg validators: Validator<String?>
+    vararg validators: Validator<String>
 ) : FieldDefinition<String>(
     FieldType.PasswordString, name, hint, maxSize, initialValue, String::class.java,
     StringFieldBuilder(), null, null, *validators)

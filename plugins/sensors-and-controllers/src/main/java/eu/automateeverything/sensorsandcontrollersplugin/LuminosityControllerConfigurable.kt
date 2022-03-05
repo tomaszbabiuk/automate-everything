@@ -75,9 +75,9 @@ class LuminosityControllerConfigurable(
             </svg>
         """.trimIndent()
 
-    private val minField = BigDecimalField(FIELD_MIN, R.field_min_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
-    private val maxField = BigDecimalField(FIELD_MAX, R.field_max_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
-    private val defaultField = BigDecimalField(FIELD_DEFAULT, R.field_default_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val minField = NullableBigDecimalField(FIELD_MIN, R.field_min_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val maxField = NullableBigDecimalField(FIELD_MAX, R.field_max_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val defaultField = NullableBigDecimalField(FIELD_DEFAULT, R.field_default_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
     private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint,false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Luminosity> {
@@ -88,7 +88,7 @@ class LuminosityControllerConfigurable(
         val default = extractFieldValue(instance, defaultField)
         return ControllerAutomationUnitBase(
             Luminosity::class.java, stateChangeReporter, name, instance, automationOnly,
-            min, max, BigDecimal.ONE, Luminosity(default))
+            min.wrapped!!, max.wrapped!!, BigDecimal.ONE, Luminosity(default.wrapped!!))
     }
 
     override val blocksCategory: BlockCategory

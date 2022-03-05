@@ -85,7 +85,7 @@ class TemperatureControllerConfigurable(
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
         return ControllerAutomationUnitBase(Temperature::class.java, stateChangeReporter, name, instance, automationOnly,
-            min, max, 0.05.toBigDecimal(), Temperature(default))
+            min.wrapped!!, max.wrapped!!, 0.05.toBigDecimal(), Temperature(default.wrapped!!))
     }
 
     override val blocksCategory: BlockCategory
@@ -99,10 +99,10 @@ class TemperatureControllerConfigurable(
     }
 
     override fun extractMinValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, minField)
+        return extractFieldValue(instance, minField).wrapped!!
     }
 
     override fun extractMaxValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, maxField)
+        return extractFieldValue(instance, maxField).wrapped!!
     }
 }

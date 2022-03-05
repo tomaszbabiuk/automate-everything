@@ -15,16 +15,8 @@
 
 package eu.automateeverything.domain.configurable
 
-import eu.automateeverything.data.fields.FieldType
-import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class BigDecimalField(
-    name: String,
-    hint: Resource,
-    initialValue: BigDecimal,
-    vararg validators: Validator<BigDecimal?>) :
-    FieldDefinition<BigDecimal>(
-        FieldType.BigDecimal, name, hint, 0, initialValue, BigDecimal::class.java,
-        BigDecimalFieldBuilder(), null, null, *validators
-    )
+open class NullableWrapper<V>(val wrapped: V?)
+
+class NullableBigDecimal(wrapped: BigDecimal?) : NullableWrapper<BigDecimal>(wrapped)

@@ -16,16 +16,15 @@
 package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.localization.Resource
-import java.math.BigDecimal
 
-class IsIntegerValidator : Validator<BigDecimal?> {
+class IsIntegerValidator : Validator<NullableBigDecimal> {
     override val reason: Resource
         get() = Resource(
             "The value should be an integer",
             "Wartość powinna być liczbą całkowitą"
         )
 
-    override fun validate(validatedFieldValue: BigDecimal?, allFields: Map<String, String?>): Boolean {
-        return validatedFieldValue != null && validatedFieldValue.scale() <= 0
+    override fun validate(validatedFieldValue: NullableBigDecimal?, allFields: Map<String, String?>): Boolean {
+        return validatedFieldValue?.wrapped != null && validatedFieldValue.wrapped.scale() <= 0
     }
 }

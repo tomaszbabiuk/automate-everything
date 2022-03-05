@@ -23,7 +23,7 @@ class StringField(
     hint: Resource,
     maxSize: Int,
     initialValue: String,
-    vararg validators: Validator<String?>
+    vararg validators: Validator<String>
 ) : FieldDefinition<String>(
     FieldType.String, name, hint, maxSize, initialValue, String::class.java,
     StringFieldBuilder(), null, null, *validators)

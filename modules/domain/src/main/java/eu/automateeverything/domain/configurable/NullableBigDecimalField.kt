@@ -15,16 +15,16 @@
 
 package eu.automateeverything.domain.configurable
 
-class IntegerFieldBuilder : FieldBuilder<Int> {
-    override fun fromPersistableString(value: String?): Int {
-        if (value == null) {
-            return 0
-        }
+import eu.automateeverything.data.fields.FieldType
+import eu.automateeverything.data.localization.Resource
+import java.math.BigDecimal
 
-        return value.toInt()
-    }
-
-    override fun toPersistableString(value: Int): String {
-        return value.toString()
-    }
-}
+class NullableBigDecimalField(
+    name: String,
+    hint: Resource,
+    initialValue: BigDecimal,
+    vararg validators: Validator<NullableBigDecimal>) :
+    FieldDefinition<NullableBigDecimal>(
+        FieldType.BigDecimal, name, hint, 0, NullableBigDecimal(initialValue), NullableBigDecimal::class.java,
+        NullableBigDecimalFieldBuilder(), null, null, *validators
+    )
