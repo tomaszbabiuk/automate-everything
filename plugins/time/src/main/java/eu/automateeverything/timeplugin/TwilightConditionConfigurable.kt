@@ -59,14 +59,14 @@ class TwilightConditionConfigurable : ConditionConfigurable() {
             return result
         }
 
-    private val longitudeField = BigDecimalField(FIELD_LONGITUDE, R.field_longitude_hint, 0, BigDecimal.ZERO, RequiredBigDecimalValidator())
+    private val longitudeField = BigDecimalField(FIELD_LONGITUDE, R.field_longitude_hint, BigDecimal.ZERO, RequiredBigDecimalValidator())
 
-    private val latitudeField = BigDecimalField(FIELD_LATITUDE, R.field_latitude_hint, 0, BigDecimal.ZERO, RequiredBigDecimalValidator())
+    private val latitudeField = BigDecimalField(FIELD_LATITUDE, R.field_latitude_hint, BigDecimal.ZERO, RequiredBigDecimalValidator())
 
     override fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase {
         val longitude = extractFieldValue(instance, longitudeField)
         val latitude = extractFieldValue(instance, latitudeField)
-        return TwilightConditionAutomationUnit(longitude.wrapped!!.toDouble(), latitude.wrapped!!.toDouble())
+        return TwilightConditionAutomationUnit(longitude.toDouble(), latitude.toDouble())
     }
 
     companion object {

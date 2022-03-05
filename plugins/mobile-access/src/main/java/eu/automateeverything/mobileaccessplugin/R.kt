@@ -38,6 +38,16 @@ object R {
         "Hasło"
     )
 
+    val field_tls_required = Resource(
+        "TLS required",
+        "Wymagany TLS"
+    )
+
+    val field_port = Resource(
+        "Port",
+        "Port"
+    )
+
     val inbox_message_mqtt_server_error_missing_keypair = Resource(
         "Connection error. Missing key-pair that's used to cipher the data channel!",
         "Błąd połączenia. Para kluczy do szyfrowania kanału danych została usunięta!"

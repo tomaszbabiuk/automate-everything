@@ -15,21 +15,17 @@
 
 package eu.automateeverything.domain.configurable
 
-class NullableBigDecimalFieldBuilder : FieldBuilder<NullableBigDecimal> {
+import eu.automateeverything.data.localization.Resource
+import java.math.BigDecimal
 
-    override fun fromPersistableString(value: String?): NullableBigDecimal {
-        if (value == null) {
-            return NullableBigDecimal(null)
-        }
+class IsIntegerValidator : Validator<BigDecimal?> {
+    override val reason: Resource
+        get() = Resource(
+            "The value should be an integer",
+            "Wartość powinna być liczbą całkowitą"
+        )
 
-        return NullableBigDecimal(value.toBigDecimal())
-    }
-
-    override fun toPersistableString(value: NullableBigDecimal): String {
-        if (value.wrapped == null) {
-            return ""
-        }
-
-        return value.wrapped.toString()
+    override fun validate(validatedFieldValue: BigDecimal?, allFields: Map<String, String?>): Boolean {
+        return validatedFieldValue != null && validatedFieldValue.scale() <= 0
     }
 }

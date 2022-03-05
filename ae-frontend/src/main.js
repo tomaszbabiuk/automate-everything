@@ -21,6 +21,8 @@ import ConfigurableBlockConfigurator from './components/ae/configurable/BlockCon
 import SettingsForm from './components/ae/settings/Form'
 import SettingsStringField from './components/ae/settings/StringField'
 import SettingsPasswordStringField from './components/ae/settings/PasswordStringField'
+import SettingsBigDecimalField from './components/ae/settings/BigDecimalField'
+import SettingsBooleanField from './components/ae/settings/BooleanField'
 
 import PortControl from './components/ae/PortControl'
 import DeviceControl from './components/ae/DeviceControl'
@@ -46,6 +48,8 @@ Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
 Vue.component('settings-form', SettingsForm)
 Vue.component('settings-stringfield', SettingsStringField)
 Vue.component('settings-passwordstringfield', SettingsPasswordStringField)
+Vue.component('settings-bigdecimalfield', SettingsBigDecimalField)
+Vue.component('settings-booleanfield', SettingsBooleanField)
 
 //geekhome
 Vue.component('portcontrol', PortControl)

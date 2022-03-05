@@ -22,10 +22,9 @@ import java.math.BigDecimal
 class BigDecimalField(
     name: String,
     hint: Resource,
-    maxSize: Int,
     initialValue: BigDecimal,
-    vararg validators: Validator<NullableBigDecimal?>) :
-    FieldDefinition<NullableBigDecimal>(
-        FieldType.BigDecimal, name, hint, maxSize, NullableBigDecimal(initialValue), NullableBigDecimal::class.java,
-        NullableBigDecimalFieldBuilder(), null, null, *validators
+    vararg validators: Validator<BigDecimal?>) :
+    FieldDefinition<BigDecimal>(
+        FieldType.BigDecimal, name, hint, 0, initialValue, BigDecimal::class.java,
+        BigDecimalFieldBuilder(), null, null, *validators
     )

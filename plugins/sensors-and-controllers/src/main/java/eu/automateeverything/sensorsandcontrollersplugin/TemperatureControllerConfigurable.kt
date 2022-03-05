@@ -18,7 +18,6 @@ package eu.automateeverything.sensorsandcontrollersplugin
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.ControllerAutomationUnit
 import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
@@ -86,7 +85,7 @@ class TemperatureControllerConfigurable(
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
         return ControllerAutomationUnitBase(Temperature::class.java, stateChangeReporter, name, instance, automationOnly,
-            min.wrapped!!, max.wrapped!!, 0.05.toBigDecimal(), Temperature(default.wrapped!!))
+            min, max, 0.05.toBigDecimal(), Temperature(default))
     }
 
     override val blocksCategory: BlockCategory
@@ -100,10 +99,10 @@ class TemperatureControllerConfigurable(
     }
 
     override fun extractMinValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, minField).wrapped!!
+        return extractFieldValue(instance, minField)
     }
 
     override fun extractMaxValue(instance: InstanceDto): BigDecimal {
-        return extractFieldValue(instance, maxField).wrapped!!
+        return extractFieldValue(instance, maxField)
     }
 }

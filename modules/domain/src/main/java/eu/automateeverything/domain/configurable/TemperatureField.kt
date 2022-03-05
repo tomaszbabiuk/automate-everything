@@ -24,8 +24,8 @@ class TemperatureField(
     hint: Resource,
     maxSize: Int,
     initialValue: BigDecimal,
-    vararg validators: Validator<NullableBigDecimal?>) :
-    FieldDefinition<NullableBigDecimal>(
-        FieldType.Temperature, name, hint, maxSize, NullableBigDecimal(initialValue), NullableBigDecimal::class.java,
-        NullableBigDecimalFieldBuilder(), null, null, *validators
+    vararg validators: Validator<BigDecimal?>) :
+    FieldDefinition<BigDecimal>(
+        FieldType.Temperature, name, hint, maxSize, initialValue, BigDecimal::class.java,
+        BigDecimalFieldBuilder(), null, null, *validators
     )

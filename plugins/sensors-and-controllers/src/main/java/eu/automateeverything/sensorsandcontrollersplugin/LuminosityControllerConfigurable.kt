@@ -23,7 +23,6 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.hardware.Humidity
 import eu.automateeverything.domain.hardware.Luminosity
 import org.pf4j.Extension
 import java.math.BigDecimal
@@ -76,9 +75,9 @@ class LuminosityControllerConfigurable(
             </svg>
         """.trimIndent()
 
-    private val minField = BigDecimalField(FIELD_MIN, R.field_min_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
-    private val maxField = BigDecimalField(FIELD_MAX, R.field_max_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
-    private val defaultField = BigDecimalField(FIELD_DEFAULT, R.field_default_lum_hint, 0, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val minField = BigDecimalField(FIELD_MIN, R.field_min_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val maxField = BigDecimalField(FIELD_MAX, R.field_max_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
+    private val defaultField = BigDecimalField(FIELD_DEFAULT, R.field_default_lum_hint, BigDecimal.ZERO, GreaterThanZeroValidator())
     private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint,false)
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<Luminosity> {
@@ -89,7 +88,7 @@ class LuminosityControllerConfigurable(
         val default = extractFieldValue(instance, defaultField)
         return ControllerAutomationUnitBase(
             Luminosity::class.java, stateChangeReporter, name, instance, automationOnly,
-            min.wrapped!!, max.wrapped!!, BigDecimal.ONE, Luminosity(default.wrapped!!))
+            min, max, BigDecimal.ONE, Luminosity(default))
     }
 
     override val blocksCategory: BlockCategory
