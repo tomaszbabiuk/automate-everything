@@ -17,6 +17,8 @@ package eu.automateeverything.mobileaccessplugin
 
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
+import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
+import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
@@ -54,13 +56,21 @@ class MqttSaltServer(
     private var lastStartParams: List<String>? = null
     private var connectionState = ConnectionState.Initialization
 
-    private val client =  MqttClient.builder()
-        .useMqttVersion5()
-        .serverHost(brokerAddress.host)
-        .serverPort(8883)
-        .sslWithDefaultConfig()
-        .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
-        .buildBlocking()
+    private val client =  buildClient()
+
+    private fun buildClient(): Mqtt3BlockingClient {
+        val builder = MqttClient.builder()
+            .useMqttVersion3()
+            .serverHost(brokerAddress.host)
+            .serverPort(brokerAddress.port)
+            .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
+
+         if (brokerAddress.tlsRequired) {
+             builder.sslWithDefaultConfig()
+         }
+
+         return builder.buildBlocking()
+    }
 
 
     private fun connect() {
@@ -68,12 +78,16 @@ class MqttSaltServer(
         try {
             logger.info("Connecting to: $brokerAddress")
 
-            client.connectWith()
-                .simpleAuth()
-                .username(brokerAddress.user)
-                .password(UTF_8.encode(brokerAddress.password))
-                .applySimpleAuth()
-                .send()
+            if (brokerAddress.user.isNotEmpty() && brokerAddress.password.isNotEmpty()) {
+                client.connectWith()
+                    .simpleAuth()
+                    .username(brokerAddress.user)
+                    .password(UTF_8.encode(brokerAddress.password))
+                    .applySimpleAuth()
+                    .send()
+            } else {
+                client.connectWith().send()
+            }
 
             connectionState = ConnectionState.Connected
         } catch (ex: Exception) {
@@ -248,7 +262,7 @@ class MqttSaltServer(
                 .topicFilter(inboundTopic)
                 .send()
 
-            client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish: Mqtt5Publish ->
+            client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish: Mqtt3Publish ->
                 val discriminator = publish.topic.levels[1]
 
                 if (sessions.containsKey(discriminator)) {

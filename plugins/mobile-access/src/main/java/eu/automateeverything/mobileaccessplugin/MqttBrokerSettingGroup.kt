@@ -16,8 +16,9 @@ class MqttBrokerSettingGroup : SettingGroup {
             DEFAULT_MQTT_BROKER_USER)),
         Pair(FIELD_MQTT_BROKER_PASSWORD, PasswordStringField(FIELD_MQTT_BROKER_PASSWORD, R.field_password, 0,
             DEFAULT_MQTT_BROKER_PASSWORD)),
-        Pair(FIELD_MQTT_BROKER_TLS_REQUIRED, BooleanField(MobileCredentialsConfigurable.FIELD_ACTIVATED, R.field_tls_required,
-            DEFAULT_MQTT_BROKER_TLS_REQUIRED))
+        Pair(FIELD_MQTT_BROKER_TLS, BooleanField(
+            FIELD_MQTT_BROKER_TLS, R.field_tls,
+            DEFAULT_MQTT_BROKER_TLS))
     )
 
     companion object {
@@ -29,7 +30,7 @@ class MqttBrokerSettingGroup : SettingGroup {
         const val DEFAULT_MQTT_BROKER_USER = ""
         const val FIELD_MQTT_BROKER_PASSWORD = "broker-password"
         const val DEFAULT_MQTT_BROKER_PASSWORD = ""
-        const val FIELD_MQTT_BROKER_TLS_REQUIRED = "broker-tls"
-        const val DEFAULT_MQTT_BROKER_TLS_REQUIRED = false
+        const val FIELD_MQTT_BROKER_TLS = "broker-tls"
+        const val DEFAULT_MQTT_BROKER_TLS = false
     }
 }

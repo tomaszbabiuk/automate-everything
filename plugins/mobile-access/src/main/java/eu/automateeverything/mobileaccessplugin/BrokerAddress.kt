@@ -7,6 +7,8 @@ class BrokerAddress(pluginSettings: List<SettingsDto>) {
     val host: String
     val user: String
     val password: String
+    val port: Int
+    val tlsRequired: Boolean
 
     init {
         if (pluginSettings.size == 2) {
@@ -14,10 +16,14 @@ class BrokerAddress(pluginSettings: List<SettingsDto>) {
             host = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_ADDRESS]!!
             user = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_USER]!!
             password = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_PASSWORD]!!
+            port = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_PORT]!!.toInt()
+            tlsRequired = mqttSettings.fields[MqttBrokerSettingGroup.FIELD_MQTT_BROKER_TLS] == "1"
         } else {
             host = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_ADDRESS
             user = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_USER
             password = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_PASSWORD
+            port = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_PORT.toInt()
+            tlsRequired = MqttBrokerSettingGroup.DEFAULT_MQTT_BROKER_TLS
         }
     }
 }

@@ -99,9 +99,7 @@ class MobileCredentialsConfigurable(
         val qrCodeField = Pair(FIELD_QR_CODE, "ae://mobileaccess/connectiondetails" +
                 "?bid=$bindingIdHexString" +
                 "&pub=$pubKeyHexString" +
-                "&brokerHost=${brokerAddress.host}" +
-                "&brokerUser=${brokerAddress.user}" +
-                "&brokerPassword=${brokerAddress.password}"
+                "&broker=${brokerAddress.host},${brokerAddress.port},${brokerAddress.user},${brokerAddress.password}${if (brokerAddress.tlsRequired) ",TLS" else ""}"
         )
         val activatedField = Pair(FIELD_ACTIVATED, false.toString())
         val serverPubKeyField = Pair(FIELD_SERVER_PUB, pubKeyHexString)

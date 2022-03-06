@@ -38,9 +38,9 @@ object R {
         "Hasło"
     )
 
-    val field_tls_required = Resource(
-        "TLS required",
-        "Wymagany TLS"
+    val field_tls = Resource(
+        "TLS",
+        "TLS"
     )
 
     val field_port = Resource(
