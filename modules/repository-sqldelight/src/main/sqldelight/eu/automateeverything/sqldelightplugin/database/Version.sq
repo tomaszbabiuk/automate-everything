@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS version (
+  entity INTEGER PRIMARY KEY,
+  version INTEGER NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM version;
+
+upsert {
+  UPDATE version
+  SET entity = ?,
+      version = ?
+  WHERE entity = entity;
+
+  INSERT OR IGNORE INTO version (entity, version)
+  VALUES (?,?);
+}

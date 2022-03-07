@@ -41,23 +41,22 @@ interface Repository {
 
     fun getAllTags(): List<TagDto>
     fun saveTag(tag: TagDto): Long
-
     fun deleteTag(id: Long)
     fun updateTag(tagDto: TagDto)
+
     fun getAllIconCategories(): List<IconCategoryDto>
     fun saveIconCategory(iconCategoryDto: IconCategoryDto) : Long
-
     fun deleteIconCategory(id: Long)
     fun updateIconCategory(iconCategoryDto: IconCategoryDto)
+
     fun getAllIcons(): List<IconDto>
     fun getIcon(id: Long): IconDto
     fun saveIcon(iconDto: IconDto) : Long
     fun deleteIcon(id: Long)
-
     fun updateIcon(iconDto: IconDto)
+
     fun getAllPorts(): List<PortDto>
     fun getPortById(id: String): PortDto?
-
     fun updatePort(port: PortDto): Long
     fun deletePort(id: String)
     fun deletePortSnapshot(id: String)
@@ -65,6 +64,7 @@ interface Repository {
 
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
+
     fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto>
     fun getUnreadInboxItems() : List<InboxItemDto>
     fun saveInboxItem(message: InboxItemDto) : Long
