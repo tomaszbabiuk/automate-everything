@@ -23,6 +23,7 @@ import eu.automateeverything.data.instances.InstanceBriefDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
+import eu.automateeverything.data.versioning.VersionDto
 
 interface Repository {
 
@@ -71,4 +72,6 @@ interface Repository {
     fun markInboxItemAsRead(id: Long) : InboxItemDto
     fun deleteInboxItem(id: Long)
     fun countInboxItems(): Long
+
+    fun getVersions(): List<VersionDto>
 }

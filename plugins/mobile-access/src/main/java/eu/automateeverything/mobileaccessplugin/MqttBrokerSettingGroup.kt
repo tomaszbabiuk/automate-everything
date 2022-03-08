@@ -23,7 +23,7 @@ class MqttBrokerSettingGroup : SettingGroup {
 
     companion object {
         const val FIELD_MQTT_BROKER_ADDRESS = "broker-address"
-        const val DEFAULT_MQTT_BROKER_ADDRESS = "localhost"
+        const val DEFAULT_MQTT_BROKER_ADDRESS = ""
         const val FIELD_MQTT_BROKER_PORT = "broker-port"
         const val DEFAULT_MQTT_BROKER_PORT = 1883L
         const val FIELD_MQTT_BROKER_USER = "broker-user"

@@ -31,7 +31,7 @@ export default {
         category_others: "Inne",
     },
     plugin_settings: {
-        saved_message: "Zapisano! Niektóre zmiany mogą wymagać zrestartowaniu pluginu."
+        saved_message: "Zapisano zmiany!"
     },
     common: {
         retry: "Ponów",

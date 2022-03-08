@@ -20,10 +20,7 @@ import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.tags.TagDto
-import eu.automateeverything.interop.handlers.IconsHandler
-import eu.automateeverything.interop.handlers.InstancesHandler
-import eu.automateeverything.interop.handlers.MessagesHandler
-import eu.automateeverything.interop.handlers.TagsHandler
+import eu.automateeverything.interop.handlers.*
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -34,7 +31,8 @@ class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryF
         InstancesHandler(repository),
         MessagesHandler(repository),
         IconsHandler(repository),
-        TagsHandler(repository)
+        TagsHandler(repository),
+        VersionsHandler(repository)
     )
 
     override fun handleRequest(input: JsonRpc2Request): JsonRpc2Response {

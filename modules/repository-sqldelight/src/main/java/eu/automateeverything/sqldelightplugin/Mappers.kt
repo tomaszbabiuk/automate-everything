@@ -24,6 +24,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
+import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.sqldelightplugin.database.*
 
 interface Mapper<From, To> {
@@ -89,6 +90,12 @@ class ConfigurableInstanceWithTagIdsToInstanceDtoMapper(val database: Database):
 class TagToTagDtoMapper : Mapper<Tag, TagDto> {
     override fun map(from: Tag): TagDto {
         return TagDto(from.id, from.parent_id, from.name)
+    }
+}
+
+class VersionToVersionDtoMapper: Mapper<Version, VersionDto> {
+    override fun map(from: Version): VersionDto {
+        return VersionDto(from.entity, from.timestamp)
     }
 }
 

@@ -26,7 +26,9 @@ import eu.automateeverything.data.instances.InstanceBriefDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
+import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.sqldelightplugin.database.*
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 class SqlDelightRepository : Repository {
@@ -63,6 +65,9 @@ class SqlDelightRepository : Repository {
     private val tagToTagDtoMapper : Mapper<Tag, TagDto> =
         TagToTagDtoMapper()
 
+    private val versionToVersionDtoMapper : Mapper<Version, VersionDto> =
+        VersionToVersionDtoMapper()
+
     private val inboxItemToInboxItemDtoMapper : Mapper<InboxItem, InboxItemDto> =
         InboxItemToInboxDtoMapper()
 
@@ -71,6 +76,7 @@ class SqlDelightRepository : Repository {
 
     override fun saveInstance(instanceDto: InstanceDto) : Long {
         var id: Long = 0
+        val now = Calendar.getInstance().timeInMillis
         database.transaction {
             database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId, instanceDto.automation)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
@@ -80,9 +86,15 @@ class SqlDelightRepository : Repository {
                 database.configurableFieldInstanceQueries.insert(insertedDtoId, it.key, it.value)
             }
 
-            instanceDto.tagIds.forEach {
-                database.instanceTaggingQueries.insert(it, insertedDtoId)
+            if (instanceDto.tagIds.isNotEmpty()) {
+                instanceDto.tagIds.forEach {
+                    database.instanceTaggingQueries.insert(it, insertedDtoId)
+                }
+
+                markVersion(TagDto::class.java, now)
             }
+
+            markVersion(InstanceDto::class.java, now)
         }
 
         instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Saved, instanceDto.clazz) }
@@ -91,6 +103,8 @@ class SqlDelightRepository : Repository {
     }
 
     override fun updateInstance(instanceDto: InstanceDto) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.configurableInstanceQueries.update(instanceDto.clazz, instanceDto.iconId,
                 instanceDto.automation, instanceDto.id)
@@ -100,10 +114,15 @@ class SqlDelightRepository : Repository {
             }
 
             database.instanceTaggingQueries.deleteAllOfInstance(instanceDto.id)
-            instanceDto.tagIds.forEach {
-                database.instanceTaggingQueries.insert(it, instanceDto.id)
+            if (instanceDto.tagIds.isNotEmpty()) {
+                instanceDto.tagIds.forEach {
+                    database.instanceTaggingQueries.insert(it, instanceDto.id)
+                }
+
+                markVersion(TagDto::class.java, now)
             }
 
+            markVersion(InstanceDto::class.java, now)
             hasUpdatedInstance = true
         }
 
@@ -143,10 +162,14 @@ class SqlDelightRepository : Repository {
     }
 
     override fun deleteInstances(ids: List<Long>) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             ids.forEach {
                 database.configurableInstanceQueries.delete(it)
             }
+
+            markVersion(InstanceDto::class.java, now)
         }
     }
 
@@ -184,24 +207,36 @@ class SqlDelightRepository : Repository {
     }
 
     override fun saveTag(tag: TagDto): Long {
+        val now = Calendar.getInstance().timeInMillis
+
         var id: Long = 0
         database.transaction {
             database.tagQueries.insert(tag.parentId, tag.name)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
+
+            markVersion(TagDto::class.java, now)
         }
 
         return id
     }
 
     override fun deleteTag(id: Long) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.tagQueries.delete(id)
+
+            markVersion(TagDto::class.java, now)
         }
     }
 
     override fun updateTag(tagDto: TagDto) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.tagQueries.update(tagDto.parentId, tagDto.name, tagDto.id)
+
+            markVersion(TagDto::class.java, now)
         }
     }
 
@@ -214,27 +249,39 @@ class SqlDelightRepository : Repository {
     }
 
     override fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long {
+        val now = Calendar.getInstance().timeInMillis
         var id: Long = 0
+
         database.transaction {
             database.iconCategoryQueries.insert(
                 iconCategoryDto.name.serialize(),
                 if (iconCategoryDto.readonly) 1 else 0
             )
             id = database.generalQueries.lastInsertRowId().executeAsOne()
+
+            markVersion(IconCategoryDto::class.java, now)
         }
 
         return id
     }
 
     override fun deleteIconCategory(id: Long) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.iconCategoryQueries.delete(id)
+
+            markVersion(IconCategoryDto::class.java, now)
         }
     }
 
     override fun updateIconCategory(iconCategoryDto: IconCategoryDto) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.iconCategoryQueries.update(iconCategoryDto.name.serialize(), iconCategoryDto.id)
+
+            markVersion(IconCategoryDto::class.java, now)
         }
     }
 
@@ -255,24 +302,36 @@ class SqlDelightRepository : Repository {
     }
 
     override fun saveIcon(iconDto: IconDto): Long {
+        val now = Calendar.getInstance().timeInMillis
         var id: Long = 0
+
         database.transaction {
             database.iconQueries.insert(iconDto.iconCategoryId, iconDto.owner, iconDto.raw)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
+
+            markVersion(IconDto::class.java, now)
         }
 
         return id
     }
 
     override fun deleteIcon(id: Long) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.iconQueries.delete(id)
+
+            markVersion(IconDto::class.java, now)
         }
     }
 
     override fun updateIcon(iconDto: IconDto) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.iconQueries.update(iconDto.iconCategoryId, iconDto.raw, iconDto.id)
+
+            markVersion(IconDto::class.java, now)
         }
     }
 
@@ -298,31 +357,45 @@ class SqlDelightRepository : Repository {
     }
 
     override fun updatePort(port: PortDto): Long {
+        val now = Calendar.getInstance().timeInMillis
         var id: Long = 0
+
         database.transaction {
             database.portQueries.delete(port.id)
             val canRead = if (port.canRead) { 1L } else { 0L }
             val canWrite = if (port.canWrite) { 1L } else { 0L }
             database.portQueries.insert(port.id, port.factoryId, port.adapterId, port.valueClazz, canRead, canWrite)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
+
+            markVersion(PortDto::class.java, now)
         }
 
         return id
     }
 
     override fun deletePort(id: String) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.portQueries.delete(id)
+
+            markVersion(PortDto::class.java, now)
         }
     }
 
     override fun deletePortSnapshot(id: String) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.portQueries.delete(id)
+
+            markVersion(PortDto::class.java, now)
         }
     }
 
     override fun updateSettings(settingsDtos: List<SettingsDto>) {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             settingsDtos.forEach { settingDto ->
                 settingDto.fields.forEach { field ->
@@ -331,6 +404,8 @@ class SqlDelightRepository : Repository {
                         .insertOrReplace(settingDto.pluginId, settingDto.clazz, field.key, field.value)
                 }
             }
+
+            markVersion(SettingsDto::class.java, now)
         }
     }
 
@@ -371,28 +446,54 @@ class SqlDelightRepository : Repository {
     }
 
     override fun saveInboxItem(message: InboxItemDto): Long {
+        val now = Calendar.getInstance().timeInMillis
+
         database.transaction {
             database.inboxQueries.insert(
                 message.timestamp,
                 message.subject,
                 message.body,
                 if (message.read) 1 else 0)
+
+            markVersion(InboxItemDto::class.java, now)
         }
 
         return database.generalQueries.lastInsertRowId().executeAsOne()
     }
 
     override fun markInboxItemAsRead(id: Long) : InboxItemDto {
-        database.inboxQueries.markRead(id)
-        val inboxItem = database.inboxQueries.selectById(id).executeAsOne()
-        return inboxItemToInboxItemDtoMapper.map(inboxItem)
+        val now = Calendar.getInstance().timeInMillis
+        var inboxItem: InboxItem? = null
+
+        database.transaction {
+            database.inboxQueries.markRead(id)
+            inboxItem = database.inboxQueries.selectById(id).executeAsOne()
+
+            markVersion(InboxItemDto::class.java, now)
+        }
+        return inboxItemToInboxItemDtoMapper.map(inboxItem!!)
     }
 
     override fun deleteInboxItem(id: Long) {
-        database.inboxQueries.delete(id)
+        val now = Calendar.getInstance().timeInMillis
+
+        database.transaction {
+            database.inboxQueries.delete(id)
+
+            markVersion(InboxItemDto::class.java, now)
+        }
     }
 
     override fun countInboxItems(): Long {
         return database.inboxQueries.countItems().executeAsOne()
+    }
+
+    override fun getVersions(): List<VersionDto> {
+        val versions = database.versionQueries.selectAll().executeAsList()
+        return versions.map(versionToVersionDtoMapper::map)
+    }
+
+    private fun <T> markVersion(entity:Class<T>, timestamp: Long) {
+        database.versionQueries.upsert(entity.simpleName, timestamp)
     }
 }

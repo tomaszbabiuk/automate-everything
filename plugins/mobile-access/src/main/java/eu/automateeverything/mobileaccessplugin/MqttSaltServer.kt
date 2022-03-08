@@ -28,6 +28,7 @@ import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
+import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.security.SecureRandom
 import java.util.*
@@ -57,35 +58,44 @@ class MqttSaltServer(
 
     private val client =  buildClient()
 
-    private fun buildClient(): Mqtt3BlockingClient {
-        val builder = MqttClient.builder()
-            .useMqttVersion3()
-            .serverHost(brokerAddress.host)
-            .serverPort(brokerAddress.port)
-            .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
+    private fun buildClient(): Mqtt3BlockingClient? {
+        try {
+            val builder = MqttClient.builder()
+                .useMqttVersion3()
+                .serverHost(brokerAddress.host)
+                .serverPort(brokerAddress.port)
+                .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
 
-         if (brokerAddress.tlsRequired) {
-             builder.sslWithDefaultConfig()
-         }
+            if (brokerAddress.tlsRequired) {
+                builder.sslWithDefaultConfig()
+            }
 
-         return builder.buildBlocking()
+            return builder.buildBlocking()
+        } catch (ex: Exception) {
+            return null
+        }
     }
 
 
     private fun connect() {
+        if (client != null && brokerAddress.host.isEmpty()) {
+            logger.info("MQTT broker is empty. The plugin won't try to connect.")
+            return
+        }
+
         connectionState = ConnectionState.Connecting
         try {
             logger.info("Connecting to: $brokerAddress")
 
             if (brokerAddress.user.isNotEmpty() && brokerAddress.password.isNotEmpty()) {
-                client.connectWith()
+                client!!.connectWith()
                     .simpleAuth()
                     .username(brokerAddress.user)
                     .password(UTF_8.encode(brokerAddress.password))
                     .applySimpleAuth()
                     .send()
             } else {
-                client.connectWith().send()
+                client!!.connectWith().send()
             }
 
             connectionState = ConnectionState.Connected
@@ -168,13 +178,15 @@ class MqttSaltServer(
     }
 
     override fun stop() {
-        try {
-            cancelContexts()
-            if (connectionState == ConnectionState.Connected || connectionState == ConnectionState.Connecting) {
-                client.disconnect()
+        if (client != null) {
+            try {
+                cancelContexts()
+                if (connectionState == ConnectionState.Connected || connectionState == ConnectionState.Connecting) {
+                    client.disconnect()
+                }
+            } catch (ex: Exception) {
+                logger.error("A problem while stopping MQTT Salt Server", ex)
             }
-        } catch (ex: Exception) {
-            logger.error("A problem while stopping MQTT Salt Server", ex)
         }
         super.stop()
     }
@@ -252,6 +264,10 @@ class MqttSaltServer(
         private val sessions = LinkedHashMap<String, SingleSessionContext>()
 
         init {
+            if (client == null) {
+                throw IllegalStateException("The connector should be created when client is defined!")
+            }
+
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
 
             val inboundTopic = "$serverSignPubKeyHex/+/rx"

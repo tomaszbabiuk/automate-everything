@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS version (
-  entity INTEGER PRIMARY KEY,
-  version INTEGER NOT NULL
+  entity TEXT PRIMARY KEY,
+  timestamp INTEGER NOT NULL
 );
 
 selectAll:
@@ -9,10 +9,10 @@ FROM version;
 
 upsert {
   UPDATE version
-  SET entity = ?,
-      version = ?
-  WHERE entity = entity;
+  SET entity = :entity,
+      timestamp = :version
+  WHERE entity = :entity;
 
-  INSERT OR IGNORE INTO version (entity, version)
-  VALUES (?,?);
+  INSERT OR IGNORE INTO version (entity, timestamp)
+  VALUES (:entity,:version);
 }

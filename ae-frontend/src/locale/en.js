@@ -31,7 +31,7 @@ export default {
         category_others: "Others",
     },
     plugin_settings: {
-        saved_message: "Saved! Some changes requires the plugin to be restarted."
+        saved_message: "Your changes are saved!"
     },
     common: {
         retry: "Retry",

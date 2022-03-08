@@ -21,11 +21,10 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.configurable.FieldValidationResult
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.extensibility.PluginMetadata
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
-import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
+import org.pf4j.PluginState
 import kotlin.collections.HashMap
 
 typealias ValidationResultMap = Map<String, FieldValidationResult>
@@ -82,9 +81,18 @@ class SettingsController @Inject constructor(
 
         if (!hasErrors) {
             repository.updateSettings(settingsDtos)
+            restartPlugin(pluginId)
         }
 
         return validationResult
+    }
+
+    private fun restartPlugin(pluginId: String) {
+        val pluginWrapper = pluginsCoordinator.getPluginWrapper(pluginId)
+        if (pluginWrapper != null && pluginWrapper.pluginState == PluginState.STARTED) {
+            pluginsCoordinator.disablePlugin(pluginId)
+            pluginsCoordinator.enablePlugin(pluginId)
+        }
     }
 
     private fun validate(settingsDto: SettingsDto):
