@@ -31,6 +31,7 @@ class ChannelActivator(
         val clientPubKeyHex = String(Hex.toHexCharArray(clientSigPub, 0, clientSigPub.size))
         allMobileCredentials
             .filter { it.fields[MobileCredentialsConfigurable.FIELD_SERVER_PUB] == serverPubKeyHex }
+            .filter { it.fields[MobileCredentialsConfigurable.FIELD_ACTIVATED] == BooleanFieldBuilder.FALSE }
             .map {
                 val newFields = it.fields.toMutableMap()
                 newFields[MobileCredentialsConfigurable.FIELD_ACTIVATED] = BooleanFieldBuilder.TRUE
