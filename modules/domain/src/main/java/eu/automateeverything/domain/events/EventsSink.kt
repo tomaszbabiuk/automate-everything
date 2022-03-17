@@ -25,7 +25,7 @@ interface LiveEventsListener {
 }
 
 interface EventsSink {
-    fun addAdapterEventListener(listener: LiveEventsListener)
+    fun addEventListener(listener: LiveEventsListener)
     fun removeListener(listener: LiveEventsListener)
     fun broadcastEvent(payload: LiveEventData)
     fun broadcastMessage(payload: LiveEventData)

@@ -17,6 +17,8 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
+
 
 class EvaluationResult<T> (
     val interfaceValue: Resource,

@@ -40,7 +40,7 @@ class AutomationConductor(
 ) : WithStartStopScope<Void?>(), LiveEventsListener {
 
     init {
-        liveEvents.addAdapterEventListener(this)
+        liveEvents.addEventListener(this)
     }
 
     private val logger = LoggerFactory.getLogger(AutomationConductor::class.java)

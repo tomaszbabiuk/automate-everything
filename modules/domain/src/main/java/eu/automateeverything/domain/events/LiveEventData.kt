@@ -24,6 +24,7 @@ import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 
+
 sealed class LiveEventData
 
 class DiscoveryEventData(val factoryId: String,

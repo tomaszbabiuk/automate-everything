@@ -37,6 +37,7 @@ import eu.automateeverything.rest.live.HeartbeatDtoMapper
 import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.dependencies.DependencyChecker
+import eu.automateeverything.rest.live.LiveEventsMapper
 import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 
@@ -98,6 +99,10 @@ class DependencyInjectionBinder(
 
         bind(InboxMessageDtoMapper::class.java)
             .to(InboxMessageDtoMapper::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(LiveEventsMapper::class.java)
+            .to(LiveEventsMapper::class.java)
             .`in`(Singleton::class.java)
 
         bind(BlocklyParser::class.java)

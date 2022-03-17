@@ -20,6 +20,9 @@ import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
+import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.LiveEvent
+import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
 import kotlinx.coroutines.*
@@ -40,9 +43,10 @@ class MqttSaltServer(
     private val secretsPassword: String,
     private val inbox: Inbox,
     private val sessionHandler: ByteArraySessionHandler,
-    private val channelActivator: ChannelActivator
+    private val channelActivator: ChannelActivator,
+    private val eventsSink: EventsSink,
 )
-    : WithStartStopScope<List<String>>() {
+    : WithStartStopScope<List<String>>(), LiveEventsListener {
 
     enum class ConnectionState {
         Initialization, Disconnected, Connecting, Connected
@@ -64,7 +68,10 @@ class MqttSaltServer(
                 .useMqttVersion3()
                 .serverHost(brokerAddress.host)
                 .serverPort(brokerAddress.port)
-                .addDisconnectedListener { connectionState = ConnectionState.Disconnected }
+                .addDisconnectedListener {
+                    logger.error("MQTT client is disconnected!")
+                    connectionState = ConnectionState.Disconnected
+                }
 
             if (brokerAddress.tlsRequired) {
                 builder.sslWithDefaultConfig()
@@ -106,6 +113,7 @@ class MqttSaltServer(
 
     override fun start(params: List<String>) {
         super.start(params)
+        eventsSink.addEventListener(this)
         lastStartParams = params
 
         startStopScope.launch {
@@ -178,6 +186,8 @@ class MqttSaltServer(
     }
 
     override fun stop() {
+        eventsSink.removeListener(this)
+
         if (client != null) {
             try {
                 cancelContexts()
@@ -319,10 +329,23 @@ class MqttSaltServer(
         fun cancel() {
             sessions.values.forEach { it.cancel() }
         }
+
+        fun publish(payload: ByteArray) {
+            sessions.forEach {
+                it.value.push(payload)
+            }
+        }
     }
 
     companion object {
         const val MAX_OPEN_SESSIONS_PER_CONNECTOR = 3
+    }
+
+    override fun onEvent(event: LiveEvent<*>) {
+        contexts?.forEach {
+            //TODO: map and serialize this event
+//            it.publish(event.data)
+        }
     }
 }
 

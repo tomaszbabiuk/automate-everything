@@ -15,13 +15,9 @@
 
 package eu.automateeverything.rest.live
 
-import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
-import eu.automateeverything.rest.automationhistory.AutomationHistoryDtoMapper
-import eu.automateeverything.rest.hardware.NumberedHardwareEventToEventDtoMapper
-import eu.automateeverything.rest.hardware.PortDtoMapper
-import eu.automateeverything.rest.plugins.PluginDtoMapper
-import eu.automateeverything.domain.events.*
-import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
+import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.LiveEvent
+import eu.automateeverything.domain.events.LiveEventsListener
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
@@ -35,19 +31,13 @@ import jakarta.ws.rs.sse.SseEventSink
 @Path("live")
 class LiveController @Inject constructor(
     eventsSink: EventsSink,
-    private val portDtoMapper: PortDtoMapper,
-    private val pluginDtoMapper: PluginDtoMapper,
-    private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
-    private val automationUnitMapper: AutomationUnitDtoMapper,
-    private val automationHistoryMapper: AutomationHistoryDtoMapper,
-    private val heartbeatDtoMapper: HeartbeatDtoMapper,
-    private val inboxMessageDtoMapper: InboxMessageDtoMapper,
+    private val liveEventsMapper: LiveEventsMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
 
     init {
-        eventsSink.addAdapterEventListener(object : LiveEventsListener {
+        eventsSink.addEventListener(object : LiveEventsListener {
             override fun onEvent(event: LiveEvent<*>) {
                 broadcastLiveEvent(event)
             }
@@ -70,57 +60,9 @@ class LiveController @Inject constructor(
     }
 
     private fun broadcastLiveEvent(event: LiveEvent<*>) {
-        when (event.data) {
-            is PortUpdateEventData -> {
-                val payload = event.data as PortUpdateEventData
-                val mapped = portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId)
-                broadcast(mapped.javaClass, mapped)
-            }
-            is PluginEventData -> {
-                val payload = event.data as PluginEventData
-                val mapped = pluginDtoMapper.map(payload.plugin)
-                broadcast(mapped.javaClass, mapped)
-            }
-            is DiscoveryEventData -> {
-                val payload = event.data as DiscoveryEventData
-                val mapped = hardwareEventMapper.map(event.number, payload)
-                broadcast(mapped.javaClass, mapped)
-            }
-            is AutomationUpdateEventData -> {
-                val payload = event.data as AutomationUpdateEventData
-                val mapped = automationUnitMapper.map(payload.unit, payload.instance)
-                broadcast(mapped.javaClass, mapped)
-
-                val payloadHistory = event.data as AutomationUpdateEventData
-                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
-                broadcast(mappedHistory.javaClass, mappedHistory)
-            }
-            is AutomationStateEventData -> {
-                val payload = event.data as AutomationStateEventData
-                val mapped = payload.enabled
-                broadcast(mapped.javaClass, mapped)
-
-                val payloadHistory = event.data as AutomationStateEventData
-                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
-                broadcast(mappedHistory.javaClass, mappedHistory)
-            }
-            is HeartbeatEventData -> {
-                val payload = event.data as HeartbeatEventData
-                val mapped = heartbeatDtoMapper.map(payload)
-                broadcast(mapped.javaClass, mapped)
-            }
-            is InboxEventData -> {
-                val payload = event.data as InboxEventData
-                val mapped = inboxMessageDtoMapper.map(payload.inboxItemDto)
-                broadcast(mapped.javaClass, mapped)
-            }
-            is InstanceUpdateEventData -> {
-                val payload = event.data as InstanceUpdateEventData
-                val mapped = payload.instanceDto
-                broadcast(mapped.javaClass, mapped)
-            }
-        }
-
-
+        liveEventsMapper
+            .map(event)
+            .forEach { broadcast(it.javaClass, it) }
     }
 }
+

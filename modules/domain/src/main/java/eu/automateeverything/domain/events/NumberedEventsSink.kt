@@ -28,7 +28,7 @@ class NumberedEventsSink : EventsSink {
     val events = ArrayList<LiveEvent<*>>()
     val messages = ArrayList<LiveEvent<*>>()
 
-    override fun addAdapterEventListener(listener: LiveEventsListener) {
+    override fun addEventListener(listener: LiveEventsListener) {
         listeners.add(listener)
     }
 

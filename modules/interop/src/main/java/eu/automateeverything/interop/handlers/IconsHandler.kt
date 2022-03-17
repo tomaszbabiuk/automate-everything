@@ -37,6 +37,6 @@ class IconsHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHa
                 return format.encodeToByteArray(icons)
             }
             
-            return format.encodeToByteArray(listOf<IconDto>())
+            return format.encodeToByteArray(repository.getAllIcons())
         }
     }

@@ -20,6 +20,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import java.util.*
 
+
 interface AutomationUnit<T> {
     val name: String
     var lastEvaluation: EvaluationResult<T>
