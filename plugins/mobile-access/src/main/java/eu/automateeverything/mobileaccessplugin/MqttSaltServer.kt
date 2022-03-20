@@ -20,9 +20,6 @@ import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
-import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.LiveEvent
-import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
 import kotlinx.coroutines.*
@@ -31,10 +28,8 @@ import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
-import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.security.SecureRandom
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -44,9 +39,8 @@ class MqttSaltServer(
     private val inbox: Inbox,
     private val sessionHandler: ByteArraySessionHandler,
     private val channelActivator: ChannelActivator,
-    private val eventsSink: EventsSink,
 )
-    : WithStartStopScope<List<String>>(), LiveEventsListener {
+    : WithStartStopScope<List<String>>() {
 
     enum class ConnectionState {
         Initialization, Disconnected, Connecting, Connected
@@ -113,7 +107,6 @@ class MqttSaltServer(
 
     override fun start(params: List<String>) {
         super.start(params)
-        eventsSink.addEventListener(this)
         lastStartParams = params
 
         startStopScope.launch {
@@ -186,8 +179,6 @@ class MqttSaltServer(
     }
 
     override fun stop() {
-        eventsSink.removeListener(this)
-
         if (client != null) {
             try {
                 cancelContexts()
@@ -254,6 +245,11 @@ class MqttSaltServer(
                         val isLast = session.channel.lastFlag()
                         val responses = sessionHandler.handleRequest(incomingData)
                         session.channel.write(false, responses)
+
+                        val notifications = sessionHandler.handleNotifications()
+                        if (notifications.isNotEmpty()) {
+                            session.channel.write(false, notifications)
+                        }
 
                         if (isLast) {
                             break
@@ -329,23 +325,10 @@ class MqttSaltServer(
         fun cancel() {
             sessions.values.forEach { it.cancel() }
         }
-
-        fun publish(payload: ByteArray) {
-            sessions.forEach {
-                it.value.push(payload)
-            }
-        }
     }
 
     companion object {
         const val MAX_OPEN_SESSIONS_PER_CONNECTOR = 3
-    }
-
-    override fun onEvent(event: LiveEvent<*>) {
-        contexts?.forEach {
-            //TODO: map and serialize this event
-//            it.publish(event.data)
-        }
     }
 }
 

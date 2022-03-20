@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.settinggroup
+package eu.automateeverything.mappers
 
 import eu.automateeverything.data.fields.FieldDefinitionDto
 import eu.automateeverything.data.settings.SettingGroupDto
 import eu.automateeverything.rest.MappingException
-import eu.automateeverything.rest.fields.FieldDefinitionDtoMapper
 import eu.automateeverything.domain.configurable.*
 import java.util.stream.Collectors
 import jakarta.inject.Inject

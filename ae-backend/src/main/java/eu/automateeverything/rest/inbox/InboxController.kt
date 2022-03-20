@@ -19,6 +19,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.inbox.InboxMessageDto
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.ResourceNotFoundException
+import eu.automateeverything.mappers.InboxMessageDtoMapper
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
@@ -29,7 +30,8 @@ import jakarta.ws.rs.core.MediaType
 class InboxController @Inject constructor(
     private val repository: Repository,
     private val inbox: Inbox,
-    private val mapper: InboxMessageDtoMapper) {
+    private val mapper: InboxMessageDtoMapper
+) {
 
 
     @GET

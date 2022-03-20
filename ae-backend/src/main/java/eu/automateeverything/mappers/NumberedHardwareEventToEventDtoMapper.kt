@@ -13,20 +13,16 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.inbox
+package eu.automateeverything.mappers
 
-import eu.automateeverything.data.inbox.InboxItemDto
-import eu.automateeverything.data.inbox.InboxMessageDto
-import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.events.DiscoveryEventData
+import eu.automateeverything.data.hardware.DiscoveryEventDto
 
-class InboxMessageDtoMapper {
-    fun map(from: InboxItemDto): InboxMessageDto {
-        return InboxMessageDto(
-            from.id,
-            Resource.deserialize(from.subject),
-            Resource.deserialize(from.body),
-            from.timestamp,
-            from.read
-        )
+class NumberedHardwareEventToEventDtoMapper {
+
+    fun map(number: Int, event: DiscoveryEventData) : DiscoveryEventDto {
+        val factoryId = event.factoryId
+        val message = event.message
+        return DiscoveryEventDto(factoryId, message, number)
     }
 }

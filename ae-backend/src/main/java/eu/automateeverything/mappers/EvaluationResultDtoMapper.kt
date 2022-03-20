@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.automation
+package eu.automateeverything.mappers
 
 import eu.automateeverything.data.automation.EvaluationResultDto
 import eu.automateeverything.data.hardware.PortValue

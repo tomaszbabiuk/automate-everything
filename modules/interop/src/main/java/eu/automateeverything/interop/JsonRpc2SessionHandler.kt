@@ -15,25 +15,13 @@
 
 package eu.automateeverything.interop
 
-import eu.automateeverything.data.Repository
-import eu.automateeverything.data.icons.IconDto
-import eu.automateeverything.data.inbox.InboxItemDto
-import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.data.tags.TagDto
-import eu.automateeverything.interop.handlers.*
 import kotlinx.serialization.BinaryFormat
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.encodeToByteArray
 
-class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryFormat) : SessionHandler<JsonRpc2Request, JsonRpc2Response> {
-
-    private val methodHandlers = listOf(
-        InstancesHandler(repository),
-        MessagesHandler(repository),
-        IconsHandler(repository),
-        TagsHandler(repository),
-        VersionsHandler(repository)
-    )
+class JsonRpc2SessionHandler(
+    private val methodHandlers: List<MethodHandler>,
+    private val syncingHandlers: List<SyncingHandler>,
+    private val format: BinaryFormat
+) : SessionHandler<JsonRpc2Request, JsonRpc2Response> {
 
     override fun handleRequest(input: JsonRpc2Request): JsonRpc2Response {
         val handler = methodHandlers.firstOrNull { it.matches(input.method) }
@@ -46,14 +34,20 @@ class JsonRpc2SessionHandler(repository: Repository, private val format: BinaryF
         }
     }
 
+    override fun handleNotifications() : List<JsonRpc2Response> {
+        return syncingHandlers
+            .flatMap { it.collect(format).map { entry ->
+                    JsonRpc2Response(id = entry.key, result = entry.value)
+                }
+            }
+    }
+
     interface MethodHandler {
         fun matches(method: String): Boolean
         fun handle(format: BinaryFormat, params: ByteArray?) : ByteArray
     }
 
-
-
-
-
-
+    interface SyncingHandler {
+        fun collect(format: BinaryFormat) : Map<String, ByteArray>
+    }
 }

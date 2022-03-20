@@ -13,21 +13,21 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop.handlers
+package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.versioning.VersionDto
+import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class VersionsHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
+class MessagesMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == VersionDto::class.java.simpleName
+            return method == InboxItemDto::class.java.simpleName
         }
 
         override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
-            val result = repository.getVersions()
+            val result = repository.getInboxItems(100, 0)
             return format.encodeToByteArray(result)
         }
     }

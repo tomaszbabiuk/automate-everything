@@ -30,6 +30,7 @@ import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.sqldelightplugin.database.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import eu.automateeverything.data.Mapper
 
 class SqlDelightRepository : Repository {
 

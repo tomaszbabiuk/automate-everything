@@ -13,15 +13,10 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.live
+package eu.automateeverything.mappers
 
+import eu.automateeverything.data.Mapper
 import eu.automateeverything.domain.events.*
-import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
-import eu.automateeverything.rest.automationhistory.AutomationHistoryDtoMapper
-import eu.automateeverything.rest.hardware.NumberedHardwareEventToEventDtoMapper
-import eu.automateeverything.rest.hardware.PortDtoMapper
-import eu.automateeverything.rest.inbox.InboxMessageDtoMapper
-import eu.automateeverything.rest.plugins.PluginDtoMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.NotSupportedException
 
@@ -33,52 +28,52 @@ class LiveEventsMapper @Inject constructor(
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val heartbeatDtoMapper: HeartbeatDtoMapper,
     private val inboxMessageDtoMapper: InboxMessageDtoMapper
-) {
+) : Mapper<LiveEvent<*>, List<Any>> {
 
-    fun map(event: LiveEvent<*>): List<Any> {
-        return when (event.data) {
+    override fun map(from: LiveEvent<*>): List<Any> {
+        return when (from.data) {
             is PortUpdateEventData -> {
-                val payload = event.data as PortUpdateEventData
+                val payload = from.data as PortUpdateEventData
                 listOf(portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId))
             }
             is PluginEventData -> {
-                val payload = event.data as PluginEventData
+                val payload = from.data as PluginEventData
                 listOf(pluginDtoMapper.map(payload.plugin))
             }
             is DiscoveryEventData -> {
-                val payload = event.data as DiscoveryEventData
-                listOf(hardwareEventMapper.map(event.number, payload))
+                val payload = from.data as DiscoveryEventData
+                listOf(hardwareEventMapper.map(from.number, payload))
             }
             is AutomationUpdateEventData -> {
-                val payload = event.data as AutomationUpdateEventData
+                val payload = from.data as AutomationUpdateEventData
                 val mappedUnit = automationUnitMapper.map(payload.unit, payload.instance)
 
-                val payloadHistory = event.data as AutomationUpdateEventData
-                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
+                val payloadHistory = from.data as AutomationUpdateEventData
+                val mappedHistory = automationHistoryMapper.map(from.timestamp, payloadHistory, from.number)
 
                 listOf(mappedUnit, mappedHistory)
             }
             is AutomationStateEventData -> {
-                val payload = event.data as AutomationStateEventData
+                val payload = from.data as AutomationStateEventData
                 val mappedState = payload.enabled
 
-                val payloadHistory = event.data as AutomationStateEventData
-                val mappedHistory = automationHistoryMapper.map(event.timestamp, payloadHistory, event.number)
+                val payloadHistory = from.data as AutomationStateEventData
+                val mappedHistory = automationHistoryMapper.map(from.timestamp, payloadHistory, from.number)
 
                 listOf(mappedState, mappedHistory)
             }
             is HeartbeatEventData -> {
-                val payload = event.data as HeartbeatEventData
+                val payload = from.data as HeartbeatEventData
                 val mapped = heartbeatDtoMapper.map(payload)
                 listOf(mapped)
             }
             is InboxEventData -> {
-                val payload = event.data as InboxEventData
+                val payload = from.data as InboxEventData
                 val mapped = inboxMessageDtoMapper.map(payload.inboxItemDto)
                 listOf(mapped)
             }
             is InstanceUpdateEventData -> {
-                val payload = event.data as InstanceUpdateEventData
+                val payload = from.data as InstanceUpdateEventData
                 val mapped = payload.instanceDto
                 listOf(mapped)
             }

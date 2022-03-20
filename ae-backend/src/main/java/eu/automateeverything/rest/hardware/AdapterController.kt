@@ -19,6 +19,7 @@ import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.events.EventsSink
 import jakarta.inject.Inject
 import eu.automateeverything.data.hardware.HardwareAdapterDto
+import eu.automateeverything.mappers.HardwareAdapterDtoMapper
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 

@@ -15,6 +15,7 @@
 
 package eu.automateeverything.sqldelightplugin
 
+import eu.automateeverything.data.Mapper
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.icons.IconCategoryDto
 import eu.automateeverything.data.icons.IconDto
@@ -26,10 +27,6 @@ import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
 import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.sqldelightplugin.database.*
-
-interface Mapper<From, To> {
-    fun map(from: From) : To
-}
 
 class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
     override fun map(from: PortSnapshot): PortDto {

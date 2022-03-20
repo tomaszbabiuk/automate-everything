@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.hardware
+package eu.automateeverything.mappers
 
 import eu.automateeverything.domain.hardware.AdapterBundle
 import eu.automateeverything.data.hardware.HardwareAdapterDto

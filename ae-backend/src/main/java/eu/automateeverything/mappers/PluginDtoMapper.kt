@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.plugins
+package eu.automateeverything.mappers
 
 import eu.automateeverything.R
 import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.data.plugins.PluginDto
-import eu.automateeverything.rest.settinggroup.SettingGroupDtoMapper
 import org.pf4j.PluginWrapper
 import org.pf4j.PluginState
 import eu.automateeverything.domain.hardware.HardwarePlugin

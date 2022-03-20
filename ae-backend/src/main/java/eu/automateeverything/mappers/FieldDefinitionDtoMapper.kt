@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.fields
+package eu.automateeverything.mappers
 
 import eu.automateeverything.data.fields.*
 import eu.automateeverything.domain.configurable.FieldDefinition

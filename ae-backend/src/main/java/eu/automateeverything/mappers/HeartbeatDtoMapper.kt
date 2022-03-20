@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.live
+package eu.automateeverything.mappers
 
 import eu.automateeverything.data.heartbeat.HeartbeatDto
 import eu.automateeverything.domain.events.HeartbeatEventData

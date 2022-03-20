@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop.handlers
+package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
@@ -21,7 +21,7 @@ import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class InstancesHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
+class InstancesMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
             return method == InstanceDto::class.java.simpleName
         }

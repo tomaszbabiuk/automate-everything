@@ -13,21 +13,30 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop.handlers
+package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.inbox.InboxItemDto
+import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
+import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
-class MessagesHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
+class IconsMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == InboxItemDto::class.java.simpleName
+            return method == IconDto::class.java.simpleName
         }
 
         override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
-            val result = repository.getInboxItems(100, 0)
-            return format.encodeToByteArray(result)
+            if (params != null) {
+                val ids: List<Long> = format.decodeFromByteArray(params)
+                val icons = ids.map {
+                    repository.getIcon(it)
+                }
+                
+                return format.encodeToByteArray(icons)
+            }
+            
+            return format.encodeToByteArray(repository.getAllIcons())
         }
-    }
+}

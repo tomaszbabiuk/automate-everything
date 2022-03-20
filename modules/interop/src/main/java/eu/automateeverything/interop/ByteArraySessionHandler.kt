@@ -21,14 +21,17 @@ import kotlinx.serialization.encodeToByteArray
 
 class ByteArraySessionHandler(
     private val internalHandler: SessionHandler<JsonRpc2Request, JsonRpc2Response>,
-    private val binaryFormat: BinaryFormat)
-: SessionHandler<ByteArray, ByteArray> {
+    private val binaryFormat: BinaryFormat) {
 
-    override fun handleRequest(input: ByteArray): ByteArray {
+    fun handleRequest(input: ByteArray): ByteArray {
         val requests = binaryFormat.decodeFromByteArray<List<JsonRpc2Request>>(input)
-        val processed = requests
-            .map(internalHandler::handleRequest)
+        val processed = requests.map(internalHandler::handleRequest)
 
         return binaryFormat.encodeToByteArray(processed)
+    }
+
+    fun handleNotifications(): ByteArray {
+        val notifications = internalHandler.handleNotifications()
+        return binaryFormat.encodeToByteArray(notifications)
     }
 }

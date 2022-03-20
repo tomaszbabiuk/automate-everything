@@ -21,6 +21,7 @@ import eu.automateeverything.domain.hardware.HardwareManager
 import jakarta.inject.Inject
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
+import eu.automateeverything.mappers.PortDtoMapper
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import java.math.BigDecimal

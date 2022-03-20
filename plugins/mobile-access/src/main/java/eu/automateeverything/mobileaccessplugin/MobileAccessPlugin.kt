@@ -45,7 +45,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         val brokerAddress = BrokerAddress(settings)
         val secretsPassword = extractSecretsPassword(settings)
         val channelActivator = ChannelActivator(repository, eventsSink)
-        return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler, channelActivator, eventsSink)
+        return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler, channelActivator)
     }
 
     override fun start() {

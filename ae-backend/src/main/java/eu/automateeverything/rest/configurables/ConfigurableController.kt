@@ -20,6 +20,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.ServerException
 import eu.automateeverything.domain.configurable.GeneratedConfigurable
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
+import eu.automateeverything.mappers.ConfigurableDtoMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType

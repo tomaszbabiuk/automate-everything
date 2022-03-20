@@ -19,6 +19,7 @@ import eu.automateeverything.data.automationhistory.AutomationHistoryDto
 import eu.automateeverything.domain.events.AutomationStateEventData
 import eu.automateeverything.domain.events.AutomationUpdateEventData
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.mappers.AutomationHistoryDtoMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path

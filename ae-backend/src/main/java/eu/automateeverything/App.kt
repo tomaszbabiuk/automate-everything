@@ -37,7 +37,9 @@ import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.extensibility.InjectionRegistry
 import eu.automateeverything.interop.ByteArraySessionHandler
 import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.jsonrpc2.*
 import eu.automateeverything.langateway.JavaLanGatewayResolver
+import eu.automateeverything.mappers.*
 import eu.automateeverything.pluginfeatures.mqtt.MoquetteBroker
 import eu.automateeverything.sqldelightplugin.SqlDelightRepository
 import kotlinx.coroutines.*
@@ -66,8 +68,35 @@ open class App : ResourceConfig() {
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 
+    private val jsonRpc2SessionHandler: JsonRpc2SessionHandler = buildJsonRpc2SessionHandler()
+
     @OptIn(ExperimentalSerializationApi::class)
-    private val jsonRpc2SessionHandler: JsonRpc2SessionHandler = JsonRpc2SessionHandler(repository, Cbor)
+    private fun buildJsonRpc2SessionHandler(): JsonRpc2SessionHandler {
+        val mapper = LiveEventsMapper(
+            PortDtoMapper(),
+            PluginDtoMapper(SettingGroupDtoMapper(FieldDefinitionDtoMapper())),
+            NumberedHardwareEventToEventDtoMapper(),
+            AutomationUnitDtoMapper(EvaluationResultDtoMapper()),
+            AutomationHistoryDtoMapper(),
+            HeartbeatDtoMapper(),
+            InboxMessageDtoMapper()
+        )
+
+        val syncingHandlers = listOf(
+            EventsSyncingHandler(eventsSink, mapper)
+        )
+
+        val methodHandlers = listOf(
+            InstancesMethodHandler(repository),
+            MessagesMethodHandler(repository),
+            IconsMethodHandler(repository),
+            TagsMethodHandler(repository),
+            VersionsMethodHandler(repository),
+        )
+
+        return JsonRpc2SessionHandler(methodHandlers, syncingHandlers, Cbor)
+    }
+
     @OptIn(ExperimentalSerializationApi::class)
     private val byteArraySessionHandler: ByteArraySessionHandler = ByteArraySessionHandler(jsonRpc2SessionHandler, Cbor)
 

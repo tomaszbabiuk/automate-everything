@@ -18,6 +18,7 @@ package eu.automateeverything.rest.plugins
 import eu.automateeverything.data.plugins.PluginDto
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.ResourceNotFoundException
+import eu.automateeverything.mappers.PluginDtoMapper
 import org.pf4j.PluginWrapper
 import jakarta.inject.Inject
 import jakarta.inject.Singleton

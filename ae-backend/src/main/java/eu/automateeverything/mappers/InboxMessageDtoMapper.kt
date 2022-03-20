@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 Tomasz Babiuk
+ * Copyright (c) 2019-2021 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -13,9 +13,20 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop
+package eu.automateeverything.mappers
 
-interface SessionHandler<X, Y> {
-    fun handleRequest(input: X) : Y
-    fun handleNotifications(): List<Y>
+import eu.automateeverything.data.inbox.InboxItemDto
+import eu.automateeverything.data.inbox.InboxMessageDto
+import eu.automateeverything.data.localization.Resource
+
+class InboxMessageDtoMapper {
+    fun map(from: InboxItemDto): InboxMessageDto {
+        return InboxMessageDto(
+            from.id,
+            Resource.deserialize(from.subject),
+            Resource.deserialize(from.body),
+            from.timestamp,
+            from.read
+        )
+    }
 }

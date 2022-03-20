@@ -19,7 +19,7 @@ import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.data.automation.AutomationUnitDto
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.automation.*
-import eu.automateeverything.rest.automation.AutomationUnitDtoMapper
+import eu.automateeverything.mappers.AutomationUnitDtoMapper
 import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.hardware.PortValueBuilder
 import java.lang.Exception

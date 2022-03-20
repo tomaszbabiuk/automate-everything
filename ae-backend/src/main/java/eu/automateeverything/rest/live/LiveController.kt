@@ -18,6 +18,7 @@ package eu.automateeverything.rest.live
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
+import eu.automateeverything.mappers.LiveEventsMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path

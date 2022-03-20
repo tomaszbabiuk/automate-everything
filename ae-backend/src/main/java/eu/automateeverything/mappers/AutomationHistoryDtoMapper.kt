@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.automationhistory
+package eu.automateeverything.mappers
 
 import eu.automateeverything.R
 import eu.automateeverything.data.automationhistory.AutomationHistoryDto

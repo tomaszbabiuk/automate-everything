@@ -13,21 +13,21 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop.handlers
+package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.tags.TagDto
+import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class TagsHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
+class VersionsMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == TagDto::class.java.simpleName
+            return method == VersionDto::class.java.simpleName
         }
 
         override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
-            val result = repository.getAllTags()
+            val result = repository.getVersions()
             return format.encodeToByteArray(result)
         }
     }
