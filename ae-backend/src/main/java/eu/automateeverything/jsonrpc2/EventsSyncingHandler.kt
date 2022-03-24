@@ -18,7 +18,8 @@ package eu.automateeverything.jsonrpc2
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
-import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.interop.JsonRpc2Response
+import eu.automateeverything.interop.SyncingHandler
 import eu.automateeverything.mappers.LiveEventsMapper
 import kotlinx.serialization.BinaryFormat
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -27,7 +28,7 @@ class EventsSyncingHandler(
     private val eventsSink: EventsSink,
     private val eventsMapper: LiveEventsMapper,
     private val binaryFormat: BinaryFormat
-) : JsonRpc2SessionHandler.SyncingHandler,
+) : SyncingHandler,
     LiveEventsListener {
 
     private val queue = ConcurrentLinkedQueue<Pair<Any, (BinaryFormat) -> ByteArray>>()
@@ -40,12 +41,14 @@ class EventsSyncingHandler(
         eventsSink.removeListener(this)
     }
 
-    override fun collect(): Map<String, ByteArray> {
+    override fun collect(): List<JsonRpc2Response> {
         return queue.associateBy(keySelector = {
                 it.first.javaClass.simpleName
         }, valueTransform = {
             it.second.invoke(binaryFormat)
-        })
+        }).map {
+            JsonRpc2Response(subscription = it.key, id = it.key, result = it.value)
+        }
     }
 
     override fun onEvent(event: LiveEvent<*>) {

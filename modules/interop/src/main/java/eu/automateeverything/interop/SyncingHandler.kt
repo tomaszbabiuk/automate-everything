@@ -15,7 +15,7 @@
 
 package eu.automateeverything.interop
 
-interface SessionHandler<X, Y> {
-    fun handleRequest(input: X, subscriptions: MutableList<SyncingHandler>) : Y
-    fun handleSubscriptions(subscriptions: MutableList<SyncingHandler>) : Y
+
+interface SyncingHandler {
+    fun collect() : List<JsonRpc2Response>
 }

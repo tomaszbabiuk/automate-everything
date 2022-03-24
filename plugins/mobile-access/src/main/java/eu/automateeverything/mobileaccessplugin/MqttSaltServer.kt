@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
-import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.interop.SyncingHandler
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import saltchannel.util.Hex
@@ -229,7 +229,7 @@ class MqttSaltServer(
         private var channel: QueuedCancellableByteChannel
         private val sessionCancellationToken = AtomicBoolean(false)
         private var requestResponseJob: Deferred<Unit>
-        private val subscriptions = ArrayList<JsonRpc2SessionHandler.SyncingHandler>()
+        private val subscriptions = ArrayList<SyncingHandler>()
 
         init {
             channel = QueuedCancellableByteChannel(sessionCancellationToken, publisher)
@@ -246,12 +246,8 @@ class MqttSaltServer(
                             println("WORKING")
                             delay(1000)
                             try {
-                                subscriptions.forEach {
-                                    val notifications = it.collect()
-//                                if (notifications.isNotEmpty()) {
-//                                    session.channel.write(false, notifications)
-//                                }
-                                }
+                                val responses = sessionHandler.handleSubscriptions(subscriptions)
+                                session.channel.write(false, responses)
                             } catch (ex: Exception) {
                                 logger.error("Unhandled exception from MQTT server", ex)
                             }

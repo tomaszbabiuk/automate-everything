@@ -15,7 +15,9 @@
 
 package eu.automateeverything.interop
 
-interface SessionHandler<X, Y> {
-    fun handleRequest(input: X, subscriptions: MutableList<SyncingHandler>) : Y
-    fun handleSubscriptions(subscriptions: MutableList<SyncingHandler>) : Y
+import kotlinx.serialization.BinaryFormat
+
+interface MethodHandler {
+    fun matches(method: String): Boolean
+    fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SyncingHandler>) : ByteArray
 }

@@ -20,13 +20,30 @@ import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
 class ByteArraySessionHandler(
-    private val internalHandler: SessionHandler<JsonRpc2Request, JsonRpc2Response>,
-    private val binaryFormat: BinaryFormat) {
+    private val methodHandlers: List<MethodHandler>,
+    private val binaryFormat: BinaryFormat) : SessionHandler<ByteArray, ByteArray> {
 
-    fun handleRequest(input: ByteArray, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
+    override fun handleRequest(input: ByteArray, subscriptions: MutableList<SyncingHandler>): ByteArray {
         val requests = binaryFormat.decodeFromByteArray<List<JsonRpc2Request>>(input)
-        val processed = requests.map { internalHandler.handleRequest(it, subscriptions) }
+        val processed = requests.map { handleRequestInternal(it, subscriptions) }
 
         return binaryFormat.encodeToByteArray(processed)
+    }
+
+    override fun handleSubscriptions(subscriptions: MutableList<SyncingHandler>): ByteArray {
+        val processed = subscriptions.flatMap {  it.collect() }
+
+        return binaryFormat.encodeToByteArray(processed)
+    }
+
+    private fun handleRequestInternal(input: JsonRpc2Request, subscriptions: MutableList<SyncingHandler>): JsonRpc2Response {
+        val handler = methodHandlers.firstOrNull { it.matches(input.method) }
+        return if (handler != null) {
+            val data = handler.handle(binaryFormat, input.params, subscriptions)
+            JsonRpc2Response(id = input.id!!, result = data)
+        } else {
+            val error = JsonRpc2Error(404, "Method handler not found!")
+            JsonRpc2Response(id = input.id!!, error = error)
+        }
     }
 }

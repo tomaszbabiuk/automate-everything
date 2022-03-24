@@ -36,7 +36,7 @@ import eu.automateeverything.domain.inbox.BroadcastingInbox
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.extensibility.InjectionRegistry
 import eu.automateeverything.interop.ByteArraySessionHandler
-import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.interop.SessionHandler
 import eu.automateeverything.jsonrpc2.*
 import eu.automateeverything.langateway.JavaLanGatewayResolver
 import eu.automateeverything.mappers.*
@@ -73,10 +73,10 @@ open class App : ResourceConfig() {
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 
-    private val jsonRpc2SessionHandler: JsonRpc2SessionHandler = buildJsonRpc2SessionHandler()
+    private val sessionHandler: SessionHandler<ByteArray, ByteArray> = buildJsonRpc2SessionHandler()
 
     @OptIn(ExperimentalSerializationApi::class)
-    private fun buildJsonRpc2SessionHandler(): JsonRpc2SessionHandler {
+    private fun buildJsonRpc2SessionHandler(): SessionHandler<ByteArray, ByteArray> {
         val mapper = LiveEventsMapper(
             PortDtoMapper(),
             PluginDtoMapper(SettingGroupDtoMapper(FieldDefinitionDtoMapper())),
@@ -98,11 +98,9 @@ open class App : ResourceConfig() {
             SubscribeMethodHandler(eventsSyncingHandler)
         )
 
-        return JsonRpc2SessionHandler(methodHandlers, binaryFormat)
+        return ByteArraySessionHandler(methodHandlers, binaryFormat)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private val byteArraySessionHandler: ByteArraySessionHandler = ByteArraySessionHandler(jsonRpc2SessionHandler, binaryFormat)
 
     init {
         fillInjectionRegistry()
@@ -141,7 +139,7 @@ open class App : ResourceConfig() {
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
         injectionRegistry.put(Repository::class.java, repository)
-        injectionRegistry.put(ByteArraySessionHandler::class.java, byteArraySessionHandler)
+        injectionRegistry.put(ByteArraySessionHandler::class.java, sessionHandler)
     }
 
     private fun firstRunProcedure() {

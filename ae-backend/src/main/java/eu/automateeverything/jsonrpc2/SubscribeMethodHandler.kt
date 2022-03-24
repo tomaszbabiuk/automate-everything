@@ -15,15 +15,16 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.interop.MethodHandler
+import eu.automateeverything.interop.SyncingHandler
 import kotlinx.serialization.BinaryFormat
 
-class SubscribeMethodHandler(private val eventsSyncingHandler: EventsSyncingHandler) : JsonRpc2SessionHandler.MethodHandler {
+class SubscribeMethodHandler(private val eventsSyncingHandler: EventsSyncingHandler) : MethodHandler {
         override fun matches(method: String): Boolean {
             return method == "Subscribe"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SyncingHandler>): ByteArray {
             subscriptions.add(eventsSyncingHandler)
 
             return byteArrayOf()
