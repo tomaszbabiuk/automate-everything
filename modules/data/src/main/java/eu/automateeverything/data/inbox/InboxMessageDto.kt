@@ -16,7 +16,9 @@
 package eu.automateeverything.data.inbox
 
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class InboxMessageDto(
     val id: Long,
     val subject: Resource,

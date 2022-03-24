@@ -15,8 +15,6 @@
 
 package eu.automateeverything.actions
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.domain.configurable.ActionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
@@ -29,29 +27,29 @@ abstract class ActionConfigurableBase: ActionConfigurable() {
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 eu.automateeverything.domain.R.state_unknown,
             )
-            states[STATE_READY] = ControlState(
+            states[STATE_READY] = State.buildControlState(
                 STATE_READY,
                 R.state_ready,
                 R.action_reset
             )
-            states[STATE_CANCELLED] = ControlState(
+            states[STATE_CANCELLED] = State.buildControlState(
                 STATE_CANCELLED,
                 R.state_cancelled,
                 R.action_cancel
             )
-            states[STATE_SUCCESS] = ReadOnlyState(
+            states[STATE_SUCCESS] = State.buildReadOnlyState(
                 STATE_SUCCESS,
                 R.state_success,
             )
-            states[STATE_FAILURE] = ReadOnlyState(
+            states[STATE_FAILURE] = State.buildReadOnlyState(
                 STATE_FAILURE,
                 R.state_failure,
             )
-            states[STATE_EXECUTING] = ControlState(
+            states[STATE_EXECUTING] = State.buildControlState(
                 STATE_EXECUTING,
                 R.state_executing,
                 R.action_execute

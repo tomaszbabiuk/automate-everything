@@ -16,17 +16,16 @@
 package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
 class VersionsMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == VersionDto::class.java.simpleName
+            return method == "GetVersions"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
             val result = repository.getVersions()
             return format.encodeToByteArray(result)
         }

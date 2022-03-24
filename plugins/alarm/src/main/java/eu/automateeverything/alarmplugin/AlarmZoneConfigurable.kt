@@ -15,8 +15,6 @@
 
 package eu.automateeverything.alarmplugin
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
@@ -24,11 +22,10 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.data.hardware.PortValue
 import org.pf4j.Extension
 
 @Extension
-class AlarmZoneConfigurable<T: PortValue>(
+class AlarmZoneConfigurable(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
 
@@ -55,31 +52,31 @@ class AlarmZoneConfigurable<T: PortValue>(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_DISARMED] = ControlState(
+            states[STATE_DISARMED] = State.buildControlState(
                 STATE_DISARMED,
                 R.state_disarmed,
                 R.action_disarm
             )
-            states[STATE_ARMED] = ControlState(
+            states[STATE_ARMED] = State.buildControlState(
                 STATE_ARMED,
                 R.state_armed,
                 R.action_arm,
             )
-            states[STATE_LEAVING] = ControlState(
+            states[STATE_LEAVING] = State.buildControlState(
                 STATE_LEAVING,
                 R.state_leaving,
                 R.action_count
             )
-            states[STATE_PREALARM] = ReadOnlyState(
+            states[STATE_PREALARM] = State.buildReadOnlyState(
                 STATE_PREALARM,
                 R.state_prealarm,
                 isSignaled = true
             )
-            states[STATE_ALARM] = ReadOnlyState(
+            states[STATE_ALARM] = State.buildReadOnlyState(
                 STATE_ALARM,
                 R.state_alarm,
                 isSignaled = true

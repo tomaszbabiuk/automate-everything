@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.automation
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class NextStatesDto(
     val states: List<State>,
     val current: String,

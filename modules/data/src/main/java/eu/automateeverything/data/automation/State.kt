@@ -16,26 +16,28 @@
 package eu.automateeverything.data.automation
 
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
-abstract class  State(
+@Serializable
+class State(
     val id: String,
     val name: Resource,
     val action: Resource?,
     val type: StateType,
-    val isSignaled: Boolean = false,
-    var codeRequired: Boolean = false)
+    val isSignaled: Boolean = false) {
 
-class ReadOnlyState(
-    id: String,
-    name: Resource,
-    isSignaled: Boolean = false,
-    codeRequired: Boolean = false
-) : State(id, name, null, StateType.ReadOnly, isSignaled, codeRequired)
+    companion object {
+        fun buildReadOnlyState(id: String,
+                          name: Resource,
+                          isSignaled: Boolean = false): State {
+            return State(id, name, null, StateType.ReadOnly, isSignaled)
+        }
 
-class ControlState(
-    id: String,
-    name: Resource,
-    action: Resource,
-    isSignaled: Boolean = false,
-    codeRequired: Boolean = false
-) : State(id, name, action, StateType.Control, isSignaled, codeRequired)
+        fun buildControlState(id: String,
+                              name: Resource,
+                              action: Resource,
+                              isSignaled: Boolean = false): State {
+            return State(id, name, action, StateType.Control, isSignaled)
+        }
+    }
+}

@@ -15,7 +15,6 @@
 
 package eu.automateeverything.alarmplugin
 
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
@@ -23,11 +22,10 @@ import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortFinder
-import eu.automateeverything.data.hardware.PortValue
 import org.pf4j.Extension
 
 @Extension
-class AlarmLineConfigurable<T: PortValue>(
+class AlarmLineConfigurable(
     private val portFinder: PortFinder,
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
@@ -52,23 +50,23 @@ class AlarmLineConfigurable<T: PortValue>(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_DISARMED] = ReadOnlyState(
+            states[STATE_DISARMED] = State.buildReadOnlyState(
                 STATE_DISARMED,
                 R.state_disarmed,
             )
-            states[STATE_WATCHING] = ReadOnlyState(
+            states[STATE_WATCHING] = State.buildReadOnlyState(
                 STATE_WATCHING,
                 R.state_watching,
             )
-            states[STATE_PREALARM] = ReadOnlyState(
+            states[STATE_PREALARM] = State.buildReadOnlyState(
                 STATE_PREALARM,
                 R.state_prealarm,
             )
-            states[STATE_ALARM] = ReadOnlyState(
+            states[STATE_ALARM] = State.buildReadOnlyState(
                 STATE_ALARM,
                 R.state_alarm,
             )

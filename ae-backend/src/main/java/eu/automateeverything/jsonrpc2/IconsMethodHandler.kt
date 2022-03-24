@@ -16,7 +16,6 @@
 package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.data.icons.IconDto
 import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.decodeFromByteArray
@@ -24,10 +23,10 @@ import kotlinx.serialization.encodeToByteArray
 
 class IconsMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == IconDto::class.java.simpleName
+            return method == "GetIcons"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
             if (params != null) {
                 val ids: List<Long> = format.decodeFromByteArray(params)
                 val icons = ids.map {

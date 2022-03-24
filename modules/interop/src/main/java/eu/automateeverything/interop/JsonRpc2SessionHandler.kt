@@ -19,14 +19,13 @@ import kotlinx.serialization.BinaryFormat
 
 class JsonRpc2SessionHandler(
     private val methodHandlers: List<MethodHandler>,
-    private val syncingHandlers: List<SyncingHandler>,
     private val format: BinaryFormat
 ) : SessionHandler<JsonRpc2Request, JsonRpc2Response> {
 
-    override fun handleRequest(input: JsonRpc2Request): JsonRpc2Response {
+    override fun handleRequest(input: JsonRpc2Request, subscriptions: MutableList<SyncingHandler>): JsonRpc2Response {
         val handler = methodHandlers.firstOrNull { it.matches(input.method) }
         return if (handler != null) {
-            val data = handler.handle(format, input.params)
+            val data = handler.handle(format, input.params, subscriptions)
             JsonRpc2Response(id = input.id!!, result = data)
         } else {
             val error = JsonRpc2Error(404, "Method handler not found!")
@@ -34,20 +33,20 @@ class JsonRpc2SessionHandler(
         }
     }
 
-    override fun handleNotifications() : List<JsonRpc2Response> {
-        return syncingHandlers
-            .flatMap { it.collect(format).map { entry ->
-                    JsonRpc2Response(id = entry.key, result = entry.value)
-                }
-            }
-    }
+//    override fun handleSubscriptions() : List<JsonRpc2Response> {
+//        return syncingHandlers
+//            .flatMap { it.collect(format).map { entry ->
+//                    JsonRpc2Response(id = entry.key, result = entry.value)
+//                }
+//            }
+//    }
 
     interface MethodHandler {
         fun matches(method: String): Boolean
-        fun handle(format: BinaryFormat, params: ByteArray?) : ByteArray
+        fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SyncingHandler>) : ByteArray
     }
 
     interface SyncingHandler {
-        fun collect(format: BinaryFormat) : Map<String, ByteArray>
+        fun collect() : Map<String, ByteArray>
     }
 }

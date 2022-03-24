@@ -15,8 +15,6 @@
 
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
@@ -75,20 +73,20 @@ class CirculationPumpConfigurable(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_PUMPING] = ReadOnlyState(
+            states[STATE_PUMPING] = State.buildReadOnlyState(
                 STATE_PUMPING,
                 R.state_pumping
             )
-            states[STATE_STANDBY] = ControlState(
+            states[STATE_STANDBY] = State.buildControlState(
                 STATE_STANDBY,
                 R.state_standby,
                 R.action_standby
             )
-            states[STATE_OFF] = ControlState(
+            states[STATE_OFF] = State.buildControlState(
                 STATE_OFF,
                 R.state_off,
                 R.action_off

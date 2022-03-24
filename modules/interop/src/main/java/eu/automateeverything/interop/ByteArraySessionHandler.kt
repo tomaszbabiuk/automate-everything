@@ -23,15 +23,10 @@ class ByteArraySessionHandler(
     private val internalHandler: SessionHandler<JsonRpc2Request, JsonRpc2Response>,
     private val binaryFormat: BinaryFormat) {
 
-    fun handleRequest(input: ByteArray): ByteArray {
+    fun handleRequest(input: ByteArray, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
         val requests = binaryFormat.decodeFromByteArray<List<JsonRpc2Request>>(input)
-        val processed = requests.map(internalHandler::handleRequest)
+        val processed = requests.map { internalHandler.handleRequest(it, subscriptions) }
 
         return binaryFormat.encodeToByteArray(processed)
-    }
-
-    fun handleNotifications(): ByteArray {
-        val notifications = internalHandler.handleNotifications()
-        return binaryFormat.encodeToByteArray(notifications)
     }
 }

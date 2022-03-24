@@ -17,7 +17,9 @@ package eu.automateeverything.data.settings
 
 import eu.automateeverything.data.fields.FieldDefinitionDto
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SettingGroupDto(
     val clazz: String,
     val titleRes: Resource,

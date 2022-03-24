@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.fields
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class ReferenceDto(
     val clazz: String,
     val type: String,

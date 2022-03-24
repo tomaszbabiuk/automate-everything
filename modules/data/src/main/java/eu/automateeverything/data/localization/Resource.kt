@@ -28,7 +28,9 @@ data class ResourceMap(
     var PL: String
 )
 
-class Resource(englishValue: String, polishValue: String) {
+
+@Serializable
+data class Resource(val englishValue: String, val polishValue: String) {
     private val _values = ResourceMap(englishValue, polishValue)
 
     constructor(map: ResourceMap) :

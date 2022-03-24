@@ -16,7 +16,9 @@
 package eu.automateeverything.data.automationhistory
 
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AutomationHistoryDto(
     val no: Int,
     val timestamp: Long,

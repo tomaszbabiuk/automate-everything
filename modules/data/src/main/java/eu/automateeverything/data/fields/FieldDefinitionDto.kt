@@ -16,7 +16,9 @@
 package eu.automateeverything.data.fields
 
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
+@Serializable
 class FieldDefinitionDto(
     val type: FieldType,
     val name: String,

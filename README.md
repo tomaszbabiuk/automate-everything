@@ -1,7 +1,40 @@
 # Welcome
-"Automate Everything" is a multipurpose automation server. It can control your home or garden watering system. It can even trade cryptocurrencies! 
+"Automate Everything" is a multi-purpose automation framework. It's an open source, vendor independent and technology-agnostic approach to rule-based automation.
 
-Think of "Automate Everything" as more plugin friendly OpenHab or deeply customizable HomeAssistant. You can even use "Automate Everything" as "If This Than That" service in your local network. 
+At first glance "Automate Everything" is very similar to other open-source automation platforms (see similar projects) but it's built on top of [objects](doc/features/Powerful-automation-engine.md) instead of bindings.
+It's not limited to smart homes only. It's very [extensible](doc/features/Everything-is-a-plugin.md) and [easy](doc/features/Modern-UI.md) to use.
+
+# What can you build?
+The sky is the limit... you can use it to automate literally everything! If you're interested in any type of projects below, contact me on [Linked-In](https://www.linkedin.com/in/tomasz-babiuk/).
+
+### Smart building
+- A smart home
+- A guardian of self-consumption for your solar panel
+- A dedicated central heating controller
+- A dedicated alarm system
+- A local If-This-Than-That engine
+- A mailing system
+
+### Smart gardening
+- A smart glasshouse
+- Watering system
+- Hydroponic controller
+
+### Trading
+- A micro hedging fund
+- Trading alerts
+- Smart trading platform
+
+### Industrial automation
+Access control system
+Access control based automation system
+Industrial control panels
+
+# Similar projects
+1. OpenHAB
+2. HomeAssistant
+3. Domoticz 
+4. NodeRED
 
 With correct set of plugins you can automate literally everything!
 
@@ -16,9 +49,9 @@ With correct set of plugins you can automate literally everything!
 
 # A note from the author
 The work on "Automate Everything" was started in 2012. Yes... almost 10 years ago!. At first the project was called "geekHOME Server". In the beginning geekHOME was written in C# Micro Framework (it was running on a dedicated microcontroller called "FEZ Cobra"!). It's been the beginning of DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
-In 2015 the code was ported to Java to be able to run on Raspberry Pi 1. It was able to control the lights, central heating, alarm and ventilation at my own house. It has never been published. Comparing to FEZ Cobra, Raspberry Pi was 5x cheaper and 100x more powerful.
+In 2015 the code was ported to Java to be able to run on Raspberry Pi single board computer. It was able to control lights, central heating, alarm and ventilation at my own house. It has never been published.
 
-In 2020, I decided to give the project another shot. "Automate Everything" is now a full-blown automation server. Everything has been rewritten (only the original concept hasn't changed).
+In 2020, I decided to give the project another shot. "Automate Everything" is now a full-blown automation server. Everything has been rewritten (the original concept is unchanged).
 
 I didn't focus on Home Automation this time... I wanted to create an "Operating System" for every type of automation project. I wanted to create something that will be really easy to extend by the others. That's why every single aspect of "Automate Everything" can be controlled or extended by plugins. I hope the project will be useful for the other "DIY Tinkerers" like me.
 

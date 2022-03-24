@@ -23,10 +23,10 @@ import kotlinx.serialization.encodeToByteArray
 
 class MessagesMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == InboxItemDto::class.java.simpleName
+            return method == "GetMessages"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
             val result = repository.getInboxItems(100, 0)
             return format.encodeToByteArray(result)
         }

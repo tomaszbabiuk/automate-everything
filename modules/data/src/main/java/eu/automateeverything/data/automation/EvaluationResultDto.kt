@@ -15,11 +15,16 @@
 
 package eu.automateeverything.data.automation
 
+import eu.automateeverything.data.BigDecimalSerializer
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import java.math.BigDecimal
 
+@Serializable
 data class EvaluationResultDto(
     val interfaceValue: Resource,
+    @Serializable(with = BigDecimalSerializer::class)
     val decimalValue: BigDecimal?,
     val isSignaled: Boolean,
     val descriptions: List<Resource>?,

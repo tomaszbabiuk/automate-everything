@@ -52,6 +52,11 @@ open class App : ResourceConfig() {
 
     private val logger = LoggerFactory.getLogger(App::class.java)
 
+    @OptIn(ExperimentalSerializationApi::class)
+    private val binaryFormat = Cbor {
+        ignoreUnknownKeys = true
+    }
+
     //manual injection of common services
     private val injectionRegistry: InjectionRegistry = InjectionRegistry()
     private val firstRunService: FirstRunService = FileCheckingFirstRunService()
@@ -82,9 +87,7 @@ open class App : ResourceConfig() {
             InboxMessageDtoMapper()
         )
 
-        val syncingHandlers = listOf(
-            EventsSyncingHandler(eventsSink, mapper)
-        )
+        val eventsSyncingHandler = EventsSyncingHandler(eventsSink, mapper, binaryFormat)
 
         val methodHandlers = listOf(
             InstancesMethodHandler(repository),
@@ -92,13 +95,14 @@ open class App : ResourceConfig() {
             IconsMethodHandler(repository),
             TagsMethodHandler(repository),
             VersionsMethodHandler(repository),
+            SubscribeMethodHandler(eventsSyncingHandler)
         )
 
-        return JsonRpc2SessionHandler(methodHandlers, syncingHandlers, Cbor)
+        return JsonRpc2SessionHandler(methodHandlers, binaryFormat)
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    private val byteArraySessionHandler: ByteArraySessionHandler = ByteArraySessionHandler(jsonRpc2SessionHandler, Cbor)
+    private val byteArraySessionHandler: ByteArraySessionHandler = ByteArraySessionHandler(jsonRpc2SessionHandler, binaryFormat)
 
     init {
         fillInjectionRegistry()

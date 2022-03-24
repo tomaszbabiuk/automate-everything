@@ -22,11 +22,13 @@ import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.Port
+import kotlinx.serialization.Serializable
 import org.pf4j.PluginWrapper
 
 
 sealed class LiveEventData
 
+@Serializable
 class DiscoveryEventData(val factoryId: String,
                          val message: String) : LiveEventData() {
     override fun toString(): String {
@@ -34,6 +36,7 @@ class DiscoveryEventData(val factoryId: String,
     }
 }
 
+@Serializable
 class PortUpdateEventData(val factoryId: String,
                           val adapterId: String,
                           val port: Port<*>) : LiveEventData() {
@@ -46,12 +49,14 @@ class PortUpdateEventData(val factoryId: String,
     }
 }
 
+@Serializable
 class InstanceUpdateEventData(val instanceDto: InstanceDto) : LiveEventData() {
     override fun toString(): String {
         return "Instance (id: ${instanceDto.id}) update"
     }
 }
 
+@Serializable
 class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
     override fun toString(): String {
         return if (enabled) {
@@ -61,6 +66,7 @@ class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
         }
     }
 }
+
 
 class AutomationUpdateEventData(
     val unit: AutomationUnit<*>,
@@ -74,6 +80,7 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
     }
 }
 
+@Serializable
 class HeartbeatEventData(
     val timestamp: Long,
     val unreadMessagesCount: Int,

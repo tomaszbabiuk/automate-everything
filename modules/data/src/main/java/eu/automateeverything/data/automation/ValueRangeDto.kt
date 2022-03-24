@@ -15,10 +15,16 @@
 
 package eu.automateeverything.data.automation
 
+import eu.automateeverything.data.BigDecimalSerializer
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
+@Serializable
 data class ValueRangeDto(
+    @Serializable(with = BigDecimalSerializer::class)
     val min: BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
     val max: BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
     val step: BigDecimal
 )

@@ -17,7 +17,9 @@ package eu.automateeverything.data.plugins
 
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.settings.SettingGroupDto
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PluginDto(
     val id: String,
     val name: Resource,

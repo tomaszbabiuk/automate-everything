@@ -23,10 +23,10 @@ import kotlinx.serialization.encodeToByteArray
 
 class TagsMethodHandler(val repository: Repository) : JsonRpc2SessionHandler.MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == TagDto::class.java.simpleName
+            return method == "GetTags"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?): ByteArray {
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>): ByteArray {
             val result = repository.getAllTags()
             return format.encodeToByteArray(result)
         }

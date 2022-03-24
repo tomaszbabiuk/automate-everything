@@ -15,22 +15,22 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.data.Mapper
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.interop.JsonRpc2SessionHandler
+import eu.automateeverything.mappers.LiveEventsMapper
 import kotlinx.serialization.BinaryFormat
-import kotlinx.serialization.encodeToByteArray
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class EventsSyncingHandler(
     private val eventsSink: EventsSink,
-    private val eventsMapper: Mapper<LiveEvent<*>, List<Any>>
+    private val eventsMapper: LiveEventsMapper,
+    private val binaryFormat: BinaryFormat
 ) : JsonRpc2SessionHandler.SyncingHandler,
     LiveEventsListener {
 
-    private val queue = ConcurrentLinkedQueue<Any>()
+    private val queue = ConcurrentLinkedQueue<Pair<Any, (BinaryFormat) -> ByteArray>>()
 
     init {
         eventsSink.addEventListener(this)
@@ -40,16 +40,17 @@ class EventsSyncingHandler(
         eventsSink.removeListener(this)
     }
 
-    override fun collect(format: BinaryFormat): Map<String, ByteArray> {
+    override fun collect(): Map<String, ByteArray> {
         return queue.associateBy(keySelector = {
-                it.javaClass.simpleName
+                it.first.javaClass.simpleName
         }, valueTransform = {
-            format.encodeToByteArray(it)
+            it.second.invoke(binaryFormat)
         })
     }
 
     override fun onEvent(event: LiveEvent<*>) {
-        val toSync = eventsMapper.map(event)
-        queue.offer(toSync)
+        eventsMapper
+            .map(event)
+            .forEach { queue.offer(it) }
     }
 }

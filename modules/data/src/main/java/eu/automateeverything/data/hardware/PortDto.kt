@@ -15,13 +15,17 @@
 
 package eu.automateeverything.data.hardware
 
+import eu.automateeverything.data.BigDecimalSerializer
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
+@Serializable
 data class PortDto(
     val id: String,
     val factoryId: String,
     val adapterId: String,
+    @Serializable(with = BigDecimalSerializer::class)
     val decimalValue: BigDecimal?,
     val interfaceValue: Resource?,
     val valueClazz: String,

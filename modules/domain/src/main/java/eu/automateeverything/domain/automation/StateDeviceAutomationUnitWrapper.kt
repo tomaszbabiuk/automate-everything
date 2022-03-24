@@ -15,7 +15,6 @@
 
 package eu.automateeverything.domain.automation
 
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.hardware.PortValue
@@ -60,9 +59,7 @@ StateDeviceAutomationUnit{
     }
 
     override val currentState: State
-        get() = ReadOnlyState("error",
-                Resource.createUniResource("error"))
-
+        get() = State.buildReadOnlyState("error", Resource.createUniResource("error"))
 }
 
 class ControllerAutomationUnitWrapper<V: PortValue>(

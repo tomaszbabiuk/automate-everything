@@ -15,8 +15,6 @@
 
 package eu.automateeverything.centralheatingplugin
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
@@ -67,17 +65,17 @@ class ThermalActuatorConfigurable(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_ENABLED] = ControlState(
+            states[STATE_ENABLED] = State.buildControlState(
                 STATE_ENABLED,
                 R.state_enabled,
                 R.action_enable,
                 isSignaled = true
             )
-            states[STATE_DISABLED] = ControlState(
+            states[STATE_DISABLED] = State.buildControlState(
                 STATE_DISABLED,
                 R.state_disabled,
                 R.action_disable

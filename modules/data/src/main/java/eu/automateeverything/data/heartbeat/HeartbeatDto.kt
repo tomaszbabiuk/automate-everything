@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.heartbeat
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class HeartbeatDto(
     val timestamp: Long,
     val inboxUnreadCount : Int,

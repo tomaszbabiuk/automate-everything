@@ -19,6 +19,8 @@ import eu.automateeverything.data.Mapper
 import eu.automateeverything.domain.events.*
 import jakarta.inject.Inject
 import jakarta.ws.rs.NotSupportedException
+import kotlinx.serialization.BinaryFormat
+import kotlinx.serialization.encodeToByteArray
 
 class LiveEventsMapper @Inject constructor(
     private val portDtoMapper: PortDtoMapper,
@@ -28,21 +30,30 @@ class LiveEventsMapper @Inject constructor(
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val heartbeatDtoMapper: HeartbeatDtoMapper,
     private val inboxMessageDtoMapper: InboxMessageDtoMapper
-) : Mapper<LiveEvent<*>, List<Any>> {
+) : Mapper<LiveEvent<*>, List<Pair<Any, (BinaryFormat) -> ByteArray>>> {
 
-    override fun map(from: LiveEvent<*>): List<Any> {
+    override fun map(from: LiveEvent<*>): List<Pair<Any, (BinaryFormat) -> ByteArray>> {
         return when (from.data) {
             is PortUpdateEventData -> {
                 val payload = from.data as PortUpdateEventData
-                listOf(portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId))
+                val mapped = portDtoMapper.map(payload.port, payload.factoryId, payload.adapterId)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             is PluginEventData -> {
                 val payload = from.data as PluginEventData
-                listOf(pluginDtoMapper.map(payload.plugin))
+                val mapped = pluginDtoMapper.map(payload.plugin)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             is DiscoveryEventData -> {
                 val payload = from.data as DiscoveryEventData
-                listOf(hardwareEventMapper.map(from.number, payload))
+                val mapped = hardwareEventMapper.map(from.number, payload)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             is AutomationUpdateEventData -> {
                 val payload = from.data as AutomationUpdateEventData
@@ -51,7 +62,10 @@ class LiveEventsMapper @Inject constructor(
                 val payloadHistory = from.data as AutomationUpdateEventData
                 val mappedHistory = automationHistoryMapper.map(from.timestamp, payloadHistory, from.number)
 
-                listOf(mappedUnit, mappedHistory)
+                listOf(
+                    Pair(mappedUnit) { it.encodeToByteArray(mappedUnit) },
+                    Pair(mappedHistory) { it.encodeToByteArray(mappedHistory) }
+                )
             }
             is AutomationStateEventData -> {
                 val payload = from.data as AutomationStateEventData
@@ -60,22 +74,31 @@ class LiveEventsMapper @Inject constructor(
                 val payloadHistory = from.data as AutomationStateEventData
                 val mappedHistory = automationHistoryMapper.map(from.timestamp, payloadHistory, from.number)
 
-                listOf(mappedState, mappedHistory)
+                listOf(
+                    Pair(mappedState) { it.encodeToByteArray(mappedState) },
+                    Pair(mappedHistory) { it.encodeToByteArray(mappedHistory) }
+                )
             }
             is HeartbeatEventData -> {
                 val payload = from.data as HeartbeatEventData
                 val mapped = heartbeatDtoMapper.map(payload)
-                listOf(mapped)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             is InboxEventData -> {
                 val payload = from.data as InboxEventData
                 val mapped = inboxMessageDtoMapper.map(payload.inboxItemDto)
-                listOf(mapped)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             is InstanceUpdateEventData -> {
                 val payload = from.data as InstanceUpdateEventData
                 val mapped = payload.instanceDto
-                listOf(mapped)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
             }
             else -> {
                 throw NotSupportedException()

@@ -16,6 +16,5 @@
 package eu.automateeverything.interop
 
 interface SessionHandler<X, Y> {
-    fun handleRequest(input: X) : Y
-    fun handleNotifications(): List<Y>
+    fun handleRequest(input: X, subscriptions: MutableList<JsonRpc2SessionHandler.SyncingHandler>) : Y
 }

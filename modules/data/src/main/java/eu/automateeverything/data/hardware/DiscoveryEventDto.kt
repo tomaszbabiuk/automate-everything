@@ -15,6 +15,9 @@
 
 package eu.automateeverything.data.hardware
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DiscoveryEventDto(
 
     val factoryId: String,

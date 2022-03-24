@@ -15,17 +15,14 @@
 
 package eu.automateeverything.onoffplugin
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
-import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.StateChangeReporter
-import eu.automateeverything.devices.DevicesConfigurable
-import eu.automateeverything.domain.automation.AutomationUnit
 import org.pf4j.Extension
 import java.util.*
 
@@ -80,17 +77,17 @@ class OnOffDeviceConfigurable(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_ON] = ControlState(
+            states[STATE_ON] = State.buildControlState(
                 STATE_ON,
                 R.state_on,
                 R.state_on,
                 isSignaled = true
             )
-            states[STATE_OFF] = ControlState(
+            states[STATE_OFF] = State.buildControlState(
                 STATE_OFF,
                 R.state_off,
                 R.state_off,

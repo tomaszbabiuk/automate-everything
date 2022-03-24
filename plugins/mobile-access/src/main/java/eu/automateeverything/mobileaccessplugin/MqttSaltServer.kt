@@ -22,6 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
+import eu.automateeverything.interop.JsonRpc2SessionHandler
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import saltchannel.util.Hex
@@ -212,44 +213,57 @@ class MqttSaltServer(
         }
 
         override fun toString(): String {
-            return "${hashCode()}, job.active=${job.isActive}, job.cancelled=${job.isCancelled}, job.completed=${job.isCompleted}"
+            return "${hashCode()}, job.active=${requestResponseJob.isActive}, job.cancelled=${requestResponseJob.isCancelled}, job.completed=${requestResponseJob.isCompleted}"
         }
 
         fun cancel() {
             sessionCancellationToken.set(true)
-            job.cancel("Forced cancellation")
+            requestResponseJob.cancel("Forced cancellation")
         }
 
         fun isDone(): Boolean {
-            return job.isCompleted || job.isCancelled
+            return requestResponseJob.isCompleted || requestResponseJob.isCancelled
         }
 
         private var session: SaltServerSession
         private var channel: QueuedCancellableByteChannel
         private val sessionCancellationToken = AtomicBoolean(false)
-        private var job: Deferred<Unit>
+        private var requestResponseJob: Deferred<Unit>
+        private val subscriptions = ArrayList<JsonRpc2SessionHandler.SyncingHandler>()
 
         init {
             channel = QueuedCancellableByteChannel(sessionCancellationToken, publisher)
             session = SaltServerSession(signKeyPair, channel)
             session.setEncKeyPair(random)
-            job = scope.async {
+            requestResponseJob = scope.async {
                 try {
                     session.handshake()
 
                     channelActivator.activateChannel(signKeyPair.pub(), session.clientSigKey)
 
+                    var subscriptionJob = async {
+                        while (isActive) {
+                            println("WORKING")
+                            delay(1000)
+                            try {
+                                subscriptions.forEach {
+                                    val notifications = it.collect()
+//                                if (notifications.isNotEmpty()) {
+//                                    session.channel.write(false, notifications)
+//                                }
+                                }
+                            } catch (ex: Exception) {
+                                logger.error("Unhandled exception from MQTT server", ex)
+                            }
+                        }
+                    }
+
                     while (isActive && !sessionCancellationToken.get()) {
                         val incomingData = session.channel.read("incoming packets")
                         logger.debug("Incoming session data ${incomingData.toHexString()}")
                         val isLast = session.channel.lastFlag()
-                        val responses = sessionHandler.handleRequest(incomingData)
+                        val responses = sessionHandler.handleRequest(incomingData, subscriptions)
                         session.channel.write(false, responses)
-
-                        val notifications = sessionHandler.handleNotifications()
-                        if (notifications.isNotEmpty()) {
-                            session.channel.write(false, notifications)
-                        }
 
                         if (isLast) {
                             break
@@ -276,11 +290,11 @@ class MqttSaltServer(
 
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
 
-            val inboundTopic = "$serverSignPubKeyHex/+/rx"
-            logger.debug("Subscribing to $inboundTopic")
+            val requestResponseTopic = "$serverSignPubKeyHex/+/rx"
+            logger.debug("Subscribing to $requestResponseTopic")
 
             client.subscribeWith()
-                .topicFilter(inboundTopic)
+                .topicFilter(requestResponseTopic)
                 .send()
 
             client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish: Mqtt3Publish ->

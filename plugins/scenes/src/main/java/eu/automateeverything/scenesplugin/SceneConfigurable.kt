@@ -15,8 +15,6 @@
 
 package eu.automateeverything.scenesplugin
 
-import eu.automateeverything.data.automation.ControlState
-import eu.automateeverything.data.automation.ReadOnlyState
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
@@ -55,17 +53,17 @@ class SceneConfigurable(
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = ReadOnlyState(
+            states[STATE_UNKNOWN] = State.buildReadOnlyState(
                 STATE_UNKNOWN,
                 R.state_unknown,
             )
-            states[STATE_ACTIVE] = ControlState(
+            states[STATE_ACTIVE] = State.buildControlState(
                 STATE_ACTIVE,
                 R.state_active,
                 R.action_activate,
                 isSignaled = true
             )
-            states[STATE_INACTIVE] = ControlState(
+            states[STATE_INACTIVE] = State.buildControlState(
                 STATE_INACTIVE,
                 R.state_inactive,
                 R.action_deactivate,
