@@ -19,16 +19,17 @@ import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.interop.JsonRpc2Response
-import eu.automateeverything.interop.SyncingHandler
+import eu.automateeverything.interop.SubscriptionHandler
 import eu.automateeverything.mappers.LiveEventsMapper
 import kotlinx.serialization.BinaryFormat
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class EventsSyncingHandler(
+class EventsSubscriptionHandler(
     private val eventsSink: EventsSink,
     private val eventsMapper: LiveEventsMapper,
-    private val binaryFormat: BinaryFormat
-) : SyncingHandler,
+    private val binaryFormat: BinaryFormat,
+    private val entityFilter: List<String>
+) : SubscriptionHandler,
     LiveEventsListener {
 
     private val queue = ConcurrentLinkedQueue<Pair<Any, (BinaryFormat) -> ByteArray>>()
@@ -54,6 +55,7 @@ class EventsSyncingHandler(
     override fun onEvent(event: LiveEvent<*>) {
         eventsMapper
             .map(event)
+            .filter { entityFilter.contains(it.first) }
             .forEach { queue.offer(it) }
     }
 }

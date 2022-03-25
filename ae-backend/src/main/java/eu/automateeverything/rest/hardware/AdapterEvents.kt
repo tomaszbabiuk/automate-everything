@@ -18,7 +18,7 @@ package eu.automateeverything.rest.hardware
 import eu.automateeverything.domain.events.DiscoveryEventData
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.data.hardware.DiscoveryEventDto
-import eu.automateeverything.mappers.NumberedHardwareEventToEventDtoMapper
+import eu.automateeverything.mappers.DiscoveryEventMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.MediaType
 @Path("adapterevents")
 class AdapterEvents @Inject constructor(
     private val eventsSink: EventsSink,
-    private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
+    private val hardwareEventMapper: DiscoveryEventMapper,
 ) {
 
     @GET

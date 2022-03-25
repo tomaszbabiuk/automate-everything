@@ -13,9 +13,6 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.interop
+package eu.automateeverything.jsonrpc2
 
-interface SessionHandler<X, Y> {
-    fun handleRequest(input: X, subscriptions: MutableList<SubscriptionHandler>) : Y
-    fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>) : Y
-}
+class JsonRpc2Exception(message: String) : Exception(message)

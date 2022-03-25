@@ -77,17 +77,28 @@ open class App : ResourceConfig() {
 
     @OptIn(ExperimentalSerializationApi::class)
     private fun buildJsonRpc2SessionHandler(): SessionHandler<ByteArray, ByteArray> {
-        val mapper = LiveEventsMapper(
-            PortDtoMapper(),
-            PluginDtoMapper(SettingGroupDtoMapper(FieldDefinitionDtoMapper())),
-            NumberedHardwareEventToEventDtoMapper(),
-            AutomationUnitDtoMapper(EvaluationResultDtoMapper()),
-            AutomationHistoryDtoMapper(),
-            HeartbeatDtoMapper(),
-            InboxMessageDtoMapper()
+        val portMapper = PortDtoMapper()
+        val fieldDefinitionMapper = FieldDefinitionDtoMapper()
+        val settingGroupMapper = SettingGroupDtoMapper(fieldDefinitionMapper)
+        val pluginMapper = PluginDtoMapper(settingGroupMapper)
+        val discoveryEventMapper = DiscoveryEventMapper()
+        val evaluationResultMapper = EvaluationResultDtoMapper()
+        val automationUnitMapper = AutomationUnitDtoMapper(evaluationResultMapper)
+        val automationHistoryMapper = AutomationHistoryDtoMapper()
+        val heartbeatMapper = HeartbeatDtoMapper()
+        val inboxMessageMapper = InboxMessageDtoMapper()
+
+        val eventsMapper = LiveEventsMapper(
+            portMapper,
+            pluginMapper,
+            discoveryEventMapper,
+            automationUnitMapper,
+            automationHistoryMapper,
+            heartbeatMapper,
+            inboxMessageMapper
         )
 
-        val eventsSyncingHandler = EventsSyncingHandler(eventsSink, mapper, binaryFormat)
+        val eventsSubscriptionBuilder = EventsSubscriptionBuilder(eventsSink, eventsMapper, binaryFormat)
 
         val methodHandlers = listOf(
             InstancesMethodHandler(repository),
@@ -95,7 +106,8 @@ open class App : ResourceConfig() {
             IconsMethodHandler(repository),
             TagsMethodHandler(repository),
             VersionsMethodHandler(repository),
-            SubscribeMethodHandler(eventsSyncingHandler)
+            AutomationUnitsMethodHandler(automationConductor, automationUnitMapper),
+            SubscribeToEventsMethodHandler(eventsSubscriptionBuilder)
         )
 
         return ByteArraySessionHandler(methodHandlers, binaryFormat)

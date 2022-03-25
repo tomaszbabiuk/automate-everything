@@ -22,7 +22,7 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.interop.ByteArraySessionHandler
-import eu.automateeverything.interop.SyncingHandler
+import eu.automateeverything.interop.SubscriptionHandler
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import saltchannel.util.Hex
@@ -204,7 +204,7 @@ class MqttSaltServer(
     }
 
     inner class SingleSessionContext(
-        signKeyPair: KeyPair,
+        private val signKeyPair: KeyPair,
         scope: CoroutineScope,
         publisher: (ByteArray) -> Unit
     ) {
@@ -213,65 +213,74 @@ class MqttSaltServer(
         }
 
         override fun toString(): String {
-            return "${hashCode()}, job.active=${requestResponseJob.isActive}, job.cancelled=${requestResponseJob.isCancelled}, job.completed=${requestResponseJob.isCompleted}"
+            return "${hashCode()}, job.active=${serverMasterJob.isActive}, job.cancelled=${serverMasterJob.isCancelled}, job.completed=${serverMasterJob.isCompleted}"
         }
 
         fun cancel() {
             sessionCancellationToken.set(true)
-            requestResponseJob.cancel("Forced cancellation")
+            serverMasterJob.cancel("Forced cancellation")
         }
 
         fun isDone(): Boolean {
-            return requestResponseJob.isCompleted || requestResponseJob.isCancelled
+            return serverMasterJob.isCompleted || serverMasterJob.isCancelled
         }
 
         private var session: SaltServerSession
         private var channel: QueuedCancellableByteChannel
         private val sessionCancellationToken = AtomicBoolean(false)
-        private var requestResponseJob: Deferred<Unit>
-        private val subscriptions = ArrayList<SyncingHandler>()
+        private var serverMasterJob: Deferred<Unit>
+        private var subscriptionJob: Deferred<Unit>? = null
+        private val subscriptions = ArrayList<SubscriptionHandler>()
+
+        private suspend fun subscriptionsLoop() = coroutineScope {
+            while (isActive) {
+                println("WORKING")
+                delay(1000)
+                try {
+                    val responses = sessionHandler.handleSubscriptions(subscriptions)
+                    session.channel.write(false, responses)
+                } catch (ex: Exception) {
+                    logger.error("Unhandled exception from MQTT server", ex)
+                }
+            }
+        }
+
+        private suspend fun serverLoop() = coroutineScope {
+            try {
+                session.handshake()
+
+                channelActivator.activateChannel(signKeyPair.pub(), session.clientSigKey)
+
+                subscriptionJob = async {
+                    subscriptionsLoop()
+                }
+
+                while (isActive && !sessionCancellationToken.get()) {
+                    val incomingData = session.channel.read("incoming packets")
+                    logger.debug("Incoming session data ${incomingData.toHexString()}")
+                    val isLast = session.channel.lastFlag()
+                    val responses = sessionHandler.handleRequest(incomingData, subscriptions)
+                    session.channel.write(false, responses)
+
+                    if (isLast) {
+                        break
+                    }
+                }
+
+                logger.debug("Unhandled exception from MQTT server")
+            } catch (ex: ChannelTerminatedException) {
+                logger.debug("Unhandled exception from MQTT server", ex)
+            } catch (ex: Exception) {
+                logger.error("Unhandled exception from MQTT server", ex)
+            }
+        }
 
         init {
             channel = QueuedCancellableByteChannel(sessionCancellationToken, publisher)
             session = SaltServerSession(signKeyPair, channel)
             session.setEncKeyPair(random)
-            requestResponseJob = scope.async {
-                try {
-                    session.handshake()
-
-                    channelActivator.activateChannel(signKeyPair.pub(), session.clientSigKey)
-
-                    var subscriptionJob = async {
-                        while (isActive) {
-                            println("WORKING")
-                            delay(1000)
-                            try {
-                                val responses = sessionHandler.handleSubscriptions(subscriptions)
-                                session.channel.write(false, responses)
-                            } catch (ex: Exception) {
-                                logger.error("Unhandled exception from MQTT server", ex)
-                            }
-                        }
-                    }
-
-                    while (isActive && !sessionCancellationToken.get()) {
-                        val incomingData = session.channel.read("incoming packets")
-                        logger.debug("Incoming session data ${incomingData.toHexString()}")
-                        val isLast = session.channel.lastFlag()
-                        val responses = sessionHandler.handleRequest(incomingData, subscriptions)
-                        session.channel.write(false, responses)
-
-                        if (isLast) {
-                            break
-                        }
-                    }
-
-                    logger.debug("Unhandled exception from MQTT server")
-                } catch (ex: ChannelTerminatedException) {
-                    logger.debug("Unhandled exception from MQTT server", ex)
-                } catch (ex: Exception) {
-                    logger.error("Unhandled exception from MQTT server", ex)
-                }
+            serverMasterJob = scope.async {
+                serverLoop()
             }
         }
     }

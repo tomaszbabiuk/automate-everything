@@ -19,5 +19,5 @@ import kotlinx.serialization.BinaryFormat
 
 interface MethodHandler {
     fun matches(method: String): Boolean
-    fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SyncingHandler>) : ByteArray
+    fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>) : ByteArray
 }

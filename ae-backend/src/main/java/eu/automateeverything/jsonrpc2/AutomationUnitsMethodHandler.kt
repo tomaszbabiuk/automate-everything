@@ -15,28 +15,28 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.interop.MethodHandler
 import eu.automateeverything.interop.SubscriptionHandler
+import eu.automateeverything.mappers.AutomationUnitDtoMapper
 import kotlinx.serialization.BinaryFormat
-import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
-class IconsMethodHandler(val repository: Repository) : MethodHandler {
+class AutomationUnitsMethodHandler(private val automationConductor: AutomationConductor,
+                                   private val mapper: AutomationUnitDtoMapper
+) : MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == "GetIcons"
+            return method == "GetAutomationUnits"
         }
 
         override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
-            if (params != null) {
-                val ids: List<Long> = format.decodeFromByteArray(params)
-                val icons = ids.map {
-                    repository.getIcon(it)
+            val units = automationConductor
+                .automationUnitsCache
+                .values
+                .map {
+                    mapper.map(it.second, it.first)
                 }
-                
-                return format.encodeToByteArray(icons)
-            }
-            
-            return format.encodeToByteArray(repository.getAllIcons())
+
+            return format.encodeToByteArray(units)
         }
 }

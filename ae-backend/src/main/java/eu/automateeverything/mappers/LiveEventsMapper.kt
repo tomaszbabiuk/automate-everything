@@ -25,7 +25,7 @@ import kotlinx.serialization.encodeToByteArray
 class LiveEventsMapper @Inject constructor(
     private val portDtoMapper: PortDtoMapper,
     private val pluginDtoMapper: PluginDtoMapper,
-    private val hardwareEventMapper: NumberedHardwareEventToEventDtoMapper,
+    private val hardwareEventMapper: DiscoveryEventMapper,
     private val automationUnitMapper: AutomationUnitDtoMapper,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val heartbeatDtoMapper: HeartbeatDtoMapper,

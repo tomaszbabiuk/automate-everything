@@ -16,16 +16,23 @@
 package eu.automateeverything.jsonrpc2
 
 import eu.automateeverything.interop.MethodHandler
-import eu.automateeverything.interop.SyncingHandler
+import eu.automateeverything.interop.SubscriptionHandler
 import kotlinx.serialization.BinaryFormat
+import kotlinx.serialization.decodeFromByteArray
 
-class SubscribeMethodHandler(private val eventsSyncingHandler: EventsSyncingHandler) : MethodHandler {
+class SubscribeToEventsMethodHandler(private val subscriptionBuilder: EventsSubscriptionBuilder) : MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == "Subscribe"
+            return method == "SubscribeToEvents"
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SyncingHandler>): ByteArray {
-            subscriptions.add(eventsSyncingHandler)
+        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
+            if (params != null) {
+                val entityFilter: List<String> = format.decodeFromByteArray(params)
+                val subscription = subscriptionBuilder.build(entityFilter)
+                subscriptions.add(subscription)
+            } else {
+                throw JsonRpc2Exception("Filter not defined. Pass the list of entities as a parameter to this request")
+            }
 
             return byteArrayOf()
         }

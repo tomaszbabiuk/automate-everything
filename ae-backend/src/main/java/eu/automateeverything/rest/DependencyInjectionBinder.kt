@@ -30,7 +30,7 @@ import eu.automateeverything.mappers.HardwareAdapterDtoMapper
 import eu.automateeverything.mappers.AutomationUnitDtoMapper
 import eu.automateeverything.mappers.EvaluationResultDtoMapper
 import eu.automateeverything.mappers.PortDtoMapper
-import eu.automateeverything.mappers.NumberedHardwareEventToEventDtoMapper
+import eu.automateeverything.mappers.DiscoveryEventMapper
 import eu.automateeverything.mappers.AutomationHistoryDtoMapper
 import eu.automateeverything.mappers.SettingGroupDtoMapper
 import eu.automateeverything.mappers.HeartbeatDtoMapper
@@ -81,8 +81,8 @@ class DependencyInjectionBinder(
             .to(PortDtoMapper::class.java)
             .`in`(Singleton::class.java)
 
-        bind(NumberedHardwareEventToEventDtoMapper::class.java)
-            .to(NumberedHardwareEventToEventDtoMapper::class.java)
+        bind(DiscoveryEventMapper::class.java)
+            .to(DiscoveryEventMapper::class.java)
             .`in`(Singleton::class.java)
 
         bind(AutomationHistoryDtoMapper::class.java)

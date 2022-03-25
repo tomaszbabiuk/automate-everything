@@ -23,20 +23,20 @@ class ByteArraySessionHandler(
     private val methodHandlers: List<MethodHandler>,
     private val binaryFormat: BinaryFormat) : SessionHandler<ByteArray, ByteArray> {
 
-    override fun handleRequest(input: ByteArray, subscriptions: MutableList<SyncingHandler>): ByteArray {
+    override fun handleRequest(input: ByteArray, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
         val requests = binaryFormat.decodeFromByteArray<List<JsonRpc2Request>>(input)
         val processed = requests.map { handleRequestInternal(it, subscriptions) }
 
         return binaryFormat.encodeToByteArray(processed)
     }
 
-    override fun handleSubscriptions(subscriptions: MutableList<SyncingHandler>): ByteArray {
+    override fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>): ByteArray {
         val processed = subscriptions.flatMap {  it.collect() }
 
         return binaryFormat.encodeToByteArray(processed)
     }
 
-    private fun handleRequestInternal(input: JsonRpc2Request, subscriptions: MutableList<SyncingHandler>): JsonRpc2Response {
+    private fun handleRequestInternal(input: JsonRpc2Request, subscriptions: MutableList<SubscriptionHandler>): JsonRpc2Response {
         val handler = methodHandlers.firstOrNull { it.matches(input.method) }
         return if (handler != null) {
             val data = handler.handle(binaryFormat, input.params, subscriptions)
