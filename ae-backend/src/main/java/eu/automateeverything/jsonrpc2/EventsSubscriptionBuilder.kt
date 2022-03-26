@@ -24,7 +24,7 @@ class EventsSubscriptionBuilder(private val eventsSink: EventsSink,
                                 private val binaryFormat: BinaryFormat
 ) {
 
-    fun build(entityFilter: List<String>): EventsSubscriptionHandler {
-        return EventsSubscriptionHandler(eventsSink, eventsMapper, binaryFormat, entityFilter)
+    fun build(id: String, entityFilter: String): EventsSubscriptionHandler {
+        return EventsSubscriptionHandler(id, eventsSink, eventsMapper, binaryFormat, entityFilter)
     }
 }

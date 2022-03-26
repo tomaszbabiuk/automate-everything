@@ -19,21 +19,23 @@ import eu.automateeverything.interop.MethodHandler
 import eu.automateeverything.interop.SubscriptionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import java.util.*
 
 class SubscribeToEventsMethodHandler(private val subscriptionBuilder: EventsSubscriptionBuilder) : MethodHandler {
         override fun matches(method: String): Boolean {
-            return method == "SubscribeToEvents"
+            return method == "Subscribe"
         }
 
         override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
             if (params != null) {
-                val entityFilter: List<String> = format.decodeFromByteArray(params)
-                val subscription = subscriptionBuilder.build(entityFilter)
+                val entityFilter: String = format.decodeFromByteArray(params)
+                val id = "${Calendar.getInstance().timeInMillis}/$entityFilter"
+                val subscription = subscriptionBuilder.build(id, entityFilter)
                 subscriptions.add(subscription)
+                return format.encodeToByteArray(id)
             } else {
                 throw JsonRpc2Exception("Filter not defined. Pass the list of entities as a parameter to this request")
             }
-
-            return byteArrayOf()
         }
 }

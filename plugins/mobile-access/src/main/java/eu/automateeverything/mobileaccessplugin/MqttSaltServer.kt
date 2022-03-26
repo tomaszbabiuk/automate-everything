@@ -16,7 +16,9 @@
 package eu.automateeverything.mobileaccessplugin
 
 import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.MqttClientState
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
+import com.hivemq.client.mqtt.exceptions.MqttClientStateException
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
 import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import eu.automateeverything.domain.WithStartStopScope
@@ -236,12 +238,12 @@ class MqttSaltServer(
             while (isActive) {
                 println("WORKING")
                 delay(1000)
-                try {
-                    val responses = sessionHandler.handleSubscriptions(subscriptions)
-                    session.channel.write(false, responses)
-                } catch (ex: Exception) {
-                    logger.error("Unhandled exception from MQTT server", ex)
-                }
+//                try {
+//                    val responses = sessionHandler.handleSubscriptions(subscriptions)
+//                    session.channel.write(false, responses)
+//                } catch (ex: Exception) {
+//                    logger.error("Unhandled exception from MQTT server", ex)
+//                }
             }
         }
 
@@ -311,10 +313,14 @@ class MqttSaltServer(
                 } else {
                     val newContext = SingleSessionContext(keyPair, scope) { payload ->
                         val txTopic = "$serverSignPubKeyHex/$discriminator/tx"
-                        client.publishWith()
-                            .topic(txTopic)
-                            .payload(payload)
-                            .send()
+                        try {
+                            client.publishWith()
+                                .topic(txTopic)
+                                .payload(payload)
+                                .send()
+                        } catch (ex: MqttClientStateException) {
+                            connectionState = ConnectionState.Disconnected
+                        }
                     }
                     cleanupSessions()
                     sessions[discriminator] = newContext

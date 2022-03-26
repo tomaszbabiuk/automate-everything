@@ -25,10 +25,11 @@ import kotlinx.serialization.BinaryFormat
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class EventsSubscriptionHandler(
+    private val id: String,
     private val eventsSink: EventsSink,
     private val eventsMapper: LiveEventsMapper,
     private val binaryFormat: BinaryFormat,
-    private val entityFilter: List<String>
+    private val entityFilter: String
 ) : SubscriptionHandler,
     LiveEventsListener {
 
@@ -55,7 +56,7 @@ class EventsSubscriptionHandler(
     override fun onEvent(event: LiveEvent<*>) {
         eventsMapper
             .map(event)
-            .filter { entityFilter.contains(it.first) }
+            .filter { it.first == entityFilter }
             .forEach { queue.offer(it) }
     }
 }
