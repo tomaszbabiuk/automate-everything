@@ -17,5 +17,5 @@ package eu.automateeverything.interop
 
 interface SessionHandler<X, Y> {
     fun handleRequest(input: X, subscriptions: MutableList<SubscriptionHandler>) : Y
-    fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>) : Y
+    fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>) : Y?
 }

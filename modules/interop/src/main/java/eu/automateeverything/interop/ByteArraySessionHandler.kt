@@ -30,10 +30,15 @@ class ByteArraySessionHandler(
         return binaryFormat.encodeToByteArray(processed)
     }
 
-    override fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>): ByteArray {
+    override fun handleSubscriptions(subscriptions: MutableList<SubscriptionHandler>): ByteArray? {
         val processed = subscriptions.flatMap {  it.collect() }
+        subscriptions.forEach { it.reset() }
 
-        return binaryFormat.encodeToByteArray(processed)
+        return if (processed.isNotEmpty()) {
+            binaryFormat.encodeToByteArray(processed)
+        } else {
+            null
+        }
     }
 
     private fun handleRequestInternal(input: JsonRpc2Request, subscriptions: MutableList<SubscriptionHandler>): JsonRpc2Response {

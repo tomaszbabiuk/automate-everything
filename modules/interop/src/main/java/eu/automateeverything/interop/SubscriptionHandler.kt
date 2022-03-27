@@ -18,4 +18,5 @@ package eu.automateeverything.interop
 
 interface SubscriptionHandler {
     fun collect() : List<JsonRpc2Response>
+    fun reset()
 }

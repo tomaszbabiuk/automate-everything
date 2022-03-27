@@ -49,14 +49,18 @@ class EventsSubscriptionHandler(
         }, valueTransform = {
             it.second.invoke(binaryFormat)
         }).map {
-            JsonRpc2Response(subscription = it.key, id = it.key, result = it.value)
+            JsonRpc2Response(id = id, result = it.value)
         }
+    }
+
+    override fun reset() {
+        queue.clear()
     }
 
     override fun onEvent(event: LiveEvent<*>) {
         eventsMapper
             .map(event)
-            .filter { it.first == entityFilter }
+            .filter { it.first::class.java.simpleName == entityFilter }
             .forEach { queue.offer(it) }
     }
 }

@@ -16,7 +16,6 @@
 package eu.automateeverything.mobileaccessplugin
 
 import com.hivemq.client.mqtt.MqttClient
-import com.hivemq.client.mqtt.MqttClientState
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter
 import com.hivemq.client.mqtt.exceptions.MqttClientStateException
 import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
@@ -238,12 +237,14 @@ class MqttSaltServer(
             while (isActive) {
                 println("WORKING")
                 delay(1000)
-//                try {
-//                    val responses = sessionHandler.handleSubscriptions(subscriptions)
-//                    session.channel.write(false, responses)
-//                } catch (ex: Exception) {
-//                    logger.error("Unhandled exception from MQTT server", ex)
-//                }
+                try {
+                    val responses = sessionHandler.handleSubscriptions(subscriptions)
+                    if (responses != null) {
+                        session.channel.write(false, responses)
+                    }
+                } catch (ex: Exception) {
+                    logger.error("Unhandled exception while handling subscriptions", ex)
+                }
             }
         }
 
@@ -261,8 +262,13 @@ class MqttSaltServer(
                     val incomingData = session.channel.read("incoming packets")
                     logger.debug("Incoming session data ${incomingData.toHexString()}")
                     val isLast = session.channel.lastFlag()
-                    val responses = sessionHandler.handleRequest(incomingData, subscriptions)
+                    val newSubscriptions = ArrayList<SubscriptionHandler>()
+                    val responses = sessionHandler.handleRequest(incomingData, newSubscriptions)
                     session.channel.write(false, responses)
+
+                    newSubscriptions.forEach {
+                        subscriptions.add(it)
+                    }
 
                     if (isLast) {
                         break

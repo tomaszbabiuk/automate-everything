@@ -59,7 +59,6 @@ data class JsonRpc2Error(
 @Serializable
 data class JsonRpc2Response(
     val id: String,
-    val subscription: String? = null,
     val result: ByteArray? = null,
     val error: JsonRpc2Error? = null
 ) {
@@ -70,7 +69,6 @@ data class JsonRpc2Response(
         other as JsonRpc2Response
 
         if (id != other.id) return false
-        if (subscription != other.subscription) return false
         if (result != null) {
             if (other.result == null) return false
             if (!result.contentEquals(other.result)) return false
@@ -82,7 +80,6 @@ data class JsonRpc2Response(
 
     override fun hashCode(): Int {
         var result1 = id.hashCode()
-        result1 = 31 * result1 + (subscription?.hashCode() ?: 0)
         result1 = 31 * result1 + (result?.contentHashCode() ?: 0)
         result1 = 31 * result1 + (error?.hashCode() ?: 0)
         return result1
