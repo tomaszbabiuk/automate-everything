@@ -304,10 +304,15 @@ class MqttSaltServer(
             val serverSignPubKeyHex = String(Hex.toHexCharArray(keyPair.pub(), 0, keyPair.pub().size))
 
             val requestResponseTopic = "$serverSignPubKeyHex/+/rx"
+            val closeTopic = "$serverSignPubKeyHex/+/close"
             logger.debug("Subscribing to $requestResponseTopic")
 
             client.subscribeWith()
                 .topicFilter(requestResponseTopic)
+                .send()
+
+            client.subscribeWith()
+                .topicFilter(closeTopic)
                 .send()
 
             client.toAsync().publishes(MqttGlobalPublishFilter.ALL) { publish: Mqtt3Publish ->
@@ -315,7 +320,12 @@ class MqttSaltServer(
 
                 if (sessions.containsKey(discriminator)) {
                     val context = sessions[discriminator]!!
-                    context.push(publish.payloadAsBytes)
+                    if (publish.topic.levels.contains("close")) {
+                        logger.info("Closing session $discriminator, client disconnected")
+                        context.cancel()
+                    } else {
+                        context.push(publish.payloadAsBytes)
+                    }
                 } else {
                     val newContext = SingleSessionContext(keyPair, scope) { payload ->
                         val txTopic = "$serverSignPubKeyHex/$discriminator/tx"
