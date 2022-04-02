@@ -61,7 +61,7 @@ class MoquetteBroker : MqttBrokerService {
 
         override fun onPublish(msg: InterceptPublishMessage) {
             var size = 0
-            val buffer = ByteArray(20480)
+            val buffer = ByteArray(102400)
             while (msg.payload.isReadable) {
                 buffer[size] = msg.payload.readByte()
                 size++
@@ -107,6 +107,7 @@ class MoquetteBroker : MqttBrokerService {
         val userHandlers: List<InterceptHandler?> = listOf(PublisherListener(serviceScope!!, listeners, broker))
         val memoryConfig = MemoryConfig(Properties())
         memoryConfig.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, "true")
+        memoryConfig.setProperty(BrokerConstants.NETTY_MAX_BYTES_PROPERTY_NAME, "102400")
         broker.startServer(memoryConfig, userHandlers)
     }
 

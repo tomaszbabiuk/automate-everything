@@ -28,6 +28,7 @@ include 'plugins:alarm'
 include 'plugins:time'
 include 'plugins:mobile-access'
 include 'plugins:home-automation-icons'
+include 'plugins:zigbee2mqtt'
 
 //features used by the plugins
 include 'plugin-features:lan-gateway'
