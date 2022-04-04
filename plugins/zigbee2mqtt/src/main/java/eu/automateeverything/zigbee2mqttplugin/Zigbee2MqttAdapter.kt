@@ -16,11 +16,15 @@
 package eu.automateeverything.zigbee2mqttplugin
 
 import com.google.gson.Gson
+import eu.automateeverything.data.Repository
+import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
-import eu.automateeverything.zigbee2mqttplugin.data.PermitJoinStatus
+import eu.automateeverything.zigbee2mqttplugin.data.*
+import eu.automateeverything.zigbee2mqttplugin.ports.*
 import kotlinx.coroutines.*
 import java.net.InetAddress
 import java.util.*
@@ -28,24 +32,57 @@ import java.util.*
 class Zigbee2MqttAdapter(
     private val owningPluginId: String,
     private val mqttBroker: MqttBrokerService,
-    private val eventsSink: EventsSink
-) : HardwareAdapterBase<Port<*>>(), MqttListener {
+    private val eventsSink: EventsSink,
+    repository: Repository,
+) : HardwareAdapterBase<ZigbeePort<*>>(), MqttListener {
     private var permitJoin: Boolean = false
     override val id = ADAPTER_ID
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val gson = Gson()
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<Port<*>> = coroutineScope {
-        val result = ArrayList<Port<*>>()
+    init {
+        repository
+            .getAllPorts()
+            .filter { it.factoryId == owningPluginId && it.adapterId == id }
+            .forEach {
+                ports[it.id] = convertPortDtoToZigbeePort(it)
+            }
+    }
 
+    private fun convertPortDtoToZigbeePort(portDto: PortDto): ZigbeePort<*> {
+        val portIdSplit = portDto.id.split(':')
+        val ieeeAddress = portIdSplit[1]
+        val suffix = portIdSplit[2].split("-")[0]
+        val readTopic = "zigbee2mqtt/$ieeeAddress"
+
+        return when (portDto.valueClazz) {
+            BatteryCharge::class.java.name -> {
+                ZigbeeBatteryInputPort(portDto.id, readTopic, 1000)
+            }
+            BinaryInput::class.java.name -> {
+                ZigbeeActionInputPort(portDto.id, readTopic, suffix, 1000)
+            }
+            Humidity::class.java.name -> {
+                ZigbeeHumidityInputPort(portDto.id, readTopic, 1000)
+            }
+            Temperature::class.java.name -> {
+                ZigbeeTemperatureInputPort(portDto.id, readTopic, "c", 1000)
+            }
+            else -> {
+                throw Exception("Cannot recreate port from its snapshot!")
+            }
+        }
+    }
+
+    override suspend fun internalDiscovery(eventsSink: EventsSink): List<ZigbeePort<*>> = coroutineScope {
         permitToJoinProcedure()
 
         if (permitJoin) {
-            logDiscovery("Pair new devices NOW! Counting 30 seconds down...")
+            logDiscovery("Pair new devices NOW! Counting one minute down...")
 
             (0..6).forEach {
-                delay(5000)
-                println("${30-it*5}...")
+                delay(10_000)
+                logDiscovery("${60-it*10}...")
             }
 
             mqttBroker.publish("zigbee2mqtt/bridge/request/permit_join", "false")
@@ -53,7 +90,7 @@ class Zigbee2MqttAdapter(
             logDiscovery("It was impossible to permit other devices to join. Is Zigbee2Mqtt bridge running?")
         }
 
-        result
+        listOf()
     }
 
     private suspend fun permitToJoinProcedure() = coroutineScope {
@@ -96,23 +133,90 @@ class Zigbee2MqttAdapter(
 
     override fun onPublish(clientID: String, topicName: String, msgAsString: String) {
         if (topicName.startsWith("zigbee2mqtt")) {
-            if (topicName == "zigbee2mqtt/bridge/response/permit_join") {
-                handlePermitJoinMessage(msgAsString)
+            when (topicName) {
+                "zigbee2mqtt/bridge/response/permit_join" -> handlePermitJoinMessage(msgAsString)
+                "zigbee2mqtt/bridge/event" -> handleBridgeEvent(msgAsString)
             }
 
-            println(clientID)
-            println(topicName)
-            println(msgAsString)
+            ports
+                .values
+                .filter {  it.readTopic == topicName }
+                .forEach {
+                    val updatePayload = gson.fromJson(msgAsString, UpdatePayload::class.java)
+                    val updated = it.tryUpdate(updatePayload)
+                    if (updated) {
+                        val updateEvent = PortUpdateEventData(owningPluginId, id, it)
+                        eventsSink.broadcastEvent(updateEvent)
+
+                        val now = Calendar.getInstance().timeInMillis
+                        it.updateValidUntil(now + it.sleepInterval)
+                    }
+                }
         }
     }
 
-    private fun handlePermitJoinMessage(msgAsString: String) {
-        val status = gson.fromJson(msgAsString, PermitJoinStatus::class.java)
+    private fun handlePermitJoinMessage(message: String) {
+        val status = gson.fromJson(message, PermitJoinStatus::class.java)
         permitJoin = status.data.value
     }
 
-    override fun onDisconnected(clientID: String) {
+    private fun handleBridgeEvent(message: String) {
+        if (message.contains("\"type\":\"device_interview\"")) {
+            val interviewData = gson.fromJson(message, InterviewData::class.java)
+            addNewPorts(interviewData.data)
+        }
+    }
 
+    private fun addNewPorts(interview: InterviewDetails) {
+        if (interview.supported) {
+            val isBatteryPowered = interview.definition.exposes.any { it.name == "battery" }
+            val sleepInterval = if (isBatteryPowered) 25 * 3600 * 1000L else 3600 * 1000L
+
+            val newPorts = interview
+                .definition
+                .exposes
+                .filter { it.access == 1 }
+                .map {
+                    when (it.name) {
+                        "battery" -> batteryPortDiscovered(it, interview.ieee_address, sleepInterval)
+                        "temperature" -> temperaturePortDiscovered(it, interview.ieee_address, sleepInterval)
+                        "humidity" -> humidityPortDiscovered(it, interview.ieee_address, sleepInterval)
+                        "action" -> binaryInputPortDiscovered(it, interview.ieee_address, sleepInterval)
+                        else -> listOf()
+                    }
+                }.flatten()
+
+            addPotentialNewPorts(newPorts)
+        }
+    }
+
+    private fun binaryInputPortDiscovered(exposition: Exposition, ieeeAddress: String, sleepInterval: Long): List<ZigbeeActionInputPort> {
+        if (exposition.values == null) {
+            return listOf()
+        }
+
+        return exposition.values.map {
+            val portId = idBuilder.buildPortId(ieeeAddress, 0.toString(), it)
+            ZigbeeActionInputPort(portId, "zigbee2mqtt/$ieeeAddress", it, sleepInterval)
+        }
+    }
+
+    private fun humidityPortDiscovered(exposition: Exposition, ieeeAddress: String, sleepInterval: Long): List<ZigbeeHumidityInputPort> {
+        val portId = idBuilder.buildPortId(ieeeAddress, 0.toString(), "H")
+        return listOf(ZigbeeHumidityInputPort(portId, "zigbee2mqtt/$ieeeAddress", sleepInterval))
+    }
+
+    private fun temperaturePortDiscovered(exposition: Exposition, ieeeAddress: String, sleepInterval: Long): List<ZigbeeTemperatureInputPort> {
+        val portId = idBuilder.buildPortId(ieeeAddress, 0.toString(), "T")
+        return listOf(ZigbeeTemperatureInputPort(portId, "zigbee2mqtt/$ieeeAddress", exposition.unit, sleepInterval))
+    }
+
+    private fun batteryPortDiscovered(exposition: Exposition, ieeeAddress: String, sleepInterval: Long): List<ZigbeeBatteryInputPort> {
+        val portId = idBuilder.buildPortId(ieeeAddress, 0.toString(), "B")
+        return listOf(ZigbeeBatteryInputPort(portId, "zigbee2mqtt/$ieeeAddress", sleepInterval))
+    }
+
+    override fun onDisconnected(clientID: String) {
     }
 
     override suspend fun onConnected(address: InetAddress) = withContext(Dispatchers.IO) {
@@ -128,4 +232,214 @@ class Zigbee2MqttAdapter(
 
 zigbee2mqtt/bridge/response/permit_join
 {"data":{"value":true},"status":"ok"}
+
+zigbee2mqtt/bridge/event
+{"data":{"friendly_name":"0x00124b0025033adc","ieee_address":"0x00124b0025033adc"},"type":"device_leave"}
+{"data":{"friendly_name":"0x00124b0025033adc","ieee_address":"0x00124b0025033adc"},"type":"device_joined"}
+{"data":{"friendly_name":"0x00124b0025033adc","ieee_address":"0x00124b0025033adc","status":"started"},"type":"device_interview"}
+{"data":{"friendly_name":"0x00124b0025033adc","ieee_address":"0x00124b0025033adc"},"type":"device_announce"}
+{
+   "data":{
+      "definition":{
+         "description":"Temperature and humidity sensor",
+         "exposes":[
+            {
+               "access":1,
+               "description":"Remaining battery in %",
+               "name":"battery",
+               "property":"battery",
+               "type":"numeric",
+               "unit":"%",
+               "value_max":100,
+               "value_min":0
+            },
+            {
+               "access":1,
+               "description":"Measured temperature value",
+               "name":"temperature",
+               "property":"temperature",
+               "type":"numeric",
+               "unit":"°C"
+            },
+            {
+               "access":1,
+               "description":"Measured relative humidity",
+               "name":"humidity",
+               "property":"humidity",
+               "type":"numeric",
+               "unit":"%"
+            },
+            {
+               "access":1,
+               "description":"Voltage of the battery in millivolts",
+               "name":"voltage",
+               "property":"voltage",
+               "type":"numeric",
+               "unit":"mV"
+            },
+            {
+               "access":1,
+               "description":"Link quality (signal strength)",
+               "name":"linkquality",
+               "property":"linkquality",
+               "type":"numeric",
+               "unit":"lqi",
+               "value_max":255,
+               "value_min":0
+            }
+         ],
+         "model":"SNZB-02",
+         "options":[
+            {
+               "access":2,
+               "description":"Number of digits after decimal point for temperature, takes into effect on next report of device.",
+               "name":"temperature_precision",
+               "property":"temperature_precision",
+               "type":"numeric",
+               "value_max":3,
+               "value_min":0
+            },
+            {
+               "access":2,
+               "description":"Calibrates the temperature value (absolute offset), takes into effect on next report of device.",
+               "name":"temperature_calibration",
+               "property":"temperature_calibration",
+               "type":"numeric"
+            },
+            {
+               "access":2,
+               "description":"Number of digits after decimal point for humidity, takes into effect on next report of device.",
+               "name":"humidity_precision",
+               "property":"humidity_precision",
+               "type":"numeric",
+               "value_max":3,
+               "value_min":0
+            },
+            {
+               "access":2,
+               "description":"Calibrates the humidity value (absolute offset), takes into effect on next report of device.",
+               "name":"humidity_calibration",
+               "property":"humidity_calibration",
+               "type":"numeric"
+            }
+         ],
+         "supports_ota":false,
+         "vendor":"SONOFF"
+      },
+      "friendly_name":"0x00124b0025033adc",
+      "ieee_address":"0x00124b0025033adc",
+      "status":"successful",
+      "supported":true
+   },
+   "type":"device_interview"
+}
+
+
+
+{
+   "data":{
+      "definition":{
+         "description":"Wireless button",
+         "exposes":[
+            {
+               "access":1,
+               "description":"Remaining battery in %",
+               "name":"battery",
+               "property":"battery",
+               "type":"numeric",
+               "unit":"%",
+               "value_max":100,
+               "value_min":0
+            },
+            {
+               "access":1,
+               "description":"Triggered action (e.g. a button click)",
+               "name":"action",
+               "property":"action",
+               "type":"enum",
+               "values":[
+                  "single",
+                  "double",
+                  "long"
+               ]
+            },
+            {
+               "access":1,
+               "description":"Voltage of the battery in millivolts",
+               "name":"voltage",
+               "property":"voltage",
+               "type":"numeric",
+               "unit":"mV"
+            },
+            {
+               "access":1,
+               "description":"Link quality (signal strength)",
+               "name":"linkquality",
+               "property":"linkquality",
+               "type":"numeric",
+               "unit":"lqi",
+               "value_max":255,
+               "value_min":0
+            }
+         ],
+         "model":"SNZB-01",
+         "options":[
+
+         ],
+         "supports_ota":false,
+         "vendor":"SONOFF"
+      },
+      "friendly_name":"0x00124b0025047354",
+      "ieee_address":"0x00124b0025047354",
+      "status":"successful",
+      "supported":true
+   },
+   "type":"device_interview"
+}
+
+-> zigbee2mqtt/bridge/config/devices/get
+-< zigbee2mqtt/bridge/config/devices
+[
+   {
+      "dateCode":"20210708",
+      "friendly_name":"Coordinator",
+      "ieeeAddr":"0x00124b0024c31ef0",
+      "lastSeen":1648976981847,
+      "networkAddress":0,
+      "softwareBuildID":"zStack3x0",
+      "type":"Coordinator"
+   },
+   {
+      "dateCode":"20211103",
+      "description":"Wireless button",
+      "friendly_name":"0x00124b0025047354",
+      "hardwareVersion":0,
+      "ieeeAddr":"0x00124b0025047354",
+      "lastSeen":1648976030756,
+      "manufacturerID":0,
+      "manufacturerName":"eWeLink",
+      "model":"SNZB-01",
+      "modelID":"WB01",
+      "networkAddress":63941,
+      "powerSource":"Battery",
+      "type":"EndDevice",
+      "vendor":"SONOFF"
+   },
+   {
+      "dateCode":"20211103",
+      "description":"Temperature and humidity sensor",
+      "friendly_name":"0x00124b0025033adc",
+      "hardwareVersion":1,
+      "ieeeAddr":"0x00124b0025033adc",
+      "lastSeen":1648976870850,
+      "manufacturerID":0,
+      "manufacturerName":"eWeLink",
+      "model":"SNZB-02",
+      "modelID":"TH01",
+      "networkAddress":62361,
+      "powerSource":"Battery",
+      "type":"EndDevice",
+      "vendor":"SONOFF"
+   }
+]
  */

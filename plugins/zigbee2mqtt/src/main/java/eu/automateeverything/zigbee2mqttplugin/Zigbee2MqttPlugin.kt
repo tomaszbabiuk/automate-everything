@@ -15,6 +15,7 @@
 
 package eu.automateeverything.zigbee2mqttplugin
 
+import eu.automateeverything.data.Repository
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.domain.events.EventsSink
@@ -27,8 +28,9 @@ import org.pf4j.PluginWrapper
 class Zigbee2MqttPlugin(
     wrapper: PluginWrapper,
     private val mqttBroker: MqttBrokerService,
-    private val eventsSink: EventsSink)
-    : HardwarePlugin(wrapper), PluginMetadata{
+    private val eventsSink: EventsSink,
+    private val repository: Repository
+) : HardwarePlugin(wrapper), PluginMetadata{
 
     override fun start() {
     }
@@ -38,7 +40,7 @@ class Zigbee2MqttPlugin(
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
         val result = ArrayList<HardwareAdapter<*>>()
-        val adapter = Zigbee2MqttAdapter(pluginId, mqttBroker, eventsSink)
+        val adapter = Zigbee2MqttAdapter(pluginId, mqttBroker, eventsSink, repository)
         result.add(adapter)
         return result
     }

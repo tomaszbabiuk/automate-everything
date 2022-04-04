@@ -63,6 +63,7 @@ class LiveController @Inject constructor(
     private fun broadcastLiveEvent(event: LiveEvent<*>) {
         liveEventsMapper
             .map(event)
+            .map { it.first }
             .forEach { broadcast(it.javaClass, it) }
     }
 }
