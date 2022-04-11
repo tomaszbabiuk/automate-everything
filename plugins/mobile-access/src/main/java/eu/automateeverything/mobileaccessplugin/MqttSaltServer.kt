@@ -81,8 +81,8 @@ class MqttSaltServer(
 
 
     private fun connect() {
-        if (client != null && brokerAddress.host.isEmpty()) {
-            logger.info("MQTT broker is empty. The plugin won't try to connect.")
+        if (client == null || brokerAddress.host.isEmpty()) {
+            logger.info("MQTT broker settings are empty. The plugin won't try to connect.")
             return
         }
 
@@ -91,14 +91,14 @@ class MqttSaltServer(
             logger.info("Connecting to: $brokerAddress")
 
             if (brokerAddress.user.isNotEmpty() && brokerAddress.password.isNotEmpty()) {
-                client!!.connectWith()
+                client.connectWith()
                     .simpleAuth()
                     .username(brokerAddress.user)
                     .password(UTF_8.encode(brokerAddress.password))
                     .applySimpleAuth()
                     .send()
             } else {
-                client!!.connectWith().send()
+                client.connectWith().send()
             }
 
             connectionState = ConnectionState.Connected
