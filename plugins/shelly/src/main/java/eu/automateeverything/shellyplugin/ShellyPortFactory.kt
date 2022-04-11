@@ -42,7 +42,7 @@ class ShellyPortFactory {
 
             if (statusResponse.meters != null) {
                 for (i in statusResponse.meters.indices) {
-                    result.add(constructRelayWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
+                    result.add(constructWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
                 }
             }
         }
@@ -55,7 +55,7 @@ class ShellyPortFactory {
 
             if (statusResponse.meters != null) {
                 for (i in statusResponse.meters.indices) {
-                    result.add(constructLightWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
+                    result.add(constructWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
                 }
             }
         }
@@ -215,7 +215,7 @@ class ShellyPortFactory {
         return port
     }
 
-    private fun constructLightWattageReadPort(
+    private fun constructWattageReadPort(
         idBuilder: PortIdBuilder,
         shellyId: String,
         channel: Int,
@@ -225,16 +225,4 @@ class ShellyPortFactory {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "W")
         return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
     }
-
-    private fun constructRelayWattageReadPort(
-        idBuilder: PortIdBuilder,
-        shellyId: String,
-        channel: Int,
-        sleepInterval: Long,
-        lastSeenTimestamp: Long
-    ): ShellyInputPort<*> {
-        val id = idBuilder.buildPortId(shellyId, channel.toString(), "W")
-        return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
-    }
-
 }

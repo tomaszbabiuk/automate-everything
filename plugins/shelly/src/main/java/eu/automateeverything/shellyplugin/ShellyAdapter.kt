@@ -128,21 +128,18 @@ class ShellyAdapter(
 
         ports
             .values
-            .filter { it.id.contains(clientID) }
-            .forEach { it.lastSeenTimestamp = now }
+            .filter { it.readTopics.contains(topicName)  }
+            .forEach {
+                it.setValueFromMqttPayload(msgAsString)
+            }
 
         ports
             .values
-            .filter { it.readTopics.contains(topicName)  }
+            .filter { it.id.contains(clientID) }
             .forEach {
-                val prev = it.read().asDecimal()
-                it.setValueFromMqttPayload(msgAsString)
-                val cur = it.read().asDecimal()
-
-                if (prev != cur) {
-                    val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                    eventsSink.broadcastEvent(updateEvent)
-                }
+                it.lastSeenTimestamp = now
+                val updateEvent = PortUpdateEventData(owningPluginId, id, it)
+                eventsSink.broadcastEvent(updateEvent)
             }
     }
 
