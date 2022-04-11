@@ -22,11 +22,13 @@ import eu.automateeverything.shellyplugin.StateBriefDto
 class ShellyVibrationInputPort(
     id: String,
     shellyId: String,
-    sleepInterval: Long)
-    : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+)
+    : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val value = BinaryInput(false)
-    override val readTopic = "shellies/$shellyId/sensor/vibration"
+    override val readTopics = arrayOf("shellies/$shellyId/sensor/vibration")
 
     override fun read(): BinaryInput {
         return value

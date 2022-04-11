@@ -16,35 +16,25 @@
 package eu.automateeverything.shellyplugin.ports
 
 import eu.automateeverything.data.hardware.PortValue
-import eu.automateeverything.domain.hardware.*
-import java.util.*
-
-open class ShellyPort<V: PortValue>(
-    override val id : String,
-    override val valueClazz: Class<V>,
-    val sleepInterval: Long
-) : Connectible, Port<V> {
-    final override var connectionValidUntil: Long = 0
-
-    init {
-        connectionValidUntil = Calendar.getInstance().timeInMillis + sleepInterval
-    }
-}
-
+import eu.automateeverything.domain.hardware.InputPort
+import eu.automateeverything.domain.hardware.OutputPort
+import eu.automateeverything.domain.hardware.Port
 
 abstract class ShellyInputPort<V: PortValue>(
-    id : String,
-    valueClazz: Class<V>,
-    sleepInterval: Long) : ShellyPort<V>(id, valueClazz, sleepInterval), InputPort<V> {
+    override val id : String,
+    override val valueClazz: Class<V>,
+    override val sleepInterval: Long,
+    override var lastSeenTimestamp: Long) : Port<V>, InputPort<V> {
 
-    abstract val readTopic: String
+    abstract val readTopics: Array<String>
     abstract fun setValueFromMqttPayload(payload: String)
 }
 
 abstract class ShellyOutputPort<V: PortValue>(
     id : String,
     valueClazz: Class<V>,
-    sleepInterval: Long) : ShellyInputPort<V>(id, valueClazz, sleepInterval), OutputPort<V> {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long) : ShellyInputPort<V>(id, valueClazz, sleepInterval, lastSeenTimestamp), OutputPort<V> {
 
     abstract val writeTopic: String
     abstract fun getExecutePayload(): String?

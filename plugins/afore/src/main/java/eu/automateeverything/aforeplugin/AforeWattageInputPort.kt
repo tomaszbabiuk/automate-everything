@@ -31,22 +31,17 @@ class AforeWattageInputPort(
 ) : Port<Wattage>, InputPort<Wattage> {
 
     override val valueClazz = Wattage::class.java
-    override var connectionValidUntil: Long = 0L
 
-    init {
-        prolongValidity(Calendar.getInstance())
-    }
+    override val sleepInterval: Long
+        get() = 1000 * 60 * 5L
 
-    private fun prolongValidity(now: Calendar) {
-        connectionValidUntil = now.timeInMillis + 1000 * 60 * 5 //now + 5 minutes
-    }
+    override var lastSeenTimestamp = 0L
 
     suspend fun refresh(now: Calendar) {
         try {
             refreshInverterData()
-            prolongValidity(now)
-        } catch (ex: Exception) {
-            markDisconnected()
+            lastSeenTimestamp = now.timeInMillis
+        } catch (ignored: Exception) {
         }
     }
 

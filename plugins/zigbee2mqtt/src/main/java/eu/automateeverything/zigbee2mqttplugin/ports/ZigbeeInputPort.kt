@@ -24,7 +24,9 @@ abstract class ZigbeeInputPort<V: PortValue>(
     valueClazz: Class<V>,
     readTopic: String,
     initialValue: V,
-    sleepInterval: Long) : ZigbeePort<V>(id, valueClazz, readTopic, sleepInterval), InputPort<V> {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ZigbeePort<V>(id, valueClazz, readTopic, sleepInterval, lastSeenTimestamp), InputPort<V> {
 
     var value = initialValue
 

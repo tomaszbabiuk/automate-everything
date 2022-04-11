@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS portSnapshot (
   adapterId TEXT NOT NULL,
   valueClazz TEXT NOT NULL,
   canRead INTEGER NOT NULL,
-  canWrite INTEGER NOT NULL
+  canWrite INTEGER NOT NULL,
+  sleepInterval INTEGER NOT NULL,
+  lastSeenTimestamp INTEGER NOT NULL
 );
 
 selectAll:
@@ -17,8 +19,8 @@ FROM portSnapshot
 WHERE id = ?;
 
 insert:
-INSERT INTO portSnapshot(id, factoryId, adapterId, valueClazz, canRead, canWrite)
-VALUES (?,?,?,?,?,?);
+INSERT INTO portSnapshot(id, factoryId, adapterId, valueClazz, canRead, canWrite, sleepInterval, lastSeenTimestamp)
+VALUES (?,?,?,?,?,?, ?, ?);
 
 delete:
 DELETE FROM portSnapshot

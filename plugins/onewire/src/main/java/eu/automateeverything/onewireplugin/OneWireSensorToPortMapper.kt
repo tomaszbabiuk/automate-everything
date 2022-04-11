@@ -23,6 +23,7 @@ import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
+import java.util.*
 
 class OneWireSensorToPortMapper(
     private val owningPluginId: String,
@@ -30,13 +31,13 @@ class OneWireSensorToPortMapper(
     private val eventsSink: EventsSink,
     private val ds2408AsRelays: List<String>
 ) {
-    fun map(sensor: OneWireContainer): List<OneWirePort<*>>? {
+    fun map(sensor: OneWireContainer, now: Calendar): List<OneWirePort<*>>? {
         when (sensor) {
             is TemperatureContainer -> {
-                return mapTemperatureContainer(sensor)
+                return mapTemperatureContainer(sensor, now)
             }
             is SwitchContainer -> {
-                return mapSwitchContainer(sensor)
+                return mapSwitchContainer(sensor, now)
             }
             else -> {
                 broadcastMessage("${sensor.name}/${sensor.addressAsString}: unsupported (ignoring)")
@@ -46,7 +47,7 @@ class OneWireSensorToPortMapper(
         return null
     }
 
-    private fun mapSwitchContainer(switch: SwitchContainer): List<OneWirePort<*>>? {
+    private fun mapSwitchContainer(switch: SwitchContainer, now: Calendar): List<OneWirePort<*>>? {
         switch as OneWireContainer
         val isRelay = ds2408AsRelays.contains(switch.addressAsString)
         try {
@@ -60,7 +61,7 @@ class OneWireSensorToPortMapper(
                         val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel.toString(), "R")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValueInverted = Relay(!initialValueRaw)
-                        OneWireRelayPort(inputPortId, channel, switch.address, initialValueInverted)
+                        OneWireRelayPort(inputPortId, channel, switch.address, initialValueInverted, now.timeInMillis)
                     }
                     .toList()
             } else {
@@ -73,7 +74,7 @@ class OneWireSensorToPortMapper(
                         val inputPortId = portIdBuilder.buildPortId(switch.addressAsString, channel.toString(), "B")
                         val initialValueRaw = inputReadings[channel].level
                         val initialValue = BinaryInput(initialValueRaw)
-                        OneWireBinaryInputPort(inputPortId, channel, switch.address, initialValue)
+                        OneWireBinaryInputPort(inputPortId, channel, switch.address, initialValue, now.timeInMillis)
                     }
                     .toList()
             }
@@ -88,7 +89,7 @@ class OneWireSensorToPortMapper(
         eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
     }
 
-    private fun mapTemperatureContainer(temperatureSensor: TemperatureContainer): List<OneWireTemperatureInputPort>? {
+    private fun mapTemperatureContainer(temperatureSensor: TemperatureContainer, now: Calendar): List<OneWireTemperatureInputPort>? {
         temperatureSensor as OneWireContainer
         broadcastMessage("${temperatureSensor.name}/${temperatureSensor.addressAsString} discovered as Thermometer!")
 
@@ -96,7 +97,7 @@ class OneWireSensorToPortMapper(
             val inputPortId = portIdBuilder.buildPortId(temperatureSensor.addressAsString, 0.toString(), "T")
             val initialValueRaw = TemperatureContainerHelper.read(temperatureSensor).toBigDecimal() + 273.15.toBigDecimal()
             val initialValue = Temperature(initialValueRaw)
-            return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue))
+            return listOf(OneWireTemperatureInputPort(inputPortId, temperatureSensor.address, initialValue, now.timeInMillis))
         } catch (ex: Exception) {
             broadcastMessage("There's been a problem reading container: ${temperatureSensor.name}/${temperatureSensor.addressAsString}")
         }

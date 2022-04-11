@@ -22,8 +22,9 @@ class ZigbeeActionInputPort(
     id:String,
     readTopic: String,
     private val action: String,
-    sleepInterval: Long
-) : ZigbeeInputPort<BinaryInput>(id, BinaryInput::class.java, readTopic, BinaryInput(false), sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long,
+) : ZigbeeInputPort<BinaryInput>(id, BinaryInput::class.java, readTopic, BinaryInput(false), sleepInterval, lastSeenTimestamp) {
 
     override fun tryUpdateInternal(payload: UpdatePayload): Boolean {
         if (payload.action != null && payload.action == action) {

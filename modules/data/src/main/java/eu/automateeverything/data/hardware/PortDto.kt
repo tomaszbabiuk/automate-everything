@@ -31,5 +31,6 @@ data class PortDto(
     val valueClazz: String,
     val canRead: Boolean,
     val canWrite: Boolean,
-    val connected: Boolean
+    val sleepInterval: Long,
+    val lastSeenTimestamp: Long,
 )

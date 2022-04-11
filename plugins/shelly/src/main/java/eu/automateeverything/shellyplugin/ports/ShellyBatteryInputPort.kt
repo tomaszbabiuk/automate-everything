@@ -19,11 +19,11 @@ import eu.automateeverything.domain.hardware.BatteryCharge
 import eu.automateeverything.shellyplugin.BatteryBriefDto
 import java.math.BigDecimal
 
-class ShellyBatteryInputPort(id: String, shellyId: String, sleepInterval: Long) :
-    ShellyInputPort<BatteryCharge>(id, BatteryCharge::class.java, sleepInterval) {
+class ShellyBatteryInputPort(id: String, shellyId: String, sleepInterval: Long, lastSeenTimestamp: Long) :
+    ShellyInputPort<BatteryCharge>(id, BatteryCharge::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val value = BatteryCharge(BigDecimal.ZERO)
-    override val readTopic = "shellies/$shellyId/sensor/battery"
+    override val readTopics = arrayOf("shellies/$shellyId/sensor/battery")
 
     override fun read(): BatteryCharge {
         return value

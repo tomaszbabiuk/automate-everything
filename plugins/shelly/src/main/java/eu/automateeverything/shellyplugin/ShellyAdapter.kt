@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import eu.automateeverything.domain.langateway.LanGateway
 import eu.automateeverything.domain.langateway.LanGatewayResolver
 import eu.automateeverything.shellyplugin.ports.ShellyInputPort
 import eu.automateeverything.shellyplugin.ports.ShellyOutputPort
-import eu.automateeverything.shellyplugin.ports.ShellyPort
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -38,7 +37,7 @@ class ShellyAdapter(
     private val mqttBroker: MqttBrokerService,
     lanGatewayResolver: LanGatewayResolver,
     private val eventsSink: EventsSink
-) : HardwareAdapterBase<ShellyPort<*>>(), MqttListener {
+) : HardwareAdapterBase<ShellyInputPort<*>>(), MqttListener {
     override val id = ADAPTER_ID
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId)
@@ -63,8 +62,8 @@ class ShellyAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<ShellyPort<*>> = coroutineScope {
-        val result = ArrayList<ShellyPort<*>>()
+    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<ShellyInputPort<*>> = coroutineScope {
+        val result = ArrayList<ShellyInputPort<*>>()
 
         if (lanGateways.isEmpty()) {
             eventsSink.broadcastDiscoveryEvent(
@@ -90,7 +89,8 @@ class ShellyAdapter(
                 ShellyHelper.hijackShellyIfNeeded(client, brokerIP!!, settingsResponse, shellyIP)
                 val statusResponse = ShellyHelper.callForStatus(client, shellyIP)
 
-                val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse)
+                val now = Calendar.getInstance()
+                val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse, now)
                 result.addAll(portsFromDevice)
             }
         }
@@ -129,16 +129,20 @@ class ShellyAdapter(
         ports
             .values
             .filter { it.id.contains(clientID) }
-            .forEach { it.updateValidUntil(now + it.sleepInterval) }
+            .forEach { it.lastSeenTimestamp = now }
 
         ports
             .values
-            .filter { (it as ShellyInputPort<*>?)?.readTopic == topicName }
+            .filter { it.readTopics.contains(topicName)  }
             .forEach {
-                (it as ShellyInputPort<*>?)?.setValueFromMqttPayload(msgAsString)
+                val prev = it.read().asDecimal()
+                it.setValueFromMqttPayload(msgAsString)
+                val cur = it.read().asDecimal()
 
-                val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                eventsSink.broadcastEvent(updateEvent)
+                if (prev != cur) {
+                    val updateEvent = PortUpdateEventData(owningPluginId, id, it)
+                    eventsSink.broadcastEvent(updateEvent)
+                }
             }
     }
 
@@ -148,7 +152,10 @@ class ShellyAdapter(
             .forEach {
                 val port = it
                 if (port.id.contains(clientID)) {
-                    port.markDisconnected()
+                    port.lastSeenTimestamp = 0
+
+                    val updateEvent = PortUpdateEventData(owningPluginId, id, it)
+                    eventsSink.broadcastEvent(updateEvent)
                 }
             }
     }
@@ -159,11 +166,13 @@ class ShellyAdapter(
             val statusResponse = ShellyHelper.callForStatus(client, address)
             val settingsResponse = ShellyHelper.callForSettings(client, address)
             val shellyId = finderResponse.second.device.hostname
+            val now = Calendar.getInstance()
             val portsFromDevice = ShellyPortFactory().constructPorts(
                 shellyId,
                 idBuilder,
                 statusResponse,
-                settingsResponse
+                settingsResponse,
+                now
             )
 
             addPotentialNewPorts(portsFromDevice)

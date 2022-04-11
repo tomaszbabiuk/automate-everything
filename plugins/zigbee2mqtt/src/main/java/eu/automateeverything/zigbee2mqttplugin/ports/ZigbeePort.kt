@@ -16,22 +16,17 @@
 package eu.automateeverything.zigbee2mqttplugin.ports
 
 import eu.automateeverything.data.hardware.PortValue
-import eu.automateeverything.domain.hardware.Connectible
 import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.zigbee2mqttplugin.data.UpdatePayload
-import java.util.*
 
 abstract class ZigbeePort<V: PortValue>(
     override val id : String,
     override val valueClazz: Class<V>,
     val readTopic: String,
-    val sleepInterval: Long
-) : Connectible, Port<V> {
-    final override var connectionValidUntil: Long = 0
+    final override val sleepInterval: Long,
+    override var lastSeenTimestamp: Long
+) : Port<V> {
     var isValueVerified = false
-    init {
-        connectionValidUntil = Calendar.getInstance().timeInMillis + sleepInterval
-    }
 
     abstract fun tryUpdate(payload: UpdatePayload) : Boolean
 }

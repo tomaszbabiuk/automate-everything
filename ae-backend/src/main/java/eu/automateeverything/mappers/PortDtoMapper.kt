@@ -23,10 +23,8 @@ import java.util.*
 
 class PortDtoMapper {
     fun map(port: Port<*>, factoryId: String, adapterId: String): PortDto {
-        val now = Calendar.getInstance()
         val decimalValue: BigDecimal? = if (port.canRead) { port.tryRead()?.asDecimal() } else null
         val interfaceValue: Resource? = if (port.canRead) { port.tryRead()?.toFormattedString() } else null
-        val connected = port.checkIfConnected(now)
         return PortDto(
             port.id,
             factoryId,
@@ -36,7 +34,8 @@ class PortDtoMapper {
             port.valueClazz.name,
             port.canRead,
             port.canWrite,
-            connected
+            port.sleepInterval,
+            port.lastSeenTimestamp
         )
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package eu.automateeverything.shellyplugin
 
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.shellyplugin.ports.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ShellyPortFactory {
 
@@ -24,9 +26,10 @@ class ShellyPortFactory {
         shellyId: String,
         idBuilder: PortIdBuilder,
         statusResponse: ShellyStatusResponse,
-        settingsResponse: ShellySettingsResponse
-    ) : List<ShellyPort<*>> {
-        val result = ArrayList<ShellyPort<*>>()
+        settingsResponse: ShellySettingsResponse,
+        now: Calendar
+    ) : List<ShellyInputPort<*>> {
+        val result = ArrayList<ShellyInputPort<*>>()
         var sleepInterval = 60000L
         if (settingsResponse.sleep_mode != null) {
             sleepInterval += settingsResponse.sleep_mode.period * settingsResponse.sleep_mode.unit.minutes * 60000L
@@ -34,12 +37,12 @@ class ShellyPortFactory {
         if (statusResponse.relays != null) {
             for (i in statusResponse.relays.indices) {
                 val relayResponse = statusResponse.relays[i]
-                result.add(constructRelayOutputPort(idBuilder, shellyId, i, relayResponse, sleepInterval))
+                result.add(constructRelayOutputPort(idBuilder, shellyId, i, relayResponse, sleepInterval, now.timeInMillis))
             }
 
             if (statusResponse.meters != null) {
                 for (i in statusResponse.meters.indices) {
-                    result.add(constructRelayWattageReadPort(idBuilder, shellyId, i, sleepInterval))
+                    result.add(constructRelayWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
                 }
             }
         }
@@ -47,44 +50,44 @@ class ShellyPortFactory {
         if (statusResponse.lights != null) {
             for (i in statusResponse.lights.indices) {
                 val lightResponse = statusResponse.lights[i]
-                result.add(constructPowerLevelReadWritePort(idBuilder, shellyId, i, lightResponse, sleepInterval))
+                result.add(constructPowerLevelReadWritePort(idBuilder, shellyId, i, lightResponse, sleepInterval, now.timeInMillis))
             }
 
             if (statusResponse.meters != null) {
                 for (i in statusResponse.meters.indices) {
-                    result.add(constructLightWattageReadPort(idBuilder, shellyId, i, sleepInterval))
+                    result.add(constructLightWattageReadPort(idBuilder, shellyId, i, sleepInterval, now.timeInMillis))
                 }
             }
         }
 
         if (statusResponse.inputs != null) {
             for (i in statusResponse.inputs.indices) {
-                result.add(constructBooleanReadPort(idBuilder, shellyId, i, statusResponse.inputs[i], sleepInterval))
+                result.add(constructBooleanReadPort(idBuilder, shellyId, i, statusResponse.inputs[i], sleepInterval, now.timeInMillis))
             }
         }
 
         if (statusResponse.tmp != null) {
-            result.add(constructTemperatureReadPort(idBuilder, shellyId, statusResponse.tmp, sleepInterval))
+            result.add(constructTemperatureReadPort(idBuilder, shellyId, statusResponse.tmp, sleepInterval, now.timeInMillis))
         }
 
         if (statusResponse.hum != null) {
-            result.add(constructHumidityReadPort(idBuilder, shellyId, statusResponse.hum, sleepInterval))
+            result.add(constructHumidityReadPort(idBuilder, shellyId, statusResponse.hum, sleepInterval, now.timeInMillis))
         }
 
         if (statusResponse.bat != null) {
-            result.add(constructBatteryReadPort(idBuilder, shellyId, statusResponse.bat, sleepInterval))
+            result.add(constructBatteryReadPort(idBuilder, shellyId, statusResponse.bat, sleepInterval, now.timeInMillis))
         }
 
         if (statusResponse.lux != null) {
-            result.add(constructLuminosityReadPort(idBuilder, shellyId, statusResponse.lux, sleepInterval))
+            result.add(constructLuminosityReadPort(idBuilder, shellyId, statusResponse.lux, sleepInterval, now.timeInMillis))
         }
 
         if (statusResponse.sensor != null) {
-            result.add(constructStateReadPort(idBuilder, shellyId, statusResponse.sensor, sleepInterval))
+            result.add(constructStateReadPort(idBuilder, shellyId, statusResponse.sensor, sleepInterval, now.timeInMillis))
         }
 
         if (statusResponse.accel != null) {
-            result.add(constructVibrationReadPort(idBuilder, shellyId, statusResponse.accel, sleepInterval))
+            result.add(constructVibrationReadPort(idBuilder, shellyId, statusResponse.accel, sleepInterval, now.timeInMillis))
         }
 
         return result
@@ -95,10 +98,11 @@ class ShellyPortFactory {
         shellyId: String,
         channel: Int,
         inputBriefDto: InputBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "I")
-        val port = ShellyBinaryInputPort(id, shellyId, channel, sleepInterval)
+        val port = ShellyBinaryInputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
         port.setValueFromInputResponse(inputBriefDto)
 
         return port
@@ -108,10 +112,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         batteryBrief: BatteryBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, 0.toString(), "B")
-        val port = ShellyBatteryInputPort(id, shellyId, sleepInterval)
+        val port = ShellyBatteryInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromBatteryResponse(batteryBrief)
 
         return port
@@ -121,10 +126,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         humidityBrief: HumidityBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, 0.toString(), "H")
-        val port = ShellyHumidityInputPort(id, shellyId, sleepInterval)
+        val port = ShellyHumidityInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromHumidityResponse(humidityBrief)
         return port
     }
@@ -133,10 +139,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         luminosityBrief: LuminosityBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, 0.toString(), "L")
-        val port = ShellyLuminosityInputPort(id, shellyId, sleepInterval)
+        val port = ShellyLuminosityInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromLuminosityResponse(luminosityBrief)
         return port
     }
@@ -145,10 +152,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         stateBrief: StateBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, "state", "I")
-        val port = ShellyStateInputPort(id, shellyId, sleepInterval)
+        val port = ShellyStateInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromStateResponse(stateBrief)
         return port
     }
@@ -157,10 +165,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         accelBrief: AccelBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, "vibration", "I")
-        val port = ShellyVibrationInputPort(id, shellyId, sleepInterval)
+        val port = ShellyVibrationInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromAccelResponse(accelBrief)
         return port
     }
@@ -169,10 +178,11 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         temperatureBrief: TemperatureBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, 0.toString(), "T")
-        val port = ShellyTemperatureInputPort(id, shellyId, sleepInterval)
+        val port = ShellyTemperatureInputPort(id, shellyId, sleepInterval, lastSeenTimestamp)
         port.setValueFromTemperatureResponse(temperatureBrief)
         return port
     }
@@ -182,10 +192,11 @@ class ShellyPortFactory {
         shellyId: String,
         channel: Int,
         relayResponse: RelayResponseDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "R")
-        val port = ShellyRelayOutputPort(id, shellyId, channel, sleepInterval)
+        val port = ShellyRelayOutputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
         port.setValueFromRelayResponse(relayResponse)
         return port
     }
@@ -195,10 +206,11 @@ class ShellyPortFactory {
         shellyId: String,
         channel: Int,
         lightResponse: LightBriefDto,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "L")
-        val port = ShellyPowerLevelOutputPort(id, shellyId, channel, sleepInterval)
+        val port = ShellyPowerLevelOutputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
         port.setValueFromLightResponse(lightResponse)
         return port
     }
@@ -207,20 +219,22 @@ class ShellyPortFactory {
         idBuilder: PortIdBuilder,
         shellyId: String,
         channel: Int,
-        sleepInterval: Long
-    ) : ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ) : ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "W")
-        return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, TopicSource.Light)
+        return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
     }
 
     private fun constructRelayWattageReadPort(
         idBuilder: PortIdBuilder,
         shellyId: String,
         channel: Int,
-        sleepInterval: Long
-    ): ShellyPort<*> {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+    ): ShellyInputPort<*> {
         val id = idBuilder.buildPortId(shellyId, channel.toString(), "W")
-        return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, TopicSource.Relay)
+        return ShellyWattageInputPort(id, shellyId, channel, sleepInterval, lastSeenTimestamp)
     }
 
 }

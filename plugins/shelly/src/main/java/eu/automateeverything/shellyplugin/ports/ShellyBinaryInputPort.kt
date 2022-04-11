@@ -22,11 +22,12 @@ class ShellyBinaryInputPort(
     id: String,
     shellyId: String,
     channel: Int,
-    sleepInterval: Long)
-    : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long)
+    : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val value = BinaryInput(false)
-    override val readTopic = "shellies/$shellyId/input/$channel"
+    override val readTopics = arrayOf("shellies/$shellyId/input/$channel")
 
     override fun read(): BinaryInput {
         return value

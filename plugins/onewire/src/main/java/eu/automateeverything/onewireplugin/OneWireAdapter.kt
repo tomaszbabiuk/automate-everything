@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -109,10 +109,11 @@ class OneWireAdapter(
         }
 
         //discovery
+        val now = Calendar.getInstance()
         val adapterForDiscoveryOnly = initializeAdapter(serialPortName)
         val allContainers = searchForOneWireSensors(adapterForDiscoveryOnly)
         allContainers
-            .mapNotNull(mapper::map)
+            .mapNotNull { mapper.map(it, now)}
             .flatten()
             .forEach { ports[it.id] = it }
         freeAdapter(adapterForDiscoveryOnly)
@@ -174,11 +175,8 @@ class OneWireAdapter(
 
             if (ex.message == "OneWireContainer28-temperature conversion not complete") {
                logger.info(ex.message)
-                //ignoring
-                //TODO: add warning counter... if more than 10 > post to the mailbox
             } else {
                 ports.values.forEach {
-                    maintainPortConnectivity(now, it, false)
                     broadcastPortChangedEvent(it)
                 }
             }
@@ -214,7 +212,7 @@ class OneWireAdapter(
             ports.values
                 .filter { port -> port.address.contentEquals(container.address) }
                 .map { port ->
-                    maintainPortConnectivity(now, port, true)
+                    port.lastSeenTimestamp = now.timeInMillis
                     port
                 }
                 .filterIsInstance<OneWireTemperatureInputPort>()
@@ -235,9 +233,8 @@ class OneWireAdapter(
             if (isRelay) {
                 ports.values
                     .filter { port -> port.address.contentEquals(container.address) }
-                    .map { port ->
-                        maintainPortConnectivity(now, port, true)
-                        port
+                    .forEach { port ->
+                        port.lastSeenTimestamp = now.timeInMillis
                     }
             } else {
                 val readings = SwitchContainerHelper.read(container, true)
@@ -245,7 +242,7 @@ class OneWireAdapter(
                 ports.values
                     .filter { port -> port.address.contentEquals(container.address) }
                     .map { port ->
-                        maintainPortConnectivity(now, port, true)
+                        port.lastSeenTimestamp = now.timeInMillis
                         port
                     }
                     .filterIsInstance<OneWireBinaryInputPort>()
@@ -259,19 +256,6 @@ class OneWireAdapter(
                         }
                     }
             }
-        }
-    }
-
-    private fun maintainPortConnectivity(now: Calendar, port: OneWirePort<*>, connected: Boolean) {
-        val oldConnectionState = port.checkIfConnected(now)
-        if (connected) {
-            port.connectionValidUntil = Long.MAX_VALUE
-        } else {
-            port.markDisconnected()
-        }
-        val newConnectionState = port.checkIfConnected(now)
-        if (oldConnectionState != newConnectionState) {
-            broadcastPortChangedEvent(port)
         }
     }
 

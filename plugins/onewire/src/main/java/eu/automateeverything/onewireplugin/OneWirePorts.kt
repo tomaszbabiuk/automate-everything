@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ class OneWireTemperatureInputPort(
     override val id: String,
     override val address: ByteArray,
     override var value: Temperature,
-) : OneWirePort<Temperature>() {
+    lastSeenTimestamp: Long
+) : OneWirePort<Temperature>(lastSeenTimestamp) {
 
     override val valueClazz = Temperature::class.java
 }
@@ -34,7 +35,8 @@ class OneWireBinaryInputPort(
     val channel: Int,
     override val address: ByteArray,
     override var value: BinaryInput,
-) : OneWirePort<BinaryInput>() {
+    lastSeenTimestamp: Long
+) : OneWirePort<BinaryInput>(lastSeenTimestamp) {
 
     override val valueClazz = BinaryInput::class.java
 }
@@ -44,7 +46,8 @@ class OneWireRelayPort(
     val channel: Int,
     override val address: ByteArray,
     override var value: Relay,
-) : OneWirePort<Relay>(), OutputPort<Relay> {
+    lastSeenTimestamp: Long
+) : OneWirePort<Relay>(lastSeenTimestamp), OutputPort<Relay> {
 
     override val valueClazz = Relay::class.java
 

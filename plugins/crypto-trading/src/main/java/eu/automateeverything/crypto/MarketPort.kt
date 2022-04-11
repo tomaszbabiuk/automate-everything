@@ -15,6 +15,8 @@
 
 package eu.automateeverything.crypto
 
+import eu.automateeverything.crypto.ExchangeHardwareAdapter.Companion.REFRESH_INTERVAL
+import eu.automateeverything.crypto.ExchangeHardwareAdapter.Companion.REFRESH_OVERLAP
 import eu.automateeverything.domain.hardware.InputPort
 import org.ta4j.core.BaseBar
 import java.math.BigDecimal
@@ -23,10 +25,11 @@ class MarketPort(
     override val id: String,
     val pair: CurrencyPair,
     initialValue: BigDecimal,
-    override var connectionValidUntil: Long) :  InputPort<Ticker>
+    override var lastSeenTimestamp: Long) :  InputPort<Ticker>
 {
-
     override val valueClazz = Ticker::class.java
+
+    override val sleepInterval = REFRESH_INTERVAL + REFRESH_OVERLAP
 
     var dailyData: List<BaseBar>? = null
     var weeklyData: List<BaseBar>? = null

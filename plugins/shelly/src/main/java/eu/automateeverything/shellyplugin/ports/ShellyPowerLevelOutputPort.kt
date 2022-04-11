@@ -25,13 +25,14 @@ class ShellyPowerLevelOutputPort(
     id: String,
     shellyId: String,
     channel: Int,
-    sleepInterval: Long
-) : ShellyOutputPort<PowerLevel>(id, PowerLevel::class.java, sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ShellyOutputPort<PowerLevel>(id, PowerLevel::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val gson = Gson()
     private val readValue = PowerLevel(BigDecimal.ZERO)
     override var requestedValue : PowerLevel? = null
-    override val readTopic = "shellies/$shellyId/light/$channel/status"
+    override val readTopics = arrayOf("shellies/$shellyId/light/$channel/status")
     override val writeTopic = "shellies/$shellyId/light/$channel/set"
 
     override fun read(): PowerLevel {

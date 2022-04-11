@@ -22,11 +22,12 @@ import java.math.BigDecimal
 class ShellyTemperatureInputPort(
     id: String,
     shellyId: String,
-    sleepInterval: Long)
-    : ShellyInputPort<Temperature>(id, Temperature::class.java, sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ShellyInputPort<Temperature>(id, Temperature::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val value = Temperature(BigDecimal.ZERO)
-    override val readTopic = "shellies/$shellyId/sensor/temperature"
+    override val readTopics = arrayOf("shellies/$shellyId/sensor/temperature", "shellies/$shellyId/temperature")
 
     override fun read(): Temperature {
         return value

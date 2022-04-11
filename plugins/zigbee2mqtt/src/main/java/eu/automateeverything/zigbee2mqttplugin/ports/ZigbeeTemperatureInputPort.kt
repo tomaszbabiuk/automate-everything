@@ -25,8 +25,9 @@ class ZigbeeTemperatureInputPort(
     id: String,
     readTopic: String,
     unit: String,
-    sleepInterval: Long
-) : ZigbeeInputPort<Temperature>(id, Temperature::class.java, readTopic, Temperature(BigDecimal.ZERO), sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ZigbeeInputPort<Temperature>(id, Temperature::class.java, readTopic, Temperature(BigDecimal.ZERO), sleepInterval, lastSeenTimestamp) {
 
     private val isCelsius = unit.lowercase().contains("c")
     private val isFahrenheit = unit.lowercase().contains("f")

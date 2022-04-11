@@ -22,9 +22,10 @@ import java.math.BigDecimal
 class ZigbeeBatteryInputPort(
     id:String,
     readTopic: String,
-    sleepInterval: Long
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
 ) : ZigbeeInputPort<BatteryCharge>(id, BatteryCharge::class.java, readTopic,
-    BatteryCharge(BigDecimal.ZERO), sleepInterval) {
+    BatteryCharge(BigDecimal.ZERO), sleepInterval, lastSeenTimestamp) {
 
     override fun tryUpdateInternal(payload: UpdatePayload): Boolean {
         if (payload.battery != null) {

@@ -397,7 +397,7 @@ export default new Vuex.Store({
         if (element.id === portDto.id) {
           element.decimalValue = portDto.decimalValue
           element.interfaceValue = portDto.interfaceValue
-          element.connected = portDto.connected
+          element.lastSeenTimestamp = portDto.lastSeenTimestamp
           portFound = true
         }
       })

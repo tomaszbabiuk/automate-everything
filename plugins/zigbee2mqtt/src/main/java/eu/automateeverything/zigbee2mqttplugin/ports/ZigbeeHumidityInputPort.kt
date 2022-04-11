@@ -22,8 +22,9 @@ import java.math.BigDecimal
 class ZigbeeHumidityInputPort(
     id:String,
     readTopic: String,
-    sleepInterval: Long
-) : ZigbeeInputPort<Humidity>(id, Humidity::class.java, readTopic, Humidity(BigDecimal.ZERO), sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ZigbeeInputPort<Humidity>(id, Humidity::class.java, readTopic, Humidity(BigDecimal.ZERO), sleepInterval, lastSeenTimestamp) {
 
     override fun tryUpdateInternal(payload: UpdatePayload): Boolean {
         if (payload.humidity != null) {

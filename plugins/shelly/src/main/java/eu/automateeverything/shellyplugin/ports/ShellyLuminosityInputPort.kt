@@ -22,10 +22,12 @@ import java.math.BigDecimal
 class ShellyLuminosityInputPort(
         id: String,
         shellyId: String,
-        sleepInterval: Long) : ShellyInputPort<Luminosity>(id, Luminosity::class.java, sleepInterval) {
+        sleepInterval: Long,
+        lastSeenTimestamp: Long
+) : ShellyInputPort<Luminosity>(id, Luminosity::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val value = Luminosity(BigDecimal.ZERO)
-    override val readTopic = "shellies/$shellyId/sensor/lux"
+    override val readTopics = arrayOf("shellies/$shellyId/sensor/lux")
 
     override fun read(): Luminosity {
         return value

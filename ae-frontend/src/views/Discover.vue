@@ -42,7 +42,7 @@
                 <portcontrol
                   :valueClazz="item.valueClazz"
                   :portId="item.id"
-                  :disabled="!item.connected"
+                  :disabled="!isConnected(item)"
                   :initialValue="item.decimalValue"
                 ></portcontrol>
               </div>
@@ -50,12 +50,10 @@
                 {{ $vuetify.lang.t("$vuetify.common.nA") }}
               </div>
             </template>
-            <template v-slot:[`item.connected`]="{ item }" }>
-              <v-checkbox
-                :input-value="item.connected"
-                value
-                disabled
-              ></v-checkbox>
+            <template v-slot:[`item.lastSeen`]="{ item }" }>
+              <div :key="now">
+                {{ formatTimeAgoProxy(item.lastSeenTimestamp) }}
+              </div>
             </template>
             <template v-slot:[`item.actions`]="{ item }" }>
               <v-icon @click="openDeletePortDialog(item)">mdi-delete</v-icon>
@@ -79,7 +77,9 @@
             <v-list>
               <v-list-item v-for="event in discoveryEvents" :key="event.no">
                 <v-list-item-content>
-                  <v-list-item-title class="text-wrap">{{ event.message }}</v-list-item-title>
+                  <v-list-item-title class="text-wrap">{{
+                    event.message
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -116,6 +116,7 @@
 import { client } from "../rest.js";
 import store from "../plugins/vuex";
 import { CLEAR_DISCOVERY_EVENTS } from "../plugins/vuex";
+import { formatTimeAgo } from "../elapsed.js";
 
 export default {
   data: () => ({
@@ -125,11 +126,23 @@ export default {
       portId: null,
       show: false,
     },
+    now: 0
   }),
 
   watch: {
     $route() {
       this.refresh();
+    },
+
+    now: {
+      handler() {
+        setTimeout(() => {
+          var now = new Date().getTime();
+          this.now = now;
+          this.$forceUpdate();
+        }, 1000);
+      },
+      immediate: true,
     },
   },
 
@@ -154,6 +167,18 @@ export default {
   },
 
   methods: {
+    isConnected(port) {
+      return this.now < port.lastSeenTimestamp + port.sleepInterval
+    },
+
+    formatTimeAgoProxy: function (timestamp) {
+      if (timestamp == 0) {
+        return this.$vuetify.lang.t("$vuetify.discover.disconnected")
+      } else {
+        return formatTimeAgo(this.now, timestamp);
+      }
+    },
+
     restartDiscovery: async function () {
       var factoryId = this.$route.params.clazz;
       store.commit(CLEAR_DISCOVERY_EVENTS);
@@ -208,8 +233,8 @@ export default {
         sortable: false,
       },
       {
-        text: this.$vuetify.lang.t("$vuetify.discover.connected"),
-        value: "connected",
+        text: this.$vuetify.lang.t("$vuetify.discover.lastSeen"),
+        value: "lastSeen",
         sortable: false,
       },
       {

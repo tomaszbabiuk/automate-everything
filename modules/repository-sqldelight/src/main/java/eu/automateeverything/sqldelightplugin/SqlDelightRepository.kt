@@ -365,7 +365,7 @@ class SqlDelightRepository : Repository {
             database.portQueries.delete(port.id)
             val canRead = if (port.canRead) { 1L } else { 0L }
             val canWrite = if (port.canWrite) { 1L } else { 0L }
-            database.portQueries.insert(port.id, port.factoryId, port.adapterId, port.valueClazz, canRead, canWrite)
+            database.portQueries.insert(port.id, port.factoryId, port.adapterId, port.valueClazz, canRead, canWrite, port.sleepInterval, port.lastSeenTimestamp)
             id = database.generalQueries.lastInsertRowId().executeAsOne()
 
             markVersion(PortDto::class.java, now)

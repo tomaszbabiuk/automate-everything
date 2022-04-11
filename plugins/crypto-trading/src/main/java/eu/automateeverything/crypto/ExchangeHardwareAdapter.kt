@@ -34,8 +34,11 @@ class ExchangeHardwareAdapter(
     private var operationScope: CoroutineScope? = null
     private var currencyFilter: List<String>? = null
     private var currencyFilterDefaults = marketPairsStringToList(MarketPairsSettingGroup.FIELD_MARKET_PAIRS_IV)
-    private val refreshIntervalMs = 30 * 1000L
-    private val refreshOverlapMs = 10 * 1000L
+
+    companion object {
+        const val REFRESH_INTERVAL = 30 * 1000L
+        const val REFRESH_OVERLAP = 10 * 1000L
+    }
 
     override fun executePendingChanges() {
         //This adapter is read-only
@@ -60,7 +63,7 @@ class ExchangeHardwareAdapter(
         operationScope = CoroutineScope(Dispatchers.IO)
         operationScope?.launch {
             while (isActive) {
-                delay(refreshIntervalMs)
+                delay(REFRESH_INTERVAL)
                 maintenanceLoop()
             }
         }
@@ -89,10 +92,9 @@ class ExchangeHardwareAdapter(
         val calendar = Calendar.getInstance()
         val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
-        val validUntil = calculateValidUntil(calendar.timeInMillis)
         val tickers = marketProxy.getTickers(currencyFilter)
         tickers.forEach {
-            val port = MarketPort("$id ${it.key}", it.key, it.value, validUntil)
+            val port = MarketPort("$id ${it.key}", it.key, it.value, calendar.timeInMillis)
             updateBars(port, dayOfYear, hourOfDay)
             result.add(port)
         }
@@ -112,31 +114,14 @@ class ExchangeHardwareAdapter(
                 val ticker = tickers[port.pair]!!
                 updateBars(port, dayOfYear, hourOfDay)
 
-                val prevValue = port.lastValue
-                val valueHasChanged = prevValue != ticker
-                val wasDisconnected = port.checkIfConnected(calendar)
-                if (valueHasChanged || wasDisconnected) {
-                    port.updateValue(ticker)
-                    val event = PortUpdateEventData(owningPluginId, id, port)
-                    eventsSink.broadcastEvent(event)
-                }
-
-                port.connectionValidUntil = calculateValidUntil(calendar.timeInMillis)
+                port.lastSeenTimestamp = calendar.timeInMillis
+                port.updateValue(ticker)
+                val event = PortUpdateEventData(owningPluginId, id, port)
+                eventsSink.broadcastEvent(event)
             }
-        } catch (ex: Exception) {
-            ports.values.forEach {
-                val wasConnected = it.checkIfConnected(calendar)
-                it.markDisconnected()
-                if (wasConnected) {
-                    val event = PortUpdateEventData(owningPluginId, id, it)
-                    eventsSink.broadcastEvent(event)
-                }
-            }
+        } catch (ignored: Exception) {
+            //lastSeen will not be updated when disconnected
         }
-    }
-
-    private fun calculateValidUntil(timeInMillis: Long) : Long {
-        return timeInMillis + refreshIntervalMs + refreshOverlapMs
     }
 
     private suspend fun updateBars(port: MarketPort, dayOfYear: Int, hourOfDay: Int) {

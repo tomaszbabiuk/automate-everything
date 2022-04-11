@@ -39,7 +39,8 @@ class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
             from.valueClazz,
             from.canRead == 1L,
             from.canWrite == 1L,
-            false
+            from.sleepInterval,
+            from.lastSeenTimestamp
         )
     }
 }

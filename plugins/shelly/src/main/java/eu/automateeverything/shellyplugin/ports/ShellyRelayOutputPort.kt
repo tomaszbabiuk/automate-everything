@@ -23,12 +23,13 @@ class ShellyRelayOutputPort(
     id: String,
     shellyId: String,
     channel: Int,
-    sleepInterval: Long
-) : ShellyOutputPort<Relay>(id, Relay::class.java, sleepInterval) {
+    sleepInterval: Long,
+    lastSeenTimestamp: Long
+) : ShellyOutputPort<Relay>(id, Relay::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val readValue = Relay(false)
     override var requestedValue : Relay? = null
-    override val readTopic = "shellies/$shellyId/relay/$channel"
+    override val readTopics = arrayOf("shellies/$shellyId/relay/$channel")
     override val writeTopic = "shellies/$shellyId/relay/$channel/command"
 
     override fun read(): Relay {

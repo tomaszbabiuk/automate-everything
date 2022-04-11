@@ -18,7 +18,7 @@ package eu.automateeverything.domain.hardware
 import eu.automateeverything.data.hardware.PortValue
 import java.math.BigDecimal
 
-interface Port<V: PortValue> : Connectible {
+interface Port<V: PortValue> {
     val id: String
 
     val valueClazz: Class<V>
@@ -32,6 +32,12 @@ interface Port<V: PortValue> : Connectible {
     fun tryRead() : V? {
         return (this as InputPort<V>).read()
     }
+
+    val lastSeenTimestamp: Long
+        get() = 0
+
+    val sleepInterval: Long
+        get() = 0
 }
 
 interface InputPort<V : PortValue> : Port<V> {
