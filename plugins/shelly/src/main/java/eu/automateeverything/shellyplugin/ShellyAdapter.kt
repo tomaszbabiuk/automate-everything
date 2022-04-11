@@ -16,7 +16,6 @@
 package eu.automateeverything.shellyplugin
 
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -33,12 +32,11 @@ import java.net.InetAddress
 import java.util.*
 
 class ShellyAdapter(
-    private val owningPluginId: String,
+    owningPluginId: String,
     private val mqttBroker: MqttBrokerService,
     lanGatewayResolver: LanGatewayResolver,
-    private val eventsSink: EventsSink
-) : HardwareAdapterBase<ShellyInputPort<*>>(), MqttListener {
-    override val id = ADAPTER_ID
+    eventsSink: EventsSink
+) : HardwareAdapterBase<ShellyInputPort<*>>(owningPluginId, ADAPTER_ID, eventsSink), MqttListener {
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val client = createHttpClient()
@@ -66,17 +64,11 @@ class ShellyAdapter(
         val result = ArrayList<ShellyInputPort<*>>()
 
         if (lanGateways.isEmpty()) {
-            eventsSink.broadcastDiscoveryEvent(
-                owningPluginId,
-                "The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting"
-            )
+            logDiscovery("The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting")
         } else {
             val defaultLanGateway = lanGateways.first()
             if (lanGateways.size > 1) {
-                eventsSink.broadcastDiscoveryEvent(
-                    owningPluginId,
-                    "WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}"
-                )
+                logDiscovery("WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}")
             }
             brokerIP = defaultLanGateway.inet4Address
             val discoveryJob = async { ShellyHelper.searchForShellies(owningPluginId, client, brokerIP!!, eventsSink) }
@@ -95,6 +87,7 @@ class ShellyAdapter(
             }
         }
 
+        logDiscovery("Finished")
         result
     }
 
@@ -138,8 +131,7 @@ class ShellyAdapter(
             .filter { it.id.contains(clientID) }
             .forEach {
                 it.lastSeenTimestamp = now
-                val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                eventsSink.broadcastEvent(updateEvent)
+                broadcastPortUpdate(it)
             }
     }
 
@@ -150,9 +142,7 @@ class ShellyAdapter(
                 val port = it
                 if (port.id.contains(clientID)) {
                     port.lastSeenTimestamp = 0
-
-                    val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                    eventsSink.broadcastEvent(updateEvent)
+                    broadcastPortUpdate(it)
                 }
             }
     }

@@ -17,10 +17,14 @@ package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.PortUpdateEventData
 import java.util.*
-import kotlin.collections.HashMap
 
-abstract class HardwareAdapterBase<T : Port<*>> : HardwareAdapter<T> {
+abstract class HardwareAdapterBase<T : Port<*>>(
+    protected val owningPluginId: String,
+    override val id: String,
+    protected val eventsSink: EventsSink
+) : HardwareAdapter<T> {
 
     override var state = AdapterState.Initialized
     override var lastDiscoveryTime = 0L
@@ -35,7 +39,17 @@ abstract class HardwareAdapterBase<T : Port<*>> : HardwareAdapter<T> {
     override fun hasNewPorts(): Boolean {
         return hasNewPorts
     }
+
     abstract suspend fun internalDiscovery(eventsSink: EventsSink) : List<T>
+
+    protected fun logDiscovery(message: String) {
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
+    }
+
+    protected fun broadcastPortUpdate(port: Port<*>) {
+        val updateEvent = PortUpdateEventData(owningPluginId, id, port)
+        eventsSink.broadcastEvent(updateEvent)
+    }
 
     override suspend fun discover(discoverySink: EventsSink) {
         lastDiscoveryTime = Calendar.getInstance().timeInMillis

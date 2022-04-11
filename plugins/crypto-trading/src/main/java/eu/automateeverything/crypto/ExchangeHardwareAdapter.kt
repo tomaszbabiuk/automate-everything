@@ -25,11 +25,11 @@ import java.util.*
 
 class ExchangeHardwareAdapter(
     override val id: String,
-    private val owningPluginId: String,
+    owningPluginId: String,
     private val marketProxy: MarketProxy,
-    private val eventsSink: EventsSink,
+    eventsSink: EventsSink,
     private val settings: List<SettingsDto>)
-    : HardwareAdapterBase<MarketPort>() {
+    : HardwareAdapterBase<MarketPort>(owningPluginId, id, eventsSink) {
 
     private var operationScope: CoroutineScope? = null
     private var currencyFilter: List<String>? = null
@@ -70,6 +70,7 @@ class ExchangeHardwareAdapter(
     }
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): List<MarketPort> {
+        logDiscovery("Connecting to Coingecko")
         val result = ArrayList<MarketPort>()
         val filterRaw = if (currencyFilter == null) {
             currencyFilterDefaults
@@ -94,11 +95,13 @@ class ExchangeHardwareAdapter(
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
         val tickers = marketProxy.getTickers(currencyFilter)
         tickers.forEach {
+            logDiscovery("Including market $id ${it.key}")
             val port = MarketPort("$id ${it.key}", it.key, it.value, calendar.timeInMillis)
             updateBars(port, dayOfYear, hourOfDay)
             result.add(port)
         }
 
+        logDiscovery("Finished")
         return result
     }
 

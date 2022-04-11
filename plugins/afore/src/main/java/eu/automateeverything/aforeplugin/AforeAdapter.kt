@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package eu.automateeverything.aforeplugin
 
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
 import eu.automateeverything.domain.langateway.LanGateway
@@ -30,10 +29,9 @@ import kotlinx.coroutines.*
 import java.util.*
 
 class AforeAdapter(
-    private val owningPluginId: String,
+    owningPluginId: String,
     private val lanGatewayResolver: LanGatewayResolver,
-    private val eventsSink: EventsSink) : HardwareAdapterBase<AforeWattageInputPort>() {
-    override val id  = ADAPTER_ID
+    eventsSink: EventsSink) : HardwareAdapterBase<AforeWattageInputPort>(owningPluginId, ADAPTER_ID, eventsSink) {
     var operationScope: CoroutineScope? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId)
@@ -66,19 +64,19 @@ class AforeAdapter(
 
     override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<AforeWattageInputPort> = coroutineScope {
         val result = ArrayList<AforeWattageInputPort>()
-        eventsSink.broadcastDiscoveryEvent(owningPluginId, "Starting AFORE discovery")
+        logDiscovery("Starting AFORE discovery")
 
         val lanGateways: List<LanGateway> = lanGatewayResolver.resolve()
         val lanGateway: LanGateway? = when (lanGateways.size) {
             0 -> {
-                eventsSink.broadcastDiscoveryEvent(owningPluginId, "Cannot resolve LAN gateway... aborting!")
+                logDiscovery("Cannot resolve LAN gateway... aborting!")
                 null
             }
             1 -> {
                 lanGateways.first()
             }
             else -> {
-                eventsSink.broadcastDiscoveryEvent(owningPluginId,"There's more than one LAN gateways. Using the first one: ${lanGateways.first().interfaceName}!")
+                logDiscovery("There's more than one LAN gateways. Using the first one: ${lanGateways.first().interfaceName}!")
                 lanGateways.first()
             }
         }
@@ -97,24 +95,16 @@ class AforeAdapter(
             }
         }
 
-        eventsSink.broadcastDiscoveryEvent(owningPluginId, "AFORE discovery has finished")
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, "Finished")
 
         result
     }
 
     private suspend fun maintenanceLoop(now: Calendar) {
         ports.values.forEach {
-            val previousValue = it.read().value
-            val previousConnectionState = it.checkIfConnected(now)
-
             it.refresh(now)
-
-            val valueHasChanged = it.read().value != previousValue
-            val connectionStateHasChanged = it.checkIfConnected(now) != previousConnectionState
-            if (valueHasChanged || connectionStateHasChanged) {
-                val event = PortUpdateEventData(owningPluginId, ADAPTER_ID, it)
-                eventsSink.broadcastEvent(event)
-            }
+            it.lastSeenTimestamp = now.timeInMillis
+            broadcastPortUpdate(it)
         }
     }
 

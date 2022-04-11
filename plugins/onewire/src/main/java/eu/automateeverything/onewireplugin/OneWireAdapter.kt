@@ -37,16 +37,15 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class OneWireAdapter(
-    private val owningPluginId: String,
+    owningPluginId: String,
     private val serialPortName: String,
-    private val eventsSink: EventsSink,
+    eventsSink: EventsSink,
     private val ds2408AsRelays: List<String>
 )
-    : HardwareAdapterBase<OneWirePort<*>>() {
+    : HardwareAdapterBase<OneWirePort<*>>(owningPluginId, "1-WIRE $serialPortName", eventsSink) {
 
     private val logger = LoggerFactory.getLogger(OneWireAdapter::class.java)
     private var mapper: OneWireSensorToPortMapper
-    override val id: String = "1-WIRE $serialPortName"
 
     private val executionQueue = ConcurrentLinkedQueue<ValueSnapshot>()
 

@@ -30,13 +30,12 @@ import java.net.InetAddress
 import java.util.*
 
 class Zigbee2MqttAdapter(
-    private val owningPluginId: String,
+    owningPluginId: String,
     private val mqttBroker: MqttBrokerService,
-    private val eventsSink: EventsSink,
+    eventsSink: EventsSink,
     repository: Repository,
-) : HardwareAdapterBase<ZigbeePort<*>>(), MqttListener {
+) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, ADAPTER_ID, eventsSink), MqttListener {
     private var permitJoin: Boolean = false
-    override val id = ADAPTER_ID
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val gson = Gson()
 
@@ -113,14 +112,7 @@ class Zigbee2MqttAdapter(
         }
     }
 
-    private fun logDiscovery(message: String) {
-        eventsSink.broadcastDiscoveryEvent(
-            owningPluginId,
-            message
-        )
-    }
     override fun executePendingChanges() {
-
     }
 
     override fun start() {
