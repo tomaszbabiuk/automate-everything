@@ -34,7 +34,7 @@ class Zigbee2MqttAdapter(
     private val mqttBroker: MqttBrokerService,
     eventsSink: EventsSink,
     repository: Repository,
-) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, ADAPTER_ID, eventsSink), MqttListener {
+) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, "0", eventsSink), MqttListener {
     private var permitJoin: Boolean = false
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val gson = Gson()
@@ -232,10 +232,6 @@ class Zigbee2MqttAdapter(
 
     override suspend fun onConnected(address: InetAddress) = withContext(Dispatchers.IO) {
 
-    }
-
-    companion object {
-        const val ADAPTER_ID = "0"
     }
 }
 

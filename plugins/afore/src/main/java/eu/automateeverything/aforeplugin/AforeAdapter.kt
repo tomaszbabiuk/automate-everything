@@ -31,7 +31,7 @@ import java.util.*
 class AforeAdapter(
     owningPluginId: String,
     private val lanGatewayResolver: LanGatewayResolver,
-    eventsSink: EventsSink) : HardwareAdapterBase<AforeWattageInputPort>(owningPluginId, ADAPTER_ID, eventsSink) {
+    eventsSink: EventsSink) : HardwareAdapterBase<AforeWattageInputPort>(owningPluginId, "0", eventsSink) {
     var operationScope: CoroutineScope? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId)
@@ -127,10 +127,6 @@ class AforeAdapter(
                 maintenanceLoop(Calendar.getInstance())
             }
         }
-    }
-
-    companion object {
-        const val ADAPTER_ID = "0"
     }
 }
 

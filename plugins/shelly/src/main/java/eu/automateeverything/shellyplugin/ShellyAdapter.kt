@@ -36,7 +36,7 @@ class ShellyAdapter(
     private val mqttBroker: MqttBrokerService,
     lanGatewayResolver: LanGatewayResolver,
     eventsSink: EventsSink
-) : HardwareAdapterBase<ShellyInputPort<*>>(owningPluginId, ADAPTER_ID, eventsSink), MqttListener {
+) : HardwareAdapterBase<ShellyInputPort<*>>(owningPluginId, "0", eventsSink), MqttListener {
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val client = createHttpClient()
@@ -164,9 +164,5 @@ class ShellyAdapter(
 
             addPotentialNewPorts(portsFromDevice)
         }
-    }
-
-    companion object {
-        const val ADAPTER_ID = "0"
     }
 }
