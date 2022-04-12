@@ -30,6 +30,7 @@ import saltchannel.util.Hex
 import saltchannel.util.KeyPair
 import saltchannel.util.Rand
 import saltchannel.v2.SaltServerSession
+import java.net.UnknownHostException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.security.SecureRandom
 import java.util.concurrent.atomic.AtomicBoolean
@@ -102,6 +103,8 @@ class MqttSaltServer(
             }
 
             connectionState = ConnectionState.Connected
+        } catch (ex: UnknownHostException) {
+            inbox.sendMessage(R.inbox_message_mqtt_server_error_subject, R.inbox_message_mqtt_server_unkown_host)
         } catch (ex: Exception) {
             logger.info("A problem connecting to mqtt broker: ${brokerAddress.host}", ex)
         }

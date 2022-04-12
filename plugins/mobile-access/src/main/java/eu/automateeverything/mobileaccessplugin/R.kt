@@ -63,6 +63,11 @@ object R {
         "Nie można uzyskać połączenia z brokerem MQTT. System będzie próbował ponownie co dwie minuty."
     )
 
+    val inbox_message_mqtt_server_unkown_host = Resource(
+        "Unknown host. Check settings.",
+        "Nieznany host. Sprawdź ustawienia."
+    )
+
     val inbox_message_broker_connected = Resource(
         "The connection to the MQTT broker has been established.",
         "Połączenie z brokerem MQTT zostało ustabilizowane."
