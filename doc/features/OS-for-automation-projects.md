@@ -1,15 +1,16 @@
-# Automate Everything is an operating system for automation projects
+# Automate Everything is an operating system for every automation project
 
 Automate Everything does not limit to home automation only. As regular operating system provides drivers and resources (memory and cpu) to programs, Automate Everything provides ports and services for plugins. By selecting a proper set of plugins you can perform different automation tasks.
 
 ## Ports
 
-The ports in Automate Everything are used to communicate the software with the physical world. They can provide temperature, humidity, relays, binary inputs or any other custom values. Just like USB/HDMI ports in regular OS.
+The port represents a way to capture a measureable value (like temperature) or control an actuator (like relay, triack or transistor). The ports in "Automate Everything" are used to communicate the software with physical world. They can provide temperature, humidity, a relay, binary inputs or any other custom values. Just like USB and HDMI ports in your PC or Mac.
 
-If you want to use Automate Everything for home automation, you'll mostly use temperature, humidity, relays and binary inputs. But the plugins can always define its custom ports. The best example is "crypto-trading" plugin that defines a "Ticker" port that can be used to trade cryptocurrencies.
-Another example could be a system that monitors air pollution. In this case you would need a plugin that provides a ports for air quality metrics (like PM10, PM2.5). One  could use the air quality ports to turn some air purifier on or execute any action based on this value.
+The abstraction of ports is crucial when you want to mix devices coming from different manufacturers. "Automate Everything" takes care that thermometer being produced by company "A" can control the relay from company "B" using the settings from controller "C". You can mix the signals coming from different devices using completely different technologies (like turning a WiFi based device accorting to the temperature reported by Zigbee thermometer).
 
-The abstraction of ports is crucial when you want to mix devices coming from different manufacturers. Automate Everything will take care that thermometer being produced by company "A" can control the relay from company "B" based on the settings from controller "C". You can also mix the signals coming from wireless sensors with wired devices - for the plugins it's all the same.
+The system is totally flexible when it comes to the types of ports. Let's say that you want to use "Automate Everything" for home automation, you'll need ports like: temperature, humidity, relays and binary inputs. Another example could be a system that monitors air pollution. In this case you would need a plugin that provides a set of ports for air quality metrics (like PM10, PM2.5). The data coming from air quality ports can be used to turn air purifiers on or execute any other actions.
+
+The plugins can always define its custom ports. The best example is "crypto-trading" plugin that defines a "Ticker" port that can be used to trade cryptocurrencies.
 
 ## Services
 
