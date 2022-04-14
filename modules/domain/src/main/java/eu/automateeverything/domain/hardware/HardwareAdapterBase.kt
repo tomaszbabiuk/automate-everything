@@ -65,6 +65,7 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         newPorts.forEach {
             if (!ports.containsKey(it.id)) {
                 ports[it.id] = it
+                broadcastPortUpdate(it)
                 hasNewPorts = true
             }
         }
