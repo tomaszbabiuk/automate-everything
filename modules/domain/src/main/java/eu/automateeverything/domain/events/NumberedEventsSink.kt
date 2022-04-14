@@ -15,6 +15,12 @@
 
 package eu.automateeverything.domain.events
 
+import eu.automateeverything.data.inbox.InboxItemDto
+import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.EvaluationResult
+import eu.automateeverything.domain.hardware.Port
+import org.pf4j.PluginWrapper
 import java.util.*
 import java.util.function.Predicate
 import kotlin.collections.ArrayList
@@ -48,11 +54,11 @@ class NumberedEventsSink : EventsSink {
         listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
 
-    override fun  broadcastEvent(payload: LiveEventData) {
+    private fun  broadcastEvent(payload: LiveEventData) {
         enqueue(payload, events, MAX_EVENTS_SIZE)
     }
 
-    override fun broadcastMessage(payload: LiveEventData) {
+    private fun broadcastMessage(payload: LiveEventData) {
         enqueue(payload, messages, MAX_INBOX_SIZE)
     }
 
@@ -67,6 +73,50 @@ class NumberedEventsSink : EventsSink {
 
     override fun all(): List<LiveEvent<*>> {
         return events
+    }
+
+    override fun broadcastDiscoveryEvent(factoryId: String, message: String) {
+        val event = DiscoveryEventData(factoryId, message)
+        broadcastEvent(event)
+    }
+
+    override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
+        val event = PortUpdateEventData(factoryId, adapterId, port)
+        broadcastEvent(event)
+    }
+
+    override fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto) {
+        val event = InstanceUpdateEventData(instanceDto)
+        broadcastEvent(event)
+    }
+
+    override fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean) {
+        val event = HeartbeatEventData(timestamp, unreadMessagesCount, isAutomationEnabled)
+        broadcastEvent(event)
+    }
+
+    override fun broadcastAutomationUpdate(
+        unit: AutomationUnit<*>,
+        instance: InstanceDto,
+        newEvaluation: EvaluationResult<out Any?>
+    ) {
+        val eventData = AutomationUpdateEventData(unit, instance, newEvaluation)
+        broadcastEvent(eventData)
+    }
+
+    override fun broadcastAutomationStateChange(enabled: Boolean) {
+        broadcastEvent(AutomationStateEventData(enabled))
+    }
+
+    override fun broadcastPluginEvent(plugin: PluginWrapper) {
+        val eventData = PluginEventData(plugin)
+        broadcastEvent(eventData)
+
+    }
+
+    override fun broadcastInboxMessage(inboxItemDto: InboxItemDto) {
+        val event = InboxEventData(inboxItemDto)
+        broadcastMessage(event)
     }
 
     companion object {

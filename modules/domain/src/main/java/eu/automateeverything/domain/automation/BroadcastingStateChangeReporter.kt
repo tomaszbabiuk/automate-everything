@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.events.AutomationUpdateEventData
 import eu.automateeverything.domain.events.EventsSink
 
 class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : StateChangeReporter {
@@ -24,8 +23,8 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
     private val listeners = ArrayList<StateChangedListener>()
 
     override fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instance, deviceUnit.lastEvaluation)
-        liveEvents.broadcastEvent(eventData)
+        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
+
 
         listeners.forEach {
             it.onStateChanged(deviceUnit, instance)
@@ -33,8 +32,7 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
     }
 
     override fun reportDeviceValueChange(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instance, deviceUnit.lastEvaluation)
-        liveEvents.broadcastEvent(eventData)
+        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
 
         listeners.forEach {
             it.onValueChanged(deviceUnit, instance)
@@ -42,8 +40,7 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
     }
 
     override fun reportDeviceUpdated(deviceUnit: AutomationUnit<*>, instance: InstanceDto) {
-        val eventData = AutomationUpdateEventData(deviceUnit, instance, deviceUnit.lastEvaluation)
-        liveEvents.broadcastEvent(eventData)
+        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
     }
 
     override fun addListener(listener: StateChangedListener) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package eu.automateeverything.aforeplugin
 
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.DiscoveryEventData
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -106,7 +105,6 @@ class AforeFinder(
     }
 
     private fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        val event = DiscoveryEventData(owningPluginId, message)
-        eventsSink.broadcastEvent(event)
+        eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
     }
 }

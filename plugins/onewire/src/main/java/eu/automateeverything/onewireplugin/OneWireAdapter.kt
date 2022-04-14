@@ -23,7 +23,6 @@ import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.container.SwitchContainer
 import com.dalsemi.onewire.container.TemperatureContainer
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
@@ -176,7 +175,7 @@ class OneWireAdapter(
                logger.info(ex.message)
             } else {
                 ports.values.forEach {
-                    broadcastPortChangedEvent(it)
+                    broadcastPortUpdate(it)
                 }
             }
         }
@@ -200,7 +199,7 @@ class OneWireAdapter(
                     port.commit()
                     val newValue = port.value.value
                     if (newValue != oldValue) {
-                        broadcastPortChangedEvent(port)
+                        broadcastPortUpdate(port)
                     }
                 }
         }
@@ -220,7 +219,7 @@ class OneWireAdapter(
                     val newTemperatureK = TemperatureContainerHelper.read(container).toBigDecimal() + 273.15.toBigDecimal()
                     if (newTemperatureK != port.value.value) {
                         port.update(now.timeInMillis, Temperature(newTemperatureK))
-                        broadcastPortChangedEvent(port)
+                        broadcastPortUpdate(port)
                     }
                 }
         }
@@ -251,16 +250,11 @@ class OneWireAdapter(
                         val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
                         if (newBinaryReading != port.value.value) {
                             port.update(now.timeInMillis, BinaryInput(newBinaryReading))
-                            broadcastPortChangedEvent(port)
+                            broadcastPortUpdate(port)
                         }
                     }
             }
         }
-    }
-
-    private fun broadcastPortChangedEvent(it: OneWirePort<*>) {
-        val event = PortUpdateEventData(owningPluginId, id, it)
-        eventsSink.broadcastEvent(event)
     }
 
     data class ValueSnapshot(

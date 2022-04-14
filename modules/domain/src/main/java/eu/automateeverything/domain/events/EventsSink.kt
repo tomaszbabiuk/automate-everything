@@ -17,7 +17,10 @@ package eu.automateeverything.domain.events
 
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.automation.AutomationUnit
+import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.Port
+import org.pf4j.PluginWrapper
 import java.util.function.Predicate
 
 interface LiveEventsListener {
@@ -27,34 +30,21 @@ interface LiveEventsListener {
 interface EventsSink {
     fun addEventListener(listener: LiveEventsListener)
     fun removeListener(listener: LiveEventsListener)
-    fun broadcastEvent(payload: LiveEventData)
-    fun broadcastMessage(payload: LiveEventData)
     fun reset()
     fun all() : List<LiveEvent<*>>
     fun removeRange(filter: Predicate<in LiveEvent<*>>)
 
-    fun broadcastDiscoveryEvent(factoryId: String, message: String) {
-        val event = DiscoveryEventData(factoryId, message)
-        broadcastEvent(event)
-    }
+    fun broadcastDiscoveryEvent(factoryId: String, message: String)
+    fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>)
+    fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto)
+    fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean)
+    fun broadcastInboxMessage(inboxItemDto: InboxItemDto)
+    fun broadcastAutomationUpdate(
+        unit: AutomationUnit<*>,
+        instance: InstanceDto,
+        newEvaluation: EvaluationResult<out Any?>
+    )
 
-    fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
-        val event = PortUpdateEventData(factoryId, adapterId, port)
-        broadcastEvent(event)
-    }
-
-    fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto) {
-        val event = InstanceUpdateEventData(instanceDto)
-        broadcastEvent(event)
-    }
-
-    fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean) {
-        val event = HeartbeatEventData(timestamp, unreadMessagesCount, isAutomationEnabled)
-        broadcastEvent(event)
-    }
-
-    fun broadcastInboxMessage(inboxItemDto: InboxItemDto) {
-        val event = InboxEventData(inboxItemDto)
-        broadcastMessage(event)
-    }
+    fun broadcastAutomationStateChange(enabled: Boolean)
+    fun broadcastPluginEvent(plugin: PluginWrapper)
 }

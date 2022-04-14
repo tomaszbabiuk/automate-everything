@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
 import org.ta4j.core.BaseBar
@@ -119,8 +118,7 @@ class ExchangeHardwareAdapter(
 
                 port.lastSeenTimestamp = calendar.timeInMillis
                 port.updateValue(ticker)
-                val event = PortUpdateEventData(owningPluginId, id, port)
-                eventsSink.broadcastEvent(event)
+                eventsSink.broadcastPortUpdateEvent(owningPluginId, id, port)
             }
         } catch (ignored: Exception) {
             //lastSeen will not be updated when disconnected

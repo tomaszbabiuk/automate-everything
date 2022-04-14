@@ -57,7 +57,7 @@ class AutomationConductor(
     }
 
     private fun broadcastAutomationUpdate() {
-        liveEvents.broadcastEvent(AutomationStateEventData(enabled))
+        liveEvents.broadcastAutomationStateChange(enabled)
         if (enabled) {
             inbox.sendMessage(R.inbox_message_automation_enabled_subject, R.inbox_message_automation_enabled_body)
         } else {
@@ -262,8 +262,7 @@ class AutomationConductor(
                     val newEvaluation = unit.lastEvaluation
                     if (newEvaluation != lastEvaluation) {
                         val instance = it.value.first
-                        val eventData = AutomationUpdateEventData(unit, instance, newEvaluation)
-                        liveEvents.broadcastEvent(eventData)
+                        liveEvents.broadcastAutomationUpdate(unit, instance, newEvaluation)
                     }
                 }
         }

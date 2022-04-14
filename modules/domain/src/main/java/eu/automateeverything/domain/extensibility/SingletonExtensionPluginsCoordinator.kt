@@ -48,8 +48,7 @@ class SingletonExtensionPluginsCoordinator(
 
         override fun pluginStateChanged(event: PluginStateEvent) {
             val plugin = event.plugin
-            val payload = PluginEventData(plugin)
-            liveEvents.broadcastEvent(payload)
+            liveEvents.broadcastPluginEvent(plugin)
         }
     }
 
