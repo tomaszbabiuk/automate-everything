@@ -140,7 +140,7 @@ export default {
           var now = new Date().getTime();
           this.now = now;
           this.$forceUpdate();
-        }, 5000);
+        }, 1000);
       },
       immediate: true,
     },

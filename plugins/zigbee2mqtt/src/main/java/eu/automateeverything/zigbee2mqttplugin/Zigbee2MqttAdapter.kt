@@ -19,7 +19,6 @@ import com.google.gson.Gson
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PortUpdateEventData
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -28,6 +27,7 @@ import eu.automateeverything.zigbee2mqttplugin.ports.*
 import kotlinx.coroutines.*
 import java.net.InetAddress
 import java.util.*
+import java.util.concurrent.LinkedBlockingQueue
 
 class Zigbee2MqttAdapter(
     owningPluginId: String,
@@ -35,9 +35,12 @@ class Zigbee2MqttAdapter(
     eventsSink: EventsSink,
     repository: Repository,
 ) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, "0", eventsSink), MqttListener {
+
     private var permitJoin: Boolean = false
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val gson = Gson()
+    private val debounceQueue = LinkedBlockingQueue<ZigbeeActionInputPort>()
+    var operationScope: CoroutineScope? = null
 
     init {
         repository
@@ -115,13 +118,31 @@ class Zigbee2MqttAdapter(
     override fun executePendingChanges() {
     }
 
-    override fun start() {
-        mqttBroker.addMqttListener(this)
-    }
-
     override fun stop() {
         mqttBroker.removeMqttListener(this)
+        operationScope?.cancel("Stop called")
     }
+
+    override fun start() {
+        mqttBroker.addMqttListener(this)
+
+        if (operationScope != null) {
+            operationScope!!.cancel("Adapter already started")
+        }
+
+        operationScope = CoroutineScope(Dispatchers.IO)
+        operationScope?.launch {
+            while (isActive) {
+                val port = debounceQueue.poll()
+                if (port != null) {
+                    delay(1000)
+                    port.value = BinaryInput(false)
+                    broadcastPortUpdate(port)
+                }
+            }
+        }
+    }
+
 
     override fun onPublish(clientID: String, topicName: String, msgAsString: String) {
         if (topicName.startsWith("zigbee2mqtt")) {
@@ -130,20 +151,24 @@ class Zigbee2MqttAdapter(
                 "zigbee2mqtt/bridge/event" -> handleBridgeEvent(msgAsString)
             }
 
+            val nowMillis = Calendar.getInstance().timeInMillis
+
             ports
                 .values
                 .filter {  it.readTopic == topicName }
                 .forEach {
                     val updatePayload = gson.fromJson(msgAsString, UpdatePayload::class.java)
-                    val updated = it.tryUpdate(updatePayload)
-                    if (updated) {
-                        val updateEvent = PortUpdateEventData(owningPluginId, id, it)
-                        eventsSink.broadcastEvent(updateEvent)
-
-                        val nowMillis = Calendar.getInstance().timeInMillis
-                        it.lastSeenTimestamp = nowMillis
-                    }
+                    it.tryUpdate(updatePayload)
+                    it.lastSeenTimestamp = nowMillis
+                    broadcastPortUpdate(it)
+                    debounceActionPort(it)
                 }
+        }
+    }
+
+    private fun debounceActionPort(it: ZigbeePort<*>) {
+        if (it is ZigbeeActionInputPort && it.value.value) {
+            debounceQueue.add(it)
         }
     }
 
@@ -231,7 +256,6 @@ class Zigbee2MqttAdapter(
     }
 
     override suspend fun onConnected(address: InetAddress) = withContext(Dispatchers.IO) {
-
     }
 }
 
