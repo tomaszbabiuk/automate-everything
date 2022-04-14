@@ -21,9 +21,9 @@ Every object can be configured in the GUI:
 Developers can define custom automation blocks to extend the system even further:
 ![Automation](screenshot_objects_automation.png)
 
-## Plugins are looking for compatible hardware
+## Plugins are a bridge between hardware and software
 No more scripting and configuration hassle! Hardware plugins can discover devices in the Cloud, your local LAN network or the ones connected to the system (like USB).
-The plugin can also post messages to the "discovery report board" and inform the user about the progress or obstacles. 
+The plugin can also post messages to the "discovery report log" and inform the user about the progress or obstacles. 
 ![Discovery](screenshot_discovery.png)
 
 ## Plugins can post messages to the Inbox

@@ -9,11 +9,11 @@ The sky is the limit... you can use it to automate literally everything! If you'
 
 ### Smart building
 - A smart home
-- A guardian of self-consumption for your solar panel
-- A dedicated central heating controller
-- A dedicated alarm system
+- A consumption manager for solar panels
+- An advanced central heating controller
+- An alarm system
 - A local If-This-Than-That engine
-- A mailing system
+- A mailing bot
 
 ### Smart gardening
 - A smart glasshouse
@@ -27,8 +27,8 @@ The sky is the limit... you can use it to automate literally everything! If you'
 
 ### Industrial automation
 Access control system
-Access control based automation system
-Industrial control panels
+A mix of access control and home automation system
+Industrial-grade control panels
 
 # Similar projects
 1. OpenHAB

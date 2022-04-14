@@ -4,7 +4,7 @@ Automate Everything does not limit to home automation only. As regular operating
 
 ## Ports
 
-The port represents a way to capture a measureable value (like temperature) or control an actuator (like relay, triack or transistor). The ports in "Automate Everything" are used to communicate the software with physical world. They can provide temperature, humidity, a relay, binary inputs or any other custom values. Just like USB and HDMI ports in your PC or Mac.
+The port represents a way to capture a measurable value (like temperature) or control an actuator (like relay, triack or transistor). The ports in "Automate Everything" are used to communicate the software with physical world. They can provide temperature, humidity, a relay, binary inputs or any other custom values. Just like USB and HDMI ports in your PC or Mac.
 
 The abstraction of ports is crucial when you want to mix devices coming from different manufacturers. "Automate Everything" takes care that thermometer being produced by company "A" can control the relay from company "B" using the settings from controller "C". You can mix the signals coming from different devices using completely different technologies (like turning a WiFi based device accorting to the temperature reported by Zigbee thermometer).
 
