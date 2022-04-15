@@ -22,8 +22,6 @@ import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 import java.util.*
-import java.util.function.Predicate
-import kotlin.collections.ArrayList
 
 class NumberedEventsSink : EventsSink {
 
@@ -31,8 +29,14 @@ class NumberedEventsSink : EventsSink {
 
     private val listeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
 
-    val events = ArrayList<LiveEvent<*>>()
-    val messages = ArrayList<LiveEvent<*>>()
+    private val automationStateEvents = ArrayList<LiveEvent<AutomationStateEventData>>()
+    private val automationUpdateEvents = ArrayList<LiveEvent<AutomationUpdateEventData>>()
+    private val discoveryEvents = ArrayList<LiveEvent<DiscoveryEventData>>()
+    private val heartbeatEvents = ArrayList<LiveEvent<HeartbeatEventData>>()
+    private val inboxEvents = ArrayList<LiveEvent<InboxEventData>>()
+    private val instanceUpdateEvents = ArrayList<LiveEvent<InstanceUpdateEventData>>()
+    private val pluginEvents = ArrayList<LiveEvent<PluginEventData>>()
+    private val portUpdateEvents = ArrayList<LiveEvent<PortUpdateEventData>>()
 
     override fun addEventListener(listener: LiveEventsListener) {
         listeners.add(listener)
@@ -42,42 +46,39 @@ class NumberedEventsSink : EventsSink {
         listeners.remove(listener)
     }
 
-    private fun enqueue(payload: LiveEventData, target: ArrayList<LiveEvent<*>>, maxSize: Int) {
-        if (target.size > maxSize) {
+    private fun <T: LiveEventData> add(payload: T, target: MutableList<LiveEvent<T>>) {
+        if (target.size > MAX_EVENTS_SIZE_IN_CATEGORY) {
             target.removeAt(0)
         }
 
         eventCounter++
         val now = Calendar.getInstance().timeInMillis
-        val event = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
+        val event: LiveEvent<T> = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
         target.add(event)
+
         listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
 
-    private fun  broadcastEvent(payload: LiveEventData) {
-        enqueue(payload, events, MAX_EVENTS_SIZE)
-    }
-
-    private fun broadcastMessage(payload: LiveEventData) {
-        enqueue(payload, messages, MAX_INBOX_SIZE)
-    }
-
-    override fun reset() {
-        eventCounter = 0
-        events.clear()
-    }
-
-    override fun removeRange(filter: Predicate<in LiveEvent<*>>) {
-        events.removeIf(filter)
-    }
-
-    override fun all(): List<LiveEvent<*>> {
-        return events
+    private fun broadcastEvent(payload: LiveEventData) {
+        when (payload) {
+            is AutomationStateEventData -> add(payload, automationStateEvents)
+            is AutomationUpdateEventData -> add(payload, automationUpdateEvents)
+            is DiscoveryEventData -> add(payload, discoveryEvents)
+            is HeartbeatEventData -> add(payload, heartbeatEvents)
+            is InboxEventData -> add(payload, inboxEvents)
+            is InstanceUpdateEventData -> add(payload, instanceUpdateEvents)
+            is PluginEventData -> add(payload, pluginEvents)
+            is PortUpdateEventData -> add(payload, portUpdateEvents)
+        }
     }
 
     override fun broadcastDiscoveryEvent(factoryId: String, message: String) {
         val event = DiscoveryEventData(factoryId, message)
         broadcastEvent(event)
+    }
+
+    override fun discoveryEvents(): List<LiveEvent<DiscoveryEventData>> {
+        return discoveryEvents
     }
 
     override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
@@ -104,8 +105,17 @@ class NumberedEventsSink : EventsSink {
         broadcastEvent(eventData)
     }
 
+
+    override fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>> {
+        return automationUpdateEvents
+    }
+
     override fun broadcastAutomationStateChange(enabled: Boolean) {
         broadcastEvent(AutomationStateEventData(enabled))
+    }
+
+    override fun automationStateEvents(): List<LiveEvent<AutomationStateEventData>> {
+        return automationStateEvents
     }
 
     override fun broadcastPluginEvent(plugin: PluginWrapper) {
@@ -116,11 +126,10 @@ class NumberedEventsSink : EventsSink {
 
     override fun broadcastInboxMessage(inboxItemDto: InboxItemDto) {
         val event = InboxEventData(inboxItemDto)
-        broadcastMessage(event)
+        broadcastEvent(event)
     }
 
     companion object {
-        const val MAX_EVENTS_SIZE = 200
-        const val MAX_INBOX_SIZE = 100
+        const val MAX_EVENTS_SIZE_IN_CATEGORY = 200
     }
 }

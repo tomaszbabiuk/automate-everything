@@ -21,7 +21,6 @@ import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
-import java.util.function.Predicate
 
 interface LiveEventsListener {
     fun onEvent(event: LiveEvent<*>)
@@ -30,21 +29,20 @@ interface LiveEventsListener {
 interface EventsSink {
     fun addEventListener(listener: LiveEventsListener)
     fun removeListener(listener: LiveEventsListener)
-    fun reset()
-    fun all() : List<LiveEvent<*>>
-    fun removeRange(filter: Predicate<in LiveEvent<*>>)
+    fun discoveryEvents(): List<LiveEvent<DiscoveryEventData>>
+    fun automationStateEvents(): List<LiveEvent<AutomationStateEventData>>
+    fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>>
 
     fun broadcastDiscoveryEvent(factoryId: String, message: String)
     fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>)
     fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto)
     fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean)
     fun broadcastInboxMessage(inboxItemDto: InboxItemDto)
+    fun broadcastAutomationStateChange(enabled: Boolean)
+    fun broadcastPluginEvent(plugin: PluginWrapper)
     fun broadcastAutomationUpdate(
         unit: AutomationUnit<*>,
         instance: InstanceDto,
         newEvaluation: EvaluationResult<out Any?>
     )
-
-    fun broadcastAutomationStateChange(enabled: Boolean)
-    fun broadcastPluginEvent(plugin: PluginWrapper)
 }

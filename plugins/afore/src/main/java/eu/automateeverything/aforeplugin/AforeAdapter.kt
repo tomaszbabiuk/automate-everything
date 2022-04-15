@@ -105,6 +105,8 @@ class AforeAdapter(
             it.refresh(now)
             it.lastSeenTimestamp = now.timeInMillis
             broadcastPortUpdate(it)
+
+            delay(30000)
         }
     }
 

@@ -16,8 +16,6 @@
 package eu.automateeverything.rest.automationhistory
 
 import eu.automateeverything.data.automationhistory.AutomationHistoryDto
-import eu.automateeverything.domain.events.AutomationStateEventData
-import eu.automateeverything.domain.events.AutomationUpdateEventData
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.mappers.AutomationHistoryDtoMapper
 import jakarta.inject.Inject
@@ -34,23 +32,19 @@ class AutomationHistoryController @Inject constructor(
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): List<AutomationHistoryDto> {
-        return eventsSink
-            .all()
-            .filter { it.data is AutomationUpdateEventData || it.data is AutomationStateEventData }
-            .mapNotNull {
-                when (it.data) {
-                    is AutomationUpdateEventData -> {
-                        val data = it.data as AutomationUpdateEventData
-                        automationHistoryMapper.map(it.timestamp, data, it.number)
-                    }
-                    is AutomationStateEventData -> {
-                        val data = it.data as AutomationStateEventData
-                        automationHistoryMapper.map(it.timestamp, data, it.number)
-                    }
-                    else -> {
-                        null
-                    }
-                }
+
+        val states = eventsSink
+            .automationStateEvents()
+            .map {
+                automationHistoryMapper.map(it.timestamp, it.data, it.number)
             }
+
+        val deviceUpdates = eventsSink
+            .automationUpdateEvents()
+            .map {
+                automationHistoryMapper.map(it.timestamp, it.data, it.number)
+            }
+
+        return (states + deviceUpdates).sortedBy { it.timestamp }
     }
 }

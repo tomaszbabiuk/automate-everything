@@ -35,9 +35,8 @@ class AdapterEvents @Inject constructor(
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getEvents(): List<DiscoveryEventDto> {
         return eventsSink
-            .all()
-            .filter { it.data is DiscoveryEventData }
-            .map { hardwareEventMapper.map(it.number, it.data as DiscoveryEventData) }
+            .discoveryEvents()
+            .map { hardwareEventMapper.map(it.number, it.data) }
             .toList()
     }
 }
