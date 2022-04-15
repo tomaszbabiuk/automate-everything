@@ -32,7 +32,6 @@ class AutomationHistoryController @Inject constructor(
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): List<AutomationHistoryDto> {
-
         val states = eventsSink
             .automationStateEvents()
             .map {

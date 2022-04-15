@@ -18,6 +18,7 @@ package eu.automateeverything.domain.events
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Language
+import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.hardware.InputPort
@@ -67,6 +68,11 @@ class AutomationStateEventData(val enabled: Boolean) : LiveEventData() {
     }
 }
 
+@Serializable
+class DescriptionsUpdateEventData(
+    val instanceId: Long,
+    var descriptions: List<Resource> = ArrayList(),
+) : LiveEventData()
 
 class AutomationUpdateEventData(
     val unit: AutomationUnit<*>,

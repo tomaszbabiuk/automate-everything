@@ -46,15 +46,15 @@ class NumberedEventsSink : EventsSink {
         listeners.remove(listener)
     }
 
-    private fun <T: LiveEventData> add(payload: T, target: MutableList<LiveEvent<T>>) {
-        if (target.size > MAX_EVENTS_SIZE_IN_CATEGORY) {
+    private fun <T: LiveEventData> add(payload: T, target: MutableList<LiveEvent<T>>?) {
+        if (target != null && target.size > MAX_EVENTS_SIZE_IN_CATEGORY) {
             target.removeAt(0)
         }
 
         eventCounter++
         val now = Calendar.getInstance().timeInMillis
         val event: LiveEvent<T> = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
-        target.add(event)
+        target?.add(event)
 
         listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
@@ -69,6 +69,7 @@ class NumberedEventsSink : EventsSink {
             is InstanceUpdateEventData -> add(payload, instanceUpdateEvents)
             is PluginEventData -> add(payload, pluginEvents)
             is PortUpdateEventData -> add(payload, portUpdateEvents)
+            is DescriptionsUpdateEventData -> add(payload, null)
         }
     }
 
@@ -110,6 +111,14 @@ class NumberedEventsSink : EventsSink {
         broadcastEvent(eventData)
     }
 
+    override fun broadcastDescriptionsUpdate(
+        unit: AutomationUnit<*>,
+        instance: InstanceDto,
+        newEvaluation: EvaluationResult<out Any?>
+    ) {
+        val eventData = DescriptionsUpdateEventData(instance.id, newEvaluation.descriptions)
+        broadcastEvent(eventData)
+    }
 
     override fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>> {
         return automationUpdateEvents

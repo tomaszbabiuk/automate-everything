@@ -60,7 +60,7 @@ abstract class AutomationUnitBase<T>(
 
     private fun evaluateAndReportStateUpdate() {
         lastEvaluation.descriptions = lastNotes.values.toList()
-        stateChangeReporter.reportDeviceUpdated(this, instance)
+        stateChangeReporter.reportDescriptionsUpdate(this, instance)
     }
 
     override fun calculate(now: Calendar) {

@@ -25,7 +25,6 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
     override fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
         liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
 
-
         listeners.forEach {
             it.onStateChanged(deviceUnit, instance)
         }
@@ -39,8 +38,8 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
         }
     }
 
-    override fun reportDeviceUpdated(deviceUnit: AutomationUnit<*>, instance: InstanceDto) {
-        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
+    override fun reportDescriptionsUpdate(deviceUnit: AutomationUnit<*>, instance: InstanceDto) {
+        liveEvents.broadcastDescriptionsUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
     }
 
     override fun addListener(listener: StateChangedListener) {

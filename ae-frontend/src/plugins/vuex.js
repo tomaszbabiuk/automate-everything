@@ -53,6 +53,7 @@ export const UPDATE_AUTOMATION = 'UPDATE_AUTOMATION'
 export const CLEAR_AUTOMATION_UNITS = 'CLEAR_AUTOMATION_UNITS'
 export const ADD_AUTOMATION_UNIT = 'ADD_AUTOMATION_UNIT'
 export const UPDATE_AUTOMATION_UNIT = 'UPDATE_AUTOMATION_UNIT'
+export const UPDATE_DESCRIPTIONS = 'UPDATE_DESCRIPTIONS'
 
 export const CLEAR_AUTOMATION_HISTORY = 'CLEAR_AUTOMATION_HISTORY'
 export const ADD_AUTOMATION_HISTORY = 'ADD_AUTOMATION_HISTORY'
@@ -418,6 +419,14 @@ export default new Vuex.Store({
     [ADD_AUTOMATION_UNIT](state, automationUnitDto) {
       automationUnitDto.show = false
       state.automationUnits.push(automationUnitDto)
+    },
+
+    [UPDATE_DESCRIPTIONS](state, descriptionsUpdateDto) {
+      state.automationUnits.forEach( element => {
+        if (element.instance.id === descriptionsUpdateDto.instanceId) {
+          element.evaluationResult.descriptions = descriptionsUpdateDto.descriptions
+        }
+      })
     },
 
     [UPDATE_AUTOMATION_UNIT](state, automationUnitDto) {

@@ -87,6 +87,7 @@ open class App : ResourceConfig() {
         val automationHistoryMapper = AutomationHistoryDtoMapper()
         val heartbeatMapper = HeartbeatDtoMapper()
         val inboxMessageMapper = InboxMessageDtoMapper()
+        val descriptionsUpdateDtoMapper = DescriptionsUpdateDtoMapper()
 
         val eventsMapper = LiveEventsMapper(
             portMapper,
@@ -95,7 +96,8 @@ open class App : ResourceConfig() {
             automationUnitMapper,
             automationHistoryMapper,
             heartbeatMapper,
-            inboxMessageMapper
+            inboxMessageMapper,
+            descriptionsUpdateDtoMapper
         )
 
         val eventsSubscriptionBuilder = EventsSubscriptionBuilder(eventsSink, eventsMapper, binaryFormat)

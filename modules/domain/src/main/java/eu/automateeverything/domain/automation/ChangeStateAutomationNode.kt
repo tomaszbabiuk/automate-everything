@@ -29,6 +29,11 @@ class ChangeStateAutomationNode(
         next?.process(now, firstLoop)
     }
 
+    override fun removeNote(noteId: String) {
+        super.removeNote(noteId)
+        deviceUnit.removeNote(noteId)
+    }
+
     override fun modifyNote(noteId: String, note: Resource) {
         super.modifyNote(noteId, note)
         deviceUnit.modifyNote(noteId, note)

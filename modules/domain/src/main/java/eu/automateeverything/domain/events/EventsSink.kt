@@ -50,4 +50,9 @@ interface EventsSink {
         instance: InstanceDto,
         newEvaluation: EvaluationResult<out Any?>
     )
+    fun broadcastDescriptionsUpdate(
+        unit: AutomationUnit<*>,
+        instance: InstanceDto,
+        newEvaluation: EvaluationResult<out Any?>
+    )
 }

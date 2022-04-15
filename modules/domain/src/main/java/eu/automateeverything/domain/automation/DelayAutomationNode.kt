@@ -35,11 +35,12 @@ class DelayAutomationNode(
             scope = CoroutineScope(Dispatchers.IO)
             scope!!.launch {
                 var secondsTillEnd = seconds
-                while (isActive && secondsTillEnd >= 0) {
+                while (isActive && secondsTillEnd > 0) {
                     delay(1000)
                     secondsTillEnd--
                     doNode.modifyNote("TILL_END", Resource.createUniResource(secondsTillEnd.toString()))
                 }
+                doNode.removeNote("TILL_END")
 
                 if (isActive) {
                     doNode.process(Calendar.getInstance(), firstLoop)

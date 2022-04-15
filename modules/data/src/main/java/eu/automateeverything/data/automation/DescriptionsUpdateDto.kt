@@ -13,14 +13,14 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.domain.automation
+package eu.automateeverything.data.automation
 
 import eu.automateeverything.data.localization.Resource
-import java.util.*
+import kotlinx.serialization.Serializable
 
-interface StatementNode : AutomationNode {
-    val next: StatementNode?
-    fun process(now: Calendar, firstLoop: Boolean)
-    fun modifyNote(noteId: String, note: Resource)
-    fun removeNote(noteId: String)
-}
+@Serializable
+data class DescriptionsUpdateDto(
+    val instanceId: Long,
+    val descriptions: List<Resource>?
+)
+

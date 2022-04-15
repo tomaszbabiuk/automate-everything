@@ -2,7 +2,7 @@ import store, {
   ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR, PREPEND_INBOX_MESSAGE, 
   SET_INBOX_UNREAD_COUNT, SET_INBOX_TOTAL_COUNT,
   UPDATE_PLUGIN, UPDATE_AUTOMATION_UNIT, UPDATE_INSTANCE,
-  ADD_AUTOMATION_HISTORY } from './plugins/vuex'
+  UPDATE_DESCRIPTIONS, ADD_AUTOMATION_HISTORY } from './plugins/vuex'
 
 import vuetify from './plugins/vuetify'
 
@@ -51,6 +51,12 @@ function createSseClient() {
       this.liveMsgServer.addEventListener("AutomationUnitDto", function(e) {
         var automationUnitDto = JSON.parse(e.data)
         store.commit(UPDATE_AUTOMATION_UNIT, automationUnitDto)
+      })
+
+      this.liveMsgServer.addEventListener("DescriptionsUpdateDto", function(e) {
+        console.log("descriptions update")
+        var descriptionsUpdateDto = JSON.parse(e.data)
+        store.commit(UPDATE_DESCRIPTIONS, descriptionsUpdateDto)
       })
   
       this.liveMsgServer.addEventListener("AutomationHistoryDto", function(e) {

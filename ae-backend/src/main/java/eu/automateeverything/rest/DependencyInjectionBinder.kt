@@ -22,22 +22,10 @@ import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.inbox.Inbox
-import eu.automateeverything.mappers.FieldDefinitionDtoMapper
 import jakarta.inject.Singleton
-import eu.automateeverything.mappers.ConfigurableDtoMapper
-import eu.automateeverything.mappers.PluginDtoMapper
-import eu.automateeverything.mappers.HardwareAdapterDtoMapper
-import eu.automateeverything.mappers.AutomationUnitDtoMapper
-import eu.automateeverything.mappers.EvaluationResultDtoMapper
-import eu.automateeverything.mappers.PortDtoMapper
-import eu.automateeverything.mappers.DiscoveryEventMapper
-import eu.automateeverything.mappers.AutomationHistoryDtoMapper
-import eu.automateeverything.mappers.SettingGroupDtoMapper
-import eu.automateeverything.mappers.HeartbeatDtoMapper
-import eu.automateeverything.mappers.InboxMessageDtoMapper
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.dependencies.DependencyChecker
-import eu.automateeverything.mappers.LiveEventsMapper
+import eu.automateeverything.mappers.*
 import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 
@@ -111,6 +99,10 @@ class DependencyInjectionBinder(
 
         bind(DependencyChecker::class.java)
             .to(DependencyChecker::class.java)
+            .`in`(Singleton::class.java)
+
+        bind(DescriptionsUpdateDtoMapper::class.java)
+            .to(DescriptionsUpdateDtoMapper::class.java)
             .`in`(Singleton::class.java)
 
         //factories for objects shared with the App

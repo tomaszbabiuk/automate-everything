@@ -23,4 +23,8 @@ abstract class StatementNodeBase : StatementNode {
     override fun modifyNote(noteId: String, note: Resource) {
         notes[noteId] = note
     }
+
+    override fun removeNote(noteId: String) {
+        notes.remove(noteId)
+    }
 }

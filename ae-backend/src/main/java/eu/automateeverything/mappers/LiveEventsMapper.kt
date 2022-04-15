@@ -29,7 +29,8 @@ class LiveEventsMapper @Inject constructor(
     private val automationUnitMapper: AutomationUnitDtoMapper,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
     private val heartbeatDtoMapper: HeartbeatDtoMapper,
-    private val inboxMessageDtoMapper: InboxMessageDtoMapper
+    private val inboxMessageDtoMapper: InboxMessageDtoMapper,
+    private val descriptionsUpdateDtoMapper: DescriptionsUpdateDtoMapper
 ) : Mapper<LiveEvent<*>, List<Pair<Any, (BinaryFormat) -> ByteArray>>> {
 
     override fun map(from: LiveEvent<*>): List<Pair<Any, (BinaryFormat) -> ByteArray>> {
@@ -98,6 +99,13 @@ class LiveEventsMapper @Inject constructor(
                 val mapped = payload.instanceDto
                 listOf(
                     Pair(mapped) { it.encodeToByteArray(mapped) }
+                )
+            }
+            is DescriptionsUpdateEventData -> {
+                val payload = from.data as DescriptionsUpdateEventData
+                val mapped = descriptionsUpdateDtoMapper.map(payload.instanceId, payload.descriptions)
+                listOf(
+                    Pair(mapped) { it.encodeToByteArray(mapped)}
                 )
             }
             else -> {

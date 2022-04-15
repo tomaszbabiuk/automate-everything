@@ -13,14 +13,16 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.domain.automation
+package eu.automateeverything.mappers
 
+import eu.automateeverything.data.automation.DescriptionsUpdateDto
+import eu.automateeverything.data.inbox.InboxItemDto
+import eu.automateeverything.data.inbox.InboxMessageDto
 import eu.automateeverything.data.localization.Resource
-import java.util.*
+import eu.automateeverything.domain.events.DescriptionsUpdateEventData
 
-interface StatementNode : AutomationNode {
-    val next: StatementNode?
-    fun process(now: Calendar, firstLoop: Boolean)
-    fun modifyNote(noteId: String, note: Resource)
-    fun removeNote(noteId: String)
+class DescriptionsUpdateDtoMapper {
+    fun map(instanceId: Long, descriptions: List<Resource>): DescriptionsUpdateDto {
+        return DescriptionsUpdateDto(instanceId, descriptions)
+    }
 }

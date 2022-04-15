@@ -40,4 +40,9 @@ class ChangeValueAutomationNode(
         super.modifyNote(noteId, note)
         deviceUnit.modifyNote(noteId, note)
     }
+
+    override fun removeNote(noteId: String) {
+        super.removeNote(noteId)
+        deviceUnit.removeNote(noteId)
+    }
 }
