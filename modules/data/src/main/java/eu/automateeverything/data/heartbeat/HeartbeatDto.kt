@@ -20,5 +20,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HeartbeatDto(
     val timestamp: Long,
-    val inboxUnreadCount : Int,
+    val inboxUnreadCount: Long,
+    val inboxTotalCount: Long,
     val isAutomationEnabled: Boolean)

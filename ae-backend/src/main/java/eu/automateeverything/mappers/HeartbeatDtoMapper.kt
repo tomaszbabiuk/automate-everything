@@ -21,6 +21,6 @@ import eu.automateeverything.domain.events.HeartbeatEventData
 class HeartbeatDtoMapper {
 
     fun map(from: HeartbeatEventData): HeartbeatDto {
-        return HeartbeatDto(from.timestamp, from.unreadMessagesCount, from.isAutomationEnabled)
+        return HeartbeatDto(from.timestamp, from.unreadMessagesCount, from.totalMessagesCount, from.isAutomationEnabled)
     }
 }

@@ -34,8 +34,10 @@ abstract class StateDeviceAutomationUnitBase(
 
     override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
-            field = value
-            changeState(value.id, null)
+            if (field != value) {
+                field = value
+                changeState(value.id, null)
+            }
         }
 
     protected fun statesExcept(currentState: State, excludedStates: Array<String>): NextStatesDto {

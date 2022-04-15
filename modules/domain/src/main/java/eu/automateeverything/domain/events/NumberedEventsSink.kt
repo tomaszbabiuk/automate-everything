@@ -91,8 +91,13 @@ class NumberedEventsSink : EventsSink {
         broadcastEvent(event)
     }
 
-    override fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean) {
-        val event = HeartbeatEventData(timestamp, unreadMessagesCount, isAutomationEnabled)
+    override fun broadcastHeartbeatEvent(
+        timestamp: Long,
+        unreadMessagesCount: Long,
+        totalMessagesCount: Long,
+        isAutomationEnabled: Boolean
+    ) {
+        val event = HeartbeatEventData(timestamp, unreadMessagesCount, totalMessagesCount, isAutomationEnabled)
         broadcastEvent(event)
     }
 

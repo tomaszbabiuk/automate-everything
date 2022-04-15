@@ -42,9 +42,8 @@ class Pulsar(
 
     private fun sendHeartbeatEvent() {
         val timestamp = Calendar.getInstance().timeInMillis
-        val unreadMessagesCount = inbox.unreadMessagesCount
         val isAutomationEnabled = automationConductor.isEnabled()
 
-        eventsSink.broadcastHeartbeatEvent(timestamp, unreadMessagesCount, isAutomationEnabled)
+        eventsSink.broadcastHeartbeatEvent(timestamp, inbox.unreadMessagesCount, inbox.totalMessagesCount, isAutomationEnabled)
     }
 }

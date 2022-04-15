@@ -1,5 +1,6 @@
 import store, { 
-  ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR, PREPEND_INBOX_MESSAGE, SET_INBOX_UNREAD_COUNT,
+  ADD_DISCOVERY_EVENT, UPDATE_PORT, SET_ERROR, PREPEND_INBOX_MESSAGE, 
+  SET_INBOX_UNREAD_COUNT, SET_INBOX_TOTAL_COUNT,
   UPDATE_PLUGIN, UPDATE_AUTOMATION_UNIT, UPDATE_INSTANCE,
   ADD_AUTOMATION_HISTORY } from './plugins/vuex'
 
@@ -60,6 +61,7 @@ function createSseClient() {
       this.liveMsgServer.addEventListener("HeartbeatDto", function(e) {
         var heartbeatDto = JSON.parse(e.data)
         store.commit(SET_INBOX_UNREAD_COUNT, heartbeatDto.inboxUnreadCount)
+        store.commit(SET_INBOX_TOTAL_COUNT, heartbeatDto.inboxTotalCount)
       })
 
       this.liveMsgServer.addEventListener("InboxMessageDto", function(e) {

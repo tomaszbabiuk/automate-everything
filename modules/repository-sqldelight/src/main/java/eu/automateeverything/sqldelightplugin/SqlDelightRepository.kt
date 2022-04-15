@@ -485,8 +485,12 @@ class SqlDelightRepository : Repository {
         }
     }
 
-    override fun countInboxItems(): Long {
-        return database.inboxQueries.countItems().executeAsOne()
+    override fun countAllInboxItems(): Long {
+        return database.inboxQueries.countAllItems().executeAsOne()
+    }
+
+    override fun countUnreadInboxItems(): Long {
+        return database.inboxQueries.countUnreadItems().executeAsOne()
     }
 
     override fun getVersions(): List<VersionDto> {

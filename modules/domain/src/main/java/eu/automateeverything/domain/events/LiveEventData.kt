@@ -83,7 +83,8 @@ class PluginEventData(val plugin: PluginWrapper) : LiveEventData() {
 @Serializable
 class HeartbeatEventData(
     val timestamp: Long,
-    val unreadMessagesCount: Int,
+    val unreadMessagesCount: Long,
+    val totalMessagesCount: Long,
     val isAutomationEnabled: Boolean
 ) : LiveEventData() {
 

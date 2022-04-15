@@ -71,7 +71,8 @@ interface Repository {
     fun saveInboxItem(message: InboxItemDto) : Long
     fun markInboxItemAsRead(id: Long) : InboxItemDto
     fun deleteInboxItem(id: Long)
-    fun countInboxItems(): Long
+    fun countAllInboxItems(): Long
+    fun countUnreadInboxItems(): Long
 
     fun getVersions(): List<VersionDto>
 }

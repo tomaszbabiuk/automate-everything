@@ -41,7 +41,7 @@ class InboxController @Inject constructor(
                       @Context response: HttpServletResponse
     ): List<InboxMessageDto> {
 
-        response.addHeader("X-Total-Count", repository.countInboxItems().toString())
+        includeInboxState(response)
 
         return repository
             .getInboxItems(if (limit == 0L) 20 else limit, offset)
@@ -51,25 +51,35 @@ class InboxController @Inject constructor(
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun deleteIcon(@PathParam("id") id: Long?) {
+    fun deleteInboxItem(@PathParam("id") id: Long?, @Context response: HttpServletResponse) {
         if (id == null) {
             throw ResourceNotFoundException()
         }
 
         repository
             .deleteInboxItem(id)
+
+        includeInboxState(response)
     }
 
     @PUT
     @Path("/{id}/read")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateRead(@PathParam("id") id: Long?): InboxMessageDto {
+    fun updateRead(@PathParam("id") id: Long?, @Context response: HttpServletResponse): InboxMessageDto {
         if (id == null) {
             throw ResourceNotFoundException()
         }
 
         val x = repository.markInboxItemAsRead(id)
-        inbox.refreshUnreadMessages()
+
+        includeInboxState(response)
+
         return mapper.map(x)
+    }
+
+    private fun includeInboxState(response: HttpServletResponse) {
+        inbox.refreshCounters()
+        response.addHeader("X-Total-Count", inbox.totalMessagesCount.toString())
+        response.addHeader("X-Unread-Count", inbox.unreadMessagesCount.toString())
     }
 }

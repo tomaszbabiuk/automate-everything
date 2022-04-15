@@ -19,7 +19,8 @@ import eu.automateeverything.data.localization.Resource
 
 interface Inbox {
     fun sendMessage(subject: Resource, body: Resource)
-    val unreadMessagesCount : Int
-    fun refreshUnreadMessages()
+    val unreadMessagesCount : Long
+    val totalMessagesCount : Long
+    fun refreshCounters()
 }
 

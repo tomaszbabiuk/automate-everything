@@ -72,18 +72,18 @@
       </v-card>
     </v-dialog>
 
+    <div class="text-center" v-if="(inboxMessages.length == 0 && inboxTotalCount == 0) && !loading">
+      {{ $vuetify.lang.t("$vuetify.noDataText") }}
+    </div>
+    
     <div class="text-center">
       <v-btn
         class="mt-5"
         color="primary"
         @click="loadMore()"
         v-if="hasMoreItems"
-        >{{ $vuetify.lang.t("$vuetify.common.load_more") }}</v-btn
+        >{{ $vuetify.lang.t("$vuetify.common.load_more") }} {{inboxTotalCount - inboxMessages.length}} </v-btn
       >
-    </div>
-
-    <div class="text-center" v-if="inboxMessages.length == 0 && !loading">
-      {{ $vuetify.lang.t("$vuetify.noDataText") }}
     </div>
   </div>
 </template>
@@ -96,7 +96,6 @@ export default {
   data: function () {
     return {
       now: 0,
-      hasMoreItems: false,
       pageLimit: 10,
       loading: true,
       deleteMessageDialog: {
@@ -125,15 +124,14 @@ export default {
 
     deleteMessage: function (messageId) {
       client.deleteInboxMessage(messageId);
+      if (this.inboxMessages.length < 5) {
+        this.loadMore();
+      }
       this.closeDeleteMessageDialog();
     },
 
     markMessageAsRead: function (inboxMessageDto) {
       client.markInboxMessageAsRead(inboxMessageDto.id);
-    },
-
-    checkIfHasMoreItems: function () {
-      this.hasMoreItems = this.inboxMessages.length < this.inboxCount;
     },
 
     loadPage: async function (clear, offset) {
@@ -142,7 +140,6 @@ export default {
         .getInboxMessages(clear, this.pageLimit, offset)
         .then(function () {
           that.loading = false;
-          that.checkIfHasMoreItems();
         });
     },
 
@@ -156,8 +153,16 @@ export default {
       return this.$store.state.inboxMessages;
     },
 
-    inboxCount() {
+    inboxTotalCount() {
       return this.$store.state.inboxTotalCount;
+    },
+
+    inboxUnreadCount() {
+      return this.$store.state.inboxUnreadCount;
+    },
+
+    hasMoreItems() {
+      return this.inboxMessages.length < this.inboxTotalCount;
     },
   },
 
@@ -171,7 +176,7 @@ export default {
           }, 1000);
         },
         immediate: true
-    }
+    },
   },
 
   mounted: function () {

@@ -36,7 +36,12 @@ interface EventsSink {
     fun broadcastDiscoveryEvent(factoryId: String, message: String)
     fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>)
     fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto)
-    fun broadcastHeartbeatEvent(timestamp: Long, unreadMessagesCount: Int, isAutomationEnabled: Boolean)
+    fun broadcastHeartbeatEvent(
+        timestamp: Long,
+        unreadMessagesCount: Long,
+        totalMessagesCount: Long,
+        isAutomationEnabled: Boolean
+    )
     fun broadcastInboxMessage(inboxItemDto: InboxItemDto)
     fun broadcastAutomationStateChange(enabled: Boolean)
     fun broadcastPluginEvent(plugin: PluginWrapper)

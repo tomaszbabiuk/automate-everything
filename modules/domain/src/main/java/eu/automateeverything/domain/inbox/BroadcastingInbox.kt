@@ -27,7 +27,7 @@ class BroadcastingInbox(
 ) : Inbox {
 
     init {
-        refreshUnreadMessages()
+        refreshCounters()
     }
 
     override fun sendMessage(subject: Resource, body: Resource) {
@@ -39,13 +39,15 @@ class BroadcastingInbox(
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
         eventsSink.broadcastInboxMessage(inboxItem)
-        unreadMessagesCount++
+        refreshCounters()
     }
 
-    override var unreadMessagesCount : Int = 0
+    override var unreadMessagesCount : Long = 0
+    override var totalMessagesCount : Long = 0
 
-    override fun refreshUnreadMessages() {
-        unreadMessagesCount = repository.getUnreadInboxItems().size
+    override fun refreshCounters() {
+        unreadMessagesCount = repository.countUnreadInboxItems()
+        totalMessagesCount = repository.countAllInboxItems()
     }
 
     private fun calculateNow(): Long {

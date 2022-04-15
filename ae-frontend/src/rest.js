@@ -15,7 +15,8 @@ import store, {
   ADD_AUTOMATION_HISTORY,
   SET_SETTINGS, SET_SETTINGS_VALIDATION,
   CLEAR_INBOX_MESSAGES, ADD_INBOX_MESSAGE, REMOVE_INBOX_MESSAGE, UPDATE_INBOX_MESSAGE, SET_INBOX_TOTAL_COUNT,
-  SET_DEPENDENCIES
+  SET_DEPENDENCIES,
+  SET_INBOX_UNREAD_COUNT
 } from './plugins/vuex'
 
 export const lang = vuetify.framework.lang
@@ -405,6 +406,9 @@ export const client = {
         var totalCount = response.headers['x-total-count'];
         store.commit(SET_INBOX_TOTAL_COUNT, totalCount)
 
+        var unreadCount = response.headers['x-unread-count']
+        store.commit(SET_INBOX_UNREAD_COUNT, unreadCount)
+
         response.data.forEach(element => {
           store.commit(ADD_INBOX_MESSAGE, element)
         })
@@ -415,7 +419,15 @@ export const client = {
   deleteInboxMessage: async function (id) {
     await this.handleRestError(
       () => axiosInstance.delete("rest/inbox/" + id),
-      () => store.commit(REMOVE_INBOX_MESSAGE, id)
+      (response) => {
+        store.commit(REMOVE_INBOX_MESSAGE, id)
+        
+        var totalCount = response.headers['x-total-count'];
+        store.commit(SET_INBOX_TOTAL_COUNT, totalCount)
+
+        var unreadCount = response.headers['x-unread-count']
+        store.commit(SET_INBOX_UNREAD_COUNT, unreadCount)
+      }
     )
   },
 
@@ -424,6 +436,12 @@ export const client = {
       () => axiosInstance.put("rest/inbox/" + messageId + "/read", true),
       (response) => {
         store.commit(UPDATE_INBOX_MESSAGE, response.data)
+
+        var totalCount = response.headers['x-total-count'];
+        store.commit(SET_INBOX_TOTAL_COUNT, totalCount)
+
+        var unreadCount = response.headers['x-unread-count']
+        store.commit(SET_INBOX_UNREAD_COUNT, unreadCount)
       }
     )
   },
