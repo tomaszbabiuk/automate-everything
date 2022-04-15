@@ -76,7 +76,7 @@ class Zigbee2MqttAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(mode: DiscoveryMode): List<ZigbeePort<*>> = coroutineScope {
+    override suspend fun internalDiscovery(mode: DiscoveryMode) = coroutineScope {
         if (mode == DiscoveryMode.Manual) {
             permitToJoinProcedure()
 
@@ -95,8 +95,6 @@ class Zigbee2MqttAdapter(
         } else {
             logDiscovery("Discovery on startup is disabled! Press \"Start discovery\" button to pair new devices")
         }
-
-        listOf()
     }
 
     private suspend fun permitToJoinProcedure() = coroutineScope {

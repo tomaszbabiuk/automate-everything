@@ -134,10 +134,9 @@ class OneWireAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override suspend fun internalDiscovery(mode: DiscoveryMode): List<OneWirePort<*>> {
+    override suspend fun internalDiscovery(mode: DiscoveryMode) {
         logDiscovery("Discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
-
-        return ports.values.toList()
+        addPotentialNewPorts(ports.values.toList())
     }
 
     private suspend fun maintenanceLoop() = coroutineScope {

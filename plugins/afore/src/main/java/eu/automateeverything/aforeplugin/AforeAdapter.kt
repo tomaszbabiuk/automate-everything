@@ -63,7 +63,7 @@ class AforeAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(mode: DiscoveryMode): ArrayList<AforeWattageInputPort> = coroutineScope {
+    override suspend fun internalDiscovery(mode: DiscoveryMode) = coroutineScope {
         val result = ArrayList<AforeWattageInputPort>()
         logDiscovery("Starting AFORE discovery")
 
@@ -98,7 +98,7 @@ class AforeAdapter(
 
         eventsSink.broadcastDiscoveryEvent(owningPluginId, "Finished")
 
-        result
+        addPotentialNewPorts(result)
     }
 
     private suspend fun maintenanceLoop(now: Calendar) {

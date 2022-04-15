@@ -60,9 +60,7 @@ class ShellyAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(mode: DiscoveryMode): ArrayList<ShellyInputPort<*>> = coroutineScope {
-        val result = ArrayList<ShellyInputPort<*>>()
-
+    override suspend fun internalDiscovery(mode: DiscoveryMode) = coroutineScope {
         if (lanGateways.isEmpty()) {
             logDiscovery("The IP address of MQTT broker cannot be resolved - no LAN gateways! Aborting")
         } else {
@@ -83,12 +81,11 @@ class ShellyAdapter(
 
                 val now = Calendar.getInstance()
                 val portsFromDevice = ShellyPortFactory().constructPorts(shellyId, idBuilder, statusResponse, settingsResponse, now)
-                result.addAll(portsFromDevice)
+                addPotentialNewPorts(portsFromDevice)
             }
         }
 
         logDiscovery("Finished")
-        result
     }
 
     override fun executePendingChanges() {

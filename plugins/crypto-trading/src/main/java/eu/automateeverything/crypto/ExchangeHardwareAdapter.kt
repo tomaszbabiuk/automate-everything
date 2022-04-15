@@ -69,7 +69,7 @@ class ExchangeHardwareAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(mode: DiscoveryMode): List<MarketPort> {
+    override suspend fun internalDiscovery(mode: DiscoveryMode) {
         logDiscovery("Connecting to Coingecko")
         val result = ArrayList<MarketPort>()
         val filterRaw = if (currencyFilter == null) {
@@ -102,7 +102,8 @@ class ExchangeHardwareAdapter(
         }
 
         logDiscovery("Finished")
-        return result
+
+        addPotentialNewPorts(result)
     }
 
     private suspend fun maintenanceLoop() {
