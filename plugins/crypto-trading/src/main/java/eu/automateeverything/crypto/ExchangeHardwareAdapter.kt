@@ -17,6 +17,7 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
 import org.ta4j.core.BaseBar
@@ -68,7 +69,7 @@ class ExchangeHardwareAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): List<MarketPort> {
+    override suspend fun internalDiscovery(mode: DiscoveryMode): List<MarketPort> {
         logDiscovery("Connecting to Coingecko")
         val result = ArrayList<MarketPort>()
         val filterRaw = if (currencyFilter == null) {

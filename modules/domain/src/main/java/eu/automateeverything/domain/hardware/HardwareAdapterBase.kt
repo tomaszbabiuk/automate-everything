@@ -39,7 +39,7 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         return hasNewPorts
     }
 
-    abstract suspend fun internalDiscovery(eventsSink: EventsSink) : List<T>
+    abstract suspend fun internalDiscovery(mode: DiscoveryMode) : List<T>
 
     protected fun logDiscovery(message: String) {
         eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
@@ -49,11 +49,11 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         eventsSink.broadcastPortUpdateEvent(owningPluginId, id, port)
     }
 
-    override suspend fun discover(discoverySink: EventsSink) {
+    override suspend fun discover(mode: DiscoveryMode) {
         lastDiscoveryTime = Calendar.getInstance().timeInMillis
         state = AdapterState.Discovery
 
-        val freshlyDiscoveredPorts = internalDiscovery(discoverySink)
+        val freshlyDiscoveredPorts = internalDiscovery(mode)
         addPotentialNewPorts(freshlyDiscoveredPorts)
 
         state = AdapterState.Operating

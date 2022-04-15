@@ -18,13 +18,18 @@ package eu.automateeverything.domain.hardware
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.domain.events.EventsSink
 
+enum class DiscoveryMode {
+    Startup,
+    Manual
+}
+
 interface HardwareAdapter<T : Port<*>> {
 
     val ports: HashMap<String, T>
     fun clearNewPortsFlag()
     fun hasNewPorts(): Boolean
     val id: String
-    suspend fun discover(discoverySink: EventsSink)
+    suspend fun discover(mode: DiscoveryMode)
 
     var state: AdapterState
     fun executePendingChanges()

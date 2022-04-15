@@ -60,7 +60,7 @@ class ShellyAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<ShellyInputPort<*>> = coroutineScope {
+    override suspend fun internalDiscovery(mode: DiscoveryMode): ArrayList<ShellyInputPort<*>> = coroutineScope {
         val result = ArrayList<ShellyInputPort<*>>()
 
         if (lanGateways.isEmpty()) {

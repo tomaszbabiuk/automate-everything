@@ -76,20 +76,24 @@ class Zigbee2MqttAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): List<ZigbeePort<*>> = coroutineScope {
-        permitToJoinProcedure()
+    override suspend fun internalDiscovery(mode: DiscoveryMode): List<ZigbeePort<*>> = coroutineScope {
+        if (mode == DiscoveryMode.Manual) {
+            permitToJoinProcedure()
 
-        if (permitJoin) {
-            logDiscovery("Pair new devices NOW! Counting one minute down...")
+            if (permitJoin) {
+                logDiscovery("Pair new devices NOW! Counting one minute down...")
 
-            (0..6).forEach {
-                delay(10_000)
-                logDiscovery("${60-it*10}...")
+                (0..3).forEach {
+                    delay(10_000)
+                    logDiscovery("${30 - it * 10}...")
+                }
+
+                mqttBroker.publish("zigbee2mqtt/bridge/request/permit_join", "false")
+            } else {
+                logDiscovery("It was impossible to permit other devices to join. Is Zigbee2Mqtt bridge running?")
             }
-
-            mqttBroker.publish("zigbee2mqtt/bridge/request/permit_join", "false")
         } else {
-            logDiscovery("It was impossible to permit other devices to join. Is Zigbee2Mqtt bridge running?")
+            logDiscovery("Discovery on startup is disabled! Press \"Start discovery\" button to pair new devices")
         }
 
         listOf()

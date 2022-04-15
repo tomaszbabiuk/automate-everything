@@ -16,6 +16,7 @@
 package eu.automateeverything.aforeplugin
 
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
 import eu.automateeverything.domain.langateway.LanGateway
@@ -62,7 +63,7 @@ class AforeAdapter(
         }
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): ArrayList<AforeWattageInputPort> = coroutineScope {
+    override suspend fun internalDiscovery(mode: DiscoveryMode): ArrayList<AforeWattageInputPort> = coroutineScope {
         val result = ArrayList<AforeWattageInputPort>()
         logDiscovery("Starting AFORE discovery")
 

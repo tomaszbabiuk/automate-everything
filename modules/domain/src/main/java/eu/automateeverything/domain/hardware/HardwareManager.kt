@@ -73,16 +73,16 @@ class HardwareManager(
             .flatMap { it.value }
             .forEach { bundle ->
                 bundle.adapter.start()
-                discover(bundle)
+                discover(bundle, DiscoveryMode.Startup)
             }
     }
 
-    private suspend fun discover(bundle: AdapterBundle) = coroutineScope {
+    private suspend fun discover(bundle: AdapterBundle, mode: DiscoveryMode) = coroutineScope {
         if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
             eventsSink.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
         } else {
             bundle.discoveryJob = async {
-                bundle.adapter.discover(eventsSink)
+                bundle.adapter.discover(mode)
                 bundle.adapter.ports.values.forEach {
                     val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
                         null, null, it.valueClazz.name, it.canRead, it.canWrite, it.sleepInterval, it.lastSeenTimestamp)
@@ -243,7 +243,7 @@ class HardwareManager(
             .flatMap { it.value }
             .forEach {
                 startStopScope.launch {
-                    discover(it)
+                    discover(it, DiscoveryMode.Manual)
                 }
             }
     }

@@ -23,10 +23,7 @@ import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.container.SwitchContainer
 import com.dalsemi.onewire.container.TemperatureContainer
 import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.hardware.BinaryInput
-import eu.automateeverything.domain.hardware.HardwareAdapterBase
-import eu.automateeverything.domain.hardware.PortIdBuilder
-import eu.automateeverything.domain.hardware.Temperature
+import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
 import kotlinx.coroutines.*
@@ -137,8 +134,8 @@ class OneWireAdapter(
         operationScope?.cancel("Stop called")
     }
 
-    override suspend fun internalDiscovery(eventsSink: EventsSink): List<OneWirePort<*>> {
-        eventsSink.broadcastDiscoveryEvent(owningPluginId, "The manual discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
+    override suspend fun internalDiscovery(mode: DiscoveryMode): List<OneWirePort<*>> {
+        logDiscovery("Discovery of 1-wire adapters is disabled. Devices are discovered only once (on initial startup)")
 
         return ports.values.toList()
     }
