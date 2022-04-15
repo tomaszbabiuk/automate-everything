@@ -82,7 +82,7 @@
         color="primary"
         @click="loadMore()"
         v-if="hasMoreItems"
-        >{{ $vuetify.lang.t("$vuetify.common.load_more") }} {{inboxTotalCount - inboxMessages.length}} </v-btn
+        >{{ $vuetify.lang.t("$vuetify.common.load_more") }} ({{inboxTotalCount - inboxMessages.length}}) </v-btn
       >
     </div>
   </div>

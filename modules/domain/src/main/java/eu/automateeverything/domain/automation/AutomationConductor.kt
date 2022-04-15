@@ -233,6 +233,8 @@ class AutomationConductor(
                 hardwareManager.afterAutomationLoop()
                 delay(1000)
             }
+
+            logger.warn("Automation job not longer active")
         }
     }
 

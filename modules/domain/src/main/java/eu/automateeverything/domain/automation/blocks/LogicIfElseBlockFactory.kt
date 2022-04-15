@@ -62,33 +62,23 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
     override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): StatementNode {
         var ifNode: StatementNode? = null
         var elseNode: StatementNode? = null
+        var evaluatorNode: EvaluatorNode? = null
 
         if (block.statements != null) {
             val ifStatement = block.statements.find { it.name == "IF" }
-            if (ifStatement == null) {
-                throw MalformedBlockException(block.type, "should have <IF statement> defined")
-            } else if (ifStatement.block != null) {
+            if (ifStatement?.block != null) {
                 ifNode = transformer.transformStatement(ifStatement.block, context)
             }
 
             val elseStatement = block.statements.find { it.name == "ELSE" }
-            if (elseStatement == null) {
-                throw MalformedBlockException(block.type, "should have <ELSE statement> defined")
-            } else if (elseStatement.block != null) {
+            if (elseStatement?.block != null) {
                 elseNode = transformer.transformStatement(elseStatement.block, context)
             }
         }
 
-        if (block.values == null) {
-            throw MalformedBlockException(block.type, "should have at least <VALUE> defined")
+        if (block.values != null && block.values.size == 1 && block.values[0].block != null) {
+            evaluatorNode = transformer.transformEvaluator(block.values[0].block!!, context)
         }
-
-        if (block.values.size != 1) {
-            throw MalformedBlockException(block.type, "should have only one <VALUE>")
-        }
-
-        val valueNode = transformer.transformEvaluator(block.values[0].block!!, context)
-
-        return IfThanElseAutomationNode(next, valueNode, ifNode, elseNode)
+        return IfThanElseAutomationNode(next, evaluatorNode, ifNode, elseNode)
     }
 }
