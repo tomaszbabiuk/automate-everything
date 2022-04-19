@@ -27,7 +27,7 @@ class ShellyVibrationInputPort(
 )
     : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = BinaryInput(false)
+    private var value = BinaryInput(false)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/vibration")
 
     override fun read(): BinaryInput {
@@ -35,10 +35,10 @@ class ShellyVibrationInputPort(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        value.value = payload == "1"
+        value = BinaryInput(payload == "1")
     }
 
     fun setValueFromAccelResponse(stateBrief: AccelBriefDto) {
-        value.value = stateBrief.vibration == 1
+        value = BinaryInput(stateBrief.vibration == 1)
     }
 }

@@ -57,7 +57,7 @@ class OneWireRelayPort(
 
     fun commit() {
         if (requestedValue != null) {
-            value.value = requestedValue!!.value
+            value = Relay(requestedValue!!.value)
             reset()
         }
     }

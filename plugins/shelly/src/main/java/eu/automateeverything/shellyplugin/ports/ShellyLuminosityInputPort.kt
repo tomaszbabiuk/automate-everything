@@ -26,7 +26,7 @@ class ShellyLuminosityInputPort(
         lastSeenTimestamp: Long
 ) : ShellyInputPort<Luminosity>(id, Luminosity::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = Luminosity(BigDecimal.ZERO)
+    private var value = Luminosity(BigDecimal.ZERO)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/lux")
 
     override fun read(): Luminosity {
@@ -35,10 +35,10 @@ class ShellyLuminosityInputPort(
 
     override fun setValueFromMqttPayload(payload: String) {
         val valueParsed = payload.toBigDecimal()
-        value.value = valueParsed
+        value = Luminosity(valueParsed)
     }
 
     fun setValueFromLuminosityResponse(luminosityBrief: LuminosityBriefDto) {
-        value.value = luminosityBrief.value
+        value = Luminosity(luminosityBrief.value)
     }
 }

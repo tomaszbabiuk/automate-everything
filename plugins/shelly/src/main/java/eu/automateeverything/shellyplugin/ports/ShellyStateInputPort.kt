@@ -25,7 +25,7 @@ class ShellyStateInputPort(
     lastSeenTimestamp: Long
 ) : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = BinaryInput(false)
+    private var value = BinaryInput(false)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/state")
 
     override fun read(): BinaryInput {
@@ -33,10 +33,10 @@ class ShellyStateInputPort(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        value.value = payload == "open"
+        value = BinaryInput(payload == "open")
     }
 
     fun setValueFromStateResponse(stateBrief: StateBriefDto) {
-        value.value = stateBrief.state == "open"
+        value = BinaryInput(stateBrief.state == "open")
     }
 }

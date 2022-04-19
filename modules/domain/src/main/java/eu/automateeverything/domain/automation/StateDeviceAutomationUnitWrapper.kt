@@ -30,7 +30,11 @@ open class AutomationUnitWrapper<T>(
     name: String,
     val instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitBase<T>(stateChangeReporter, name, instance, ControlType.NA) {
+) : AutomationUnitBase<T>(stateChangeReporter, name, instance, ControlType.NA, EvaluationResult(
+    interfaceValue = R.error_initialization,
+    error = initError,
+    descriptions = listOf(initError.localizedMessage)
+)) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf()
@@ -41,11 +45,6 @@ open class AutomationUnitWrapper<T>(
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = false
 
-    override var lastEvaluation = EvaluationResult<T>(
-        interfaceValue = R.error_initialization,
-        error = initError,
-        descriptions = listOf(initError.localizedMessage)
-    )
 }
 
 class StateDeviceAutomationUnitWrapper(
@@ -68,13 +67,7 @@ class ControllerAutomationUnitWrapper<V: PortValue>(
     name: String,
     instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<V>(valueClazz, stateChangeReporter, name, instance, initError), ControllerAutomationUnit<V> {
-
-    override var lastEvaluation = EvaluationResult<V>(
-        interfaceValue = R.error_initialization,
-        error = initError,
-        descriptions = listOf(initError.localizedMessage)
-    )
+) : AutomationUnitWrapper<V>(valueClazz, stateChangeReporter, name, instance, initError, ), ControllerAutomationUnit<V> {
 
     override val usedPortsIds = arrayOf<String>()
 

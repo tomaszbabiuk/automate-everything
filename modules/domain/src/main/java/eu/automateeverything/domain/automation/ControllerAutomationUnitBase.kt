@@ -23,26 +23,22 @@ import java.util.*
 
 open class ControllerAutomationUnitBase<V : PortValue>(
     override val valueClazz: Class<V>,
-    private val stateChangeReporter: StateChangeReporter,
+    stateChangeReporter: StateChangeReporter,
     override val name: String,
-    private val instance: InstanceDto,
+    instance: InstanceDto,
     automationOnly: Boolean,
     override val min: BigDecimal,
     override val max: BigDecimal,
     override val step: BigDecimal,
     default: V,
-) : AutomationUnitBase<V>(stateChangeReporter, name, instance, if (automationOnly) ControlType.NA else ControlType.ControllerOther),
+) : AutomationUnitBase<V>(stateChangeReporter, name, instance, if (automationOnly) ControlType.NA else ControlType.ControllerOther, buildEvaluationResult(default)),
     ControllerAutomationUnit<V> {
 
     override val recalculateOnTimeChange = false
     override val recalculateOnPortUpdate = true
 
     override fun control(newValue: V, actor: String?) {
-        val actualLevel = lastEvaluation.value
-        if (actualLevel?.asDecimal() != newValue.asDecimal()) {
-            lastEvaluation = buildEvaluationResult(newValue)
-            stateChangeReporter.reportDeviceValueChange(this, instance)
-        }
+        proposeNewEvaluation(buildEvaluationResult(newValue))
     }
 
     private fun buildEvaluationResult(level: V) : EvaluationResult<V> {
@@ -57,6 +53,4 @@ open class ControllerAutomationUnitBase<V : PortValue>(
 
     override fun calculateInternal(now: Calendar) {
     }
-
-    override var lastEvaluation: EvaluationResult<V> = buildEvaluationResult(default)
 }

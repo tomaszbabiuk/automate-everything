@@ -19,7 +19,7 @@ import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.hardware.PortValue
 import java.math.BigDecimal
 
-class DayOfYearStamp(var value: BigDecimal) : PortValue {
+class DayOfYearStamp(private val value: BigDecimal) : PortValue {
     override fun toFormattedString(): Resource {
         return Resource.createUniResource(value.toString())
     }

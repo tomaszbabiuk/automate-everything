@@ -19,7 +19,7 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class BinaryInput(var value: Boolean) : PortValue {
+class BinaryInput(val value: Boolean) : PortValue {
     private val on = Resource("High", "Wysoki")
     private val off = Resource("Low", "Niski")
 

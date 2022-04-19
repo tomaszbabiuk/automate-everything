@@ -25,12 +25,18 @@ import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnitBase(
-    private val stateChangeReporter: StateChangeReporter,
-    private val instance: InstanceDto,
+    stateChangeReporter: StateChangeReporter,
+    instance: InstanceDto,
     name: String,
     controlType: ControlType,
     protected val states: Map<String, State>,
-    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(stateChangeReporter, name, instance, controlType), StateDeviceAutomationUnit{
+    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(
+    stateChangeReporter,
+    name,
+    instance,
+    controlType,
+    buildUnknownEvaluation(STATE_UNKNOWN, states)
+), StateDeviceAutomationUnit{
 
     override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
@@ -57,13 +63,8 @@ abstract class StateDeviceAutomationUnitBase(
         if (currentState.id != state) {
             currentState = states[state]!!
             applyNewState(state)
-            evaluateAndReportStateChange()
+            proposeNewEvaluation(buildEvaluationResult(currentState.id, states))
         }
-    }
-
-    private fun evaluateAndReportStateChange() {
-        lastEvaluation = buildEvaluationResult(currentState.id, states)
-        stateChangeReporter.reportDeviceStateChange(this, instance)
     }
 
     private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {
@@ -98,7 +99,14 @@ abstract class StateDeviceAutomationUnitBase(
                 port.write(state)
             }
         }
-    }
 
-    override var lastEvaluation = buildEvaluationResult(STATE_UNKNOWN, states)
+        fun buildUnknownEvaluation(initialStateId: String, states: Map<String, State>): EvaluationResult<State> {
+            val state = states[initialStateId]!!
+            return EvaluationResult(
+                interfaceValue = state.name,
+                value = state,
+                isSignaled = state.isSignaled,
+            )
+        }
+    }
 }

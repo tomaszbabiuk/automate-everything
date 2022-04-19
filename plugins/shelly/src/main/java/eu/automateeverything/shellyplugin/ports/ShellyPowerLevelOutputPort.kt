@@ -30,7 +30,7 @@ class ShellyPowerLevelOutputPort(
 ) : ShellyOutputPort<PowerLevel>(id, PowerLevel::class.java, sleepInterval, lastSeenTimestamp) {
 
     private val gson = Gson()
-    private val readValue = PowerLevel(BigDecimal.ZERO)
+    private var readValue = PowerLevel(BigDecimal.ZERO)
     override var requestedValue : PowerLevel? = null
     override val readTopics = arrayOf("shellies/$shellyId/light/$channel/status")
     override val writeTopic = "shellies/$shellyId/light/$channel/set"
@@ -50,7 +50,7 @@ class ShellyPowerLevelOutputPort(
 
     fun setValueFromLightResponse(lightResponse: LightBriefDto) {
         val valueInPercent = calculateBrightness(lightResponse)
-        readValue.value = valueInPercent.toBigDecimal()
+        readValue = PowerLevel(valueInPercent.toBigDecimal())
     }
 
     private fun calculateBrightness(lightResponse: LightBriefDto): Int {
@@ -60,6 +60,10 @@ class ShellyPowerLevelOutputPort(
 
     override fun getExecutePayload(): String? {
         if (requestedValue == null) {
+            return null
+        }
+
+        if (requestedValue?.value == null) {
             return null
         }
 

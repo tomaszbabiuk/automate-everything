@@ -259,13 +259,7 @@ class AutomationConductor(
                 }
                 .forEach {
                     val unit = it.value.second
-                    val lastEvaluation = unit.lastEvaluation
                     unit.calculate(now)
-                    val newEvaluation = unit.lastEvaluation
-                    if (newEvaluation != lastEvaluation) {
-                        val instance = it.value.first
-                        liveEvents.broadcastAutomationUpdate(unit, instance, newEvaluation)
-                    }
                 }
         }
     }

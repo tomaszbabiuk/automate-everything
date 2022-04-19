@@ -19,7 +19,7 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class Temperature(var value: BigDecimal) : PortValue {
+class Temperature(val value: BigDecimal) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f °C".format(value - 273.15.toBigDecimal())

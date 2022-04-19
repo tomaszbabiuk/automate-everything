@@ -26,7 +26,7 @@ class ShellyBinaryInputPort(
     lastSeenTimestamp: Long)
     : ShellyInputPort<BinaryInput>(id, BinaryInput::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = BinaryInput(false)
+    private var value = BinaryInput(false)
     override val readTopics = arrayOf("shellies/$shellyId/input/$channel")
 
     override fun read(): BinaryInput {
@@ -34,10 +34,10 @@ class ShellyBinaryInputPort(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        value.value = payload == "1"
+        value = BinaryInput(payload == "1")
     }
 
     fun setValueFromInputResponse(inputBrief: InputBriefDto) {
-        value.value = inputBrief.input == 1
+        value = BinaryInput(inputBrief.input == 1)
     }
 }

@@ -19,7 +19,7 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class Humidity(var value: BigDecimal) : PortValue {
+class Humidity(val value: BigDecimal) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f %%".format(value)

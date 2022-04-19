@@ -27,7 +27,7 @@ class ShellyRelayOutputPort(
     lastSeenTimestamp: Long
 ) : ShellyOutputPort<Relay>(id, Relay::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val readValue = Relay(false)
+    private var readValue = Relay(false)
     override var requestedValue : Relay? = null
     override val readTopics = arrayOf("shellies/$shellyId/relay/$channel")
     override val writeTopic = "shellies/$shellyId/relay/$channel/command"
@@ -44,7 +44,7 @@ class ShellyRelayOutputPort(
     }
 
     override fun setValueFromMqttPayload(payload: String) {
-        readValue.value = if (payload == "on") BigDecimal.ONE else BigDecimal.ZERO
+        readValue = Relay(if (payload == "on") BigDecimal.ONE else BigDecimal.ZERO)
     }
 
     override fun getExecutePayload(): String? {
@@ -56,7 +56,7 @@ class ShellyRelayOutputPort(
     }
 
     fun setValueFromRelayResponse(response: RelayResponseDto) {
-        readValue.value = if (response.ison) BigDecimal.ONE else BigDecimal.ZERO
+        readValue = Relay(if (response.ison) BigDecimal.ONE else BigDecimal.ZERO)
     }
 
     override fun reset() {

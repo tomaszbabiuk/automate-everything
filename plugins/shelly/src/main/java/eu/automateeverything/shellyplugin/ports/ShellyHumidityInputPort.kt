@@ -26,7 +26,7 @@ class ShellyHumidityInputPort(
         lastSeenTimestamp: Long
 ) : ShellyInputPort<Humidity>(id, Humidity::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = Humidity(BigDecimal.ZERO)
+    private var value = Humidity(BigDecimal.ZERO)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/humidity")
 
     override fun read(): Humidity {
@@ -35,10 +35,10 @@ class ShellyHumidityInputPort(
 
     override fun setValueFromMqttPayload(payload: String) {
         val valueParsed = payload.toBigDecimal()
-        value.value = valueParsed
+        value = Humidity(valueParsed)
     }
 
     fun setValueFromHumidityResponse(humidityBrief: HumidityBriefDto) {
-        value.value = humidityBrief.value
+        value = Humidity(humidityBrief.value)
     }
 }

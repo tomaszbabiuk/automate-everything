@@ -22,7 +22,7 @@ import java.math.BigDecimal
 class ShellyBatteryInputPort(id: String, shellyId: String, sleepInterval: Long, lastSeenTimestamp: Long) :
     ShellyInputPort<BatteryCharge>(id, BatteryCharge::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = BatteryCharge(BigDecimal.ZERO)
+    private var value = BatteryCharge(BigDecimal.ZERO)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/battery")
 
     override fun read(): BatteryCharge {
@@ -31,10 +31,10 @@ class ShellyBatteryInputPort(id: String, shellyId: String, sleepInterval: Long, 
 
     override fun setValueFromMqttPayload(payload: String) {
         val valueParsed = payload.toBigDecimal()
-        value.value = valueParsed
+        value = BatteryCharge(valueParsed)
     }
 
     fun setValueFromBatteryResponse(batteryBrief: BatteryBriefDto) {
-        value.value = batteryBrief.value
+        value = BatteryCharge(batteryBrief.value)
     }
 }

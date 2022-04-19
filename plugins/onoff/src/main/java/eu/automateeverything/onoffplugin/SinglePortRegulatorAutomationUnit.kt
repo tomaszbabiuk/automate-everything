@@ -24,23 +24,28 @@ import java.math.BigDecimal
 import java.util.*
 
 abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
-    private val stateChangeReporter: StateChangeReporter,
+    stateChangeReporter: StateChangeReporter,
     name: String,
-    private val instance: InstanceDto,
+    instance: InstanceDto,
     private val controlPort: OutputPort<V>,
     controlType: ControlType
-) : AutomationUnitBase<V>(stateChangeReporter, name, instance, controlType), ControllerAutomationUnit<V> {
+) : AutomationUnitBase<V>(stateChangeReporter, name, instance, controlType, buildEvaluationResult(controlPort.read())), ControllerAutomationUnit<V> {
+
+    private var requestedValue: V? = null
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(controlPort.id)
 
     override fun calculateInternal(now: Calendar) {
         val actualLevel = controlPort.read()
-        lastEvaluation = buildEvaluationResult(actualLevel)
-        stateChangeReporter.reportDeviceValueChange(this, instance)
-    }
+        if (requestedValue != null && requestedValue?.asDecimal() == actualLevel.asDecimal()) {
+            requestedValue = null
+        }
 
-    override var lastEvaluation = buildEvaluationResult(controlPort.read())
+        if (requestedValue == null) {
+            proposeNewEvaluation(buildEvaluationResult(actualLevel))
+        }
+    }
 
     private fun buildEvaluationResult(level: V) : EvaluationResult<V> {
         return EvaluationResult(
@@ -52,11 +57,11 @@ abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
     }
 
     override fun control(newValue: V, actor: String?) {
-        val actualLevel = controlPort.read()
-        if (actualLevel.asDecimal() != newValue.asDecimal()) {
+        requestedValue = newValue
+        val actualValue = controlPort.read()
+        if (actualValue.asDecimal() != newValue.asDecimal()) {
             controlPort.write(newValue)
-            lastEvaluation = buildEvaluationResult(newValue)
-            stateChangeReporter.reportDeviceValueChange(this, instance)
+            proposeNewEvaluation(buildEvaluationResult(newValue))
         }
     }
 

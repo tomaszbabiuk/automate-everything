@@ -19,7 +19,7 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class Relay(var value: BigDecimal) : PortValue {
+class Relay(val value: BigDecimal) : PortValue {
 
     constructor(fromBoolean: Boolean) : this(
         if (fromBoolean) {

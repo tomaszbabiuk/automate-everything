@@ -26,10 +26,13 @@ abstract class AutomationUnitBase<T>(
     private val stateChangeReporter: StateChangeReporter,
     override val name: String,
     private val instance: InstanceDto,
-    override val controlType: ControlType
+    override val controlType: ControlType,
+    initialEvaluation: EvaluationResult<T>
     ) : AutomationUnit<T> {
 
-    abstract override var lastEvaluation: EvaluationResult<T>
+    final override var lastEvaluation: EvaluationResult<T> = initialEvaluation
+        private set
+
     abstract override val usedPortsIds: Array<String>
     abstract override val recalculateOnTimeChange: Boolean
     abstract override val recalculateOnPortUpdate: Boolean
@@ -68,12 +71,12 @@ abstract class AutomationUnitBase<T>(
             calculateInternal(now)
         } catch (ex: Exception) {
             val aex = AutomationErrorException(R.error_automation, ex)
-            lastEvaluation = evaluateAsAutomationError(aex)
+            proposeNewEvaluation(evaluateAsAutomationError(aex))
         }
     }
 
     override fun markExternalError(ex: AutomationErrorException) {
-        lastEvaluation = evaluateAsAutomationError(ex)
+        proposeNewEvaluation(evaluateAsAutomationError(ex))
     }
 
     private fun evaluateAsAutomationError(ex: AutomationErrorException): EvaluationResult<T> {
@@ -85,6 +88,20 @@ abstract class AutomationUnitBase<T>(
     }
 
     override fun bind(automationUnitsCache: HashMap<Long, Pair<InstanceDto, AutomationUnit<*>>>) {
+    }
+
+    override fun proposeNewEvaluation(proposed: EvaluationResult<T>) {
+        val current = lastEvaluation
+        if (current.value != proposed.value) {
+            lastEvaluation = proposed
+            if (this is ControllerAutomationUnit<*>) {
+                stateChangeReporter.reportDeviceValueChange(this, instance)
+            }
+
+            if (this is StateDeviceAutomationUnit) {
+                stateChangeReporter.reportDeviceStateChange(this, instance)
+            }
+        }
     }
 
     companion object {

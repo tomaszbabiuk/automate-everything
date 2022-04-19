@@ -26,7 +26,7 @@ class ShellyTemperatureInputPort(
     lastSeenTimestamp: Long
 ) : ShellyInputPort<Temperature>(id, Temperature::class.java, sleepInterval, lastSeenTimestamp) {
 
-    private val value = Temperature(BigDecimal.ZERO)
+    private var value = Temperature(BigDecimal.ZERO)
     override val readTopics = arrayOf("shellies/$shellyId/sensor/temperature", "shellies/$shellyId/temperature")
 
     override fun read(): Temperature {
@@ -35,10 +35,10 @@ class ShellyTemperatureInputPort(
 
     override fun setValueFromMqttPayload(payload: String) {
         val valueParsed = payload.toBigDecimal() + 273.15.toBigDecimal()
-        value.value = valueParsed
+        value = Temperature(valueParsed)
     }
 
     fun setValueFromTemperatureResponse(temperatureBrief: TemperatureBriefDto) {
-        value.value = temperatureBrief.tC + 273.15.toBigDecimal()
+        value = Temperature(temperatureBrief.tC + 273.15.toBigDecimal())
     }
 }

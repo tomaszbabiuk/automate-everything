@@ -19,7 +19,7 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
 import java.math.BigDecimal
 
-class Wattage(var value: BigDecimal) : PortValue {
+class Wattage(val value: BigDecimal) : PortValue {
 
     override fun toFormattedString(): Resource {
         val multilingualValue = "%.2f W".format(value)

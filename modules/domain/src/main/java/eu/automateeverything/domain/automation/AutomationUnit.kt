@@ -23,7 +23,7 @@ import java.util.*
 
 interface AutomationUnit<T> {
     val name: String
-    var lastEvaluation: EvaluationResult<T>
+    val lastEvaluation: EvaluationResult<T>
     val usedPortsIds: Array<String>
     val recalculateOnTimeChange: Boolean
     val recalculateOnPortUpdate: Boolean
@@ -33,4 +33,5 @@ interface AutomationUnit<T> {
     fun markExternalError(ex: AutomationErrorException)
     fun modifyNote(noteId: String, note: Resource)
     fun removeNote(noteId: String)
+    fun proposeNewEvaluation(proposed: EvaluationResult<T>)
 }
