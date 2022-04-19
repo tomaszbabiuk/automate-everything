@@ -40,4 +40,8 @@ class State(
             return State(id, name, action, StateType.Control, isSignaled)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
 }

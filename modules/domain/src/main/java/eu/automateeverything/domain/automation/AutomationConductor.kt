@@ -183,6 +183,8 @@ class AutomationConductor(
         var automations = rebuildAutomations()
 
         automationJob = startStopScope.launch {
+
+            hardwareManager.clearNewPortsFlag()
             while (isActive) {
                 val now = Calendar.getInstance()
 
