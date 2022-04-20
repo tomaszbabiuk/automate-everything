@@ -48,7 +48,8 @@ export default {
         load_more: "Load more",
         browse: "Browse",
         yes: "Yes",
-        no: "No"
+        no: "No",
+        other: "..."
     },
     app: {
         enable: "Enable",
@@ -123,6 +124,9 @@ export default {
         d: "{0}d {1}h ago"
     },
     inbox: {
-        delete_message_question: "Are you sure to remove this message?"
+        delete_message_question: "Are you sure to remove this message?",
+        mark_all_read: "Mark all read",
+        delete_all: "Remove all",
+        delete_all_question: "Are you sure to remove all messages?"
     },
 }

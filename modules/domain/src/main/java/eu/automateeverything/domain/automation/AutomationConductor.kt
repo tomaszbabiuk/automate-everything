@@ -180,11 +180,11 @@ class AutomationConductor(
     override fun start(params: Void?) {
         super.start(params)
 
+        hardwareManager.clearNewPortsFlag()
         var automations = rebuildAutomations()
 
         automationJob = startStopScope.launch {
 
-            hardwareManager.clearNewPortsFlag()
             while (isActive) {
                 val now = Calendar.getInstance()
 

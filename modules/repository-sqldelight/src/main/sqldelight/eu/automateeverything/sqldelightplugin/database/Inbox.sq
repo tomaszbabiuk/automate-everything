@@ -37,8 +37,15 @@ delete:
 DELETE FROM inboxItem
 WHERE id == ?;
 
+deleteAll:
+DELETE FROM inboxItem;
+
 markRead:
 UPDATE inboxItem
 SET read = 1
 WHERE
     id= ?;
+
+markAllRead:
+UPDATE inboxItem
+SET read = 1;

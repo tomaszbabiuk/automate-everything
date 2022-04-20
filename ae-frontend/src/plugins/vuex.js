@@ -70,6 +70,8 @@ export const REMOVE_INBOX_MESSAGE = 'REMOVE_INBOX_MESSAGE'
 export const UPDATE_INBOX_MESSAGE = 'UPDATE_INBOX_MESSAGE'
 export const SET_INBOX_UNREAD_COUNT = 'SET_INBOX_UNREAD_COUNT'
 export const SET_INBOX_TOTAL_COUNT = 'SET_INBOX_TOTAL_COUNT'
+export const REMOVE_ALL_INBOX_MESSAGES = 'REMOVE_ALL_INBOX_MESSAGES'
+export const MARK_ALL_INBOX_MESSAGES_READ = 'MARK_ALL_INBOX_MESSAGES_READ'
 
 export const SET_DEPENDENCIES = 'SET_DEPENDENCIES'
 export const CLEAR_DEPENDENCIES = 'CLEAR_DEPENDENCIES'
@@ -500,6 +502,18 @@ export default new Vuex.Store({
 
     [SET_INBOX_TOTAL_COUNT](state, count) {
       state.inboxTotalCount = count
+    },
+
+    [REMOVE_ALL_INBOX_MESSAGES](state) {
+      while (state.inboxMessages.length > 0) {
+        Vue.delete(state.inboxMessages, 0)
+      }
+    },
+
+    [MARK_ALL_INBOX_MESSAGES_READ](state) {
+      state.inboxMessages.forEach(element => {
+        element.read = '0'
+      })
     },
 
     [SET_DEPENDENCIES](state, dependencies) {

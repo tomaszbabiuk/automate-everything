@@ -48,7 +48,8 @@ export default {
         load_more: "Załaduj więcej",
         browse: "Przeglądaj",
         yes: "Tak",
-        no: "Nie"
+        no: "Nie",
+        other: "..."
     },
     app: {
         enable: "Włącz",
@@ -123,6 +124,9 @@ export default {
         d: "{0}d {1}g temu"
     },
     inbox: {
-        delete_message_question: "Czy na pewno chcesz usunąć tą wiadomość?"
+        delete_message_question: "Czy na pewno chcesz usunąć tą wiadomość?",
+        mark_all_read: "Oznacz wszystkie jako przeczytane",
+        delete_all: "Usuń wszystkie",
+        delete_all_question: "Czy na pewno chcesz usunąć wszystkie wiadomości?"
     },
 }

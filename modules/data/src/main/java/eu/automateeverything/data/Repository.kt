@@ -75,4 +75,6 @@ interface Repository {
     fun countUnreadInboxItems(): Long
 
     fun getVersions(): List<VersionDto>
+    fun deleteAllInboxItems()
+    fun markAllInboxItemAsRead()
 }

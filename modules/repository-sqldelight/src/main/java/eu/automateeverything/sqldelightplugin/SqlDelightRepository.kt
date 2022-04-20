@@ -498,6 +498,24 @@ class SqlDelightRepository : Repository {
         return versions.map(versionToVersionDtoMapper::map)
     }
 
+    override fun deleteAllInboxItems() {
+        val now = Calendar.getInstance().timeInMillis
+
+        database.transaction {
+            database.inboxQueries.deleteAll()
+            markVersion(InboxItemDto::class.java, now)
+        }
+    }
+
+    override fun markAllInboxItemAsRead() {
+        val now = Calendar.getInstance().timeInMillis
+
+        database.transaction {
+            database.inboxQueries.markAllRead()
+            markVersion(InboxItemDto::class.java, now)
+        }
+    }
+
     private fun <T> markVersion(entity:Class<T>, timestamp: Long) {
         database.versionQueries.upsert(entity.simpleName, timestamp)
     }

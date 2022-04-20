@@ -62,6 +62,16 @@ class InboxController @Inject constructor(
         includeInboxState(response)
     }
 
+    @DELETE
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    fun deleteAllInboxItems(@Context response: HttpServletResponse) {
+        repository
+            .deleteAllInboxItems()
+
+        includeInboxState(response)
+    }
+
     @PUT
     @Path("/{id}/read")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
@@ -75,6 +85,15 @@ class InboxController @Inject constructor(
         includeInboxState(response)
 
         return mapper.map(x)
+    }
+
+    @PUT
+    @Path("all/read")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
+    fun updateAllRead( @Context response: HttpServletResponse) {
+        repository.markAllInboxItemAsRead()
+
+        includeInboxState(response)
     }
 
     private fun includeInboxState(response: HttpServletResponse) {
