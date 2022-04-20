@@ -8,4 +8,6 @@ See the example screenshots:
 
 ![Automation](screenshot_objects_automation.png)
 
-//TODO: add more screens (from control and timeline sections)
+![Timeline](screenshot_timeline.png)
+
+//TODO: add control screen
