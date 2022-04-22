@@ -27,7 +27,7 @@ import java.util.*
 @Extension
 class TwilightConditionConfigurable : ConditionConfigurable() {
 
-    override val parent: Class<out Configurable?>
+    override val parent: Class<out Configurable>
         get() = ConditionsConfigurable::class.java
 
     override val addNewRes: Resource

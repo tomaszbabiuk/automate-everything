@@ -42,7 +42,7 @@ class TimedOnOffDeviceConfigurable(
             return result
         }
 
-    override val parent: Class<out Configurable?>
+    override val parent: Class<out Configurable>
         get() = OnOffDevicesConfigurable::class.java
 
     override val addNewRes: Resource

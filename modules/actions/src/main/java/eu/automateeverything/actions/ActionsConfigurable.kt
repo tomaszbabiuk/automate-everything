@@ -23,7 +23,7 @@ import org.pf4j.Extension
 @Extension
 class ActionsConfigurable : CategoryConfigurable() {
 
-    override val parent: Class<out Configurable?>?
+    override val parent: Class<out Configurable>?
         get() = null
 
     override val titleRes: Resource

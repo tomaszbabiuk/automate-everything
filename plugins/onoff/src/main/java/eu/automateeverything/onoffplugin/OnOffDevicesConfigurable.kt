@@ -24,7 +24,7 @@ import org.pf4j.Extension
 @Extension
 class OnOffDevicesConfigurable : CategoryConfigurable() {
 
-    override val parent: Class<out Configurable?>
+    override val parent: Class<out Configurable>
         get() = DevicesConfigurable::class.java
 
     override val titleRes: Resource

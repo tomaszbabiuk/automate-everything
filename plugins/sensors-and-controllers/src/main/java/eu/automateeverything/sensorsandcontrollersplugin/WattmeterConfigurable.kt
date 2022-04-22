@@ -34,7 +34,7 @@ class WattmeterConfigurable(portFinder: PortFinder, stateChangeReporter: StateCh
         WattageInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
         portFinder
     ) {
-    override val parent: Class<out Configurable?>
+    override val parent: Class<out Configurable>
         get() = SensorsConfigurable::class.java
 
     override val addNewRes: Resource

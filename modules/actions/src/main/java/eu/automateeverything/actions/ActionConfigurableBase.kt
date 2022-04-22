@@ -21,7 +21,7 @@ import eu.automateeverything.domain.configurable.Configurable
 
 abstract class ActionConfigurableBase: ActionConfigurable() {
 
-    override val parent: Class<out Configurable?>
+    override val parent: Class<out Configurable>
         get() = ActionsConfigurable::class.java
 
     override val states: Map<String, State>

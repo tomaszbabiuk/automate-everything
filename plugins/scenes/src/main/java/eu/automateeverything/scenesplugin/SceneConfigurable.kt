@@ -31,7 +31,7 @@ import java.util.HashMap
 class SceneConfigurable(
     private val stateChangeReporter: StateChangeReporter
 ) : StateDeviceConfigurable() {
-    override val parent: Class<out Configurable?>?
+    override val parent: Class<out Configurable>?
         get() = null
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
