@@ -17,12 +17,11 @@ package eu.automateeverything.onoffplugin
 
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.devices.DevicesConfigurable
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PowerLevel
 import org.pf4j.Extension
@@ -31,7 +30,7 @@ import java.math.BigDecimal
 @Extension
 class PowerRegulatorConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter) : ControllerConfigurable<PowerLevel>(PowerLevel::class.java) {
+    private val eventsSink: EventsSink) : ControllerConfigurable<PowerLevel>(PowerLevel::class.java) {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -83,7 +82,7 @@ class PowerRegulatorConfigurable(
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         val automationOnly = extractFieldValue(instance, automationOnlyField)
-        return PowerRegulatorAutomationUnit(stateChangeReporter, name, instance, port, automationOnly)
+        return PowerRegulatorAutomationUnit(eventsSink, name, instance, port, automationOnly)
     }
 
     override val blocksCategory: BlockCategory

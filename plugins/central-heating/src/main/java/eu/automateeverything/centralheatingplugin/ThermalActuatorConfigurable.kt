@@ -19,8 +19,8 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
@@ -28,7 +28,7 @@ import org.pf4j.Extension
 @Extension
 class ThermalActuatorConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter
+    private val eventsSink: EventsSink
 ) : StateDeviceConfigurable() {
 
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
@@ -90,7 +90,7 @@ class ThermalActuatorConfigurable(
         val actuatorPort = portFinder.searchForOutputPort(Relay::class.java, actuatorPortRaw)
         val inactiveState = extractFieldValue(instance, inactiveStateField)
 
-        return ThermalActuatorAutomationUnit(stateChangeReporter, instance, name, states, actuatorPort, activationTime, inactiveState)
+        return ThermalActuatorAutomationUnit(eventsSink, instance, name, states, actuatorPort, activationTime, inactiveState)
     }
 
     override val iconRaw: String

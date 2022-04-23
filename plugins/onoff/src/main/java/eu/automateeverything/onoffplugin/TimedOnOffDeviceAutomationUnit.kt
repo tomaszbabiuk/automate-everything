@@ -23,10 +23,10 @@ import eu.automateeverything.data.automation.NextStatesDto
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
@@ -35,7 +35,7 @@ import kotlin.Throws
 import java.util.Calendar
 
 class TimedOnOffDeviceAutomationUnit(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     private val minWorkingTime: Duration,
@@ -44,7 +44,7 @@ class TimedOnOffDeviceAutomationUnit(
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
     private val automationOnly: Boolean
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
 
     private var onSince = 0L
     private var offSince = 0L

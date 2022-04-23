@@ -19,19 +19,19 @@ import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.TemperatureInputPortField
 import eu.automateeverything.domain.hardware.Temperature
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class ThermometerConfigurable(portFinder: PortFinder, stateChangeReporter: StateChangeReporter) :
+class ThermometerConfigurable(portFinder: PortFinder, eventsSink: EventsSink) :
     SinglePortDeviceConfigurable<Temperature>(
         Temperature::class.java,
-        stateChangeReporter,
+        eventsSink,
         TemperatureInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
         portFinder
     ) {

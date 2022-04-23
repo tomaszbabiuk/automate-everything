@@ -19,15 +19,16 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.events.EventsSink
 import java.util.*
 
 class SensorAutomationUnit<T: PortValue>(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     private val port: InputPort<T>
 ) :
-    AutomationUnitBase<T>(stateChangeReporter, name, instance, ControlType.NA, buildEvaluationResult(port.read())) {
+    AutomationUnitBase<T>(eventsSink, name, instance, ControlType.NA, buildEvaluationResult(port.read())) {
 
     override val usedPortsIds: Array<String>
         get() = arrayOf(port.id)

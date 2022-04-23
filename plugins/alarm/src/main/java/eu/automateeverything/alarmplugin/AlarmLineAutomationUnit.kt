@@ -18,22 +18,22 @@ package eu.automateeverything.alarmplugin
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.InputPort
 import java.util.*
 
 class AlarmLineAutomationUnit(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val inputPort: InputPort<BinaryInput>,
     private val contactType: ContactType,
     delayTime: Duration
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
 
     private val armingTicks: Long = delayTime.milliseconds
     private var armingStartedAtTicks: Long = 0

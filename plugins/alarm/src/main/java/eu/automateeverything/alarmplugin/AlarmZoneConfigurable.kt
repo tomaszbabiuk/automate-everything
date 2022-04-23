@@ -20,13 +20,13 @@ import eu.automateeverything.data.fields.InstanceReference
 import eu.automateeverything.data.fields.InstanceReferenceType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.events.EventsSink
 import org.pf4j.Extension
 
 @Extension
 class AlarmZoneConfigurable(
-    private val stateChangeReporter: StateChangeReporter
+    private val eventsSink: EventsSink
 ) : StateDeviceConfigurable() {
 
     override val parent: Class<out Configurable>
@@ -46,7 +46,7 @@ class AlarmZoneConfigurable(
         val alarmLineIdsRaw = extractFieldValue(instance, alarmLinesField)
         val alarmLineIds = alarmLineIdsRaw.split(",").map { it.toLong() }
         val leavingTime = extractFieldValue(instance, leavingTimeField)
-        return AlarmZoneAutomationUnit(stateChangeReporter, instance, name, states, leavingTime, alarmLineIds)
+        return AlarmZoneAutomationUnit(eventsSink, instance, name, states, leavingTime, alarmLineIds)
     }
 
     override val states: Map<String, State>

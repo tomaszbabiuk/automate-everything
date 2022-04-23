@@ -18,22 +18,22 @@ package eu.automateeverything.crypto
 import eu.automateeverything.data.fields.PortReference
 import eu.automateeverything.data.fields.PortReferenceType
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.PortReferenceField
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
 class TickerConfigurable(
     portFinder: PortFinder,
-    stateChangeReporter: StateChangeReporter
+    eventsSink: EventsSink
 ) : SinglePortDeviceConfigurable<Ticker>(
     Ticker::class.java,
-    stateChangeReporter,
+    eventsSink,
     PortReferenceField(
         FIELD_PORT,
         R.field_port_hint,

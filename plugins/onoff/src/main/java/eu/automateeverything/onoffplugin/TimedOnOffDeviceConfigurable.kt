@@ -19,8 +19,8 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
@@ -28,7 +28,7 @@ import org.pf4j.Extension
 @Extension
 class TimedOnOffDeviceConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter
+    private val eventsSink: EventsSink
 ) : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
@@ -148,7 +148,7 @@ class TimedOnOffDeviceConfigurable(
         val breakTime = extractFieldValue(instance, breakTimeField)
         val automationOnly = extractFieldValue(instance, automationOnlyField)
         return TimedOnOffDeviceAutomationUnit(
-            stateChangeReporter,
+            eventsSink,
             instance,
             name,
             minWorkingTime,

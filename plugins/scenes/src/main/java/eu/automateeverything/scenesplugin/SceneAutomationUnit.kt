@@ -18,18 +18,18 @@ package eu.automateeverything.scenesplugin
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.scenesplugin.SceneConfigurable.Companion.STATE_INACTIVE
 import java.util.*
 
 class SceneAutomationUnit(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     automationOnly: Boolean,
     states: Map<String, State>,
-) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name,
+) : StateDeviceAutomationUnitBase(eventsSink, instance, name,
         if (automationOnly) { ControlType.NA } else { ControlType.States },
         states, false) {
 

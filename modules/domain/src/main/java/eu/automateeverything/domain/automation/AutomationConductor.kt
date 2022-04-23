@@ -33,14 +33,13 @@ class AutomationConductor(
     private val hardwareManager: HardwareManager,
     private val blockFactoriesCollector: BlockFactoriesCollector,
     private val pluginsCoordinator: PluginsCoordinator,
-    private val liveEvents: EventsSink,
+    private val eventsSink: EventsSink,
     private val inbox: Inbox,
-    private val repository: Repository,
-    private val stateChangeReporter: StateChangeReporter
+    private val repository: Repository
 ) : WithStartStopScope<Void?>(), LiveEventsListener {
 
     init {
-        liveEvents.addEventListener(this)
+        eventsSink.addEventListener(this)
     }
 
     private val logger = LoggerFactory.getLogger(AutomationConductor::class.java)
@@ -57,7 +56,7 @@ class AutomationConductor(
     }
 
     private fun broadcastAutomationUpdate() {
-        liveEvents.broadcastAutomationStateChange(enabled)
+        eventsSink.broadcastAutomationStateChange(enabled)
         if (enabled) {
             inbox.sendMessage(R.inbox_message_automation_enabled_subject, R.inbox_message_automation_enabled_body)
         } else {
@@ -82,7 +81,7 @@ class AutomationConductor(
     private fun rebuildAutomations(): Map<Long, List<StatementNode>> {
         firstLoop = true
 
-        stateChangeReporter.removeAllListeners()
+        eventsSink.removeAllStateInterceptors()
 
         val allInstances = repository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
@@ -112,7 +111,7 @@ class AutomationConductor(
                 val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                 val name = originName ?: "-------"
                 val initError = AutomationErrorException(R.error_device_missing(instance.clazz))
-                val wrapper = AutomationUnitWrapper(Nothing::class.java, stateChangeReporter, name, instance, initError)
+                val wrapper = AutomationUnitWrapper(Nothing::class.java, eventsSink, name, instance, initError)
                 automationUnitsCache[instance.id] = Pair(instance, wrapper)
             }
         }
@@ -132,7 +131,7 @@ class AutomationConductor(
                         automationUnitsCache.mapValues { it.value.second },
                         evaluationUnitsCache,
                         blocksCache,
-                        stateChangeReporter
+                        eventsSink
                     )
 
                 val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
@@ -163,15 +162,15 @@ class AutomationConductor(
 
         return when (configurable) {
             is StateDeviceConfigurable -> {
-                StateDeviceAutomationUnitWrapper(stateChangeReporter, instance, name, ex)
+                StateDeviceAutomationUnitWrapper(eventsSink, instance, name, ex)
             }
 
             is ControllerAutomationUnit<*>  -> {
-                ControllerAutomationUnitWrapper(configurable.valueClazz, stateChangeReporter, name, instance, ex)
+                ControllerAutomationUnitWrapper(configurable.valueClazz, eventsSink, name, instance, ex)
             }
 
             is DeviceConfigurable<*> -> {
-                AutomationUnitWrapper(configurable.valueClazz, stateChangeReporter, name, instance, ex)
+                AutomationUnitWrapper(configurable.valueClazz, eventsSink, name, instance, ex)
             }
             else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
         }

@@ -18,12 +18,13 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.events.EventsSink
 import java.math.BigDecimal
 import java.util.*
 
 open class ControllerAutomationUnitBase<V : PortValue>(
     override val valueClazz: Class<V>,
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     override val name: String,
     instance: InstanceDto,
     automationOnly: Boolean,
@@ -31,7 +32,7 @@ open class ControllerAutomationUnitBase<V : PortValue>(
     override val max: BigDecimal,
     override val step: BigDecimal,
     default: V,
-) : AutomationUnitBase<V>(stateChangeReporter, name, instance, if (automationOnly) ControlType.NA else ControlType.ControllerOther, buildEvaluationResult(default)),
+) : AutomationUnitBase<V>(eventsSink, name, instance, if (automationOnly) ControlType.NA else ControlType.ControllerOther, buildEvaluationResult(default)),
     ControllerAutomationUnit<V> {
 
     override val recalculateOnTimeChange = false

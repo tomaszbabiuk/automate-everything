@@ -19,6 +19,7 @@ import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
+import eu.automateeverything.domain.automation.StateChangedListener
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 
@@ -47,12 +48,14 @@ interface EventsSink {
     fun broadcastPluginEvent(plugin: PluginWrapper)
     fun broadcastAutomationUpdate(
         unit: AutomationUnit<*>,
-        instance: InstanceDto,
-        newEvaluation: EvaluationResult<out Any?>
+        instance: InstanceDto
     )
     fun broadcastDescriptionsUpdate(
         unit: AutomationUnit<*>,
-        instance: InstanceDto,
-        newEvaluation: EvaluationResult<out Any?>
+        instance: InstanceDto
     )
+
+
+    fun addStateInterceptor(listener: StateChangedListener)
+    fun removeAllStateInterceptors()
 }

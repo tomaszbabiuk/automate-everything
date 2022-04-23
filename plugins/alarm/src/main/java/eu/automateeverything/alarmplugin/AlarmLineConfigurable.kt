@@ -18,8 +18,8 @@ package eu.automateeverything.alarmplugin
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
@@ -27,7 +27,7 @@ import org.pf4j.Extension
 @Extension
 class AlarmLineConfigurable(
     private val portFinder: PortFinder,
-    private val stateChangeReporter: StateChangeReporter
+    private val eventsSink: EventsSink
 ) : StateDeviceConfigurable() {
 
     override val parent: Class<out Configurable>
@@ -44,7 +44,7 @@ class AlarmLineConfigurable(
         val contactType = extractFieldValue(instance, contactTypeField)
         val delayTime = extractFieldValue(instance, delayTimeField)
 
-        return AlarmLineAutomationUnit(stateChangeReporter, instance, name, states, port, contactType, delayTime)
+        return AlarmLineAutomationUnit(eventsSink, instance, name, states, port, contactType, delayTime)
     }
 
     override val states: Map<String, State>

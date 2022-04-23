@@ -22,9 +22,9 @@ import eu.automateeverything.centralheatingplugin.ThermalActuatorConfigurable.Co
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.math.BigDecimal
@@ -32,14 +32,14 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class ThermalActuatorAutomationUnit(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val actuatorPort: OutputPort<Relay>,
     private val activationTime: Duration,
     private val inactiveState: InactiveState,
-    ) : StateDeviceAutomationUnitBase(stateChangeReporter, instance, name, ControlType.States, states, false) {
+    ) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
 
     private var openingLevel: Long = if (inactiveState == InactiveState.NO) activationTime.milliseconds else 0
 

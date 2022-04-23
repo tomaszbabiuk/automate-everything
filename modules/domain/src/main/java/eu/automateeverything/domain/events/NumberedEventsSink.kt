@@ -18,7 +18,9 @@ package eu.automateeverything.domain.events
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.EvaluationResult
+import eu.automateeverything.domain.automation.ControllerAutomationUnit
+import eu.automateeverything.domain.automation.StateChangedListener
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 import java.util.*
@@ -27,7 +29,8 @@ class NumberedEventsSink : EventsSink {
 
     var eventCounter = 0
 
-    private val listeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
+    private val eventsListeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
+    private val stateListeners = ArrayList<StateChangedListener>()
 
     private val automationStateEvents = ArrayList<LiveEvent<AutomationStateEventData>>()
     private val automationUpdateEvents = ArrayList<LiveEvent<AutomationUpdateEventData>>()
@@ -39,11 +42,11 @@ class NumberedEventsSink : EventsSink {
     private val portUpdateEvents = ArrayList<LiveEvent<PortUpdateEventData>>()
 
     override fun addEventListener(listener: LiveEventsListener) {
-        listeners.add(listener)
+        eventsListeners.add(listener)
     }
 
     override fun removeListener(listener: LiveEventsListener) {
-        listeners.remove(listener)
+        eventsListeners.remove(listener)
     }
 
     private fun <T: LiveEventData> add(payload: T, target: MutableList<LiveEvent<T>>?) {
@@ -56,7 +59,7 @@ class NumberedEventsSink : EventsSink {
         val event: LiveEvent<T> = LiveEvent(now, eventCounter, payload.javaClass.simpleName, payload)
         target?.add(event)
 
-        listeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
+        eventsListeners.filterNotNull().forEach { listener -> listener.onEvent(event) }
     }
 
     private fun broadcastEvent(payload: LiveEventData) {
@@ -85,6 +88,10 @@ class NumberedEventsSink : EventsSink {
     override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
         val event = PortUpdateEventData(factoryId, adapterId, port)
         broadcastEvent(event)
+
+        stateListeners.forEach {
+            it.onPortUpdate(port)
+        }
     }
 
     override fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto) {
@@ -104,20 +111,37 @@ class NumberedEventsSink : EventsSink {
 
     override fun broadcastAutomationUpdate(
         unit: AutomationUnit<*>,
-        instance: InstanceDto,
-        newEvaluation: EvaluationResult<out Any?>
+        instance: InstanceDto
     ) {
-        val eventData = AutomationUpdateEventData(unit, instance, newEvaluation)
+        val eventData = AutomationUpdateEventData(unit, instance, unit.lastEvaluation)
         broadcastEvent(eventData)
+
+        if (unit is ControllerAutomationUnit<*>) {
+            stateListeners.forEach {
+                it.onValueChanged(unit, instance)
+            }
+        } else if (unit is StateDeviceAutomationUnit) {
+            stateListeners.forEach {
+                it.onStateChanged(unit, instance)
+            }
+        }
+
     }
 
     override fun broadcastDescriptionsUpdate(
         unit: AutomationUnit<*>,
-        instance: InstanceDto,
-        newEvaluation: EvaluationResult<out Any?>
+        instance: InstanceDto
     ) {
-        val eventData = DescriptionsUpdateEventData(instance.id, newEvaluation.descriptions)
+        val eventData = DescriptionsUpdateEventData(instance.id, unit.lastEvaluation.descriptions)
         broadcastEvent(eventData)
+    }
+
+    override fun addStateInterceptor(listener: StateChangedListener) {
+        stateListeners.add(listener)
+    }
+
+    override fun removeAllStateInterceptors() {
+        stateListeners.clear()
     }
 
     override fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>> {

@@ -21,16 +21,17 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
+import eu.automateeverything.domain.events.EventsSink
 import java.math.BigDecimal
 import java.util.*
 
 open class AutomationUnitWrapper<T>(
     @Suppress("UNUSED_PARAMETER") valueClazz: Class<T>,
-    val stateChangeReporter: StateChangeReporter,
+    val eventsSink: EventsSink,
     name: String,
     val instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitBase<T>(stateChangeReporter, name, instance, ControlType.NA, EvaluationResult(
+) : AutomationUnitBase<T>(eventsSink, name, instance, ControlType.NA, EvaluationResult(
     interfaceValue = R.error_initialization,
     error = initError,
     descriptions = listOf(initError.localizedMessage)
@@ -48,11 +49,11 @@ open class AutomationUnitWrapper<T>(
 }
 
 class StateDeviceAutomationUnitWrapper(
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     instance: InstanceDto,
     name: String,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<State>(State::class.java, stateChangeReporter, name, instance, initError),
+) : AutomationUnitWrapper<State>(State::class.java, eventsSink, name, instance, initError),
 StateDeviceAutomationUnit{
     override fun changeState(state: String, actor: String?) {
     }
@@ -63,11 +64,11 @@ StateDeviceAutomationUnit{
 
 class ControllerAutomationUnitWrapper<V: PortValue>(
     override val valueClazz: Class<V>,
-    stateChangeReporter: StateChangeReporter,
+    eventsSink: EventsSink,
     name: String,
     instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<V>(valueClazz, stateChangeReporter, name, instance, initError, ), ControllerAutomationUnit<V> {
+) : AutomationUnitWrapper<V>(valueClazz, eventsSink, name, instance, initError, ), ControllerAutomationUnit<V> {
 
     override val usedPortsIds = arrayOf<String>()
 

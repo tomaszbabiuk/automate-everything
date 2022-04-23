@@ -26,13 +26,11 @@ class PortUpdateTriggerNode(
 ) : StatementNodeBase(), StateChangedListener {
 
     init {
-        context.stateChangeReporter.addListener(this)
+        context.eventsSink.addStateInterceptor(this)
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {
-//        if (firstLoop && unit.currentState.id == observedStateId) {
-//            next?.process(now, firstLoop)
-//        }
+        //not interested
     }
 
     override fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
@@ -44,6 +42,8 @@ class PortUpdateTriggerNode(
     }
 
     override fun onPortUpdate(port: Port<*>) {
-        TODO("Not yet implemented")
+        if (port.id == portId) {
+            next?.process(Calendar.getInstance(), false)
+        }
     }
 }

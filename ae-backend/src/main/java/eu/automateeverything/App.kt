@@ -17,8 +17,6 @@ package eu.automateeverything
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.domain.automation.AutomationConductor
-import eu.automateeverything.domain.automation.BroadcastingStateChangeReporter
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.MasterBlockFactoriesCollector
 import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.rest.*
@@ -66,9 +64,8 @@ open class App : ResourceConfig() {
     private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventsSink, injectionRegistry, repository)
     private val hardwareManager = HardwareManager(pluginsCoordinator, eventsSink, inbox, repository)
     private val blockFactoriesCoordinator = MasterBlockFactoriesCollector(pluginsCoordinator, repository)
-    private val stateChangeReporter: StateChangeReporter = BroadcastingStateChangeReporter(eventsSink)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-        eventsSink, inbox, repository, stateChangeReporter)
+        eventsSink, inbox, repository)
     private val pulsar = Pulsar(eventsSink, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
@@ -149,7 +146,6 @@ open class App : ResourceConfig() {
         injectionRegistry.put(PortFinder::class.java, hardwareManager)
         injectionRegistry.put(EventsSink::class.java, eventsSink)
         injectionRegistry.put(Inbox::class.java, inbox)
-        injectionRegistry.put(StateChangeReporter::class.java, stateChangeReporter)
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
         injectionRegistry.put(Repository::class.java, repository)

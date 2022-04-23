@@ -18,15 +18,6 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.hardware.Port
 
-interface StateChangeReporter {
-    fun reportDescriptionsUpdate(deviceUnit: AutomationUnit<*>, instance: InstanceDto)
-    fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto)
-    fun reportDeviceValueChange(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto)
-    fun reportPortUpdate(factoryId: String, adapterId: String, port: Port<*>)
-    fun addListener(listener: StateChangedListener)
-    fun removeAllListeners()
-}
-
 interface StateChangedListener {
     fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto)
     fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto)

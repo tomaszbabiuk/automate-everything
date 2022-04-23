@@ -28,7 +28,7 @@ class StateDeviceTriggerNode(
 ) : StatementNodeBase(), StateChangedListener {
 
     init {
-        context.stateChangeReporter.addListener(this)
+        context.eventsSink.addStateInterceptor(this)
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {

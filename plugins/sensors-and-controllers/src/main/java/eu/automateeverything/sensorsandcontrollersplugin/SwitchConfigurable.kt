@@ -16,21 +16,24 @@
 package eu.automateeverything.sensorsandcontrollersplugin
 
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.automation.StateChangeReporter
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.BinaryInputPortField
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
+import eu.automateeverything.domain.events.EventsSink
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class SwitchConfigurable(portFinder: PortFinder, stateChangeReporter: StateChangeReporter) :
+class SwitchConfigurable(
+    portFinder: PortFinder,
+    eventsSink: EventsSink
+) :
     SinglePortDeviceConfigurable<BinaryInput>(
-        BinaryInput::class.java, stateChangeReporter,
+        BinaryInput::class.java, eventsSink,
         BinaryInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
         portFinder
     ) {

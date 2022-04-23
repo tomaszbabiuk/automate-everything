@@ -17,6 +17,7 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.events.EventsSink
 
 class AutomationContext(
     val instance: InstanceDto,
@@ -24,5 +25,5 @@ class AutomationContext(
     val automationUnitsCache: Map<Long, AutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, EvaluableAutomationUnit>,
     val blocksCache: List<BlockFactory<*>>,
-    val stateChangeReporter: StateChangeReporter
+    val eventsSink: EventsSink
 )
