@@ -19,11 +19,9 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.hardware.Port
 import java.util.*
 
-class StateDeviceTriggerNode(
+class PortUpdateTriggerNode(
     context: AutomationContext,
-    private val instanceId: Long,
-    private val unit: StateDeviceAutomationUnitBase,
-    private val observedStateId: String,
+    private val portId: String,
     override val next: StatementNode?
 ) : StatementNodeBase(), StateChangedListener {
 
@@ -32,17 +30,13 @@ class StateDeviceTriggerNode(
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {
-        if (firstLoop && unit.currentState.id == observedStateId) {
-            next?.process(now, firstLoop)
-        }
+//        if (firstLoop && unit.currentState.id == observedStateId) {
+//            next?.process(now, firstLoop)
+//        }
     }
 
     override fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
-        if (instance.id == instanceId) {
-            if (deviceUnit.currentState.id == observedStateId) {
-                next?.process(Calendar.getInstance(), false)
-            }
-        }
+        //not interested
     }
 
     override fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto) {
@@ -50,6 +44,6 @@ class StateDeviceTriggerNode(
     }
 
     override fun onPortUpdate(port: Port<*>) {
-        //not interested
+        TODO("Not yet implemented")
     }
 }

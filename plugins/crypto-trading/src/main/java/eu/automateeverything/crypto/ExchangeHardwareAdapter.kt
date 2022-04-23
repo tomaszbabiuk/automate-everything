@@ -120,7 +120,7 @@ class ExchangeHardwareAdapter(
 
                 port.lastSeenTimestamp = calendar.timeInMillis
                 port.updateValue(ticker)
-                eventsSink.broadcastPortUpdateEvent(owningPluginId, id, port)
+                broadcastPortUpdate(port)
             }
         } catch (ignored: Exception) {
             //lastSeen will not be updated when disconnected

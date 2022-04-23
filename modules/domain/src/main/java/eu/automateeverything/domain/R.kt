@@ -136,9 +136,14 @@ object R {
         "%1 zmienia stan na %2"
     )
 
+    val block_label_port_updated = Resource(
+        "Port is updated %1 %2",
+        "Port zostaje uaktualniony %1 %2"
+    )
+
     val block_label_change_value = Resource(
         "Change defaults to %1 %2",
-        "Zmień domyślne ustawienie na%1 %2"
+        "Zmień domyślne ustawienie na %1 %2"
     )
 
     val block_label_in_state = Resource(

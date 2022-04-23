@@ -51,7 +51,6 @@ class OneWireAdapter(
     }
 
     var operationScope: CoroutineScope? = null
-    var operationSink: EventsSink? = null
 
 
     override fun executePendingChanges() {

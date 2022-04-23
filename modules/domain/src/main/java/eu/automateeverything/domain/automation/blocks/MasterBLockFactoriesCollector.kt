@@ -33,6 +33,7 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
         result.addAll(collectConditionBlocks())
         result.addAll(collectSensorBlocks())
         result.addAll(collectChangeStateTriggerBlocks())
+        result.add(collectPortUpdateTriggerBlock())
         result.addAll(collectStateValuesBlocks())
 
         if (thisDevice != null) {
@@ -153,6 +154,11 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
                     configurableClazz.states)
             }
             .toList()
+    }
+
+    private fun collectPortUpdateTriggerBlock(): BlockFactory<*> {
+        val portIds = repository.getAllPorts().map { it.id }
+        return PortUpdatedTriggerBlockFactory(portIds)
     }
 
     private fun collectStateValuesBlocks(): List<BlockFactory<*>> {

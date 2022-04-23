@@ -17,13 +17,14 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.hardware.Port
 
-class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : StateChangeReporter {
+class BroadcastingStateChangeReporter(private val eventsSink: EventsSink) : StateChangeReporter {
 
     private val listeners = ArrayList<StateChangedListener>()
 
     override fun reportDeviceStateChange(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
-        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
+        eventsSink.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
 
         listeners.forEach {
             it.onStateChanged(deviceUnit, instance)
@@ -31,15 +32,22 @@ class BroadcastingStateChangeReporter(private val liveEvents: EventsSink) : Stat
     }
 
     override fun reportDeviceValueChange(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto) {
-        liveEvents.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
+        eventsSink.broadcastAutomationUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
 
         listeners.forEach {
             it.onValueChanged(deviceUnit, instance)
         }
     }
 
+    override fun reportPortUpdate(factoryId: String, adapterId: String, port: Port<*>) {
+        eventsSink.broadcastPortUpdateEvent(factoryId, adapterId, port)
+        listeners.forEach {
+            it.onPortUpdate(port)
+        }
+    }
+
     override fun reportDescriptionsUpdate(deviceUnit: AutomationUnit<*>, instance: InstanceDto) {
-        liveEvents.broadcastDescriptionsUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
+        eventsSink.broadcastDescriptionsUpdate(deviceUnit, instance, deviceUnit.lastEvaluation)
     }
 
     override fun addListener(listener: StateChangedListener) {
