@@ -21,12 +21,12 @@ import eu.automateeverything.data.fields.InstanceReferenceType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import org.pf4j.Extension
 
 @Extension
 class AlarmZoneConfigurable(
-    private val eventsBus: EventsBus
+    private val eventBus: EventBus
 ) : StateDeviceConfigurable() {
 
     override val parent: Class<out Configurable>
@@ -46,7 +46,7 @@ class AlarmZoneConfigurable(
         val alarmLineIdsRaw = extractFieldValue(instance, alarmLinesField)
         val alarmLineIds = alarmLineIdsRaw.split(",").map { it.toLong() }
         val leavingTime = extractFieldValue(instance, leavingTimeField)
-        return AlarmZoneAutomationUnit(eventsBus, instance, name, states, leavingTime, alarmLineIds)
+        return AlarmZoneAutomationUnit(eventBus, instance, name, states, leavingTime, alarmLineIds)
     }
 
     override val states: Map<String, State>

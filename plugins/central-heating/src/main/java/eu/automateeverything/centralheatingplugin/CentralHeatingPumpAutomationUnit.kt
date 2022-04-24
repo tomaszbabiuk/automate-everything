@@ -22,20 +22,20 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.util.*
 
 class CentralHeatingPumpAutomationUnit(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val pumpPort: OutputPort<Relay>?,
     private val transformerPort: OutputPort<Relay>?,
     private val thermalActuatorIds: List<Long>,
-) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventBus, instance, name, ControlType.States, states, false) {
 
     override fun applyNewState(state: String) {
     }

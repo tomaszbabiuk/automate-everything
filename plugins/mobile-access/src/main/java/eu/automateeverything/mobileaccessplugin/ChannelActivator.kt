@@ -17,12 +17,12 @@ package eu.automateeverything.mobileaccessplugin
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.domain.configurable.BooleanFieldBuilder
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import saltchannel.util.Hex
 
 class ChannelActivator(
     private val repository: Repository,
-    private val eventsBus: EventsBus)
+    private val eventBus: EventBus)
 {
 
     fun activateChannel(serverSignPub: ByteArray, clientSigPub: ByteArray) {
@@ -40,7 +40,7 @@ class ChannelActivator(
                 val instanceToUpdate = it.copy(it.id, it.iconId, it.tagIds, it.clazz, newFields, it.automation)
                 repository.updateInstance(instanceToUpdate)
 
-                eventsBus.broadcastInstanceUpdateEvent(instanceToUpdate)
+                eventBus.broadcastInstanceUpdateEvent(instanceToUpdate)
             }
     }
 }

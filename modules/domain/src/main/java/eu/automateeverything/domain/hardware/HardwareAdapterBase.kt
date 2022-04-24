@@ -16,13 +16,13 @@
 package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.AdapterState
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import java.util.*
 
 abstract class HardwareAdapterBase<T : Port<*>>(
     protected val owningPluginId: String,
     override val id: String,
-    protected val eventsBus: EventsBus
+    protected val eventBus: EventBus
 ) : HardwareAdapter<T> {
 
     override var state = AdapterState.Initialized
@@ -42,11 +42,11 @@ abstract class HardwareAdapterBase<T : Port<*>>(
     abstract suspend fun internalDiscovery(mode: DiscoveryMode)
 
     protected fun logDiscovery(message: String) {
-        eventsBus.broadcastDiscoveryEvent(owningPluginId, message)
+        eventBus.broadcastDiscoveryEvent(owningPluginId, message)
     }
 
     protected fun broadcastPortUpdate(port: Port<*>) {
-        eventsBus.broadcastPortUpdateEvent(owningPluginId, id, port)
+        eventBus.broadcastPortUpdateEvent(owningPluginId, id, port)
     }
 
     override suspend fun discover(mode: DiscoveryMode) {

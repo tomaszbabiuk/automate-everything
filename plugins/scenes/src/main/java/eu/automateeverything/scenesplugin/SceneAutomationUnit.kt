@@ -19,17 +19,17 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.scenesplugin.SceneConfigurable.Companion.STATE_INACTIVE
 import java.util.*
 
 class SceneAutomationUnit(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     automationOnly: Boolean,
     states: Map<String, State>,
-) : StateDeviceAutomationUnitBase(eventsBus, instance, name,
+) : StateDeviceAutomationUnitBase(eventBus, instance, name,
         if (automationOnly) { ControlType.NA } else { ControlType.States },
         states, false) {
 

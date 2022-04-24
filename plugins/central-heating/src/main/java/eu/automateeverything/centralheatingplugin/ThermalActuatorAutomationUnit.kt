@@ -24,7 +24,7 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.math.BigDecimal
@@ -32,14 +32,14 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class ThermalActuatorAutomationUnit(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val actuatorPort: OutputPort<Relay>,
     private val activationTime: Duration,
     private val inactiveState: InactiveState,
-    ) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
+    ) : StateDeviceAutomationUnitBase(eventBus, instance, name, ControlType.States, states, false) {
 
     private var openingLevel: Long = if (inactiveState == InactiveState.NO) activationTime.milliseconds else 0
 

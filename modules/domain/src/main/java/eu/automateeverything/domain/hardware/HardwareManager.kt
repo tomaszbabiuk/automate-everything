@@ -23,7 +23,7 @@ import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.R
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
@@ -35,7 +35,7 @@ import org.pf4j.PluginStateListener
 
 class HardwareManager(
     pluginsCoordinator: PluginsCoordinator,
-    private val eventsBus: EventsBus,
+    private val eventBus: EventBus,
     private val inbox: Inbox,
     private val repository: Repository,
 ) : WithStartStopScope<Void?>(), PluginStateListener, PortFinder {
@@ -79,7 +79,7 @@ class HardwareManager(
 
     private suspend fun discover(bundle: AdapterBundle, mode: DiscoveryMode) = coroutineScope {
         if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
-            eventsBus.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
+            eventBus.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
         } else {
             bundle.discoveryJob = async {
                 bundle.adapter.discover(mode)
@@ -87,7 +87,7 @@ class HardwareManager(
                     val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
                         null, null, it.valueClazz.name, it.canRead, it.canWrite, it.sleepInterval, it.lastSeenTimestamp)
                     repository.updatePort(portSnapshot)
-                    eventsBus.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
+                    eventBus.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, it)
 
                     val portNotReported = repository.getPortById(it.id) == null
                     if (portNotReported) {

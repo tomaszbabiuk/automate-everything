@@ -15,7 +15,7 @@
 
 package eu.automateeverything.rest.hardware
 
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.data.hardware.DiscoveryEventDto
 import eu.automateeverything.mappers.DiscoveryEventMapper
 import jakarta.inject.Inject
@@ -26,14 +26,14 @@ import jakarta.ws.rs.core.MediaType
 
 @Path("adapterevents")
 class AdapterEvents @Inject constructor(
-    private val eventsBus: EventsBus,
+    private val eventBus: EventBus,
     private val hardwareEventMapper: DiscoveryEventMapper,
 ) {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getEvents(): List<DiscoveryEventDto> {
-        return eventsBus
+        return eventBus
             .discoveryEvents
             .map { hardwareEventMapper.map(it.number, it.data) }
             .toList()

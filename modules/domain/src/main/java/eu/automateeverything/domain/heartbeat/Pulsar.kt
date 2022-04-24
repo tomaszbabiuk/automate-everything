@@ -17,7 +17,7 @@ package eu.automateeverything.domain.heartbeat
 
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.automation.AutomationConductor
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class Pulsar(
-    val eventsBus: EventsBus,
+    val eventBus: EventBus,
     val inbox: Inbox,
     private val automationConductor: AutomationConductor
     ) : WithStartStopScope<Void?>() {
@@ -44,6 +44,6 @@ class Pulsar(
         val timestamp = Calendar.getInstance().timeInMillis
         val isAutomationEnabled = automationConductor.isEnabled()
 
-        eventsBus.broadcastHeartbeatEvent(timestamp, inbox.unreadMessagesCount, inbox.totalMessagesCount, isAutomationEnabled)
+        eventBus.broadcastHeartbeatEvent(timestamp, inbox.unreadMessagesCount, inbox.totalMessagesCount, isAutomationEnabled)
     }
 }

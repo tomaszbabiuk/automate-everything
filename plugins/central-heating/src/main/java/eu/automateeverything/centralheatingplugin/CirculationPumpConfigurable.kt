@@ -22,7 +22,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import eu.automateeverything.sensorsandcontrollersplugin.ThermometerConfigurable
@@ -31,7 +31,7 @@ import org.pf4j.Extension
 @Extension
 class CirculationPumpConfigurable(
     private val portFinder: PortFinder,
-    private val eventsBus: EventsBus
+    private val eventBus: EventBus
 ) : StateDeviceConfigurable() {
 
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
@@ -101,7 +101,7 @@ class CirculationPumpConfigurable(
         val pumpPort = portFinder.searchForOutputPort(Relay::class.java, pumpPortRaw)
         val thermometerId = extractFieldValue(instance, thermometerIdField)
 
-        return CirculationPumpAutomationUnit(eventsBus, instance, name, states, pumpPort,
+        return CirculationPumpAutomationUnit(eventBus, instance, name, states, pumpPort,
             minWorkingTime, thermometerId.toLong())
     }
 

@@ -21,17 +21,17 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import java.math.BigDecimal
 import java.util.*
 
 open class AutomationUnitWrapper<T>(
     @Suppress("UNUSED_PARAMETER") valueClazz: Class<T>,
-    val eventsBus: EventsBus,
+    val eventBus: EventBus,
     name: String,
     val instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitBase<T>(eventsBus, name, instance, ControlType.NA, EvaluationResult(
+) : AutomationUnitBase<T>(eventBus, name, instance, ControlType.NA, EvaluationResult(
     interfaceValue = R.error_initialization,
     error = initError,
     descriptions = listOf(initError.localizedMessage)
@@ -49,11 +49,11 @@ open class AutomationUnitWrapper<T>(
 }
 
 class StateDeviceAutomationUnitWrapper(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<State>(State::class.java, eventsBus, name, instance, initError),
+) : AutomationUnitWrapper<State>(State::class.java, eventBus, name, instance, initError),
 StateDeviceAutomationUnit{
     override fun changeState(state: String, actor: String?) {
     }
@@ -64,11 +64,11 @@ StateDeviceAutomationUnit{
 
 class ControllerAutomationUnitWrapper<V: PortValue>(
     override val valueClazz: Class<V>,
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     name: String,
     instance: InstanceDto,
     initError: AutomationErrorException
-) : AutomationUnitWrapper<V>(valueClazz, eventsBus, name, instance, initError, ), ControllerAutomationUnit<V> {
+) : AutomationUnitWrapper<V>(valueClazz, eventBus, name, instance, initError, ), ControllerAutomationUnit<V> {
 
     override val usedPortsIds = arrayOf<String>()
 

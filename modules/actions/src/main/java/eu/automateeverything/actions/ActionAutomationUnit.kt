@@ -26,19 +26,19 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import kotlinx.coroutines.*
 import java.lang.Exception
 import kotlin.Throws
 import java.util.Calendar
 
 class ActionAutomationUnit(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val executionCode: () -> Pair<Boolean,Resource>
-) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventBus, instance, name, ControlType.States, states, false) {
 
     private var executionScope: CoroutineScope? = null
 

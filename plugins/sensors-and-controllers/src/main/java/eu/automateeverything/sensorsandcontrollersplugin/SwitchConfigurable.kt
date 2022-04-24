@@ -22,7 +22,7 @@ import eu.automateeverything.domain.configurable.BinaryInputPortField
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
@@ -30,10 +30,10 @@ import org.pf4j.Extension
 @Extension
 class SwitchConfigurable(
     portFinder: PortFinder,
-    eventsBus: EventsBus
+    eventBus: EventBus
 ) :
     SinglePortDeviceConfigurable<BinaryInput>(
-        BinaryInput::class.java, eventsBus,
+        BinaryInput::class.java, eventBus,
         BinaryInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
         portFinder
     ) {

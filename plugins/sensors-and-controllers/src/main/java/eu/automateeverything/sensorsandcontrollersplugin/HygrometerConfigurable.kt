@@ -23,17 +23,17 @@ import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
 class HygrometerConfigurable(
     portFinder: PortFinder,
-    eventsBus: EventsBus
+    eventBus: EventBus
 ) : SinglePortDeviceConfigurable<Humidity>(
     Humidity::class.java,
-    eventsBus,
+    eventBus,
     HumidityInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
     portFinder
 ) {

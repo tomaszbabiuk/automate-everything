@@ -25,7 +25,7 @@ import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 import java.util.*
 
-class NumberedEventsBus : EventsBus {
+class NumberedEventBus : EventBus {
 
     private var eventCounter = 0
 

@@ -18,7 +18,7 @@ package eu.automateeverything.zigbee2mqttplugin
 import com.google.gson.Gson
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -32,9 +32,9 @@ import java.util.concurrent.LinkedBlockingQueue
 class Zigbee2MqttAdapter(
     owningPluginId: String,
     private val mqttBroker: MqttBrokerService,
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     repository: Repository,
-) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, "0", eventsBus), MqttListener {
+) : HardwareAdapterBase<ZigbeePort<*>>(owningPluginId, "0", eventBus), MqttListener {
 
     private var permitJoin: Boolean = false
     private var idBuilder = PortIdBuilder(owningPluginId)

@@ -20,12 +20,12 @@ import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.SensorAutomationUnit
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import java.util.*
 
 abstract class SinglePortDeviceConfigurable<T: PortValue>(
     valueClazz: Class<T>,
-    private val eventsBus: EventsBus,
+    private val eventBus: EventBus,
     private val portField: FieldDefinition<String>,
     private val portFinder: PortFinder
 ) : DeviceConfigurableWithBlockCategory<T>(valueClazz) {
@@ -34,7 +34,7 @@ abstract class SinglePortDeviceConfigurable<T: PortValue>(
         val portId = extractFieldValue(instance, portField)
         val port = portFinder.searchForInputPort(valueClazz, portId)
         val name = instance.fields[FIELD_NAME]!!
-        return SensorAutomationUnit(eventsBus, instance, name, port)
+        return SensorAutomationUnit(eventBus, instance, name, port)
     }
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>

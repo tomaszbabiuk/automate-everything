@@ -20,7 +20,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
@@ -29,7 +29,7 @@ import java.util.*
 @Extension
 class OnOffDeviceConfigurable(
     private val portFinder: PortFinder,
-    private val eventsBus: EventsBus) : StateDeviceConfigurable() {
+    private val eventBus: EventBus) : StateDeviceConfigurable() {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -71,7 +71,7 @@ class OnOffDeviceConfigurable(
         val port = portFinder.searchForOutputPort(Relay::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         val automationOnly = extractFieldValue(instance, automationOnlyField)
-        return OnOffDeviceAutomationUnit(eventsBus, instance, name, states, port, automationOnly)
+        return OnOffDeviceAutomationUnit(eventBus, instance, name, states, port, automationOnly)
     }
 
     override val states: Map<String, State>

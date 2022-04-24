@@ -15,7 +15,7 @@
 
 package eu.automateeverything.shellyplugin
 
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -25,10 +25,10 @@ import java.net.InetAddress
 
 object ShellyHelper {
 
-    suspend fun checkIfShelly(owningPluginId: String, client: HttpClient, ipToCheck: InetAddress, eventsBus: EventsBus?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
+    suspend fun checkIfShelly(owningPluginId: String, client: HttpClient, ipToCheck: InetAddress, eventBus: EventBus?) : Pair<InetAddress, ShellySettingsResponse>? = coroutineScope {
         try {
             val response = client.get<ShellySettingsResponse>("http://$ipToCheck/settings")
-            eventsBus?.broadcastDiscoveryEvent(
+            eventBus?.broadcastDiscoveryEvent(
                 owningPluginId,
                 "Shelly found! Ip address: $ipToCheck"
             )
@@ -39,7 +39,7 @@ object ShellyHelper {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun searchForShellies(owningPluginId: String, client: HttpClient, brokerIP: InetAddress, eventsBus: EventsBus): List<Pair<InetAddress, ShellySettingsResponse>> = withContext(Dispatchers.IO) {
+    suspend fun searchForShellies(owningPluginId: String, client: HttpClient, brokerIP: InetAddress, eventBus: EventBus): List<Pair<InetAddress, ShellySettingsResponse>> = withContext(Dispatchers.IO) {
         val lookupAddressBegin = InetAddress.getByAddress(
             byteArrayOf(
                 brokerIP.address[0], brokerIP.address[1], brokerIP.address[2],
@@ -53,7 +53,7 @@ object ShellyHelper {
             )
         )
 
-        eventsBus.broadcastDiscoveryEvent(
+        eventBus.broadcastDiscoveryEvent(
             owningPluginId,
             "Looking for shelly devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
@@ -71,7 +71,7 @@ object ShellyHelper {
             )
 
             val job = async(start = CoroutineStart.LAZY) {
-                checkIfShelly(owningPluginId, client, ipToCheck, eventsBus)
+                checkIfShelly(owningPluginId, client, ipToCheck, eventBus)
             }
             jobs.add(job)
         }
@@ -80,7 +80,7 @@ object ShellyHelper {
             .filterNotNull()
             .toList()
 
-        eventsBus.broadcastDiscoveryEvent(
+        eventBus.broadcastDiscoveryEvent(
             owningPluginId,
             "Done looking for shellies, found: ${result.size}"
         )

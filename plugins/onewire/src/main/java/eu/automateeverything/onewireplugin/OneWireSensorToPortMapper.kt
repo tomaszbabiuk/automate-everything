@@ -16,7 +16,7 @@
 package eu.automateeverything.onewireplugin
 
 import com.dalsemi.onewire.container.*
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.PortIdBuilder
 import eu.automateeverything.domain.hardware.Relay
@@ -28,7 +28,7 @@ import java.util.*
 class OneWireSensorToPortMapper(
     private val owningPluginId: String,
     private val portIdBuilder: PortIdBuilder,
-    private val eventsBus: EventsBus,
+    private val eventBus: EventBus,
     private val ds2408AsRelays: List<String>
 ) {
     fun map(sensor: OneWireContainer, now: Calendar): List<OneWirePort<*>>? {
@@ -86,7 +86,7 @@ class OneWireSensorToPortMapper(
     }
 
     private fun broadcastMessage(message: String) {
-        eventsBus.broadcastDiscoveryEvent(owningPluginId, message)
+        eventBus.broadcastDiscoveryEvent(owningPluginId, message)
     }
 
     private fun mapTemperatureContainer(temperatureSensor: TemperatureContainer, now: Calendar): List<OneWireTemperatureInputPort>? {

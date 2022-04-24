@@ -15,16 +15,16 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.mappers.LiveEventsMapper
 import kotlinx.serialization.BinaryFormat
 
-class EventsSubscriptionBuilder(private val eventsBus: EventsBus,
+class EventsSubscriptionBuilder(private val eventBus: EventBus,
                                 private val eventsMapper: LiveEventsMapper,
                                 private val binaryFormat: BinaryFormat
 ) {
 
     fun build(id: String, entityFilter: String): EventsSubscriptionHandler {
-        return EventsSubscriptionHandler(id, eventsBus, eventsMapper, binaryFormat, entityFilter)
+        return EventsSubscriptionHandler(id, eventBus, eventsMapper, binaryFormat, entityFilter)
     }
 }

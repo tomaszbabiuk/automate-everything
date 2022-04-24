@@ -16,7 +16,7 @@
 package eu.automateeverything.rest.hardware
 
 import eu.automateeverything.domain.hardware.HardwareManager
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import jakarta.inject.Inject
 import eu.automateeverything.data.hardware.HardwareAdapterDto
 import eu.automateeverything.mappers.HardwareAdapterDtoMapper
@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.MediaType
 class AdapterController @Inject constructor(
     private val hardwareManager: HardwareManager,
     private val mapper: HardwareAdapterDtoMapper,
-    private val liveEvent: EventsBus
+    private val liveEvent: EventBus
 ) {
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

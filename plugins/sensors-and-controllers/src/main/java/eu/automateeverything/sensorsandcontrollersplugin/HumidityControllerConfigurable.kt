@@ -22,14 +22,14 @@ import eu.automateeverything.domain.automation.ControllerAutomationUnitBase
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.Humidity
 import org.pf4j.Extension
 import java.math.BigDecimal
 
 @Extension
 class HumidityControllerConfigurable(
-    private val eventsBus: EventsBus
+    private val eventBus: EventBus
 ) : ControllerConfigurable<Humidity>(Humidity::class.java) {
 
     override val parent: Class<out Configurable> = ControllersConfigurable::class.java
@@ -84,7 +84,7 @@ class HumidityControllerConfigurable(
         val min = extractFieldValue(instance, minField)
         val max = extractFieldValue(instance, maxField)
         val default = extractFieldValue(instance, defaultField)
-        return ControllerAutomationUnitBase(Humidity::class.java, eventsBus, name, instance, automationOnly,
+        return ControllerAutomationUnitBase(Humidity::class.java, eventBus, name, instance, automationOnly,
             min.wrapped!!, max.wrapped!!, BigDecimal.ONE, Humidity(default.wrapped!!))
     }
 

@@ -26,7 +26,7 @@ interface LiveEventsListener {
     fun onEvent(event: LiveEvent<*>)
 }
 
-interface EventsBus {
+interface EventBus {
     fun subscribeToGlobalEvents(listener: LiveEventsListener)
     fun unsubscribeFromGlobalEvents(listener: LiveEventsListener)
 

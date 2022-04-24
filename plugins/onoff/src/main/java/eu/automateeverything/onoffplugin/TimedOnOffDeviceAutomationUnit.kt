@@ -26,7 +26,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
@@ -35,7 +35,7 @@ import kotlin.Throws
 import java.util.Calendar
 
 class TimedOnOffDeviceAutomationUnit(
-    eventsBus: EventsBus,
+    eventBus: EventBus,
     instance: InstanceDto,
     name: String,
     private val minWorkingTime: Duration,
@@ -44,7 +44,7 @@ class TimedOnOffDeviceAutomationUnit(
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
     private val automationOnly: Boolean
-) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventBus, instance, name, ControlType.States, states, false) {
 
     private var onSince = 0L
     private var offSince = 0L

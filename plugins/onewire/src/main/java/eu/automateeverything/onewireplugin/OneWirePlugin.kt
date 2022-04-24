@@ -18,7 +18,7 @@ package eu.automateeverything.onewireplugin
 import com.dalsemi.onewire.adapter.USerialAdapter
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.plugins.PluginCategory
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import eu.automateeverything.domain.hardware.HardwarePlugin
@@ -28,7 +28,7 @@ import java.io.File
 
 class OneWirePlugin(
     wrapper: PluginWrapper,
-    private val eventsBus: EventsBus,
+    private val eventBus: EventBus,
     private val settingsResolver: SettingsResolver)
     : HardwarePlugin(wrapper), PluginMetadata{
 
@@ -54,7 +54,7 @@ class OneWirePlugin(
     }
 
     private fun createOneWireAdapter(serialPort: String, ds2408AsRelays: List<String>): HardwareAdapter<*> {
-        return OneWireAdapter(pluginId, serialPort, eventsBus, ds2408AsRelays)
+        return OneWireAdapter(pluginId, serialPort, eventBus, ds2408AsRelays)
     }
 
     private fun listSerialPorts(): List<String> {
@@ -82,7 +82,7 @@ class OneWirePlugin(
     }
 
     private fun probeFirst10SerialPorts(): List<String> {
-        eventsBus.broadcastDiscoveryEvent(pluginId, "Looking for 1-wire adapters by probing the first 10 system communication ports (COM0..COM9)")
+        eventBus.broadcastDiscoveryEvent(pluginId, "Looking for 1-wire adapters by probing the first 10 system communication ports (COM0..COM9)")
 
         val result = ArrayList<String>()
         repeat((0..9).count()) {
@@ -93,7 +93,7 @@ class OneWirePlugin(
                 adapter.reset()
                 adapter.freePort()
                 result.add(portIdentifier)
-                eventsBus.broadcastDiscoveryEvent(pluginId, "1-wire adapter based on ${adapter.adapterName} detected. The port is: $portIdentifier")
+                eventBus.broadcastDiscoveryEvent(pluginId, "1-wire adapter based on ${adapter.adapterName} detected. The port is: $portIdentifier")
             } catch (ex: Exception) {
             }
         }

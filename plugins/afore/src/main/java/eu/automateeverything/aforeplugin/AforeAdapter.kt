@@ -15,7 +15,7 @@
 
 package eu.automateeverything.aforeplugin
 
-import eu.automateeverything.domain.events.EventsBus
+import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
@@ -32,7 +32,7 @@ import java.util.*
 class AforeAdapter(
     owningPluginId: String,
     private val lanGatewayResolver: LanGatewayResolver,
-    eventsBus: EventsBus) : HardwareAdapterBase<AforeWattageInputPort>(owningPluginId, "0", eventsBus) {
+    eventBus: EventBus) : HardwareAdapterBase<AforeWattageInputPort>(owningPluginId, "0", eventBus) {
     var operationScope: CoroutineScope? = null
     private val httpClient = createHttpClient()
     private val idBuilder = PortIdBuilder(owningPluginId)
@@ -85,18 +85,18 @@ class AforeAdapter(
         if (lanGateway != null) {
             val machineIPAddress = lanGateway.inet4Address
             val finder = AforeFinder(owningPluginId, httpClient, machineIPAddress)
-            val discoveryJob = async { finder.searchForAforeDevices(eventsBus) }
+            val discoveryJob = async { finder.searchForAforeDevices(eventBus) }
             val aforeDevices = discoveryJob.await()
 
             aforeDevices.forEach {
-                eventsBus.broadcastDiscoveryEvent(owningPluginId,"AFORE inverter found, IP:${it.first}, s/n:${it.second}")
+                eventBus.broadcastDiscoveryEvent(owningPluginId,"AFORE inverter found, IP:${it.first}, s/n:${it.second}")
                 val portId = idBuilder.buildPortId(it.second, 0.toString(), "W")
                 val inverterPort = AforeWattageInputPort(portId, httpClient, it.first)
                 result.add(inverterPort)
             }
         }
 
-        eventsBus.broadcastDiscoveryEvent(owningPluginId, "Finished")
+        eventBus.broadcastDiscoveryEvent(owningPluginId, "Finished")
 
         addPotentialNewPorts(result)
     }
