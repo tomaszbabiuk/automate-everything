@@ -20,6 +20,7 @@ import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.automation.blocks.ComparisonBlockFactory
 import eu.automateeverything.domain.automation.blocks.EquationBlockFactory
 import eu.automateeverything.domain.configurable.Configurable
+import eu.automateeverything.domain.hardware.TimeStamp
 import org.pf4j.Extension
 
 @Extension
@@ -30,10 +31,10 @@ class TimeBlocksCollector() : BlockFactoriesCollector {
     }
 
     private fun collectTimeStaticBlocks() = listOf(
-        SecondOfDayValueBlockFactory(),
+        TimeValueBlockFactory(),
         NowBlockFactory(),
-        ComparisonBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay),
-        EquationBlockFactory(SecondOfDayStamp::class.java, TimeBlockCategories.SecondOfDay),
+        ComparisonBlockFactory(TimeStamp::class.java, TimeBlockCategories.SecondOfDay),
+        EquationBlockFactory(TimeStamp::class.java, TimeBlockCategories.SecondOfDay),
         EvenSecondBlockFactory()
     )
 

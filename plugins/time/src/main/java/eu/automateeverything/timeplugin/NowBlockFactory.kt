@@ -17,6 +17,7 @@ package eu.automateeverything.timeplugin
 
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
+import eu.automateeverything.domain.hardware.TimeStamp
 
 open class NowBlockFactory: ValueBlockFactory {
 
@@ -31,7 +32,7 @@ open class NowBlockFactory: ValueBlockFactory {
                 {
                   "type": "$type",
                   "message0": "${R.block_now_label.getValue(it)}",
-                  "output": "${SecondOfDayStamp::class.java.simpleName}",
+                  "output": "${TimeStamp::class.java.simpleName}",
                   "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""

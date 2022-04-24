@@ -18,8 +18,9 @@ package eu.automateeverything.timeplugin
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.hardware.PortValueBuilder
+import eu.automateeverything.domain.hardware.TimeStamp
 
-open class SecondOfDayValueBlockFactory: ValueBlockFactory {
+open class TimeValueBlockFactory: ValueBlockFactory {
 
     enum class HourOption(val label: String, val seconds: Int) {
         H00("00",3600 * 0),
@@ -176,7 +177,7 @@ open class SecondOfDayValueBlockFactory: ValueBlockFactory {
 
     override val category = TimeBlockCategories.SecondOfDay
 
-    override val type: String = "${SecondOfDayStamp::class.java.simpleName.lowercase()}_value"
+    override val type: String = "${TimeStamp::class.java.simpleName.lowercase()}_value"
 
     override fun buildBlock(): RawJson {
 
@@ -203,7 +204,7 @@ open class SecondOfDayValueBlockFactory: ValueBlockFactory {
                     }
                   ],
                   "inputsInline": true,
-                  "output": "${SecondOfDayStamp::class.java.simpleName}",
+                  "output": "${TimeStamp::class.java.simpleName}",
                   "colour": ${category.color},
                   "tooltip": "",
                   "helpUrl": ""
@@ -227,10 +228,10 @@ open class SecondOfDayValueBlockFactory: ValueBlockFactory {
             ?: throw MalformedBlockException(block.type, "should have <field name=\"SECOND\"> defined")
 
         val totalSecondsRaw =
-            hourField.value!!.toBigDecimal() + minuteField.value!!.toBigDecimal() + secondField.value!!.toBigDecimal()
+            hourField.value!!.toInt() + minuteField.value!!.toInt() + secondField.value!!.toInt()
+        val totalMillisecondsRaw = totalSecondsRaw * 1000
         val totalSecondsValue =
-            PortValueBuilder.buildFromDecimal(SecondOfDayStamp::class.java, totalSecondsRaw) as SecondOfDayStamp
-
+            PortValueBuilder.buildFromDecimal(TimeStamp::class.java, totalMillisecondsRaw.toBigDecimal()) as TimeStamp
         return BasicValueNode(totalSecondsValue)
     }
 }

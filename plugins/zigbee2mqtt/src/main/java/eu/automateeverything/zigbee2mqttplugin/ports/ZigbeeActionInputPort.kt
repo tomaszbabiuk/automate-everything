@@ -15,8 +15,10 @@
 
 package eu.automateeverything.zigbee2mqttplugin.ports
 
-import eu.automateeverything.domain.hardware.BinaryInput
+import eu.automateeverything.domain.hardware.TimeStamp
 import eu.automateeverything.zigbee2mqttplugin.data.UpdatePayload
+import java.math.BigDecimal
+import java.util.*
 
 class ZigbeeActionInputPort(
     id:String,
@@ -24,11 +26,12 @@ class ZigbeeActionInputPort(
     private val action: String,
     sleepInterval: Long,
     lastSeenTimestamp: Long,
-) : ZigbeeInputPort<BinaryInput>(id, BinaryInput::class.java, readTopic, BinaryInput(false), sleepInterval, lastSeenTimestamp) {
+) : ZigbeeInputPort<TimeStamp>(id, TimeStamp::class.java, readTopic, TimeStamp(BigDecimal.ZERO), sleepInterval, lastSeenTimestamp) {
 
     override fun tryUpdateInternal(payload: UpdatePayload): Boolean {
         if (payload.action != null && payload.action == action) {
-            value = BinaryInput(true)
+            val now = Calendar.getInstance()
+            value = TimeStamp.fromCalendar(now)
             return true
         }
 

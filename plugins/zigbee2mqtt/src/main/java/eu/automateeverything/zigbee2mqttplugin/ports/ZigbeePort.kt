@@ -16,6 +16,7 @@
 package eu.automateeverything.zigbee2mqttplugin.ports
 
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.zigbee2mqttplugin.data.UpdatePayload
 
@@ -25,7 +26,7 @@ abstract class ZigbeePort<V: PortValue>(
     val readTopic: String,
     final override val sleepInterval: Long,
     override var lastSeenTimestamp: Long
-) : Port<V> {
+) : InputPort<V> {
     var isValueVerified = false
 
     abstract fun tryUpdate(payload: UpdatePayload) : Boolean

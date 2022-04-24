@@ -222,24 +222,4 @@ object R {
         "Port",
         "Port"
     )
-
-    val configurable_switch_add = Resource(
-        "Add switch",
-        "Dodaj przełącznik"
-    )
-
-    val configurable_switch_edit = Resource(
-        "Edit switch",
-        "Edytuj przełącznik"
-    )
-
-    val configurable_switches_title = Resource(
-        "Switches",
-        "Przełączniki"
-    )
-
-    val configurable_switches_description = Resource(
-        "Switches/buttons",
-        "Przełączniki i włączniki"
-    )
 }

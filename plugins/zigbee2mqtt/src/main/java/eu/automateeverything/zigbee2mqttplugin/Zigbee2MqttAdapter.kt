@@ -28,7 +28,6 @@ import eu.automateeverything.zigbee2mqttplugin.ports.*
 import kotlinx.coroutines.*
 import java.net.InetAddress
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
 
 class Zigbee2MqttAdapter(
     owningPluginId: String,
@@ -40,8 +39,6 @@ class Zigbee2MqttAdapter(
     private var permitJoin: Boolean = false
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val gson = Gson()
-    private val debounceQueue = LinkedBlockingQueue<ZigbeeActionInputPort>()
-    var operationScope: CoroutineScope? = null
 
     init {
         repository
@@ -62,7 +59,7 @@ class Zigbee2MqttAdapter(
             BatteryCharge::class.java.name -> {
                 ZigbeeBatteryInputPort(portDto.id, readTopic, portDto.sleepInterval, portDto.lastSeenTimestamp)
             }
-            BinaryInput::class.java.name -> {
+            TimeStamp::class.java.name -> {
                 ZigbeeActionInputPort(portDto.id, readTopic, suffix, portDto.sleepInterval, portDto.lastSeenTimestamp)
             }
             Humidity::class.java.name -> {
@@ -123,27 +120,10 @@ class Zigbee2MqttAdapter(
 
     override fun stop() {
         mqttBroker.removeMqttListener(this)
-        operationScope?.cancel("Stop called")
     }
 
     override fun start() {
         mqttBroker.addMqttListener(this)
-
-        if (operationScope != null) {
-            operationScope!!.cancel("Adapter already started")
-        }
-
-        operationScope = CoroutineScope(Dispatchers.IO)
-        operationScope?.launch {
-            while (isActive) {
-                val port = debounceQueue.poll()
-                if (port != null) {
-                    delay(1000)
-                    port.value = BinaryInput(false)
-                    broadcastPortUpdate(PortUpdateType.ValueChange, port)
-                }
-            }
-        }
     }
 
 
@@ -161,17 +141,15 @@ class Zigbee2MqttAdapter(
                 .filter {  it.readTopic == topicName }
                 .forEach {
                     val updatePayload = gson.fromJson(msgAsString, UpdatePayload::class.java)
+                    val prevValue = it.read().asDecimal()
                     it.tryUpdate(updatePayload)
+                    val newValue = it.read().asDecimal()
+                    if (prevValue != newValue) {
+                        broadcastPortUpdate(PortUpdateType.ValueChange, it)
+                    }
                     it.lastSeenTimestamp = nowMillis
                     broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
-                    debounceActionPort(it)
                 }
-        }
-    }
-
-    private fun debounceActionPort(it: ZigbeePort<*>) {
-        if (it is ZigbeeActionInputPort && it.value.value) {
-            debounceQueue.add(it)
         }
     }
 
