@@ -16,6 +16,7 @@
 package eu.automateeverything.shellyplugin
 
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -120,7 +121,12 @@ class ShellyAdapter(
             .values
             .filter { it.readTopics.contains(topicName)  }
             .forEach {
+                val prevValue = it.read().asDecimal()
                 it.setValueFromMqttPayload(msgAsString)
+                val newValue = it.read().asDecimal()
+                if (prevValue != newValue) {
+                    broadcastPortUpdate(PortUpdateType.ValueChange, it)
+                }
             }
 
         ports
@@ -128,7 +134,7 @@ class ShellyAdapter(
             .filter { it.id.contains(clientID) }
             .forEach {
                 it.lastSeenTimestamp = now
-                broadcastPortUpdate(it)
+                broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
             }
     }
 
@@ -139,7 +145,7 @@ class ShellyAdapter(
                 val port = it
                 if (port.id.contains(clientID)) {
                     port.lastSeenTimestamp = 0
-                    broadcastPortUpdate(it)
+                    broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
                 }
             }
     }

@@ -18,12 +18,23 @@ package eu.automateeverything.domain.events
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.StateChangedListener
+import eu.automateeverything.domain.automation.ControllerAutomationUnit
+import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 
 interface LiveEventsListener {
     fun onEvent(event: LiveEvent<*>)
+}
+
+enum class PortUpdateType {
+    ValueChange,LastSeenChange
+}
+
+interface StateChangedListener {
+    fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto)
+    fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto)
+    fun onPortUpdate(type: PortUpdateType, port: Port<*>)
 }
 
 interface EventBus {
@@ -35,7 +46,7 @@ interface EventBus {
     val automationUpdateEvents: List<LiveEvent<AutomationUpdateEventData>>
 
     fun broadcastDiscoveryEvent(factoryId: String, message: String)
-    fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>)
+    fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, type: PortUpdateType, port: Port<*>)
     fun broadcastInstanceUpdateEvent(instanceDto: InstanceDto)
     fun broadcastHeartbeatEvent(
         timestamp: Long,

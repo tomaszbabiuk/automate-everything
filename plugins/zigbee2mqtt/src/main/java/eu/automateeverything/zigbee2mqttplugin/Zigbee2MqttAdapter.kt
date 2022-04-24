@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -139,7 +140,7 @@ class Zigbee2MqttAdapter(
                 if (port != null) {
                     delay(1000)
                     port.value = BinaryInput(false)
-                    broadcastPortUpdate(port)
+                    broadcastPortUpdate(PortUpdateType.ValueChange, port)
                 }
             }
         }
@@ -162,7 +163,7 @@ class Zigbee2MqttAdapter(
                     val updatePayload = gson.fromJson(msgAsString, UpdatePayload::class.java)
                     it.tryUpdate(updatePayload)
                     it.lastSeenTimestamp = nowMillis
-                    broadcastPortUpdate(it)
+                    broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
                     debounceActionPort(it)
                 }
         }

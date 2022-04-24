@@ -16,6 +16,8 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.events.StateChangedListener
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.Port
 import java.util.*
 
@@ -41,8 +43,8 @@ class PortUpdateTriggerNode(
         //not interested
     }
 
-    override fun onPortUpdate(port: Port<*>) {
-        if (port.id == portId) {
+    override fun onPortUpdate(type: PortUpdateType, port: Port<*>) {
+        if (type == PortUpdateType.ValueChange && port.id == portId) {
             next?.process(Calendar.getInstance(), false)
         }
     }

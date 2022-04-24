@@ -17,6 +17,7 @@ package eu.automateeverything.crypto
 
 import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
@@ -120,7 +121,7 @@ class ExchangeHardwareAdapter(
 
                 port.lastSeenTimestamp = calendar.timeInMillis
                 port.updateValue(ticker)
-                broadcastPortUpdate(port)
+                broadcastPortUpdate(PortUpdateType.LastSeenChange, port)
             }
         } catch (ignored: Exception) {
             //lastSeen will not be updated when disconnected

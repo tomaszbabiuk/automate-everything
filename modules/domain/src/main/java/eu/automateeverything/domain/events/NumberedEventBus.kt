@@ -19,7 +19,6 @@ import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.ControllerAutomationUnit
-import eu.automateeverything.domain.automation.StateChangedListener
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnit
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
@@ -82,12 +81,12 @@ class NumberedEventBus : EventBus {
         broadcastEvent(event)
     }
 
-    override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
-        val event = PortUpdateEventData(factoryId, adapterId, port)
+    override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, type: PortUpdateType, port: Port<*>) {
+        val event = PortUpdateEventData(factoryId, adapterId, type, port)
         broadcastEvent(event)
 
         stateListeners.forEach {
-            it.onPortUpdate(port)
+            it.onPortUpdate(type, port)
         }
     }
 

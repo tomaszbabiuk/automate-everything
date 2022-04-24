@@ -16,6 +16,8 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.events.StateChangedListener
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.Port
 import java.util.*
 
@@ -49,7 +51,7 @@ class StateDeviceTriggerNode(
         //not interested
     }
 
-    override fun onPortUpdate(port: Port<*>) {
+    override fun onPortUpdate(type: PortUpdateType, port: Port<*>) {
         //not interested
     }
 }

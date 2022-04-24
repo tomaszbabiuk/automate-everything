@@ -16,6 +16,7 @@
 package eu.automateeverything.aforeplugin
 
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import eu.automateeverything.domain.hardware.PortIdBuilder
@@ -105,7 +106,7 @@ class AforeAdapter(
         ports.values.forEach {
             it.refresh(now)
             it.lastSeenTimestamp = now.timeInMillis
-            broadcastPortUpdate(it)
+            broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
 
             delay(30000)
         }

@@ -40,6 +40,7 @@ class DiscoveryEventData(val factoryId: String,
 @Serializable
 class PortUpdateEventData(val factoryId: String,
                           val adapterId: String,
+                          val type: PortUpdateType,
                           val port: Port<*>) : LiveEventData() {
     override fun toString(): String {
         return if (port is InputPort<*>) {

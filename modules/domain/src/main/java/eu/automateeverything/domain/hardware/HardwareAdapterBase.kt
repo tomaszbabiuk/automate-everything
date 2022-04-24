@@ -17,6 +17,7 @@ package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import java.util.*
 
 abstract class HardwareAdapterBase<T : Port<*>>(
@@ -45,8 +46,8 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         eventBus.broadcastDiscoveryEvent(owningPluginId, message)
     }
 
-    protected fun broadcastPortUpdate(port: Port<*>) {
-        eventBus.broadcastPortUpdateEvent(owningPluginId, id, port)
+    protected fun broadcastPortUpdate(type: PortUpdateType, port: Port<*>) {
+        eventBus.broadcastPortUpdateEvent(owningPluginId, id, type, port)
     }
 
     override suspend fun discover(mode: DiscoveryMode) {
@@ -62,7 +63,7 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         newPorts.forEach {
             if (!ports.containsKey(it.id)) {
                 ports[it.id] = it
-                broadcastPortUpdate(it)
+                broadcastPortUpdate(PortUpdateType.ValueChange, it)
                 hasNewPorts = true
             }
         }

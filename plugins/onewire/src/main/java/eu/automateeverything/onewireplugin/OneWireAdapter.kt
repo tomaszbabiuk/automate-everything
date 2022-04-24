@@ -23,6 +23,7 @@ import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.container.SwitchContainer
 import com.dalsemi.onewire.container.TemperatureContainer
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
@@ -170,7 +171,7 @@ class OneWireAdapter(
                logger.info(ex.message)
             } else {
                 ports.values.forEach {
-                    broadcastPortUpdate(it)
+                    broadcastPortUpdate(PortUpdateType.LastSeenChange, it)
                 }
             }
         }
@@ -194,7 +195,7 @@ class OneWireAdapter(
                     port.commit()
                     val newValue = port.value.value
                     if (newValue != oldValue) {
-                        broadcastPortUpdate(port)
+                        broadcastPortUpdate(PortUpdateType.ValueChange, port)
                     }
                 }
         }
@@ -214,7 +215,7 @@ class OneWireAdapter(
                     val newTemperatureK = TemperatureContainerHelper.read(container).toBigDecimal() + 273.15.toBigDecimal()
                     if (newTemperatureK != port.value.value) {
                         port.update(now.timeInMillis, Temperature(newTemperatureK))
-                        broadcastPortUpdate(port)
+                        broadcastPortUpdate(PortUpdateType.ValueChange, port)
                     }
                 }
         }
@@ -245,7 +246,7 @@ class OneWireAdapter(
                         val newBinaryReading = if (reading.isSensed) !port.value.value else reading.level
                         if (newBinaryReading != port.value.value) {
                             port.update(now.timeInMillis, BinaryInput(newBinaryReading))
-                            broadcastPortUpdate(port)
+                            broadcastPortUpdate(PortUpdateType.ValueChange, port)
                         }
                     }
             }
