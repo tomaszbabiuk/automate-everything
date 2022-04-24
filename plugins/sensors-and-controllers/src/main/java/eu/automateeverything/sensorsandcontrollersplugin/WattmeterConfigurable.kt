@@ -23,14 +23,14 @@ import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
-class WattmeterConfigurable(portFinder: PortFinder, eventsSink: EventsSink) :
+class WattmeterConfigurable(portFinder: PortFinder, eventsBus: EventsBus) :
     SinglePortDeviceConfigurable<Wattage>(
-        Wattage::class.java, eventsSink,
+        Wattage::class.java, eventsBus,
         WattageInputPortField(FIELD_PORT, R.field_port_hint, RequiredStringValidator()),
         portFinder
     ) {

@@ -16,7 +16,7 @@
 package eu.automateeverything.rest.automationhistory
 
 import eu.automateeverything.data.automationhistory.AutomationHistoryDto
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.mappers.AutomationHistoryDtoMapper
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
@@ -26,20 +26,20 @@ import jakarta.ws.rs.core.MediaType
 
 @Path("automationhistory")
 class AutomationHistoryController @Inject constructor(
-    private val eventsSink: EventsSink,
+    private val eventsBus: EventsBus,
     private val automationHistoryMapper: AutomationHistoryDtoMapper,
 ) {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getAutomation(): List<AutomationHistoryDto> {
-        val states = eventsSink
-            .automationStateEvents()
+        val states = eventsBus
+            .automationStateEvents
             .map {
                 automationHistoryMapper.map(it.timestamp, it.data, it.number)
             }
 
-        val deviceUpdates = eventsSink
-            .automationUpdateEvents()
+        val deviceUpdates = eventsBus
+            .automationUpdateEvents
             .map {
                 automationHistoryMapper.map(it.timestamp, it.data, it.number)
             }

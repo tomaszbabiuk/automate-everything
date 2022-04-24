@@ -23,17 +23,17 @@ import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.PortReferenceField
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.SinglePortDeviceConfigurable
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.PortFinder
 import org.pf4j.Extension
 
 @Extension
 class TickerConfigurable(
     portFinder: PortFinder,
-    eventsSink: EventsSink
+    eventsBus: EventsBus
 ) : SinglePortDeviceConfigurable<Ticker>(
     Ticker::class.java,
-    eventsSink,
+    eventsBus,
     PortReferenceField(
         FIELD_PORT,
         R.field_port_hint,

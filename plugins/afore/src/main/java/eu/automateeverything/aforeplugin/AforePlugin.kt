@@ -21,17 +21,17 @@ import eu.automateeverything.domain.hardware.HardwarePlugin
 import eu.automateeverything.domain.langateway.LanGatewayResolver
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.plugins.PluginCategory
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.HardwareAdapter
 
 class AforePlugin(
     wrapper: PluginWrapper,
     private val lanGatewayResolver: LanGatewayResolver,
-    private val eventsSink: EventsSink) : HardwarePlugin(wrapper), PluginMetadata {
+    private val eventsBus: EventsBus) : HardwarePlugin(wrapper), PluginMetadata {
 
     override fun createAdapters(): List<HardwareAdapter<*>> {
         val result = ArrayList<HardwareAdapter<*>>()
-        val adapter = AforeAdapter(pluginId, lanGatewayResolver, eventsSink)
+        val adapter = AforeAdapter(pluginId, lanGatewayResolver, eventsBus)
         result.add(adapter)
         return result
     }

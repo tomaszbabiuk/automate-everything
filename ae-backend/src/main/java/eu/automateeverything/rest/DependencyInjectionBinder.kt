@@ -16,7 +16,7 @@
 package eu.automateeverything.rest
 
 import eu.automateeverything.data.Repository
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.automation.AutomationConductor
@@ -30,7 +30,7 @@ import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 
 class DependencyInjectionBinder(
-    private val eventsSink: EventsSink,
+    private val eventsBus: EventsBus,
     private val repository: Repository,
     private val pluginsCoordinator: PluginsCoordinator,
     private val hardwareManager: HardwareManager,
@@ -122,8 +122,8 @@ class DependencyInjectionBinder(
             .to(Repository::class.java)
             .`in`(Singleton::class.java)
 
-        bindFactory(SingletonFactory(eventsSink))
-            .to(EventsSink::class.java)
+        bindFactory(SingletonFactory(eventsBus))
+            .to(EventsBus::class.java)
             .`in`(Singleton::class.java)
 
         bindFactory(SingletonFactory(blockFactoriesCollector))

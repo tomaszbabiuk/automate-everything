@@ -21,18 +21,18 @@ import eu.automateeverything.data.automation.StateType
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnitBase(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     instance: InstanceDto,
     name: String,
     controlType: ControlType,
     protected val states: Map<String, State>,
     protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(
-    eventsSink,
+    eventsBus,
     name,
     instance,
     controlType,

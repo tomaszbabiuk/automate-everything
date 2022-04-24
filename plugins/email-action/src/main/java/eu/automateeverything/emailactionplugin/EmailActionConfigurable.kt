@@ -22,13 +22,13 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.settings.SettingsResolver
 import org.pf4j.Extension
 
 @Extension
 class EmailActionConfigurable(
-    private val eventsSink: EventsSink,
+    private val eventsBus: EventsBus,
     private val settingsResolver: SettingsResolver) : ActionConfigurableBase() {
 
     override val titleRes: Resource
@@ -63,7 +63,7 @@ class EmailActionConfigurable(
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val name = instance.fields[FIELD_NAME]!!
-        return ActionAutomationUnit(eventsSink, instance, name, states) {
+        return ActionAutomationUnit(eventsBus, instance, name, states) {
             sendEmail(instance)
         }
     }

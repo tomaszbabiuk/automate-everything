@@ -20,20 +20,20 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.BinaryInput
 import eu.automateeverything.domain.hardware.InputPort
 import java.util.*
 
 class AlarmLineAutomationUnit(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val inputPort: InputPort<BinaryInput>,
     private val contactType: ContactType,
     delayTime: Duration
-) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
 
     private val armingTicks: Long = delayTime.milliseconds
     private var armingStartedAtTicks: Long = 0

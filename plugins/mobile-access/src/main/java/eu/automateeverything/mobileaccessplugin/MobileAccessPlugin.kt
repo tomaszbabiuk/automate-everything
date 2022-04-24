@@ -20,7 +20,7 @@ import eu.automateeverything.data.Repository
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.data.plugins.PluginCategory
 import eu.automateeverything.data.settings.SettingsDto
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.extensibility.PluginMetadata
 import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.settings.SettingsResolver
@@ -34,7 +34,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
                          private val repository: Repository,
                          private val sessionHandler: ByteArraySessionHandler,
                          private val inbox: Inbox,
-                         private val eventsSink: EventsSink
+                         private val eventsBus: EventsBus
 ) : Plugin(wrapper), PluginMetadata, InstanceInterceptor {
 
     private val logger = LoggerFactory.getLogger(MobileAccessPlugin::class.java)
@@ -44,7 +44,7 @@ class MobileAccessPlugin(wrapper: PluginWrapper,
         val settings = settingsResolver.resolve()
         val brokerAddress = BrokerAddress(settings)
         val secretsPassword = extractSecretsPassword(settings)
-        val channelActivator = ChannelActivator(repository, eventsSink)
+        val channelActivator = ChannelActivator(repository, eventsBus)
         return MqttSaltServer(brokerAddress, secretsPassword, inbox, sessionHandler, channelActivator)
     }
 

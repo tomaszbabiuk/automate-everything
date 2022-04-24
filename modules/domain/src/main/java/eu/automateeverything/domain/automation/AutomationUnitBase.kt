@@ -20,11 +20,11 @@ import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.R
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import java.util.*
 
 abstract class AutomationUnitBase<T>(
-    private val eventsSink: EventsSink,
+    private val eventsBus: EventsBus,
     override val name: String,
     private val instance: InstanceDto,
     override val controlType: ControlType,
@@ -64,7 +64,7 @@ abstract class AutomationUnitBase<T>(
 
     private fun evaluateAndReportStateUpdate() {
         lastEvaluation.descriptions = lastNotes.values.toList()
-        eventsSink.broadcastDescriptionsUpdate(this, instance)
+        eventsBus.broadcastDescriptionsUpdate(this, instance)
     }
 
     override fun calculate(now: Calendar) {
@@ -95,7 +95,7 @@ abstract class AutomationUnitBase<T>(
         val current = lastEvaluation
         if (current.value != proposed.value) {
             lastEvaluation = proposed
-            eventsSink.broadcastAutomationUpdate(this, instance)
+            eventsBus.broadcastAutomationUpdate(this, instance)
         }
     }
 

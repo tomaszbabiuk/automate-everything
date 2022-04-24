@@ -22,7 +22,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.Relay
 import org.pf4j.Extension
@@ -30,7 +30,7 @@ import org.pf4j.Extension
 @Extension
 class CentralHeatingPumpConfigurable(
     private val portFinder: PortFinder,
-    private val eventsSink: EventsSink
+    private val eventsBus: EventsBus
 ) : StateDeviceConfigurable() {
     override val parent: Class<out Configurable> = CentralHeatingConfigurable::class.java
 
@@ -108,7 +108,7 @@ class CentralHeatingPumpConfigurable(
         val thermalActuatorIdsRaw = extractFieldValue(instance, thermalActuatorIdsField)
         val thermalActuatorIds = thermalActuatorIdsRaw.split(",").map { it.toLong() }
 
-        return CentralHeatingPumpAutomationUnit(eventsSink, instance, name, states, pumpPort,
+        return CentralHeatingPumpAutomationUnit(eventsBus, instance, name, states, pumpPort,
             transformerPort, thermalActuatorIds)
     }
 

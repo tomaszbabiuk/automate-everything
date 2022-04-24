@@ -24,7 +24,7 @@ import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.configurable.FieldDefinition
 import eu.automateeverything.domain.configurable.RequiredStringValidator
 import eu.automateeverything.domain.configurable.StringField
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import org.pf4j.Extension
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -34,7 +34,7 @@ import java.util.stream.Collectors
 
 @Extension
 class BashScriptActionConfigurable(
-    private val eventsSink: EventsSink
+    private val eventsBus: EventsBus
 ) : ActionConfigurableBase() {
 
     override val titleRes: Resource
@@ -65,7 +65,7 @@ class BashScriptActionConfigurable(
 
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val name = instance.fields[FIELD_NAME]!!
-        return ActionAutomationUnit(eventsSink, instance, name, states) {
+        return ActionAutomationUnit(eventsBus, instance, name, states) {
             executeScript(instance)
         }
     }

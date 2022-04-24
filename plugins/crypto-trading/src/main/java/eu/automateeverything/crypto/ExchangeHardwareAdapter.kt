@@ -16,7 +16,7 @@
 package eu.automateeverything.crypto
 
 import eu.automateeverything.data.settings.SettingsDto
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.DiscoveryMode
 import eu.automateeverything.domain.hardware.HardwareAdapterBase
 import kotlinx.coroutines.*
@@ -27,9 +27,9 @@ class ExchangeHardwareAdapter(
     override val id: String,
     owningPluginId: String,
     private val marketProxy: MarketProxy,
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     private val settings: List<SettingsDto>)
-    : HardwareAdapterBase<MarketPort>(owningPluginId, id, eventsSink) {
+    : HardwareAdapterBase<MarketPort>(owningPluginId, id, eventsBus) {
 
     private var operationScope: CoroutineScope? = null
     private var currencyFilter: List<String>? = null

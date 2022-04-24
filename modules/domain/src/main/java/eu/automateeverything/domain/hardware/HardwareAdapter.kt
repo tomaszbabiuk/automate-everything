@@ -16,7 +16,6 @@
 package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.AdapterState
-import eu.automateeverything.domain.events.EventsSink
 
 enum class DiscoveryMode {
     Startup,

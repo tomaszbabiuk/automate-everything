@@ -15,7 +15,7 @@
 
 package eu.automateeverything.rest.live
 
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.mappers.LiveEventsMapper
@@ -31,14 +31,14 @@ import jakarta.ws.rs.sse.SseEventSink
 
 @Path("live")
 class LiveController @Inject constructor(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     private val liveEventsMapper: LiveEventsMapper,
     private val sse: Sse
 ) {
     private val sseBroadcaster = sse.newBroadcaster()
 
     init {
-        eventsSink.addEventListener(object : LiveEventsListener {
+        eventsBus.subscribeToGlobalEvents(object : LiveEventsListener {
             override fun onEvent(event: LiveEvent<*>) {
                 broadcastLiveEvent(event)
             }

@@ -19,18 +19,18 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.*
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.OutputPort
 import java.math.BigDecimal
 import java.util.*
 
 abstract class SinglePortRegulatorAutomationUnit<V: PortValue>(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     name: String,
     instance: InstanceDto,
     private val controlPort: OutputPort<V>,
     controlType: ControlType
-) : AutomationUnitBase<V>(eventsSink, name, instance, controlType, buildEvaluationResult(controlPort.read())), ControllerAutomationUnit<V> {
+) : AutomationUnitBase<V>(eventsBus, name, instance, controlType, buildEvaluationResult(controlPort.read())), ControllerAutomationUnit<V> {
 
     private var requestedValue: V? = null
 

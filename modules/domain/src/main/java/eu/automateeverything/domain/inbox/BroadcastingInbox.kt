@@ -18,11 +18,11 @@ package eu.automateeverything.domain.inbox
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.localization.Resource
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import java.util.*
 
 class BroadcastingInbox(
-    val eventsSink: EventsSink,
+    val eventsBus: EventsBus,
     val repository: Repository
 ) : Inbox {
 
@@ -38,7 +38,7 @@ class BroadcastingInbox(
         )
 
         inboxItem.id = repository.saveInboxItem(inboxItem)
-        eventsSink.broadcastInboxMessage(inboxItem)
+        eventsBus.broadcastInboxMessage(inboxItem)
         refreshCounters()
     }
 

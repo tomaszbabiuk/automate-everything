@@ -15,7 +15,7 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.events.LiveEvent
 import eu.automateeverything.domain.events.LiveEventsListener
 import eu.automateeverything.interop.JsonRpc2Response
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class EventsSubscriptionHandler(
     private val id: String,
-    private val eventsSink: EventsSink,
+    private val eventsBus: EventsBus,
     private val eventsMapper: LiveEventsMapper,
     private val binaryFormat: BinaryFormat,
     private val entityFilter: String
@@ -36,11 +36,11 @@ class EventsSubscriptionHandler(
     private val queue = ConcurrentLinkedQueue<Pair<Any, (BinaryFormat) -> ByteArray>>()
 
     init {
-        eventsSink.addEventListener(this)
+        eventsBus.subscribeToGlobalEvents(this)
     }
 
     protected fun finalize() {
-        eventsSink.removeListener(this)
+        eventsBus.unsubscribeFromGlobalEvents(this)
     }
 
     override fun collect(): List<JsonRpc2Response> {

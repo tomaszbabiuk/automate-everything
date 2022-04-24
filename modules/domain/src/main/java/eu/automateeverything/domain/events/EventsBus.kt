@@ -18,7 +18,6 @@ package eu.automateeverything.domain.events
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.AutomationUnit
-import eu.automateeverything.domain.automation.EvaluationResult
 import eu.automateeverything.domain.automation.StateChangedListener
 import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
@@ -27,12 +26,13 @@ interface LiveEventsListener {
     fun onEvent(event: LiveEvent<*>)
 }
 
-interface EventsSink {
-    fun addEventListener(listener: LiveEventsListener)
-    fun removeListener(listener: LiveEventsListener)
-    fun discoveryEvents(): List<LiveEvent<DiscoveryEventData>>
-    fun automationStateEvents(): List<LiveEvent<AutomationStateEventData>>
-    fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>>
+interface EventsBus {
+    fun subscribeToGlobalEvents(listener: LiveEventsListener)
+    fun unsubscribeFromGlobalEvents(listener: LiveEventsListener)
+
+    val discoveryEvents: List<LiveEvent<DiscoveryEventData>>
+    val automationStateEvents: List<LiveEvent<AutomationStateEventData>>
+    val automationUpdateEvents: List<LiveEvent<AutomationUpdateEventData>>
 
     fun broadcastDiscoveryEvent(factoryId: String, message: String)
     fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>)
@@ -56,6 +56,6 @@ interface EventsSink {
     )
 
 
-    fun addStateInterceptor(listener: StateChangedListener)
-    fun removeAllStateInterceptors()
+    fun subscribeToStateChanges(listener: StateChangedListener)
+    fun unsubscribeFromStateChanges()
 }

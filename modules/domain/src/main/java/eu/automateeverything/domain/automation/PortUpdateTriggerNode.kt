@@ -26,7 +26,7 @@ class PortUpdateTriggerNode(
 ) : StatementNodeBase(), StateChangedListener {
 
     init {
-        context.eventsSink.addStateInterceptor(this)
+        context.eventsBus.subscribeToStateChanges(this)
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {

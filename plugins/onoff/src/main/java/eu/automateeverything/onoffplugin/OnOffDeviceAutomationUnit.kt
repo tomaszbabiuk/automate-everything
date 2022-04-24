@@ -22,7 +22,7 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.OutputPort
 import eu.automateeverything.domain.hardware.Relay
 import java.lang.Exception
@@ -30,13 +30,13 @@ import kotlin.Throws
 import java.util.Calendar
 
 class OnOffDeviceAutomationUnit(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val controlPort: OutputPort<Relay>,
     private val automationOnly: Boolean
-) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
 
     @Throws(Exception::class)
     override fun applyNewState(state: String) {

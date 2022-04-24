@@ -23,13 +23,13 @@ import eu.automateeverything.domain.configurable.BooleanField
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.FieldDefinition
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import org.pf4j.Extension
 import java.util.HashMap
 
 @Extension
 class SceneConfigurable(
-    private val eventsSink: EventsSink
+    private val eventsBus: EventsBus
 ) : StateDeviceConfigurable() {
     override val parent: Class<out Configurable>?
         get() = null
@@ -44,7 +44,7 @@ class SceneConfigurable(
     override fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<State> {
         val name = extractFieldValue(instance, nameField)
         val automationOnly = extractFieldValue(instance, automationOnlyField)
-        return SceneAutomationUnit(eventsSink, instance, name, automationOnly, states)
+        return SceneAutomationUnit(eventsBus, instance, name, automationOnly, states)
     }
 
     private val automationOnlyField = BooleanField(FIELD_AUTOMATION_ONLY, R.field_automation_only_hint, false)

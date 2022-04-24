@@ -21,7 +21,7 @@ import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 import eu.automateeverything.domain.automation.blocks.CommonBlockCategories
 import eu.automateeverything.domain.configurable.*
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.PortFinder
 import eu.automateeverything.domain.hardware.PowerLevel
 import org.pf4j.Extension
@@ -30,7 +30,7 @@ import java.math.BigDecimal
 @Extension
 class PowerRegulatorConfigurable(
     private val portFinder: PortFinder,
-    private val eventsSink: EventsSink) : ControllerConfigurable<PowerLevel>(PowerLevel::class.java) {
+    private val eventsBus: EventsBus) : ControllerConfigurable<PowerLevel>(PowerLevel::class.java) {
 
     override val fieldDefinitions: Map<String, FieldDefinition<*>>
         get() {
@@ -82,7 +82,7 @@ class PowerRegulatorConfigurable(
         val port = portFinder.searchForOutputPort(PowerLevel::class.java, portId)
         val name = instance.fields[FIELD_NAME]!!
         val automationOnly = extractFieldValue(instance, automationOnlyField)
-        return PowerRegulatorAutomationUnit(eventsSink, name, instance, port, automationOnly)
+        return PowerRegulatorAutomationUnit(eventsBus, name, instance, port, automationOnly)
     }
 
     override val blocksCategory: BlockCategory

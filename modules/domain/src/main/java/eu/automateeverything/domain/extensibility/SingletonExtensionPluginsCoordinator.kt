@@ -20,13 +20,12 @@ import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.SettingGroup
-import eu.automateeverything.domain.events.EventsSink
-import eu.automateeverything.domain.events.PluginEventData
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.HardwareAdapter
 import org.pf4j.*
 
 class SingletonExtensionPluginsCoordinator(
-    private val liveEvents: EventsSink,
+    private val liveEvents: EventsBus,
     private val injectionRegistry: InjectionRegistry,
     repository: Repository
 ) : PluginsCoordinator {

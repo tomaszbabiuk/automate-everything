@@ -25,27 +25,28 @@ import eu.automateeverything.domain.hardware.Port
 import org.pf4j.PluginWrapper
 import java.util.*
 
-class NumberedEventsSink : EventsSink {
+class NumberedEventsBus : EventsBus {
 
-    var eventCounter = 0
+    private var eventCounter = 0
 
     private val eventsListeners = Collections.synchronizedList(ArrayList<LiveEventsListener>())
     private val stateListeners = ArrayList<StateChangedListener>()
 
-    private val automationStateEvents = ArrayList<LiveEvent<AutomationStateEventData>>()
-    private val automationUpdateEvents = ArrayList<LiveEvent<AutomationUpdateEventData>>()
-    private val discoveryEvents = ArrayList<LiveEvent<DiscoveryEventData>>()
+    override val automationStateEvents = ArrayList<LiveEvent<AutomationStateEventData>>()
+    override val automationUpdateEvents = ArrayList<LiveEvent<AutomationUpdateEventData>>()
+    override val discoveryEvents = ArrayList<LiveEvent<DiscoveryEventData>>()
+
     private val heartbeatEvents = ArrayList<LiveEvent<HeartbeatEventData>>()
     private val inboxEvents = ArrayList<LiveEvent<InboxEventData>>()
     private val instanceUpdateEvents = ArrayList<LiveEvent<InstanceUpdateEventData>>()
     private val pluginEvents = ArrayList<LiveEvent<PluginEventData>>()
     private val portUpdateEvents = ArrayList<LiveEvent<PortUpdateEventData>>()
 
-    override fun addEventListener(listener: LiveEventsListener) {
+    override fun subscribeToGlobalEvents(listener: LiveEventsListener) {
         eventsListeners.add(listener)
     }
 
-    override fun removeListener(listener: LiveEventsListener) {
+    override fun unsubscribeFromGlobalEvents(listener: LiveEventsListener) {
         eventsListeners.remove(listener)
     }
 
@@ -79,10 +80,6 @@ class NumberedEventsSink : EventsSink {
     override fun broadcastDiscoveryEvent(factoryId: String, message: String) {
         val event = DiscoveryEventData(factoryId, message)
         broadcastEvent(event)
-    }
-
-    override fun discoveryEvents(): List<LiveEvent<DiscoveryEventData>> {
-        return discoveryEvents
     }
 
     override fun broadcastPortUpdateEvent(factoryId: String, adapterId: String, port: Port<*>) {
@@ -136,30 +133,21 @@ class NumberedEventsSink : EventsSink {
         broadcastEvent(eventData)
     }
 
-    override fun addStateInterceptor(listener: StateChangedListener) {
+    override fun subscribeToStateChanges(listener: StateChangedListener) {
         stateListeners.add(listener)
     }
 
-    override fun removeAllStateInterceptors() {
+    override fun unsubscribeFromStateChanges() {
         stateListeners.clear()
-    }
-
-    override fun automationUpdateEvents(): List<LiveEvent<AutomationUpdateEventData>> {
-        return automationUpdateEvents
     }
 
     override fun broadcastAutomationStateChange(enabled: Boolean) {
         broadcastEvent(AutomationStateEventData(enabled))
     }
 
-    override fun automationStateEvents(): List<LiveEvent<AutomationStateEventData>> {
-        return automationStateEvents
-    }
-
     override fun broadcastPluginEvent(plugin: PluginWrapper) {
         val eventData = PluginEventData(plugin)
         broadcastEvent(eventData)
-
     }
 
     override fun broadcastInboxMessage(inboxItemDto: InboxItemDto) {

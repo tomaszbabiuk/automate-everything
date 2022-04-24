@@ -15,7 +15,7 @@
 
 package eu.automateeverything.shellyplugin
 
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.mqtt.MqttListener
@@ -35,8 +35,8 @@ class ShellyAdapter(
     owningPluginId: String,
     private val mqttBroker: MqttBrokerService,
     lanGatewayResolver: LanGatewayResolver,
-    eventsSink: EventsSink
-) : HardwareAdapterBase<ShellyInputPort<*>>(owningPluginId, "0", eventsSink), MqttListener {
+    eventsBus: EventsBus
+) : HardwareAdapterBase<ShellyInputPort<*>>(owningPluginId, "0", eventsBus), MqttListener {
     private var brokerIP: Inet4Address? = null
     private var idBuilder = PortIdBuilder(owningPluginId)
     private val client = createHttpClient()
@@ -69,7 +69,7 @@ class ShellyAdapter(
                 logDiscovery("WARNING! There's more than one LAN gateway. It's impossible to determine the correct IP address of MQTT broker (which should be same as Lan gateway). Using ${defaultLanGateway.interfaceName}")
             }
             brokerIP = defaultLanGateway.inet4Address
-            val discoveryJob = async { ShellyHelper.searchForShellies(owningPluginId, client, brokerIP!!, eventsSink) }
+            val discoveryJob = async { ShellyHelper.searchForShellies(owningPluginId, client, brokerIP!!, eventsBus) }
             val shellies = discoveryJob.await()
 
             shellies.forEach {

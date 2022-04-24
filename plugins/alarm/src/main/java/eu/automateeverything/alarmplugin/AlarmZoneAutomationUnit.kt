@@ -27,17 +27,17 @@ import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.StateDeviceAutomationUnitBase
 import eu.automateeverything.domain.configurable.Duration
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import java.util.*
 
 class AlarmZoneAutomationUnit(
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     instance: InstanceDto,
     name: String,
     states: Map<String, State>,
     private val leavingTime: Duration,
     private val alarmLineIds: List<Long>,
-) : StateDeviceAutomationUnitBase(eventsSink, instance, name, ControlType.States, states, false) {
+) : StateDeviceAutomationUnitBase(eventsBus, instance, name, ControlType.States, states, false) {
 
     override fun applyNewState(state: String) {
         when (state) {

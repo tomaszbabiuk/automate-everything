@@ -15,7 +15,7 @@
 
 package eu.automateeverything.aforeplugin
 
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*
@@ -26,7 +26,7 @@ class AforeFinder(
     private val client: HttpClient,
     private val machineIpAddress: InetAddress) {
 
-    private suspend fun checkIfAfore(ipToCheck: InetAddress, eventsSink: EventsSink?) : Pair<InetAddress, String>? = coroutineScope {
+    private suspend fun checkIfAfore(ipToCheck: InetAddress, eventsBus: EventsBus?) : Pair<InetAddress, String>? = coroutineScope {
         var serialNumber: String? = null
         var hasPowerReadings = false
 
@@ -44,8 +44,8 @@ class AforeFinder(
         }
 
         if (serialNumber != null && hasPowerReadings) {
-            if (eventsSink != null) {
-                broadcastEvent(eventsSink, "Afore found! Ip address: $ipToCheck")
+            if (eventsBus != null) {
+                broadcastEvent(eventsBus, "Afore found! Ip address: $ipToCheck")
             }
 
             Pair(ipToCheck, serialNumber)
@@ -55,7 +55,7 @@ class AforeFinder(
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    suspend fun searchForAforeDevices(eventsSink: EventsSink): List<Pair<InetAddress, String>> = coroutineScope {
+    suspend fun searchForAforeDevices(eventsBus: EventsBus): List<Pair<InetAddress, String>> = coroutineScope {
         val jobs = ArrayList<Deferred<Pair<InetAddress, String>?>>()
 
         val lookupAddressBegin =  InetAddress.getByAddress(
@@ -74,7 +74,7 @@ class AforeFinder(
                 255.toByte())
         )
 
-        eventsSink.broadcastDiscoveryEvent(
+        eventsBus.broadcastDiscoveryEvent(
             owningPluginId,
             "Looking for afore devices in LAN, the IP address range is $lookupAddressBegin - $lookupAddressEnd"
         )
@@ -89,7 +89,7 @@ class AforeFinder(
             )
 
             val job = async(start = CoroutineStart.LAZY) {
-                checkIfAfore(ipToCheck, eventsSink)
+                checkIfAfore(ipToCheck, eventsBus)
             }
 
             jobs.add(job)
@@ -99,12 +99,12 @@ class AforeFinder(
             .filterNotNull()
             .toList()
 
-        broadcastEvent(eventsSink,"Done looking for AFORE devices, found: ${result.size}")
+        broadcastEvent(eventsBus,"Done looking for AFORE devices, found: ${result.size}")
 
         result
     }
 
-    private fun broadcastEvent(eventsSink: EventsSink, message: String) {
-        eventsSink.broadcastDiscoveryEvent(owningPluginId, message)
+    private fun broadcastEvent(eventsBus: EventsBus, message: String) {
+        eventsBus.broadcastDiscoveryEvent(owningPluginId, message)
     }
 }

@@ -22,7 +22,7 @@ import com.dalsemi.onewire.adapter.USerialAdapter
 import com.dalsemi.onewire.container.OneWireContainer
 import com.dalsemi.onewire.container.SwitchContainer
 import com.dalsemi.onewire.container.TemperatureContainer
-import eu.automateeverything.domain.events.EventsSink
+import eu.automateeverything.domain.events.EventsBus
 import eu.automateeverything.domain.hardware.*
 import eu.automateeverything.onewireplugin.helpers.SwitchContainerHelper
 import eu.automateeverything.onewireplugin.helpers.TemperatureContainerHelper
@@ -35,10 +35,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class OneWireAdapter(
     owningPluginId: String,
     private val serialPortName: String,
-    eventsSink: EventsSink,
+    eventsBus: EventsBus,
     private val ds2408AsRelays: List<String>
 )
-    : HardwareAdapterBase<OneWirePort<*>>(owningPluginId, "1-WIRE $serialPortName", eventsSink) {
+    : HardwareAdapterBase<OneWirePort<*>>(owningPluginId, "1-WIRE $serialPortName", eventsBus) {
 
     private val logger = LoggerFactory.getLogger(OneWireAdapter::class.java)
     private var mapper: OneWireSensorToPortMapper
@@ -47,7 +47,7 @@ class OneWireAdapter(
 
     init {
         val portIdBuilder = PortIdBuilder(owningPluginId)
-        mapper = OneWireSensorToPortMapper(owningPluginId, portIdBuilder, eventsSink, ds2408AsRelays)
+        mapper = OneWireSensorToPortMapper(owningPluginId, portIdBuilder, eventsBus, ds2408AsRelays)
     }
 
     var operationScope: CoroutineScope? = null
