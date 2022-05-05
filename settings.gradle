@@ -3,6 +3,10 @@ rootProject.name = 'automate-everything'
 //application
 include "ae-backend"
 
+//features used by the plugins
+include 'plugin-features:lan-gateway'
+include 'plugin-features:mqtt'
+
 //modules
 includeBuild "modules/data"
 includeBuild "modules/domain"
@@ -12,24 +16,3 @@ includeBuild "modules/conditions"
 includeBuild "modules/repository-sqldelight"
 includeBuild "modules/interop"
 
-//plugins
-//include 'plugins'
-//include 'plugins:onoff'
-//include 'plugins:scenes'
-//include 'plugins:sensors-and-controllers'
-//include 'plugins:shelly'
-//include 'plugins:afore'
-//include 'plugins:onewire'
-//include 'plugins:crypto-trading'
-//include 'plugins:bash-action'
-//include 'plugins:email-action'
-//include 'plugins:central-heating'
-//include 'plugins:alarm'
-//include 'plugins:time'
-//include 'plugins:mobile-access'
-//include 'plugins:home-automation-icons'
-//include 'plugins:zigbee2mqtt'
-
-//features used by the plugins
-include 'plugin-features:lan-gateway'
-include 'plugin-features:mqtt'
