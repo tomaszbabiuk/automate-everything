@@ -1,0 +1,12 @@
+ext {
+    pf4jVersion="3.6.0"
+    kotlinVersion="1.6.21"
+    kotlinCoroutinesVersion="1.6.1-native-mt"
+    kotlinSerializationVerrsion="1.6.21"
+    gsonVersion="2.8.9"
+    ktorVersion="1.6.7"
+    jettyVersion="11.0.6"
+    jerseyVersion="3.0.3"
+    hk2Version="3.0.2"
+    sqlDelightVersion="1.5.0"
+}

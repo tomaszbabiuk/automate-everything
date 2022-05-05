@@ -60,7 +60,7 @@ class SelectAllWithIconsToIconCategoryDtoMapper: Mapper<SelectAllWithIcons, Icon
 
 class SelectAllShortToInstanceBriefDtoMapper: Mapper<SelectAllShort, InstanceBriefDto> {
     override fun map(from: SelectAllShort): InstanceBriefDto {
-        return InstanceBriefDto(from.id, from.clazz, from.value)
+        return InstanceBriefDto(from.id, from.clazz, from.value_)
     }
 }
 
@@ -72,7 +72,7 @@ class ConfigurableInstanceWithTagIdsToInstanceDtoMapper(val database: Database):
             .configurableFieldInstanceQueries
             .selectOfConfigurableInstance(from.id)
             .executeAsList()
-            .forEach { fieldsMap[it.name] = it.value }
+            .forEach { fieldsMap[it.name] = it.value_ }
 
         return InstanceDto(
             from.id,
@@ -104,7 +104,7 @@ class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFie
             .map {
                 val fields = HashMap<String, String?>()
                 it.value.forEach { fieldInstance ->
-                    fields[fieldInstance.name] = fieldInstance.value
+                    fields[fieldInstance.name] = fieldInstance.value_
                 }
 
                 SettingsDto(it.key.first, it.key.second, fields)

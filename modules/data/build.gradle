@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021 Tomasz Babiuk
+ * Copyright (c) 2019-2022 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -12,25 +12,28 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-//file:noinspection GroovyAssignabilityCheck
 
-plugins {
-    id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
-    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
-}
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'eu.automateeverything'
-            artifactId = 'data'
-            version = '0.1'
+buildscript {
+    apply from: "../../versions.gradle"
 
-            from components.java
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
         }
     }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinSerializationVerrsion"
+    }
 }
+
+apply from: "../../versions.gradle"
+apply plugin:"org.jetbrains.kotlin.jvm"
+apply plugin:"org.jetbrains.kotlin.plugin.serialization"
+
+group = 'eu.automateeverything'
+version = '0.1'
 
 dependencies {
     //kotlin

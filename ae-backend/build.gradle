@@ -1,32 +1,38 @@
-plugins {
-    id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.hidetake.ssh' version '2.10.1'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion"
-}
 
-run {
-    systemProperty 'pf4j.pluginsDir', './plugins'
-}
+buildscript {
+    apply from: "../versions.gradle"
 
-remotes {
-    raspberry {
-        host = '192.168.1.112'
-        user = 'pi'
-        password = 'raspberry'
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinSerializationVerrsion"
     }
 }
 
+apply from: "../versions.gradle"
+apply plugin: "application"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.plugin.serialization"
+
+run {
+    systemProperty 'pf4j.pluginsDir', './output/plugins'
+}
+
 dependencies {
-    //common
-    implementation project(":modules:data")
-    implementation project(":modules:domain")
-    implementation project(":modules:actions")
-    implementation project(":modules:devices")
-    implementation project(":modules:conditions")
-    implementation project(":modules:repository-sqldelight")
-    implementation project(":modules:interop")
+    //automate-everything
+    implementation "eu.automateeverything:data:0.1"
+    implementation "eu.automateeverything:domain:0.1"
+    implementation "eu.automateeverything:actions:0.1"
+    implementation "eu.automateeverything:devices:0.1"
+    implementation "eu.automateeverything:conditions:0.1"
+    implementation "eu.automateeverything:repository-sqldelight:0.1"
+    implementation "eu.automateeverything:interop:0.1"
     implementation project(":plugin-features:lan-gateway")
     implementation project(":plugin-features:mqtt")
 

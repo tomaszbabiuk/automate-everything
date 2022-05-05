@@ -13,14 +13,30 @@
  *  limitations under the License.
  */
 
-plugins {
-    id 'org.jetbrains.kotlin.jvm'
+
+buildscript {
+    apply from: "../../versions.gradle"
+
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
 }
 
+apply from: "../../versions.gradle"
+apply plugin:"org.jetbrains.kotlin.jvm"
+
+group = 'eu.automateeverything'
+version = '0.1'
+
 dependencies {
-    //projects
-    implementation project(":modules:data")
-    implementation project(":modules:domain")
+    //automate-everything
+    implementation "eu.automateeverything:data:0.1"
+    implementation "eu.automateeverything:domain:0.1"
 
     //pf4j
     implementation "org.pf4j:pf4j:${pf4jVersion}"
