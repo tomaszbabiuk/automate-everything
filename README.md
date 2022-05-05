@@ -26,9 +26,9 @@ The sky is the limit... you can use it to automate literally everything! If you'
 - Smart trading platform
 
 ### Industrial automation
-Access control system
-A mix of access control and home automation system
-Industrial-grade control panels
+- Access control system
+- A mix of access control and home automation system
+- Industrial-grade control panels
 
 # Similar projects
 1. OpenHAB
@@ -61,8 +61,8 @@ The project is still in development. I plan to do a full release by the end od 2
 If you find this project useful, please share with the others!
 
 # How to...
-[Quick install on Raspberry Pi](doc/howtos/Quick-install-on-Raspberry-Pi.md)
+- [Quick install on Raspberry Pi](doc/howtos/Quick-install-on-Raspberry-Pi.md)
 
 # For Developers and Contributors
-[Installing from sources on Raspberry Pi](doc/dev/Installing-from-sources-on-Raspberry-Pi.md)
-[Logging](doc/dev/Logging.md)
+- [Installing from sources on Raspberry Pi](doc/dev/Installing-from-sources-on-Raspberry-Pi.md)
+- [Logging](doc/dev/Logging.md)
