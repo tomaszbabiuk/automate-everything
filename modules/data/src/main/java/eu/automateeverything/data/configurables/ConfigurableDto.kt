@@ -17,7 +17,9 @@ package eu.automateeverything.data.configurables
 
 import eu.automateeverything.data.fields.FieldDefinitionDto
 import eu.automateeverything.data.localization.Resource
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ConfigurableDto(
     val titleRes: Resource,
     val descriptionRes: Resource,
@@ -31,5 +33,5 @@ data class ConfigurableDto(
     val hasAutomation: Boolean,
     val editableIcon: Boolean,
     val taggable: Boolean,
-    val generable : Boolean
+    val generated : Boolean
 )

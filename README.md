@@ -9,11 +9,10 @@ The sky is the limit... you can use it to automate literally everything! If you'
 
 ### Smart building
 - A smart home
-- A consumption manager for solar panels
-- An advanced central heating controller
+- An energy consumption management system
+- A central heating controller
 - An alarm system
 - A local If-This-Than-That engine
-- A mailing bot
 
 ### Smart gardening
 - A smart glasshouse
@@ -48,8 +47,8 @@ With correct set of plugins you can automate literally everything!
 7. [Embedded MQTT server](doc/features/Embedded-mqtt-server.md)
 
 # A note from the author
-The work on "Automate Everything" was started in 2012. Yes... almost 10 years ago!. At first the project was called "geekHOME Server". In the beginning geekHOME was written in C# Micro Framework (it was running on a dedicated microcontroller called "FEZ Cobra"!). It's been the beginning of DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
-In 2015 the code was ported to Java to be able to run on Raspberry Pi single board computer. It was able to control lights, central heating, alarm and ventilation at my own house. It has never been published.
+The work on "Automate Everything" started in 2012. Yes... more than 10 years ago!. In the beginning the project was called "geekHOME Server". It was written in C# Micro Framework (it was running on a dedicated microcontroller called "FEZ Cobra"!). It's been the beginning of DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
+In 2015 the code was ported to Java to be compatible with Raspberry Pi single board computer. It was able to control lights, central heating, alarm and ventilation at my own house. It has never been published.
 
 In 2020, I decided to give the project another shot. "Automate Everything" is now a full-blown automation server. Everything has been rewritten (the original concept is unchanged).
 
@@ -61,7 +60,7 @@ The project is still in development. I plan to do a full release by the end od 2
 If you find this project useful, please share with the others!
 
 # How to...
-- [Quick install on Raspberry Pi](doc/howtos/Quick-install-on-Raspberry-Pi.md)
+- [Quick installation on Raspberry Pi](doc/howtos/Quick-install-on-Raspberry-Pi.md)
 
 # For Developers and Contributors
 - [Installing from sources on Raspberry Pi](doc/dev/Installing-from-sources-on-Raspberry-Pi.md)

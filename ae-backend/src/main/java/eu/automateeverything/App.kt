@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 Tomasz Babiuk
+ * Copyright (c) 2019-2023 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -58,15 +58,15 @@ open class App : ResourceConfig() {
     //manual injection of common services
     private val injectionRegistry: InjectionRegistry = InjectionRegistry()
     private val firstRunService: FirstRunService = FileCheckingFirstRunService()
-    private val _eventBus: EventBus = NumberedEventBus()
+    private val eventBus: EventBus = NumberedEventBus()
     private val repository: Repository = SqlDelightRepository()
-    private val inbox: Inbox = BroadcastingInbox(_eventBus, repository)
-    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(_eventBus, injectionRegistry, repository)
-    private val hardwareManager = HardwareManager(pluginsCoordinator, _eventBus, inbox, repository)
+    private val inbox: Inbox = BroadcastingInbox(eventBus, repository)
+    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventBus, injectionRegistry, repository)
+    private val hardwareManager = HardwareManager(pluginsCoordinator, eventBus, inbox, repository)
     private val blockFactoriesCoordinator = MasterBlockFactoriesCollector(pluginsCoordinator, repository)
     private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-        _eventBus, inbox, repository)
-    private val pulsar = Pulsar(_eventBus, inbox, automationConductor)
+        eventBus, inbox, repository)
+    private val pulsar = Pulsar(eventBus, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
 
@@ -85,6 +85,7 @@ open class App : ResourceConfig() {
         val heartbeatMapper = HeartbeatDtoMapper()
         val inboxMessageMapper = InboxMessageDtoMapper()
         val descriptionsUpdateDtoMapper = DescriptionsUpdateDtoMapper()
+        val configurablesDtoMapper = ConfigurableDtoMapper(fieldDefinitionMapper)
 
         val eventsMapper = LiveEventsMapper(
             portMapper,
@@ -97,7 +98,7 @@ open class App : ResourceConfig() {
             descriptionsUpdateDtoMapper
         )
 
-        val eventsSubscriptionBuilder = EventsSubscriptionBuilder(_eventBus, eventsMapper, binaryFormat)
+        val eventsSubscriptionBuilder = EventsSubscriptionBuilder(eventBus, eventsMapper, binaryFormat)
 
         val methodHandlers = listOf(
             InstancesMethodHandler(repository),
@@ -105,6 +106,7 @@ open class App : ResourceConfig() {
             IconsMethodHandler(repository),
             TagsMethodHandler(repository),
             VersionsMethodHandler(repository),
+            ConfigurablesMethodHandler(pluginsCoordinator, configurablesDtoMapper),
             AutomationUnitsMethodHandler(automationConductor, automationUnitMapper),
             SubscribeToEventsMethodHandler(eventsSubscriptionBuilder)
         )
@@ -144,7 +146,7 @@ open class App : ResourceConfig() {
 
     private fun fillInjectionRegistry() {
         injectionRegistry.put(PortFinder::class.java, hardwareManager)
-        injectionRegistry.put(EventBus::class.java, _eventBus)
+        injectionRegistry.put(EventBus::class.java, eventBus)
         injectionRegistry.put(Inbox::class.java, inbox)
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
@@ -174,7 +176,7 @@ open class App : ResourceConfig() {
         packages(REST_PACKAGE_NAME)
         register(
             DependencyInjectionBinder(
-                _eventBus, repository, pluginsCoordinator, hardwareManager,
+                eventBus, repository, pluginsCoordinator, hardwareManager,
                 automationConductor, blockFactoriesCoordinator, inbox
             )
         )

@@ -1,13 +1,8 @@
 <template>
   <div class="mb-16">
     <div v-if="loading">
-      <v-skeleton-loader
-        v-for="i in [0, 1, 2]"
-        :key="i"
-        class="mx-auto float-left ml-5 mt-5"
-        min-width="300"
-        type="card"
-      ></v-skeleton-loader>
+      <v-skeleton-loader v-for="i in [0, 1, 2]" :key="i" class="mx-auto float-left ml-5 mt-5" min-width="300"
+        type="card"></v-skeleton-loader>
     </div>
     <div v-else>
       <v-breadcrumbs :items="breadcrumbs" v-if="breadcrumbs.length > 1">
@@ -16,13 +11,8 @@
         </template>
       </v-breadcrumbs>
 
-      <v-dialog
-        v-model="instanceDialog.show"
-        persistent
-        fullscreen
-        transition="dialog-bottom-transition"
-        :retain-focus="false"
-      >
+      <v-dialog v-model="instanceDialog.show" persistent fullscreen transition="dialog-bottom-transition"
+        :retain-focus="false">
         <v-card>
           <v-toolbar dark color="primary">
             <v-btn icon dark @click="closeInstanceDialog()">
@@ -32,7 +22,7 @@
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn dark text @click="instanceDialog.action()">{{
-                instanceDialog.actionText
+                  instanceDialog.actionText
               }}</v-btn>
             </v-toolbar-items>
             <template v-slot:extension>
@@ -51,9 +41,7 @@
                 </v-tab>
 
                 <v-tab-item>
-                  <configurable-form
-                    :clazz="getConfigurableClazz()"
-                  ></configurable-form>
+                  <configurable-form :clazz="getConfigurableClazz()"></configurable-form>
                 </v-tab-item>
                 <v-tab-item v-if="configurable.editableIcon">
                   <configurable-iconselector></configurable-iconselector>
@@ -62,11 +50,8 @@
                   <configurable-tagsselector></configurable-tagsselector>
                 </v-tab-item>
                 <v-tab-item v-if="configurable.hasAutomation">
-                  <configurable-blockconfigurator
-                    ref="blockly"
-                    :configurableClazz="configurable.clazz"
-                    @focus.native="console.log('focus in')"
-                  ></configurable-blockconfigurator>
+                  <configurable-blockconfigurator ref="blockly" :configurableClazz="configurable.clazz"
+                    @focus.native="console.log('focus in')"></configurable-blockconfigurator>
                 </v-tab-item>
               </v-tabs>
             </template>
@@ -74,191 +59,141 @@
 
           <v-container>
             <v-overlay :value="instanceDialog.overlay">
-              <v-progress-circular
-                indeterminate
-                size="64"
-              ></v-progress-circular>
+              <v-progress-circular indeterminate size="64"></v-progress-circular>
             </v-overlay>
           </v-container>
         </v-card>
       </v-dialog>
 
-      <div>
-        <v-card
-          class="mx-auto float-left ml-5 mt-5 d-flex flex-column"
-          max-width="344"
-          min-width="344"
-          v-for="configurable in configurables"
-          :key="configurable.clazz"
-        >
-          <v-card-title
-            class="headline d-flex flex-row justify-space-between align-stretch"
-          >
-            <div
-              style="transform: scale(0.7)"
-              v-html="configurable.iconRaw"
-            ></div>
-            <v-tooltip bottom class="n5">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on" class="align-baseline">
-                  <v-icon>mdi-information-outline</v-icon>
-                </v-btn>
-              </template>
-              <span> {{ configurable.descriptionRes }}</span>
-            </v-tooltip>
-          </v-card-title>
-
-          <v-card-subtitle class="headline">
-            {{ configurable.titleRes }}
-          </v-card-subtitle>
-
-          <v-spacer></v-spacer>
-          <v-card-actions>
-            <v-btn text @click="browse(configurable)">
-              {{ $vuetify.lang.t("$vuetify.common.browse") }}
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-
-      <div v-if="canAddInstances()">
+      <v-container v-if="canAddInstances()">
         <v-card tile v-for="instance in filteredInstances" :key="instance.id">
           <v-list v-if="configurable">
             <v-list-item two-line>
-              <v-list-item-icon
-                v-if="instance.iconId === null && configurable.editableIcon"
-              >
+              <v-list-item-icon v-if="instance.iconId === null && configurable.editableIcon">
                 <v-icon x-large left>$vuetify.icon.empty</v-icon>
               </v-list-item-icon>
-              <v-list-item-icon
-                v-if="instance.iconId !== null && configurable.editableIcon"
-              >
-                <img
-                  left
-                  :src="'/rest/icons/' + instance.iconId + '/raw'"
-                  width="40"
-                  height="40"
-                />
+              <v-list-item-icon v-if="instance.iconId !== null && configurable.editableIcon">
+                <img left :src="'/rest/icons/' + instance.iconId + '/raw'" width="40" height="40" />
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title v-if="instance.fields['name'] != null">{{
-                  instance.fields["name"]
+                    instance.fields["name"]
                 }}</v-list-item-title>
-                <v-list-item-subtitle
-                  v-if="instance.fields['description'] != null"
-                  class="mb-4"
-                  >{{ instance.fields["description"] }}
+                <v-list-item-subtitle v-if="instance.fields['description'] != null" class="mb-4">{{
+                    instance.fields["description"]
+                }}
                 </v-list-item-subtitle>
-                <v-list-item-subtitle
-                  v-for="field in configurable.fields"
-                  :key="field.name"
-                >
+                <v-list-item-subtitle v-for="field in configurable.fields" :key="field.name">
                   <div v-if="field.type === 'QrCode' && instance.fields[field.name].length > 0">
                     <p class="text-center">
-                        {{ field.hint }}
+                      {{ field.hint }}
                     </p>
                     <p class="text-center">
-                      <external-qrcode
-                          :value="instance.fields[field.name]" size="150"
-                        ></external-qrcode>
+                      <external-qrcode :value="instance.fields[field.name]" size="150"></external-qrcode>
                     </p>
                   </div>
 
-                  <div
-                    v-if="
-                      field.name !== 'name' &&
-                      field.name !== 'description' &&
-                      field.type !== 'QrCode'
-                    "
-                  >
+                  <div v-if="
+                    field.name !== 'name' &&
+                    field.name !== 'description' &&
+                    field.type !== 'QrCode'
+                  ">
                     {{ field.hint }}:
                     {{ displayField(field, instance.fields[field.name]) }}
                   </div>
                 </v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-btn icon v-if="!configurable.generable">
-                <v-icon
-                  @click="showEditInstanceDialog(instance)"
-                  >mdi-pencil</v-icon
-                >
+              <v-btn icon v-if="!configurable.generated">
+                <v-icon @click="showEditInstanceDialog(instance)">mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon>
-                <v-icon @click="showDeleteInstanceDialog(instance.id)"
-                  >mdi-delete</v-icon
-                >
+                <v-icon @click="showDeleteInstanceDialog(instance.id)">mdi-delete</v-icon>
               </v-btn>
             </v-list-item>
           </v-list>
           <v-card-actions v-if="instance.tagIds.length > 0">
-            <v-chip
-              v-for="tagId in instance.tagIds"
-              :key="tagId"
-              class="mr-2"
-              >{{ findTagName(tagId) }}</v-chip
-            >
+            <v-chip v-for="tagId in instance.tagIds" :key="tagId" class="mr-2">{{ findTagName(tagId) }}</v-chip>
           </v-card-actions>
         </v-card>
 
         <div v-if="filteredInstances.length == 0" class="text-center">
           {{ $vuetify.lang.t("$vuetify.noDataText") }}
         </div>
-      </div>
+      </v-container>
+
+      <v-container v-else>
+        <v-row>
+          <v-card class="mx-auto float-left ml-5 mt-5 d-flex flex-column" max-width="344" min-width="344"
+            v-for="configurable in configurables" :key="configurable.clazz">
+            <v-card-title class="headline d-flex flex-row justify-space-between align-stretch">
+              <div style="transform: scale(0.7)" v-html="configurable.iconRaw"></div>
+              <v-tooltip bottom class="n5">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on" class="align-baseline">
+                    <v-icon>mdi-information-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span> {{ configurable.descriptionRes }}</span>
+              </v-tooltip>
+            </v-card-title>
+
+            <v-card-subtitle class="headline">
+              {{ configurable.titleRes }}
+            </v-card-subtitle>
+
+            <v-spacer></v-spacer>
+            <v-card-actions>
+              <v-btn text @click="browse(configurable)">
+                {{ $vuetify.lang.t("$vuetify.common.browse") }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-row>
+        <v-row>
+          <v-btn-toggle v-model="groupingMode" class="ma-5">
+            <v-btn>
+              <v-icon large>$vuetify.icon.grouping_separately</v-icon>
+            </v-btn>
+            
+            <v-btn>
+              <v-icon large>$vuetify.icon.grouping_together</v-icon>
+            </v-btn>
+          </v-btn-toggle>
+        </v-row>
+      </v-container>
+
 
       <v-dialog v-model="deleteDialog.show" max-width="500px">
         <v-card>
           <v-card-title class="headline">{{
-            $vuetify.lang.t("$vuetify.common.delete_question")
+              $vuetify.lang.t("$vuetify.common.delete_question")
           }}</v-card-title>
           <v-card-subtitle v-if="dependencies.length > 0">
             {{ $vuetify.lang.t("$vuetify.objects.dependencies_detected_note") }}
           </v-card-subtitle>
           <v-card-text class="text-center">
-            <v-progress-circular
-              v-if="deleteDialog.loading"
-              indeterminate
-              size="64"
-            ></v-progress-circular>
+            <v-progress-circular v-if="deleteDialog.loading" indeterminate size="64"></v-progress-circular>
 
-            <v-chip
-              v-for="dependency in dependencies"
-              :key="dependency.id"
-              class="ma-2"
-              color="red"
-              text-color="white"
-            >
+            <v-chip v-for="dependency in dependencies" :key="dependency.id" class="ma-2" color="red" text-color="white">
               {{ dependency.name }}
             </v-chip>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeDeleteDialog()">{{
-              $vuetify.lang.t("$vuetify.common.cancel")
+                $vuetify.lang.t("$vuetify.common.cancel")
             }}</v-btn>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="deleteDialog.action()"
-              :disabled="deleteDialog.loading"
-              >{{ $vuetify.lang.t("$vuetify.common.ok") }}</v-btn
-            >
+            <v-btn color="blue darken-1" text @click="deleteDialog.action()" :disabled="deleteDialog.loading">{{
+                $vuetify.lang.t("$vuetify.common.ok")
+            }}</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
-      <v-btn
-        v-if="canAddInstances()"
-        fab
-        dark
-        large
-        color="primary"
-        fixed
-        right
-        bottom
-        class="ma-4"
-        @click="addOrGenerateNewInstance()"
-      >
+      <v-btn v-if="canAddInstances()" fab dark large color="primary" fixed right bottom class="ma-4"
+        @click="addOrGenerateNewInstance()">
         <v-icon dark>mdi-plus</v-icon>
       </v-btn>
     </div>
@@ -279,6 +214,7 @@ import store, {
 export default {
   data: function () {
     return {
+      groupingMode: 0,
       loading: true,
       instanceDialog: {
         show: false,
@@ -336,11 +272,11 @@ export default {
       var filterFunction =
         clazz === "null"
           ? function (x) {
-              return x.parentClazz == null;
-            }
+            return x.parentClazz == null;
+          }
           : function (x) {
-              return x.parentClazz === clazz;
-            };
+            return x.parentClazz === clazz;
+          };
 
       return this.$store.state.configurables.filter(filterFunction);
     },
@@ -489,9 +425,9 @@ export default {
       return result;
     },
 
-    addOrGenerateNewInstance: function() {
+    addOrGenerateNewInstance: function () {
       console.log('generate')
-      if (this.configurable.generable) {
+      if (this.configurable.generated) {
         client.generateConfigurable(this.getConfigurableClazz());
       } else {
         this.showAddNewInstanceDialog();

@@ -20,6 +20,9 @@ import IconPlay from '../components/icons/IconPlay'
 import IconPL from '../components/icons/IconPL'
 import IconUK from '../components/icons/IconUK'
 
+import IconGroupingTogether from '../components/icons/IconGroupingTogether'
+import IconGroupingSeparately from '../components/icons/IconGroupingSeparately'
+
 Vue.use(Vuetify);
 
 export default new Vuetify({
@@ -70,7 +73,13 @@ export default new Vuetify({
       },
       play: {
         component: IconPlay
-      }
+      },
+      grouping_together: {
+        component: IconGroupingTogether
+      },
+      grouping_separately: {
+        component: IconGroupingSeparately
+      },
     },
   },
 });
