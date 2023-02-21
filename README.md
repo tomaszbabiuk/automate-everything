@@ -1,5 +1,5 @@
 # Welcome
-"Automate Everything" is a multi-purpose automation framework. It's an open source, vendor independent and technology-agnostic approach to rule-based automation.
+"Automate Everything" is a multipurpose automation framework. It's an open source, vendor independent and technology-agnostic approach to rule-based automation.
 
 At first glance "Automate Everything" is very similar to other open-source automation platforms (see similar projects) but it's built on top of [objects](doc/features/Powerful-automation-engine.md) instead of bindings.
 It's not limited to smart homes only. It's very [extensible](doc/features/Everything-is-a-plugin.md) and [easy](doc/features/Modern-UI.md) to use.
@@ -56,7 +56,7 @@ I didn't focus on Home Automation this time... I wanted to create an "Operating 
 
 
 # State of the project
-The project is still in development. I plan to do a full release by the end od 2022 but you are welcome to try it out now. 
+The project is still in development. I plan to do a full release by the end od 2023 but you are welcome to try it out now. 
 If you find this project useful, please share with the others!
 
 # How to...
