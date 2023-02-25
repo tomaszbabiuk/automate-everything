@@ -33,7 +33,11 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
         result.addAll(collectConditionBlocks())
         result.addAll(collectSensorBlocks())
         result.addAll(collectChangeStateTriggerBlocks())
-        result.add(collectPortUpdateTriggerBlock())
+
+        val portTriggers = collectPortUpdateTriggerBlock()
+        if (portTriggers != null) {
+            result.add(portTriggers)
+        }
         result.addAll(collectStateValuesBlocks())
 
         if (thisDevice != null) {
@@ -156,9 +160,13 @@ class MasterBlockFactoriesCollector(val pluginsCoordinator: PluginsCoordinator,
             .toList()
     }
 
-    private fun collectPortUpdateTriggerBlock(): BlockFactory<*> {
+    private fun collectPortUpdateTriggerBlock(): BlockFactory<*>? {
         val portIds = repository.getAllPorts().map { it.id }
-        return PortUpdatedTriggerBlockFactory(portIds)
+        if (portIds.isNotEmpty()) {
+            return PortUpdatedTriggerBlockFactory(portIds)
+        }
+
+        return null
     }
 
     private fun collectStateValuesBlocks(): List<BlockFactory<*>> {
