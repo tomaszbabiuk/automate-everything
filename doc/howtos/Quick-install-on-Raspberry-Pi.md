@@ -22,7 +22,8 @@ rm -rf automate-everything-0.1.0.zip
 
 ## Manual run
 ```bash
-java -jar bin/ae-backend-all.jar
+cd automate-everything
+sudo java -jar bin/ae-backend-all.jar
 ```
 ## Starting automation server on boot
 Run this script in '/home/pi' directory
