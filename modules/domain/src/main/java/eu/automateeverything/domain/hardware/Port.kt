@@ -49,6 +49,7 @@ interface OutputPort<V : PortValue> : InputPort<V> {
     val requestedValue : V?
     fun reset()
 
+    @Suppress("UNCHECKED_CAST")
     fun write(value: BigDecimal) {
         val newValue = PortValueBuilder.buildFromDecimal(valueClazz, value) as V
         write(newValue)

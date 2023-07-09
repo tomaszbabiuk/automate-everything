@@ -16,7 +16,6 @@
 package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.data.localization.Language
 import eu.automateeverything.domain.R
 import eu.automateeverything.domain.automation.*
 
@@ -44,7 +43,7 @@ class PortUpdatedTriggerBlockFactory(
                    "type": "field_dropdown",
                    "name": "PORT_ID",
                    "options": [
-                     ${buildPortOptions(portIds, it)}
+                     ${buildPortOptions(portIds)}
                    ]
                  }
                ],
@@ -88,7 +87,7 @@ class PortUpdatedTriggerBlockFactory(
         return """["$portId", "$portId"]"""
     }
 
-    private fun buildPortOptions(portIds: List<String>, language: Language): String {
+    private fun buildPortOptions(portIds: List<String>): String {
         val result = StringBuilder()
         portIds
             .forEach{
