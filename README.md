@@ -44,7 +44,7 @@ With correct set of plugins you can automate literally everything!
 4. [Modern UI](doc/features/Modern-UI.md)
 5. [Powerful automation engine](doc/features/Powerful-automation-engine.md)
 6. [Developers haven](doc/features/Developers-haven.md) 
-7. [Embedded MQTT server](doc/features/Embedded-mqtt-server.md)
+7. [Embedded MQTT broker](doc/features/Embedded-mqtt-server.md)
 
 # A note from the author
 The work on "Automate Everything" started in 2012. Yes... more than 10 years ago!. In the beginning the project was called "geekHOME Server". It was written in C# Micro Framework (it was running on a dedicated microcontroller called "FEZ Cobra"!). It's been the beginning of DIY Home Automation: open source projects like OpenHAB was barely starting. Some other projects (that are now open-sourced) were paid, so I decided to create something on my own.
