@@ -59,7 +59,13 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): StatementNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): StatementNode {
         var ifNode: StatementNode? = null
         var elseNode: StatementNode? = null
         var evaluatorNode: EvaluatorNode? = null

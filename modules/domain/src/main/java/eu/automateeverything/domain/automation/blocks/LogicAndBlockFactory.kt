@@ -56,7 +56,13 @@ class LogicAndBlockFactory : EvaluatorBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): EvaluatorNode {
         if (block.values == null || block.values.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")
         }

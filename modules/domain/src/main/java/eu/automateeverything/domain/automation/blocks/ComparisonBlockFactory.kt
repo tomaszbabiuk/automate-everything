@@ -86,7 +86,13 @@ open class ComparisonBlockFactory<T: PortValue>(
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): EvaluatorNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have one field defined")
         }

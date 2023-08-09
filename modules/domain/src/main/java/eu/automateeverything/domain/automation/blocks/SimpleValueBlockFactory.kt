@@ -71,7 +71,13 @@ open class SimpleValueBlockFactory<T: PortValue>(
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): ValueNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): ValueNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: VALUE and UNIT")
         }

@@ -51,7 +51,13 @@ class LogicNotBlockFactory : EvaluatorBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): EvaluatorNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): EvaluatorNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")
         }

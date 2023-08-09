@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 Tomasz Babiuk
+ * Copyright (c) 2019-2023 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -17,48 +17,48 @@ package eu.automateeverything.domain.automation
 
 class BlocklyTransformer {
 
-    fun transform(blocks: List<Block>, context: AutomationContext) : List<StatementNode> {
+    fun transform(blocks: List<Block>, context: AutomationContext, order: Int = 0) : List<StatementNode> {
 
         val masterNodes = ArrayList<StatementNode>()
 
         blocks.forEach {
-            val masterNode = transformTrigger(it, context)
+            val masterNode = transformTrigger(it, context, order)
             masterNodes.add(masterNode)
         }
 
         return masterNodes
     }
 
-    fun transformEvaluator(block: Block, context: AutomationContext) : EvaluatorNode {
+    fun transformEvaluator(block: Block, context: AutomationContext, order: Int = 0) : EvaluatorNode {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<EvaluatorBlockFactory>()
             .find { it.type == block.type }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, null, context, this)
+            return blockFactory.transform(block, null, context, this, order)
         }
 
         throw UnknownEvaluatorBlockException(block.type)
     }
 
-    fun transformValue(block: Block, context: AutomationContext): ValueNode {
+    fun transformValue(block: Block, context: AutomationContext, order: Int = 0): ValueNode {
         val blockFactory = context
             .blocksCache
             .filterIsInstance<ValueBlockFactory>()
             .find { it.type == block.type }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, null, context, this)
+            return blockFactory.transform(block, null, context, this, order)
         }
 
         throw UnknownValueBlockException(block.type)
     }
 
-    private fun transformTrigger(block: Block, context: AutomationContext) : StatementNode {
+    private fun transformTrigger(block: Block, context: AutomationContext, order: Int = 0) : StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
-            next = transformStatement(block.next.block!!, context)
+            next = transformStatement(block.next.block!!, context, order)
         }
 
         val blockFactory = context
@@ -67,16 +67,16 @@ class BlocklyTransformer {
             .find { it.type == block.type }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, next, context, this)
+            return blockFactory.transform(block, next, context, this, order)
         }
 
         throw UnknownTriggerBlockException(block.type)
     }
 
-    fun transformStatement(block: Block, context: AutomationContext) : StatementNode {
+    fun transformStatement(block: Block, context: AutomationContext, order: Int = 0) : StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
-            next = transformStatement(block.next.block!!, context)
+            next = transformStatement(block.next.block!!, context, order)
         }
 
         val blockFactory = context
@@ -85,7 +85,7 @@ class BlocklyTransformer {
             .find { it.type == block.type }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, next, context, this)
+            return blockFactory.transform(block, next, context, this, order)
         }
 
         throw UnknownStatementBlockException(block.type)

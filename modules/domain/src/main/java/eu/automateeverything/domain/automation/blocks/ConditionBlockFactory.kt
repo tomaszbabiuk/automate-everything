@@ -45,7 +45,8 @@ class ConditionBlockFactory(
         block: Block,
         next: StatementNode?,
         context: AutomationContext,
-        transformer: BlocklyTransformer
+        transformer: BlocklyTransformer,
+        order: Int
     ): EvaluatorNode {
         val evaluator = context.evaluationUnitsCache[this.conditionId]
 

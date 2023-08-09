@@ -57,7 +57,13 @@ class LogicDelayBlockFactory : StatementBlockFactory {
         }
     }
 
-    override fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer): StatementNode {
+    override fun transform(
+        block: Block,
+        next: StatementNode?,
+        context: AutomationContext,
+        transformer: BlocklyTransformer,
+        order: Int
+    ): StatementNode {
         var doNode: StatementNode? = null
 
         if (block.statements != null) {

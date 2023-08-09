@@ -44,7 +44,8 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         block: Block,
         next: StatementNode?,
         context: AutomationContext,
-        transformer: BlocklyTransformer
+        transformer: BlocklyTransformer,
+        order: Int
     ): StatementNode {
         if (context.thisDevice is StateDeviceConfigurable) {
             val evaluator = context.automationUnitsCache[context.instance.id]

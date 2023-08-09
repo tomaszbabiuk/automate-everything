@@ -80,7 +80,8 @@ open class ChangeValueBlockFactory<T: PortValue>(
         block: Block,
         next: StatementNode?,
         context: AutomationContext,
-        transformer: BlocklyTransformer
+        transformer: BlocklyTransformer,
+        order: Int
     ): StatementNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one VALUE defined")

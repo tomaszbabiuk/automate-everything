@@ -64,7 +64,8 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
         block: Block,
         next: StatementNode?,
         context: AutomationContext,
-        transformer: BlocklyTransformer
+        transformer: BlocklyTransformer,
+        order: Int
     ): StatementNode {
 
         if (block.fields == null) {

@@ -22,7 +22,7 @@ interface BlockFactory<N: AutomationNode> {
     val category: BlockCategory
     val type:String
     fun buildBlock() : RawJson
-    fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer) : N
+    fun transform(block: Block, next: StatementNode?, context: AutomationContext, transformer: BlocklyTransformer, order: Int  = 0) : N
     fun dependsOn() : List<Long> = listOf()
 }
 

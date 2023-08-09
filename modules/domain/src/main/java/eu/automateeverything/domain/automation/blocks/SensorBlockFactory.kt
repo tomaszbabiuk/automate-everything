@@ -46,7 +46,8 @@ class SensorBlockFactory<T: PortValue>(
         block: Block,
         next: StatementNode?,
         context: AutomationContext,
-        transformer: BlocklyTransformer
+        transformer: BlocklyTransformer,
+        order: Int
     ): ValueNode {
         val evaluator = context.automationUnitsCache[this.sensorId]
 
