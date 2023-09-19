@@ -8,6 +8,6 @@
 
 - 2022 - a basic support for Zigbee, WiFi and 1-wire devices. Android application for remote control.
 - 2023 - a series of "How To" tutorials on YouTube, iOS Application. A support for more devices.
-- 2024 - a dedicated support for Nextion displays (like Sonoff NSPanel)
+- 2024 - a dedicated support for Android wall displays
 - 2025 - access controlled automation. Offline access for NFC readers.
 - 2026 - use secure-channel over HTTP on the web interface (instead of REST)
