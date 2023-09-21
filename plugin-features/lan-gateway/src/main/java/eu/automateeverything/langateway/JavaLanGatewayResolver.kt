@@ -18,7 +18,10 @@ package eu.automateeverything.langateway
 import eu.automateeverything.domain.langateway.LanGateway
 import eu.automateeverything.domain.langateway.LanGatewayResolver
 import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.InterfaceAddress
 import java.net.NetworkInterface
+import java.util.*
 
 class JavaLanGatewayResolver : LanGatewayResolver {
     override fun resolve(): List<LanGateway> {
@@ -35,7 +38,15 @@ class JavaLanGatewayResolver : LanGatewayResolver {
             .map {
                 val interfaceName = it.displayName
                 val address = it.inetAddresses.toList().filterIsInstance<Inet4Address>().first()
-                LanGateway(interfaceName, address)
+                LanGateway(interfaceName, address, it.supportsMulticast(), resolveBroadcastAddresses(it))
             }
+    }
+
+
+    private fun resolveBroadcastAddresses(networkInterface: NetworkInterface): List<InetAddress> {
+        return networkInterface.interfaceAddresses.stream()
+            .map { a: InterfaceAddress -> a.broadcast }
+            .filter { obj: InetAddress? -> Objects.nonNull(obj) }.toList()
+
     }
 }

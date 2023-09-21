@@ -16,8 +16,11 @@
 package eu.automateeverything.domain.langateway
 
 import java.net.Inet4Address
+import java.net.InetAddress
 
 data class LanGateway(
     val interfaceName: String,
-    val inet4Address: Inet4Address
+    val inet4Address: Inet4Address,
+    val multicast: Boolean,
+    val broadcastAddresses: List<InetAddress>
 )
