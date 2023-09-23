@@ -13,25 +13,21 @@
  *  limitations under the License.
  */
 
-
 buildscript {
     apply from: "../../versions.gradle"
 
     repositories {
-        google()
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.squareup.sqldelight:gradle-plugin:1.5.3'
+        classpath "app.cash.sqldelight:gradle-plugin:$sqlDelightVersion"
+
     }
 }
 
 apply from: "../../versions.gradle"
-apply plugin:"com.squareup.sqldelight"
+apply plugin:"app.cash.sqldelight"
 apply plugin:"org.jetbrains.kotlin.jvm"
 
 group = 'eu.automateeverything'
@@ -44,7 +40,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     //plugin specific
-    implementation "com.squareup.sqldelight:sqlite-driver:$sqlDelightVersion"
+    implementation "app.cash.sqldelight:sqlite-driver:$sqlDelightVersion"
 }
 
 repositories {
@@ -52,8 +48,9 @@ repositories {
 }
 
 sqldelight {
-    Database {
-        packageName = "eu.automateeverything.sqldelightplugin.database"
-        dialect = "sqlite:3.24"
+    databases {
+        Database { // This will be the name of the generated database class.
+            packageName = "eu.automateeverything.sqldelightplugin.database"
+        }
     }
 }

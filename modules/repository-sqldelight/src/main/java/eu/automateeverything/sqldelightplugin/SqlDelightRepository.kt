@@ -15,7 +15,7 @@
 
 package eu.automateeverything.sqldelightplugin
 
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import eu.automateeverything.data.InstanceInterceptor
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
