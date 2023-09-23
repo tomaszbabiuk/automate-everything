@@ -93,8 +93,8 @@ shadowJar {
 }
 
 compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = "$jdkVersion"
+    targetCompatibility = "$jdkVersion"
     options.encoding = "UTF-8"
 }
 

@@ -1,7 +1,7 @@
 ext {
     pf4jVersion="3.6.0"
-    kotlinVersion="1.6.21"
-    kotlinCoroutinesVersion="1.6.1-native-mt"
+    kotlinVersion="1.9.10"
+    kotlinCoroutinesVersion="1.7.3"
     kotlinSerializationPluginVersion="1.6.21"
     kotlinSerializationVersion="1.3.2"
     gsonVersion="2.8.9"
@@ -10,4 +10,5 @@ ext {
     jerseyVersion="3.0.3"
     hk2Version="3.0.2"
     sqlDelightVersion="2.0.0"
+    jdkVersion=16
 }
