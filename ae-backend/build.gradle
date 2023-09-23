@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinSerializationVerrsion"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinSerializationPluginVersion"
     }
 }
 
@@ -71,9 +71,9 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
 
     //serialization
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion"
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$kotlinSerializationVersion")
 
     //slf4j
     implementation "org.slf4j:slf4j-api:2.0.0-alpha5"
