@@ -27,6 +27,7 @@ buildscript {
 }
 
 apply from: "../../versions.gradle"
+apply from: "../publish.gradle"
 apply plugin:"org.jetbrains.kotlin.jvm"
 
 group = 'eu.automateeverything'
@@ -47,6 +48,9 @@ dependencies {
 
     //di
     implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
+
+    //serialization
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion"
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"

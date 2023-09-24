@@ -30,24 +30,12 @@ buildscript {
 }
 
 apply from: "../../versions.gradle"
+apply from: "../publish.gradle"
 apply plugin:"org.jetbrains.kotlin.jvm"
-apply plugin:"maven-publish"
 apply plugin:"org.jetbrains.kotlin.plugin.serialization"
 
 group = 'eu.automateeverything'
 version = '0.1'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'eu.automateeverything'
-            artifactId = 'interop'
-            version = '0.1'
-
-            from components.java
-        }
-    }
-}
 
 dependencies {
     //automate-everything
