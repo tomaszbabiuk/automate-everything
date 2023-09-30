@@ -54,7 +54,11 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         lastDiscoveryTime = Calendar.getInstance().timeInMillis
         state = AdapterState.Discovery
 
-        internalDiscovery(mode)
+        try {
+            internalDiscovery(mode)
+        } catch (ex: Exception) {
+            logDiscovery("Internal discovery error!")
+        }
 
         state = AdapterState.Operating
     }
