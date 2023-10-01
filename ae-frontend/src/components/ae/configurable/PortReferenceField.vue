@@ -45,10 +45,13 @@ data: function() {
         canWrite: this.fieldRef.type === "Output",
         any: this.fieldRef.type === "Any"
       }
+
       return this.$store.state.ports.filter((port) => {
-        return port.valueClazz === portFilter.clazz &&
-               port.canRead === portFilter.canRead || portFilter.any &&
-               port.canWrite === portFilter.canWrite || portFilter.any
+        var portMatchesCriteria = port.valueClazz === portFilter.clazz &&
+                                  (port.canRead === portFilter.canRead || portFilter.any) &&
+                                  (port.canWrite === portFilter.canWrite || portFilter.any)
+
+        return portMatchesCriteria
       })
     }
   },
