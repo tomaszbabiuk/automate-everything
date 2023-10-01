@@ -40,6 +40,10 @@ abstract class Port<V : PortValue>(
         eventBus.broadcastPortUpdateEvent(factoryId, adapterId, PortUpdateType.LastSeenChange, this)
     }
 
+    fun notifyValueUpdate() {
+        eventBus.broadcastPortUpdateEvent(factoryId, adapterId, PortUpdateType.ValueChange, this)
+    }
+
     open fun read(): V {
         if (capabilities.canRead) {
             return readInternal()
