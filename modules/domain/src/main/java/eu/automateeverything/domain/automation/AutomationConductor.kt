@@ -17,17 +17,17 @@ package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.hardware.HardwareManager
-import eu.automateeverything.domain.extensibility.PluginsCoordinator
+import eu.automateeverything.domain.R
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
-import eu.automateeverything.domain.R
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.events.*
+import eu.automateeverything.domain.extensibility.PluginsCoordinator
+import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.inbox.Inbox
+import java.util.*
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
-import java.util.*
 
 class AutomationConductor(
     private val hardwareManager: HardwareManager,
@@ -58,9 +58,15 @@ class AutomationConductor(
     private fun broadcastAutomationUpdate() {
         eventBus.broadcastAutomationStateChange(enabled)
         if (enabled) {
-            inbox.sendMessage(R.inbox_message_automation_enabled_subject, R.inbox_message_automation_enabled_body)
+            inbox.sendMessage(
+                R.inbox_message_automation_enabled_subject,
+                R.inbox_message_automation_enabled_body
+            )
         } else {
-            inbox.sendMessage(R.inbox_message_automation_disabled_subject, R.inbox_message_automation_disabled_body)
+            inbox.sendMessage(
+                R.inbox_message_automation_disabled_subject,
+                R.inbox_message_automation_disabled_body
+            )
         }
     }
 
@@ -111,7 +117,8 @@ class AutomationConductor(
                 val originName = instance.fields[NameDescriptionConfigurable.FIELD_NAME]
                 val name = originName ?: "-------"
                 val initError = AutomationErrorException(R.error_device_missing(instance.clazz))
-                val wrapper = AutomationUnitWrapper(Nothing::class.java, eventBus, name, instance, initError)
+                val wrapper =
+                    AutomationUnitWrapper(Nothing::class.java, eventBus, name, instance, initError)
                 automationUnitsCache[instance.id] = Pair(instance, wrapper)
             }
         }
@@ -120,59 +127,81 @@ class AutomationConductor(
 
         return allInstances
             .filter { it.automation != null }
-            .associateBy({ it.id}, { instanceDto ->
-                val thisDevice = allConfigurables
-                    .find { configurable -> configurable.javaClass.name == instanceDto.clazz }
+            .associateBy(
+                { it.id },
+                { instanceDto ->
+                    val thisDevice =
+                        allConfigurables.find { configurable ->
+                            configurable.javaClass.name == instanceDto.clazz
+                        }
 
-                val blocksCache = blockFactoriesCollector.collect(thisDevice)
-                val context =
-                    AutomationContext(
-                        instanceDto, thisDevice,
-                        automationUnitsCache.mapValues { it.value.second },
-                        evaluationUnitsCache,
-                        blocksCache,
-                        eventBus
-                    )
+                    val blocksCache = blockFactoriesCollector.collect(thisDevice)
+                    val context =
+                        AutomationContext(
+                            instanceDto,
+                            thisDevice,
+                            automationUnitsCache.mapValues { it.value.second },
+                            evaluationUnitsCache,
+                            blocksCache,
+                            eventBus
+                        )
 
-                val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
-                if (blocklyXml.blocks != null) {
-                    blocklyTransformer.transform(blocklyXml.blocks, context)
-                } else {
-                    listOf()
+                    val blocklyXml = blocklyParser.parse(instanceDto.automation!!)
+                    if (blocklyXml.blocks != null) {
+                        blocklyTransformer.transform(blocklyXml.blocks, context)
+                    } else {
+                        listOf()
+                    }
                 }
-            })
+            )
     }
 
-    private fun buildPhysicalUnit(configurable: Configurable, instance: InstanceDto): AutomationUnit<*> {
+    private fun buildPhysicalUnit(
+        configurable: Configurable,
+        instance: InstanceDto
+    ): AutomationUnit<*> {
         return when (configurable) {
             is StateDeviceConfigurable -> {
                 configurable.buildAutomationUnit(instance)
             }
-
             is DeviceConfigurable<*> -> {
                 configurable.buildAutomationUnit(instance)
             }
-
-            else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
+            else ->
+                throw Exception(
+                    "Unsupported configurable type, can this configurable be automated?"
+                )
         }
     }
 
-    private fun buildWrappedUnit(originName: String?, instance: InstanceDto, configurable: Configurable, ex: AutomationErrorException): AutomationUnitWrapper<*> {
+    private fun buildWrappedUnit(
+        originName: String?,
+        instance: InstanceDto,
+        configurable: Configurable,
+        ex: AutomationErrorException
+    ): AutomationUnitWrapper<*> {
         val name = originName ?: "-----"
 
         return when (configurable) {
             is StateDeviceConfigurable -> {
                 StateDeviceAutomationUnitWrapper(eventBus, instance, name, ex)
             }
-
-            is ControllerAutomationUnit<*>  -> {
-                ControllerAutomationUnitWrapper(configurable.valueClazz, eventBus, name, instance, ex)
+            is ControllerAutomationUnit<*> -> {
+                ControllerAutomationUnitWrapper(
+                    configurable.valueClazz,
+                    eventBus,
+                    name,
+                    instance,
+                    ex
+                )
             }
-
             is DeviceConfigurable<*> -> {
                 AutomationUnitWrapper(configurable.valueClazz, eventBus, name, instance, ex)
             }
-            else -> throw Exception("Unsupported configurable type, can this configurable be automated?")
+            else ->
+                throw Exception(
+                    "Unsupported configurable type, can this configurable be automated?"
+                )
         }
     }
 
@@ -182,39 +211,38 @@ class AutomationConductor(
         hardwareManager.clearNewPortsFlag()
         var automations = rebuildAutomations()
 
-        automationJob = startStopScope.launch {
+        automationJob =
+            startStopScope.launch {
+                while (isActive) {
+                    val now = Calendar.getInstance()
 
-            while (isActive) {
-                val now = Calendar.getInstance()
+                    val hasAutomations = automations.isNotEmpty()
+                    val hasNewPorts = hardwareManager.checkNewPorts()
+                    val hasUpdatedInstance = repository.hasUpdatedInstance()
 
-                val hasAutomations = automations.isNotEmpty()
-                val hasNewPorts = hardwareManager.checkNewPorts()
-                val hasUpdatedInstance = repository.hasUpdatedInstance()
+                    if (hasNewPorts || hasUpdatedInstance) {
+                        if (hasNewPorts) {
+                            logger.debug("Hardware manager has new ports... rebuilding automation")
+                            hardwareManager.clearNewPortsFlag()
+                        }
 
-                if (hasNewPorts || hasUpdatedInstance) {
-                    if (hasNewPorts) {
-                        logger.debug("Hardware manager has new ports... rebuilding automation")
-                        hardwareManager.clearNewPortsFlag()
+                        if (hasUpdatedInstance) {
+                            logger.debug("Repository has updated instance... rebuilding automation")
+                            repository.clearInstanceUpdatedFlag()
+                        }
+
+                        automations = rebuildAutomations()
                     }
 
-                    if (hasUpdatedInstance) {
-                        logger.debug("Repository has updated instance... rebuilding automation")
-                        repository.clearInstanceUpdatedFlag()
-                    }
+                    automationUnitsCache
+                        .map { it.value.second }
+                        .filter { it.recalculateOnTimeChange }
+                        .forEach { it.calculate(now) }
 
-                    automations = rebuildAutomations()
-                }
+                    if (hasAutomations) {
+                        logger.debug("Processing maintenance + automation loop")
 
-                automationUnitsCache
-                    .map { it.value.second }
-                    .filter { it.recalculateOnTimeChange }
-                    .forEach { it.calculate(now) }
-
-                if (hasAutomations) {
-                    logger.debug("Processing maintenance + automation loop")
-
-                    automations
-                        .forEach { (instanceId,automationList) ->
+                        automations.forEach { (instanceId, automationList) ->
                             automationList.forEach {
                                 try {
                                     it.process(now, firstLoop)
@@ -225,18 +253,18 @@ class AutomationConductor(
                             }
                         }
 
-                    firstLoop = false
-                    hardwareManager.executeAllPendingChanges()
-                } else {
-                    logger.debug("Processing maintenance loop")
+                        firstLoop = false
+                        hardwareManager.executeAllPendingChanges()
+                    } else {
+                        logger.debug("Processing maintenance loop")
+                    }
+
+                    hardwareManager.afterAutomationLoop()
+                    delay(1000)
                 }
 
-                hardwareManager.afterAutomationLoop()
-                delay(1000)
+                logger.warn("Automation job not longer active")
             }
-
-            logger.warn("Automation job not longer active")
-        }
     }
 
     fun disable() {
@@ -256,7 +284,7 @@ class AutomationConductor(
             automationUnitsCache
                 .filter {
                     val unit = it.value.second
-                    unit.recalculateOnPortUpdate && unit.usedPortsIds.contains(port.id)
+                    unit.recalculateOnPortUpdate && unit.usedPortsIds.contains(port.portId)
                 }
                 .forEach {
                     val unit = it.value.second

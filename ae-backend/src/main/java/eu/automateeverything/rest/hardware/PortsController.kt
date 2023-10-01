@@ -17,17 +17,19 @@ package eu.automateeverything.rest.hardware
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
-import eu.automateeverything.domain.hardware.HardwareManager
-import jakarta.inject.Inject
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
+import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.mappers.PortDtoMapper
+import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import java.math.BigDecimal
 
 @Path("ports")
-class PortsController @Inject constructor(
+class PortsController
+@Inject
+constructor(
     private val hardwareManager: HardwareManager,
     private val repository: Repository,
     private val portDtoMapper: PortDtoMapper
@@ -35,24 +37,25 @@ class PortsController @Inject constructor(
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET
-    fun getPorts() : List<PortDto> {
+    fun getPorts(): List<PortDto> {
         val portsInRepo = repository.getAllPorts().toMutableList()
 
         hardwareManager.checkNewPorts()
 
-        val portsInHardware = hardwareManager
-            .bundles()
-            .flatMap {
-                val factoryId = it.owningPluginId
-                it
-                    .adapter
-                    .ports
-                    .map { port -> Triple(port.value, factoryId, it.adapter.id) }
-            }
-            .map { portDtoMapper.map(it.first, it.second, it.third) }
+        val portsInHardware =
+            hardwareManager
+                .bundles()
+                .flatMap {
+                    val factoryId = it.owningPluginId
+                    it.adapter.ports.map { port ->
+                        Triple(port.value, factoryId, it.adapter.adapterId)
+                    }
+                }
+                .map { portDtoMapper.map(it.first, it.second, it.third) }
 
-        portsInHardware
-            .forEach { hardwarePort -> portsInRepo.removeIf { it.id == hardwarePort.id} }
+        portsInHardware.forEach { hardwarePort ->
+            portsInRepo.removeIf { it.id == hardwarePort.id }
+        }
 
         portsInRepo.addAll(portsInHardware)
 
@@ -69,7 +72,7 @@ class PortsController @Inject constructor(
             val port = findings.first
             val bundle = findings.second
 
-            if (port is OutputPort) {
+            if (port.capabilities.canWrite) {
                 port.write(value)
             }
 
@@ -83,7 +86,6 @@ class PortsController @Inject constructor(
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deletePort(@PathParam("id") id: String) {
-        repository
-            .deletePort(id)
+        repository.deletePort(id)
     }
 }

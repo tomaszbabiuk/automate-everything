@@ -16,8 +16,8 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.events.StateChangedListener
 import eu.automateeverything.domain.events.PortUpdateType
+import eu.automateeverything.domain.events.StateChangedListener
 import eu.automateeverything.domain.hardware.Port
 import java.util.*
 
@@ -32,19 +32,19 @@ class PortUpdateTriggerNode(
     }
 
     override fun process(now: Calendar, firstLoop: Boolean) {
-        //not interested
+        // not interested
     }
 
     override fun onStateChanged(deviceUnit: StateDeviceAutomationUnit, instance: InstanceDto) {
-        //not interested
+        // not interested
     }
 
     override fun onValueChanged(deviceUnit: ControllerAutomationUnit<*>, instance: InstanceDto) {
-        //not interested
+        // not interested
     }
 
     override fun onPortUpdate(type: PortUpdateType, port: Port<*>) {
-        if (type == PortUpdateType.ValueChange && port.id == portId) {
+        if (type == PortUpdateType.ValueChange && port.portId == portId) {
             next?.process(Calendar.getInstance(), false)
         }
     }

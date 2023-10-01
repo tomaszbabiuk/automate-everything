@@ -22,7 +22,7 @@ import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
 import eu.automateeverything.domain.events.EventBus
-import eu.automateeverything.domain.hardware.OutputPort
+import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.domain.hardware.Relay
 
 abstract class StateDeviceAutomationUnitBase(
@@ -31,13 +31,16 @@ abstract class StateDeviceAutomationUnitBase(
     name: String,
     controlType: ControlType,
     protected val states: Map<String, State>,
-    protected val requiresExtendedWidth: Boolean) : AutomationUnitBase<State>(
-    eventBus,
-    name,
-    instance,
-    controlType,
-    buildUnknownEvaluation(STATE_UNKNOWN, states)
-), StateDeviceAutomationUnit{
+    protected val requiresExtendedWidth: Boolean
+) :
+    AutomationUnitBase<State>(
+        eventBus,
+        name,
+        instance,
+        controlType,
+        buildUnknownEvaluation(STATE_UNKNOWN, states)
+    ),
+    StateDeviceAutomationUnit {
 
     override var currentState: State = states[STATE_UNKNOWN]!!
         protected set(value) {
@@ -48,10 +51,11 @@ abstract class StateDeviceAutomationUnitBase(
         }
 
     protected fun statesExcept(currentState: State, excludedStates: Array<String>): NextStatesDto {
-        val nextStates = states
-            .map { it.value }
-            .filter { it.type != StateType.ReadOnly }
-            .filter { it.id !in excludedStates }
+        val nextStates =
+            states
+                .map { it.value }
+                .filter { it.type != StateType.ReadOnly }
+                .filter { it.id !in excludedStates }
         return NextStatesDto(nextStates, currentState.id, requiresExtendedWidth)
     }
 
@@ -68,7 +72,10 @@ abstract class StateDeviceAutomationUnitBase(
         }
     }
 
-    private fun buildEvaluationResult(initialStateId: String, states: Map<String, State>) : EvaluationResult<State> {
+    private fun buildEvaluationResult(
+        initialStateId: String,
+        states: Map<String, State>
+    ): EvaluationResult<State> {
         val state = states[initialStateId]!!
         return EvaluationResult(
             interfaceValue = state.name,
@@ -80,9 +87,7 @@ abstract class StateDeviceAutomationUnitBase(
     }
 
     open fun buildNextStates(state: State): NextStatesDto {
-        val nextStates = states
-            .filter { it.value.type != StateType.ReadOnly }
-            .map { it.value }
+        val nextStates = states.filter { it.value.type != StateType.ReadOnly }.map { it.value }
         return NextStatesDto(nextStates, state.id, requiresExtendedWidth)
     }
 
@@ -92,7 +97,7 @@ abstract class StateDeviceAutomationUnitBase(
         @Throws(Exception::class)
         @JvmStatic
         protected fun changeRelayStateIfNeeded(
-            port: OutputPort<Relay>,
+            port: Port<Relay>,
             state: Relay,
             invalidate: Boolean = false
         ) {
@@ -101,7 +106,10 @@ abstract class StateDeviceAutomationUnitBase(
             }
         }
 
-        fun buildUnknownEvaluation(initialStateId: String, states: Map<String, State>): EvaluationResult<State> {
+        fun buildUnknownEvaluation(
+            initialStateId: String,
+            states: Map<String, State>
+        ): EvaluationResult<State> {
             val state = states[initialStateId]!!
             return EvaluationResult(
                 interfaceValue = state.name,

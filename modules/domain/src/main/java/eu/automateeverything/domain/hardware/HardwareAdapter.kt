@@ -27,7 +27,7 @@ interface HardwareAdapter<T : Port<*>> {
     val ports: HashMap<String, T>
     fun clearNewPortsFlag()
     fun hasNewPorts(): Boolean
-    val id: String
+    val adapterId: String
     suspend fun discover(mode: DiscoveryMode)
 
     var state: AdapterState

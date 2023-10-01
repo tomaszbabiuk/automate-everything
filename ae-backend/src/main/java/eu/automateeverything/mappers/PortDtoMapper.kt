@@ -16,24 +16,29 @@
 package eu.automateeverything.mappers
 
 import eu.automateeverything.data.hardware.PortDto
-import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.hardware.Port
 import java.math.BigDecimal
-import java.util.*
 
 class PortDtoMapper {
     fun map(port: Port<*>, factoryId: String, adapterId: String): PortDto {
-        val decimalValue: BigDecimal? = if (port.canRead) { port.tryRead()?.asDecimal() } else null
-        val interfaceValue: Resource? = if (port.canRead) { port.tryRead()?.toFormattedString() } else null
+        val decimalValue: BigDecimal? =
+            if (port.capabilities.canRead) {
+                port.read().asDecimal()
+            } else null
+        val interfaceValue: Resource? =
+            if (port.capabilities.canRead) {
+                port.read().toFormattedString()
+            } else null
         return PortDto(
-            port.id,
+            port.portId,
             factoryId,
             adapterId,
             decimalValue,
             interfaceValue,
             port.valueClazz.name,
-            port.canRead,
-            port.canWrite,
+            port.capabilities.canRead,
+            port.capabilities.canWrite,
             port.sleepInterval,
             port.lastSeenTimestamp
         )

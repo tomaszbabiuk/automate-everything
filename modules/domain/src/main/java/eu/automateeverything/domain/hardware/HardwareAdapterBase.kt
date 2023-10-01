@@ -22,7 +22,7 @@ import java.util.*
 
 abstract class HardwareAdapterBase<T : Port<*>>(
     protected val owningPluginId: String,
-    override val id: String,
+    override val adapterId: String,
     protected val eventBus: EventBus
 ) : HardwareAdapter<T> {
 
@@ -47,7 +47,7 @@ abstract class HardwareAdapterBase<T : Port<*>>(
     }
 
     protected fun broadcastPortUpdate(type: PortUpdateType, port: Port<*>) {
-        eventBus.broadcastPortUpdateEvent(owningPluginId, id, type, port)
+        eventBus.broadcastPortUpdateEvent(owningPluginId, adapterId, type, port)
     }
 
     override suspend fun discover(mode: DiscoveryMode) {
@@ -65,8 +65,8 @@ abstract class HardwareAdapterBase<T : Port<*>>(
 
     protected fun addPotentialNewPorts(newPorts: List<T>) {
         newPorts.forEach {
-            if (!ports.containsKey(it.id)) {
-                ports[it.id] = it
+            if (!ports.containsKey(it.portId)) {
+                ports[it.portId] = it
                 broadcastPortUpdate(PortUpdateType.ValueChange, it)
                 hasNewPorts = true
             }

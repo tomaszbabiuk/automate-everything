@@ -21,32 +21,31 @@ import eu.automateeverything.data.localization.Language
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluationResult
-import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.domain.hardware.Port
 import kotlinx.serialization.Serializable
 import org.pf4j.PluginWrapper
 
-
 sealed class LiveEventData
 
 @Serializable
-class DiscoveryEventData(val factoryId: String,
-                         val message: String) : LiveEventData() {
+class DiscoveryEventData(val factoryId: String, val message: String) : LiveEventData() {
     override fun toString(): String {
         return "Discovery event from $factoryId: ($message)"
     }
 }
 
 @Serializable
-class PortUpdateEventData(val factoryId: String,
-                          val adapterId: String,
-                          val type: PortUpdateType,
-                          val port: Port<*>) : LiveEventData() {
+class PortUpdateEventData(
+    val factoryId: String,
+    val adapterId: String,
+    val type: PortUpdateType,
+    val port: Port<*>
+) : LiveEventData() {
     override fun toString(): String {
-        return if (port is InputPort<*>) {
-            "Update event of port ${port.id}/$adapterId (${port.read().toFormattedString().getValue(Language.EN)})"
+        return if (port.capabilities.canRead) {
+            "Update event of port ${port.portId}/$adapterId (${port.read().toFormattedString().getValue(Language.EN)})"
         } else {
-            "Update event of port ${port.id}/$adapterId"
+            "Update event of port ${port.portId}/$adapterId"
         }
     }
 }
@@ -105,4 +104,3 @@ class InboxEventData(val inboxItemDto: InboxItemDto) : LiveEventData() {
         return "Inbox message $inboxItemDto"
     }
 }
-

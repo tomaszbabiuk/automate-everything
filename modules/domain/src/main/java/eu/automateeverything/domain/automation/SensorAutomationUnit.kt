@@ -16,22 +16,28 @@
 package eu.automateeverything.domain.automation
 
 import eu.automateeverything.data.configurables.ControlType
-import eu.automateeverything.domain.hardware.InputPort
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.hardware.Port
 import java.util.*
 
-class SensorAutomationUnit<T: PortValue>(
+class SensorAutomationUnit<T : PortValue>(
     eventBus: EventBus,
     instance: InstanceDto,
     name: String,
-    private val port: InputPort<T>
+    private val port: Port<T>
 ) :
-    AutomationUnitBase<T>(eventBus, name, instance, ControlType.NA, buildEvaluationResult(port.read())) {
+    AutomationUnitBase<T>(
+        eventBus,
+        name,
+        instance,
+        ControlType.NA,
+        buildEvaluationResult(port.read())
+    ) {
 
     override val usedPortsIds: Array<String>
-        get() = arrayOf(port.id)
+        get() = arrayOf(port.portId)
 
     override fun calculateInternal(now: Calendar) {
         val value = port.read()

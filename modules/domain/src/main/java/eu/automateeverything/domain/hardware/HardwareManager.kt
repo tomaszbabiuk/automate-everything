@@ -15,16 +15,16 @@
 
 package eu.automateeverything.domain.hardware
 
-import eu.automateeverything.domain.WithStartStopScope
-import eu.automateeverything.domain.automation.PortNotFoundException
-import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.domain.R
+import eu.automateeverything.domain.WithStartStopScope
+import eu.automateeverything.domain.automation.PortNotFoundException
 import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.events.PortUpdateType
+import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.inbox.Inbox
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
@@ -48,14 +48,11 @@ class HardwareManager(
     }
 
     /**
-     * This method is called after every automation loop. The method is called in a blocking way. The code from here
-     * must be executed before new automation loop.
+     * This method is called after every automation loop. The method is called in a blocking way.
+     * The code from here must be executed before new automation loop.
      */
     fun afterAutomationLoop() {
-        bundles()
-            .forEach { bundle ->
-                bundle.adapter.executePendingChanges()
-            }
+        bundles().forEach { bundle -> bundle.adapter.executePendingChanges() }
     }
 
     private suspend fun cancelDiscoveryAndStopAdapters(factory: HardwarePlugin) {
@@ -80,19 +77,41 @@ class HardwareManager(
 
     private suspend fun discover(bundle: AdapterBundle, mode: DiscoveryMode) = coroutineScope {
         if (bundle.discoveryJob != null && bundle.discoveryJob!!.isActive) {
-            eventBus.broadcastDiscoveryEvent(bundle.owningPluginId, "Previous discovery is still pending, try again later")
+            eventBus.broadcastDiscoveryEvent(
+                bundle.owningPluginId,
+                "Previous discovery is still pending, try again later"
+            )
         } else {
             bundle.discoveryJob = async {
                 bundle.adapter.discover(mode)
                 bundle.adapter.ports.values.forEach {
-                    val portSnapshot = PortDto(it.id, bundle.owningPluginId, bundle.adapter.id,
-                        null, null, it.valueClazz.name, it.canRead, it.canWrite, it.sleepInterval, it.lastSeenTimestamp)
+                    val portSnapshot =
+                        PortDto(
+                            it.portId,
+                            bundle.owningPluginId,
+                            bundle.adapter.adapterId,
+                            null,
+                            null,
+                            it.valueClazz.name,
+                            it.capabilities.canRead,
+                            it.capabilities.canWrite,
+                            it.sleepInterval,
+                            it.lastSeenTimestamp
+                        )
                     repository.updatePort(portSnapshot)
-                    eventBus.broadcastPortUpdateEvent(bundle.owningPluginId, bundle.adapter.id, PortUpdateType.LastSeenChange, it)
+                    eventBus.broadcastPortUpdateEvent(
+                        bundle.owningPluginId,
+                        bundle.adapter.adapterId,
+                        PortUpdateType.LastSeenChange,
+                        it
+                    )
 
-                    val portNotReported = repository.getPortById(it.id) == null
+                    val portNotReported = repository.getPortById(it.portId) == null
                     if (portNotReported) {
-                        inbox.sendMessage(R.inbox_message_new_port_found_subject, R.inbox_message_port_found_body(it.id))
+                        inbox.sendMessage(
+                            R.inbox_message_new_port_found_subject,
+                            R.inbox_message_port_found_body(it.portId)
+                        )
                     }
                 }
             }
@@ -111,9 +130,8 @@ class HardwareManager(
         removeFactory(factory)
 
         val adaptersInFactory = factory.createAdapters()
-        val adapterBundles = adaptersInFactory
-            .map { adapter -> AdapterBundle(factory.pluginId, adapter) }
-            .toList()
+        val adapterBundles =
+            adaptersInFactory.map { adapter -> AdapterBundle(factory.pluginId, adapter) }.toList()
         factories[factory] = adapterBundles
 
         startAdaptersAndDiscover(factory)
@@ -124,15 +142,11 @@ class HardwareManager(
         if (isHardwarePluginAffected) {
             val hardwarePlugin = event.plugin.plugin as HardwarePlugin
             if (event.pluginState == PluginState.STARTED) {
-                startStopScope.launch {
-                    addFactory(hardwarePlugin)
-                }
+                startStopScope.launch { addFactory(hardwarePlugin) }
             }
 
             if (event.pluginState == PluginState.STOPPED) {
-                startStopScope.launch {
-                    removeFactory(hardwarePlugin)
-                }
+                startStopScope.launch { removeFactory(hardwarePlugin) }
             }
         }
     }
@@ -143,7 +157,7 @@ class HardwareManager(
 
     fun findPort(id: String): Pair<Port<*>, AdapterBundle>? {
         bundles().forEach { bundle ->
-            if  (bundle.adapter.ports.containsKey(id)) {
+            if (bundle.adapter.ports.containsKey(id)) {
                 val port = bundle.adapter.ports[id]!!
                 return Pair(port, bundle)
             }
@@ -153,45 +167,40 @@ class HardwareManager(
     }
 
     fun executeAllPendingChanges() {
-        bundles()
-            .forEach { it.adapter.executePendingChanges() }
+        bundles().forEach { it.adapter.executePendingChanges() }
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : PortValue> listAllOfAnyType(valueClass: Class<T>): List<Port<T>> {
         return bundles()
             .flatMap { it.adapter.ports.values }
-            .filter { it.valueClazz == valueClass}
-            .map { it as Port<T>}
+            .filter { it.valueClazz == valueClass }
+            .map { it as Port<T> }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : PortValue> listAllOfInputType(valueClass: Class<T>): List<InputPort<T>> {
+    override fun <T : PortValue> listAllOfInputType(valueClass: Class<T>): List<Port<T>> {
         return bundles()
             .flatMap { it.adapter.ports.values }
-            .filter { it.valueClazz == valueClass}
-            .filterIsInstance(InputPort::class.java)
-            .map { it as InputPort<T>}
+            .filter { it.valueClazz == valueClass && it.capabilities.canRead }
+            .map { it as Port<T> }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : PortValue> listAllOfOutputType(valueClass: Class<T>): List<OutputPort<T>> {
+    override fun <T : PortValue> listAllOfOutputType(valueClass: Class<T>): List<Port<T>> {
         return bundles()
             .flatMap { it.adapter.ports.values }
-            .filter { it.valueClazz == valueClass}
-            .filterIsInstance(OutputPort::class.java)
-            .map { it as OutputPort<T>}
+            .filter { it.valueClazz == valueClass && it.capabilities.canWrite }
+            .map { it as Port<T> }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : PortValue> searchForAnyPort(
-        valueClazz: Class<T>,
-        id: String
-    ): Port<T> {
-        val port = factories
-            .flatMap { it.value }
-            .flatMap { it.adapter.ports.values }
-            .find { it.id == id }
+    override fun <T : PortValue> searchForAnyPort(valueClazz: Class<T>, id: String): Port<T> {
+        val port =
+            factories
+                .flatMap { it.value }
+                .flatMap { it.adapter.ports.values }
+                .find { it.portId == id }
 
         if (port != null && port.valueClazz == valueClazz) {
             return port as Port<T>
@@ -200,18 +209,18 @@ class HardwareManager(
         throw PortNotFoundException(id)
     }
 
-    override fun <T : PortValue> searchForInputPort(valueClazz: Class<T>, id: String): InputPort<T> {
+    override fun <T : PortValue> searchForInputPort(valueClazz: Class<T>, id: String): Port<T> {
         val anyPort = searchForAnyPort(valueClazz, id)
-        if (anyPort is InputPort<T>) {
+        if (anyPort.capabilities.canRead) {
             return anyPort
         }
 
         throw PortNotFoundException(id)
     }
 
-    override fun <T : PortValue> searchForOutputPort(valueClazz: Class<T>, id: String): OutputPort<T> {
+    override fun <T : PortValue> searchForOutputPort(valueClazz: Class<T>, id: String): Port<T> {
         val anyPort = searchForAnyPort(valueClazz, id)
-        if (anyPort is OutputPort<T>) {
+        if (anyPort.capabilities.canWrite) {
             return anyPort
         }
 
@@ -220,39 +229,28 @@ class HardwareManager(
 
     override fun checkNewPorts(): Boolean {
         var result = false
-        bundles()
-            .forEach { bundle ->
-                val hasNewPorts = bundle.adapter.hasNewPorts()
-                if (hasNewPorts) {
-                    result = true
-                }
+        bundles().forEach { bundle ->
+            val hasNewPorts = bundle.adapter.hasNewPorts()
+            if (hasNewPorts) {
+                result = true
             }
+        }
 
         return result
     }
 
     override fun clearNewPortsFlag() {
-        bundles()
-            .forEach {
-                it.adapter.clearNewPortsFlag()
-            }
+        bundles().forEach { it.adapter.clearNewPortsFlag() }
     }
 
     fun scheduleDiscovery(factoryId: String) {
         factories
             .filter { it.key.pluginId == factoryId }
             .flatMap { it.value }
-            .forEach {
-                startStopScope.launch {
-                    discover(it, DiscoveryMode.Manual)
-                }
-            }
+            .forEach { startStopScope.launch { discover(it, DiscoveryMode.Manual) } }
     }
 
     fun countNonOperatingAdapters(): Int {
-        return bundles()
-            .filter { it.adapter.state != AdapterState.Operating }
-            .size
+        return bundles().filter { it.adapter.state != AdapterState.Operating }.size
     }
 }
-

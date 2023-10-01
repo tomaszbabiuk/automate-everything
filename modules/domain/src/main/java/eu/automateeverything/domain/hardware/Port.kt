@@ -16,42 +16,58 @@
 package eu.automateeverything.domain.hardware
 
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.events.EventBus
+import eu.automateeverything.domain.events.PortUpdateType
+import java.io.IOException
 import java.math.BigDecimal
 
-interface Port<V: PortValue> {
-    val id: String
+data class PortCapabilities(val canRead: Boolean, val canWrite: Boolean)
 
-    val valueClazz: Class<V>
+abstract class Port<V : PortValue>(
+    private val factoryId: String,
+    private val adapterId: String,
+    val portId: String,
+    private val eventBus: EventBus,
+    val valueClazz: Class<V>,
+    val capabilities: PortCapabilities,
+    var sleepInterval: Long,
+) {
+    var lastSeenTimestamp: Long = 0L
+        private set
 
-    val canRead: Boolean
-        get() = this is InputPort<V>
-
-    val canWrite: Boolean
-        get() = this is OutputPort<V>
-
-    fun tryRead() : V? {
-        return (this as InputPort<V>).read()
+    fun updateLastSeenTimeStamp(timeStamp: Long) {
+        lastSeenTimestamp = timeStamp
+        eventBus.broadcastPortUpdateEvent(factoryId, adapterId, PortUpdateType.LastSeenChange, this)
     }
 
-    val lastSeenTimestamp: Long
-        get() = 0
+    open fun read(): V {
+        if (capabilities.canRead) {
+            return readInternal()
+        } else {
+            throw IOException("This port cannot read")
+        }
+    }
 
-    val sleepInterval: Long
-        get() = 0
-}
-
-interface InputPort<V : PortValue> : Port<V> {
-    fun read() : V
-}
-
-interface OutputPort<V : PortValue> : InputPort<V> {
-    fun write(value : V)
-    val requestedValue : V?
-    fun reset()
+    abstract fun readInternal(): V
 
     @Suppress("UNCHECKED_CAST")
     fun write(value: BigDecimal) {
         val newValue = PortValueBuilder.buildFromDecimal(valueClazz, value) as V
         write(newValue)
+    }
+
+    open fun write(newValue: V) {
+        if (capabilities.canWrite) {
+            requestedValue = newValue
+        } else {
+            throw IOException("This port cannot write")
+        }
+    }
+
+    var requestedValue: V? = null
+        private set
+
+    fun reset() {
+        requestedValue = null
     }
 }
