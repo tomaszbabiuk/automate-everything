@@ -10,6 +10,7 @@ subprojects {
 
 ext.pluginsDir = rootProject.buildDir.path + '/../output/plugins'
 
+
 task cleanAll {
     subprojects.each {
         it.afterEvaluate {

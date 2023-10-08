@@ -24,12 +24,14 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinSerializationPluginVersion"
     }
 }
 
 apply from: "../../versions.gradle"
 apply from: "../publish.gradle"
 apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 
 group = 'eu.automateeverything'
 version = '0.1'
