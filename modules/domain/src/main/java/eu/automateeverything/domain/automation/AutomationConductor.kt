@@ -98,7 +98,7 @@ class AutomationConductor(
                 if (configurable is ConditionConfigurable) {
                     val evaluator = configurable.buildEvaluator(instance)
                     evaluationUnitsCache[instance.id] = evaluator
-                } else if (configurable !is GeneratedConfigurable) {
+                } else if (configurable is DeviceConfigurable<*>) {
                     try {
                         val physicalUnit = buildPhysicalUnit(configurable, instance)
                         automationUnitsCache[instance.id] = Pair(instance, physicalUnit)
@@ -125,6 +125,9 @@ class AutomationConductor(
 
         automationUnitsCache.values.forEach { it.second.bind(automationUnitsCache) }
 
+        val allInstancesMap =
+            allInstances.associateBy(keySelector = { it.id }, valueTransform = { it })
+
         return allInstances
             .filter { it.automation != null }
             .associateBy(
@@ -140,6 +143,7 @@ class AutomationConductor(
                         AutomationContext(
                             instanceDto,
                             thisDevice,
+                            allInstancesMap,
                             automationUnitsCache.mapValues { it.value.second },
                             evaluationUnitsCache,
                             blocksCache,

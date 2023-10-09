@@ -36,7 +36,8 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
                      "message0": "${state.action!!.getValue(it)}",
                      "previousStatement": null,
                      "nextStatement": null }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -48,7 +49,7 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
         order: Int
     ): StatementNode {
         if (context.thisDevice is StateDeviceConfigurable) {
-            val evaluator = context.automationUnitsCache[context.instance.id]
+            val evaluator = context.automationUnitsCache[context.thisInstance.id]
             if (evaluator is StateDeviceAutomationUnitBase) {
                 return ChangeStateAutomationNode(state.id, evaluator, next)
             } else {
@@ -56,6 +57,9 @@ class ChangeStateBlockFactory(private val state: State) : StatementBlockFactory 
             }
         }
 
-        throw MalformedBlockException(block.type, "it's impossible to connect this block with correct ${StateDeviceConfigurable::class.java}")
+        throw MalformedBlockException(
+            block.type,
+            "it's impossible to connect this block with correct ${StateDeviceConfigurable::class.java}"
+        )
     }
 }

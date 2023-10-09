@@ -15,13 +15,14 @@
 
 package eu.automateeverything.domain.automation
 
-import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.data.instances.InstanceDto
+import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.events.EventBus
 
 class AutomationContext(
-    val instance: InstanceDto,
+    val thisInstance: InstanceDto,
     val thisDevice: Configurable?,
+    val allInstances: Map<Long, InstanceDto>,
     val automationUnitsCache: Map<Long, AutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, EvaluableAutomationUnit>,
     val blocksCache: List<BlockFactory<*>>,

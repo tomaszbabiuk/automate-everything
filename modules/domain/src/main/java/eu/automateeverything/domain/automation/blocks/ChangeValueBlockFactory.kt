@@ -23,8 +23,8 @@ import eu.automateeverything.domain.configurable.ControllerConfigurable
 import eu.automateeverything.domain.hardware.*
 import java.lang.Exception
 
-open class ChangeValueBlockFactory<T: PortValue>(
-    private val valueClazz: Class<T>) : StatementBlockFactory {
+open class ChangeValueBlockFactory<T : PortValue>(private val valueClazz: Class<T>) :
+    StatementBlockFactory {
 
     override val category: BlockCategory = CommonBlockCategories.ThisObject
 
@@ -53,7 +53,8 @@ open class ChangeValueBlockFactory<T: PortValue>(
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -87,8 +88,9 @@ open class ChangeValueBlockFactory<T: PortValue>(
             throw MalformedBlockException(block.type, "should have exactly one VALUE defined")
         }
 
-        val valueField = block.values.find { it.name == "VALUE" }
-            ?: throw MalformedBlockException(block.type, "VALUE field not found")
+        val valueField =
+            block.values.find { it.name == "VALUE" }
+                ?: throw MalformedBlockException(block.type, "VALUE field not found")
 
         var valueNode: ValueNode? = null
         if (valueField.block != null) {
@@ -96,14 +98,21 @@ open class ChangeValueBlockFactory<T: PortValue>(
         }
 
         if (context.thisDevice is ControllerConfigurable<*>) {
-            val unit = context.automationUnitsCache[context.instance.id] as? ControllerAutomationUnit<in PortValue>
+            val unit =
+                context.automationUnitsCache[context.thisInstance.id]
+                    as? ControllerAutomationUnit<in PortValue>
             if (unit != null) {
                 return ChangeValueAutomationNode(valueNode, unit, next)
             } else {
-                throw Exception("Invalid automation unit class, ${ControllerAutomationUnit::class.java.simpleName} expected")
+                throw Exception(
+                    "Invalid automation unit class, ${ControllerAutomationUnit::class.java.simpleName} expected"
+                )
             }
         }
 
-        throw MalformedBlockException(block.type, "it's impossible to connect this block with correct ${ControllerConfigurable::class.java}")
+        throw MalformedBlockException(
+            block.type,
+            "it's impossible to connect this block with correct ${ControllerConfigurable::class.java}"
+        )
     }
 }
