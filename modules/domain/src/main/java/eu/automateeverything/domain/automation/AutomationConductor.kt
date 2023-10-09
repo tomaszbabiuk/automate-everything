@@ -198,10 +198,11 @@ class AutomationConductor(
             is DeviceConfigurable<*> -> {
                 AutomationUnitWrapper(configurable.valueClazz, eventBus, name, instance, ex)
             }
-            else ->
+            else -> {
                 throw Exception(
                     "Unsupported configurable type, can this configurable be automated?"
                 )
+            }
         }
     }
 
