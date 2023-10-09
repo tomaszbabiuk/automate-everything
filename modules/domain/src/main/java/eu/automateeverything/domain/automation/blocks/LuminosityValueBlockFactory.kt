@@ -15,10 +15,10 @@
 
 package eu.automateeverything.domain.automation.blocks
 
-import eu.automateeverything.domain.hardware.Humidity
+import eu.automateeverything.domain.hardware.Luminosity
 
-class LuminosityValueBlockFactory : SimpleValueBlockFactory<Humidity>(
-    Humidity::class.java,
+class LuminosityValueBlockFactory : SimpleValueBlockFactory<Luminosity>(
+    Luminosity::class.java,
     0.0,
     10000.0,
     0.0,

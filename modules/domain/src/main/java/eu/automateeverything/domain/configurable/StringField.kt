@@ -22,8 +22,22 @@ class StringField(
     name: String,
     hint: Resource,
     maxSize: Int,
-    initialValue: String,
+    private val initialValue: String,
     vararg validators: Validator<String>
-) : FieldDefinition<String>(
-    FieldType.String, name, hint, maxSize, initialValue, String::class.java,
-    StringFieldBuilder(), null, null, *validators)
+) :
+    FieldDefinition<String>(
+        FieldType.String,
+        name,
+        hint,
+        maxSize,
+        initialValue,
+        String::class.java,
+        StringFieldBuilder(),
+        null,
+        null,
+        *validators
+    ) {
+    fun includeValidator(validatorToInclude: Validator<String>): StringField {
+        return StringField(name, hint, maxSize, initialValue, *validators, validatorToInclude)
+    }
+}

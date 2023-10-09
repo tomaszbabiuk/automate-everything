@@ -19,7 +19,8 @@ import eu.automateeverything.data.fields.FieldType
 import eu.automateeverything.data.fields.Reference
 import eu.automateeverything.data.localization.Resource
 
-abstract class FieldDefinition<T> protected constructor(
+abstract class FieldDefinition<T>
+protected constructor(
     val type: FieldType,
     val name: String,
     val hint: Resource,
@@ -29,7 +30,7 @@ abstract class FieldDefinition<T> protected constructor(
     val builder: FieldBuilder<T>,
     val reference: Reference? = null,
     val values: Map<String, Resource>? = null,
-    private vararg val validators: Validator<T>
+    protected vararg val validators: Validator<T>
 ) {
     fun validate(valueAsString: String?, fields: Map<String, String?>): FieldValidationResult {
         var isFieldValid = true
@@ -45,7 +46,7 @@ abstract class FieldDefinition<T> protected constructor(
         return FieldValidationResult(isFieldValid, failingReasons)
     }
 
-    fun initialValueAsString() : String {
+    fun initialValueAsString(): String {
         return builder.toPersistableString(initialValue)
     }
 }
