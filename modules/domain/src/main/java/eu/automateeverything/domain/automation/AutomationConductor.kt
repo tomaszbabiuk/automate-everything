@@ -138,7 +138,7 @@ class AutomationConductor(
                             configurable.javaClass.name == instanceDto.clazz
                         }
 
-                    val blocksCache = blockFactoriesCollector.collect(thisDevice)
+                    val blocksCache = blockFactoriesCollector.collect(thisDevice!!)
                     val context =
                         AutomationContext(
                             instanceDto,

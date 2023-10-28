@@ -28,7 +28,9 @@ import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import jakarta.inject.Inject
 
-class DependencyChecker @Inject constructor(
+class DependencyChecker
+@Inject
+constructor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val blocklyParser: BlocklyParser,
     private val blockFactoriesCollector: BlockFactoriesCollector,
@@ -53,21 +55,26 @@ class DependencyChecker @Inject constructor(
     }
 
     private fun findConfigurable(clazz: String): Configurable? {
-        return pluginsCoordinator
-            .configurables
-            .find { configurable -> configurable.javaClass.name == clazz }
+        return pluginsCoordinator.configurables.find { configurable ->
+            configurable.javaClass.name == clazz
+        }
     }
 
     private fun findInstanceName(instanceId: Long, allInstances: List<InstanceDto>): String? {
-        val instance =  allInstances.find { instanceDto -> instanceDto.id == instanceId }
+        val instance = allInstances.find { instanceDto -> instanceDto.id == instanceId }
         return instance?.fields?.get(NameDescriptionConfigurable.FIELD_NAME)
     }
 
-    private fun checkReferences(checkedInstance: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>) {
+    private fun checkReferences(
+        checkedInstance: InstanceDto,
+        allInstances: List<InstanceDto>,
+        dependencies: MutableMap<Long, Dependency>
+    ) {
         fun addDependency(instanceId: Long, dependency: Dependency) {
             if (!dependencies.containsKey(instanceId)) {
                 dependencies[instanceId] = dependency
-                val instanceToCheck = allInstances.find { instanceDto -> instanceDto.id == instanceId }
+                val instanceToCheck =
+                    allInstances.find { instanceDto -> instanceDto.id == instanceId }
                 if (instanceToCheck != null) {
                     checkReferences(instanceToCheck, allInstances, dependencies)
                     checkAutomations(instanceToCheck, allInstances, dependencies)
@@ -75,7 +82,7 @@ class DependencyChecker @Inject constructor(
             }
         }
 
-        allInstances.forEach {  instance ->
+        allInstances.forEach { instance ->
             val configurable = findConfigurable(instance.clazz)
             if (configurable is ConfigurableWithFields) {
                 configurable.fieldDefinitions.values.forEach { fieldDefinition ->
@@ -88,7 +95,10 @@ class DependencyChecker @Inject constructor(
                                 if (checkedInstance.id == instanceId) {
                                     val name = findInstanceName(instance.id, allInstances)
                                     if (name != null) {
-                                        addDependency(instanceId, Dependency(instance.id, DependencyType.Instance, name))
+                                        addDependency(
+                                            instanceId,
+                                            Dependency(instance.id, DependencyType.Instance, name)
+                                        )
                                     }
                                 }
                             }
@@ -98,20 +108,26 @@ class DependencyChecker @Inject constructor(
         }
     }
 
-    private fun checkAutomations(checkedInstance: InstanceDto, allInstances: List<InstanceDto>, dependencies: MutableMap<Long, Dependency>) {
+    private fun checkAutomations(
+        checkedInstance: InstanceDto,
+        allInstances: List<InstanceDto>,
+        dependencies: MutableMap<Long, Dependency>
+    ) {
         allInstances.forEach { instanceDto ->
             val automation = instanceDto.automation
             if (automation != null) {
-                val configurable = findConfigurable(instanceDto.clazz)
+                val configurable = findConfigurable(instanceDto.clazz)!!
                 val factories = blockFactoriesCollector.collect(configurable)
                 val xml = blocklyParser.parse(automation)
                 xml.blocks?.forEach { triggerBlock ->
                     traverseBlock(triggerBlock) { block ->
-                        val relatedFactory = factories.find { factory -> factory.type == block.type }
+                        val relatedFactory =
+                            factories.find { factory -> factory.type == block.type }
                         relatedFactory?.dependsOn()?.forEach { relatedInstanceId ->
                             if (checkedInstance.id == relatedInstanceId) {
                                 val name = findInstanceName(instanceDto.id, allInstances)
-                                dependencies[instanceDto.id] = Dependency(instanceDto.id, DependencyType.Automation, name)
+                                dependencies[instanceDto.id] =
+                                    Dependency(instanceDto.id, DependencyType.Automation, name)
                             }
                         }
                     }
