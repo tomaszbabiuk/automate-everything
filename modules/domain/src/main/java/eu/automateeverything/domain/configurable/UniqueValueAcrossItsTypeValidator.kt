@@ -2,6 +2,7 @@ package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.configurable.NameDescriptionConfigurable.Companion.FIELD_NAME
 
 class UniqueValueAcrossItsTypeValidator(
     private val clazz: Class<out Configurable>,
@@ -14,6 +15,10 @@ class UniqueValueAcrossItsTypeValidator(
     override fun validate(validatedFieldValue: String?, allFields: Map<String, String?>): Boolean {
         if (validatedFieldValue == null || validatedFieldValue == "") {
             return false
+        }
+
+        if (validatedFieldValue == allFields[FIELD_NAME]) {
+            return true
         }
 
         val existingDialogs =

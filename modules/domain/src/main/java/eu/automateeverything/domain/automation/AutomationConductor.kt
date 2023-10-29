@@ -20,6 +20,7 @@ import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.R
 import eu.automateeverything.domain.WithStartStopScope
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.automation.blocks.CollectionContext
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.events.*
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
@@ -138,7 +139,8 @@ class AutomationConductor(
                             configurable.javaClass.name == instanceDto.clazz
                         }
 
-                    val blocksCache = blockFactoriesCollector.collect(thisDevice!!)
+                    val blocksCache =
+                        blockFactoriesCollector.collect(thisDevice!!, CollectionContext.Automation)
                     val context =
                         AutomationContext(
                             instanceDto,

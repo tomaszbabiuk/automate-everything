@@ -19,6 +19,7 @@ import eu.automateeverything.data.blocks.*
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.automation.blocks.CollectionContext
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
@@ -48,7 +49,8 @@ constructor(
                     it.javaClass.name.equals(configurableClazz)
                 }
 
-            val blockFactories = blockFactoriesCollector.collect(configurable)
+            val blockFactories =
+                blockFactoriesCollector.collect(configurable, CollectionContext.Composition)
             val blockCategories = ArrayList<BlocklyToolboxItemCategoryDto>()
             val blockImplementations = ArrayList<RawJson>()
 

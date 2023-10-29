@@ -22,6 +22,7 @@ import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.automation.Block
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.automation.blocks.CollectionContext
 import eu.automateeverything.domain.configurable.Configurable
 import eu.automateeverything.domain.configurable.ConfigurableWithFields
 import eu.automateeverything.domain.configurable.NameDescriptionConfigurable
@@ -117,7 +118,8 @@ constructor(
             val automation = instanceDto.automation
             if (automation != null) {
                 val configurable = findConfigurable(instanceDto.clazz)!!
-                val factories = blockFactoriesCollector.collect(configurable)
+                val factories =
+                    blockFactoriesCollector.collect(configurable, CollectionContext.Both)
                 val xml = blocklyParser.parse(automation)
                 xml.blocks?.forEach { triggerBlock ->
                     traverseBlock(triggerBlock) { block ->

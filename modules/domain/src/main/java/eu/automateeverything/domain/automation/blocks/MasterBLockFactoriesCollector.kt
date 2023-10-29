@@ -27,32 +27,39 @@ class MasterBlockFactoriesCollector(
     private val repository: Repository
 ) : BlockFactoriesCollector {
 
-    override fun collect(thisDevice: Configurable): List<BlockFactory<*>> {
+    override fun collect(
+        thisDevice: Configurable,
+        context: CollectionContext
+    ): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
 
-        result.addAll(collectStaticBlocks())
-        result.addAll(collectConditionBlocks())
-        result.addAll(collectSensorBlocks())
-        result.addAll(collectChangeStateTriggerBlocks())
+        if (context == CollectionContext.Automation) {
+            result.addAll(collectStaticBlocks())
+            result.addAll(collectConditionBlocks())
+            result.addAll(collectSensorBlocks())
+            result.addAll(collectChangeStateTriggerBlocks())
 
-        val portTriggers = collectPortUpdateTriggerBlock()
-        if (portTriggers != null) {
-            result.add(portTriggers)
-        }
-        result.addAll(collectStateValuesBlocks())
-
-        if (thisDevice != null) {
+            val portTriggers = collectPortUpdateTriggerBlock()
+            if (portTriggers != null) {
+                result.add(portTriggers)
+            }
+            result.addAll(collectStateValuesBlocks())
             result.addAll(collectChangeStateBlocks(thisDevice))
             result.addAll(collectChangeValueBlocks(thisDevice))
         }
 
-        result.addAll(collectFromCollectors(thisDevice))
+        result.addAll(collectFromCollectors(thisDevice, context))
 
         return result
     }
 
-    private fun collectFromCollectors(thisDevice: Configurable): Collection<BlockFactory<*>> {
-        return pluginsCoordinator.blockFactoriesCollectors.flatMap { it.collect(thisDevice) }
+    private fun collectFromCollectors(
+        thisDevice: Configurable,
+        context: CollectionContext
+    ): Collection<BlockFactory<*>> {
+        return pluginsCoordinator.blockFactoriesCollectors.flatMap {
+            it.collect(thisDevice, context)
+        }
     }
 
     private fun collectStaticBlocks(): List<BlockFactory<*>> {

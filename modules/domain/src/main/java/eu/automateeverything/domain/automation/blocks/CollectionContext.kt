@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 Tomasz Babiuk
+ * Copyright (c) 2019-2023 Tomasz Babiuk
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  You may not use this file except in compliance with the License.
@@ -15,10 +15,8 @@
 
 package eu.automateeverything.domain.automation.blocks
 
-import eu.automateeverything.domain.automation.BlockFactory
-import eu.automateeverything.domain.configurable.Configurable
-import org.pf4j.ExtensionPoint
-
-interface BlockFactoriesCollector : ExtensionPoint {
-    fun collect(thisDevice: Configurable, context: CollectionContext): List<BlockFactory<*>>
+enum class CollectionContext {
+    Automation,
+    Composition,
+    Both
 }
