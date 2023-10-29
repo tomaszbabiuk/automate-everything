@@ -21,12 +21,12 @@ class UniqueValueAcrossItsTypeValidator(
             return true
         }
 
-        val existingDialogs =
+        val existingInstances =
             repository
                 .getAllInstances()
                 .filter { it.clazz == clazz.name }
                 .filter { it.fields[uniqueFieldName] == validatedFieldValue }
 
-        return existingDialogs.isEmpty()
+        return existingInstances.isEmpty()
     }
 }
