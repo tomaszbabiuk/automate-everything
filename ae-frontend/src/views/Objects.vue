@@ -39,6 +39,9 @@
                 <v-tab v-if="configurable.hasAutomation">
                   {{ $vuetify.lang.t("$vuetify.objects.automation") }}
                 </v-tab>
+                <v-tab v-if="configurable.hasComposition">
+                  {{ $vuetify.lang.t("$vuetify.objects.composition") }}
+                </v-tab>
 
                 <v-tab-item>
                   <configurable-form :clazz="getConfigurableClazz()"></configurable-form>
@@ -50,8 +53,10 @@
                   <configurable-tagsselector></configurable-tagsselector>
                 </v-tab-item>
                 <v-tab-item v-if="configurable.hasAutomation">
-                  <configurable-blockconfigurator ref="blockly" :configurableClazz="configurable.clazz"
-                    @focus.native="console.log('focus in')"></configurable-blockconfigurator>
+                  <configurable-blockautomator ref="blocklyA" :configurableClazz="configurable.clazz"></configurable-blockautomator>
+                </v-tab-item>
+                <v-tab-item v-if="configurable.hasComposition">
+                  <configurable-blockcompositor ref="blocklyC" :configurableClazz="configurable.clazz"></configurable-blockcompositor>
                 </v-tab-item>
               </v-tabs>
             </template>
@@ -481,8 +486,12 @@ export default {
       store.commit(RESET_INSTANCE, this.configurable);
       store.commit(EDIT_INSTANCE, instance);
 
-      if (this.$refs.blockly != null) {
-        this.$refs.blockly.reloadBlocks(instance.automation);
+      if (this.$refs.blocklyA != null) {
+        this.$refs.blocklyA.reloadBlocks(instance.automation);
+      }
+
+      if (this.$refs.blocklyC != null) {
+        this.$refs.blocklyC.reloadBlocks(instance.composition);
       }
 
       this.instanceDialog.show = true;

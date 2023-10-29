@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS configurableInstance (
   icon_id INTEGER,
   clazz TEXT NOT NULL,
   automation TEXT,
+  composition TEXT,
 
   FOREIGN KEY(icon_id) REFERENCES icon(id) ON DELETE SET NULL
 );
@@ -32,14 +33,15 @@ FROM configurableInstanceWithTagIds
 WHERE id = ?;
 
 insert:
-INSERT INTO configurableInstance(clazz, icon_id, automation)
-VALUES (?,?,?);
+INSERT INTO configurableInstance(clazz, icon_id, automation, composition)
+VALUES (?,?,?,?);
 
 update:
 UPDATE configurableInstance
 SET clazz = ?,
     icon_id = ?,
-    automation = ?
+    automation = ?,
+    composition = ?
 WHERE
     id= ?;
 

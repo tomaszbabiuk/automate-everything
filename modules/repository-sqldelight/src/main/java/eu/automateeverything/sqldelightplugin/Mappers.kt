@@ -45,31 +45,36 @@ class PortSnapshotMapper : Mapper<PortSnapshot, PortDto> {
     }
 }
 
-class IconToIconDtoMapper: Mapper<Icon, IconDto> {
+class IconToIconDtoMapper : Mapper<Icon, IconDto> {
     override fun map(from: Icon): IconDto {
         return IconDto(from.id, from.icon_category_id, from.owner, from.raw)
     }
 }
 
-class SelectAllWithIconsToIconCategoryDtoMapper: Mapper<SelectAllWithIcons, IconCategoryDto> {
+class SelectAllWithIconsToIconCategoryDtoMapper : Mapper<SelectAllWithIcons, IconCategoryDto> {
     override fun map(from: SelectAllWithIcons): IconCategoryDto {
         val iconIds = convertStringOfIdsToList(from.iconIds)
-        return IconCategoryDto(from.id, Resource.deserialize(from.name), from.readonly == 1L, iconIds)
+        return IconCategoryDto(
+            from.id,
+            Resource.deserialize(from.name),
+            from.readonly == 1L,
+            iconIds
+        )
     }
 }
 
-class SelectAllShortToInstanceBriefDtoMapper: Mapper<SelectAllShort, InstanceBriefDto> {
+class SelectAllShortToInstanceBriefDtoMapper : Mapper<SelectAllShort, InstanceBriefDto> {
     override fun map(from: SelectAllShort): InstanceBriefDto {
         return InstanceBriefDto(from.id, from.clazz, from.value_)
     }
 }
 
-class ConfigurableInstanceWithTagIdsToInstanceDtoMapper(val database: Database): Mapper<ConfigurableInstanceWithTagIds, InstanceDto> {
+class ConfigurableInstanceWithTagIdsToInstanceDtoMapper(val database: Database) :
+    Mapper<ConfigurableInstanceWithTagIds, InstanceDto> {
     override fun map(from: ConfigurableInstanceWithTagIds): InstanceDto {
         val fieldsMap = HashMap<String, String?>()
 
-        database
-            .configurableFieldInstanceQueries
+        database.configurableFieldInstanceQueries
             .selectOfConfigurableInstance(from.id)
             .executeAsList()
             .forEach { fieldsMap[it.name] = it.value_ }
@@ -80,7 +85,8 @@ class ConfigurableInstanceWithTagIdsToInstanceDtoMapper(val database: Database):
             convertStringOfIdsToList(from.tagIds),
             from.clazz,
             fieldsMap,
-            from.automation
+            from.automation,
+            from.composition
         )
     }
 }
@@ -91,13 +97,14 @@ class TagToTagDtoMapper : Mapper<Tag, TagDto> {
     }
 }
 
-class VersionToVersionDtoMapper: Mapper<Version, VersionDto> {
+class VersionToVersionDtoMapper : Mapper<Version, VersionDto> {
     override fun map(from: Version): VersionDto {
         return VersionDto(from.entity, from.timestamp)
     }
 }
 
-class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFieldInstance>, List<SettingsDto>> {
+class SettingsFieldInstanceListToSettingsDtoListMapper :
+    Mapper<List<SettingsFieldInstance>, List<SettingsDto>> {
     override fun map(from: List<SettingsFieldInstance>): List<SettingsDto> {
         return from
             .groupBy { Pair(it.pluginId, it.clazz) }
@@ -114,15 +121,9 @@ class SettingsFieldInstanceListToSettingsDtoListMapper : Mapper<List<SettingsFie
 
 class InboxItemToInboxDtoMapper : Mapper<InboxItem, InboxItemDto> {
     override fun map(from: InboxItem): InboxItemDto {
-        return InboxItemDto(
-            from.id,
-            from.subject,
-            from.body,
-            from.timestamp,
-            from.read == 1L)
+        return InboxItemDto(from.id, from.subject, from.body, from.timestamp, from.read == 1L)
     }
 }
-
 
 private fun convertStringOfIdsToList(input: String): List<Long> {
     return if (input.isNotEmpty()) {

@@ -16,14 +16,14 @@
 package eu.automateeverything.domain.configurable
 
 import eu.automateeverything.data.automation.State
+import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationUnit
 import eu.automateeverything.domain.automation.EvaluableAutomationUnitBase
 import eu.automateeverything.domain.automation.blocks.BlockCategory
-import eu.automateeverything.data.hardware.PortValue
-import org.pf4j.ExtensionPoint
 import java.math.BigDecimal
+import org.pf4j.ExtensionPoint
 
 interface Configurable : ExtensionPoint {
     val parent: Class<out Configurable>?
@@ -31,11 +31,12 @@ interface Configurable : ExtensionPoint {
     val descriptionRes: Resource
     val iconRaw: String
     val hasAutomation: Boolean
+    val hasComposition: Boolean
     val editableIcon: Boolean
     val taggable: Boolean
     val generable: Boolean
 
-    fun <T> extractFieldValue(instance: InstanceDto, field: FieldDefinition<T>) : T {
+    fun <T> extractFieldValue(instance: InstanceDto, field: FieldDefinition<T>): T {
         val rawValue = instance.fields[field.name]
         return field.builder.fromPersistableString(rawValue)
     }
@@ -49,26 +50,34 @@ interface ConfigurableWithFields : Configurable {
 
 abstract class GeneratedConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun generate(): InstanceDto
+
     override val generable: Boolean = true
     override val hasAutomation: Boolean = false
+    override val hasComposition: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
 }
 
-abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) : NameDescriptionConfigurable(), ConfigurableWithFields {
+abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) :
+    NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<V>
+
     override val hasAutomation: Boolean = true
+    override val hasComposition: Boolean = true
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
     override val generable: Boolean = false
 }
 
-abstract class DeviceConfigurableWithBlockCategory<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurable<V>(valueClazz) {
+abstract class DeviceConfigurableWithBlockCategory<V : PortValue>(valueClazz: Class<V>) :
+    DeviceConfigurable<V>(valueClazz) {
     abstract val blocksCategory: BlockCategory
 }
 
-abstract class ControllerConfigurable<V: PortValue>(valueClazz: Class<V>) : DeviceConfigurableWithBlockCategory<V>(valueClazz) {
+abstract class ControllerConfigurable<V : PortValue>(valueClazz: Class<V>) :
+    DeviceConfigurableWithBlockCategory<V>(valueClazz) {
     abstract fun extractMinValue(instance: InstanceDto): BigDecimal
+
     abstract fun extractMaxValue(instance: InstanceDto): BigDecimal
 }
 
@@ -82,7 +91,9 @@ abstract class StateDeviceConfigurable : DeviceConfigurable<State>(State::class.
 
 abstract class ConditionConfigurable : NameDescriptionConfigurable(), ConfigurableWithFields {
     abstract fun buildEvaluator(instance: InstanceDto): EvaluableAutomationUnitBase
+
     override val hasAutomation: Boolean = false
+    override val hasComposition: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
     override val generable: Boolean = false
@@ -90,14 +101,14 @@ abstract class ConditionConfigurable : NameDescriptionConfigurable(), Configurab
 
 abstract class CategoryConfigurable : Configurable {
     override val hasAutomation: Boolean = false
+    override val hasComposition: Boolean = false
     override val taggable: Boolean = false
     override val editableIcon: Boolean = false
     override val generable: Boolean = false
 }
 
-abstract class ActionConfigurable: StateDeviceConfigurable() {
+abstract class ActionConfigurable : StateDeviceConfigurable() {
     override val taggable: Boolean = false
     override val editableIcon: Boolean = true
     override val generable: Boolean = false
 }
-

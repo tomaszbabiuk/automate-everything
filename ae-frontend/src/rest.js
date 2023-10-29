@@ -321,9 +321,16 @@ export const client = {
     )
   },
 
-  getBlocklyToolboxWithCallback: async function(configurableClazz, callback) {
+  getAutomationToolboxWithCallback: async function(configurableClazz, callback) {
     await this.handleRestError(
-      () => axiosInstance.get("rest/blocks/" + configurableClazz),
+      () => axiosInstance.get("rest/automationblocks/" + configurableClazz),
+      (response) => callback(response.data)
+    )
+  },
+
+  getCompositionToolboxWithCallback: async function(configurableClazz, callback) {
+    await this.handleRestError(
+      () => axiosInstance.get("rest/compositionblocks/" + configurableClazz),
       (response) => callback(response.data)
     )
   },

@@ -20,6 +20,7 @@ export const UPDATE_INSTANCE_ICON = 'UPDATE_INSTANCE_ICON'
 export const UPDATE_INSTANCE_ADD_TAG = 'UPDATE_INSTANCE_ADD_TAG'
 export const UPDATE_INSTANCE_REMOVE_TAG = 'UPDATE_INSTANCE_REMOVE_TAG'
 export const UPDATE_INSTANCE_AUTOMATION = 'UPDATE_INSTANCE_AUTOMATION'
+export const UPDATE_INSTANCE_COMPOSITION = 'UPDATE_INSTANCE_COMPOSITION'
 export const SET_INSTANCES = 'SET_INSTANCES'
 export const SET_INSTANCE_VALIDATION = 'SET_INSTANCE_VALIDATION'
 export const CLEAR_INSTANCE_VALIDATION = 'CLEAR_INSTANCE_VALIDATION'
@@ -117,6 +118,7 @@ export default new Vuex.Store({
       fields: {},
       iconId: null,
       automation: null,
+      composition: null,
       tagIds: [],
     },
     counter: 0,
@@ -172,6 +174,7 @@ export default new Vuex.Store({
       state.newInstance.iconId = null
       state.newInstance.tagIds = []
       state.newInstance.automation = null
+      state.newInstance.composition = null
 
       configurable.fields.forEach(element => {
         Vue.set(state.newInstance.fields, element.name, element.initialValue)
@@ -184,6 +187,7 @@ export default new Vuex.Store({
       state.newInstance.iconId = instance.iconId
       state.newInstance.tagIds = instance.tagIds
       state.newInstance.automation = instance.automation
+      state.newInstance.composition = instance.composition
 
       Object.keys(instance.fields).forEach(element => {
         Vue.set(state.newInstance.fields, element, instance.fields[element])
@@ -223,6 +227,10 @@ export default new Vuex.Store({
 
     [UPDATE_INSTANCE_AUTOMATION](state, xml) {
       state.newInstance.automation = xml
+    },
+
+    [UPDATE_INSTANCE_COMPOSITION](state, xml) {
+      state.newInstance.composition = xml
     },
 
     [SET_INSTANCES](state, instances) {

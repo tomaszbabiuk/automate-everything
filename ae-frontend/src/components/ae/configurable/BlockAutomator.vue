@@ -29,7 +29,7 @@ export default {
   props: ["configurableClazz"],
   methods: {
     reloadWorkspace() {
-      client.getBlocklyToolboxWithCallback(this.configurableClazz, (data) => {
+      client.getAutomationToolboxWithCallback(this.configurableClazz, (data) => {
         this.setupWorkspace(data.toolbox);
         this.setupBlocks(data.blocks);
         this.reloadBlocks(this.$store.state.newInstance.automation);
@@ -74,7 +74,7 @@ export default {
     }
   },
   mounted: function () {
-    console.log("mounted");
+    console.log("mounted in automator");
     this.reloadWorkspace();
   },
 };

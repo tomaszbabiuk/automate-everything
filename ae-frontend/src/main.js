@@ -16,7 +16,8 @@ import ConfigurableInstanceReferenceField from './components/ae/configurable/Ins
 import ConfigurableSingleOptionEnumerationField from './components/ae/configurable/SingleOptionEnumerationField'
 import ConfigurableIconSelector from './components/ae/configurable/IconSelector'
 import ConfigurableTagsSelector from './components/ae/configurable/TagsSelector'
-import ConfigurableBlockConfigurator from './components/ae/configurable/BlockConfigurator'
+import ConfigurableBlockAutomator from './components/ae/configurable/BlockAutomator'
+import ConfigurableBlockCompositor from './components/ae/configurable/BlockCompositor'
 
 import SettingsForm from './components/ae/settings/Form'
 import SettingsStringField from './components/ae/settings/StringField'
@@ -42,7 +43,8 @@ Vue.component('configurable-instancereferencefield', ConfigurableInstanceReferen
 Vue.component('configurable-singleoptionenumerationfield', ConfigurableSingleOptionEnumerationField)
 Vue.component('configurable-iconselector', ConfigurableIconSelector)
 Vue.component('configurable-tagsselector', ConfigurableTagsSelector)
-Vue.component('configurable-blockconfigurator', ConfigurableBlockConfigurator)
+Vue.component('configurable-blockautomator', ConfigurableBlockAutomator)
+Vue.component('configurable-blockcompositor', ConfigurableBlockCompositor)
 
 //settings
 Vue.component('settings-form', SettingsForm)

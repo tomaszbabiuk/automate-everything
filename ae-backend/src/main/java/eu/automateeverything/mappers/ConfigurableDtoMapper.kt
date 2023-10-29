@@ -17,27 +17,26 @@ package eu.automateeverything.mappers
 
 import eu.automateeverything.data.configurables.ConfigurableDto
 import eu.automateeverything.data.fields.FieldDefinitionDto
-import eu.automateeverything.rest.MappingException
-import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.data.localization.Resource
-import java.util.stream.Collectors
+import eu.automateeverything.domain.configurable.*
+import eu.automateeverything.rest.MappingException
 import jakarta.inject.Inject
+import java.util.stream.Collectors
 
-class ConfigurableDtoMapper @Inject constructor(
-    private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper
-) {
+class ConfigurableDtoMapper
+@Inject
+constructor(private val fieldDefinitionDtoMapper: FieldDefinitionDtoMapper) {
     @Throws(MappingException::class)
     fun map(configurable: Configurable): ConfigurableDto {
         var fields: List<FieldDefinitionDto>? = null
         var addNewRes: Resource? = null
         var editRes: Resource? = null
         if (configurable is ConfigurableWithFields) {
-            fields = configurable
-                .fieldDefinitions
-                .values
-                .stream()
-                .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }
-                .collect(Collectors.toList())
+            fields =
+                configurable.fieldDefinitions.values
+                    .stream()
+                    .map { field: FieldDefinition<*> -> fieldDefinitionDtoMapper.map(field) }
+                    .collect(Collectors.toList())
             addNewRes = configurable.addNewRes
             editRes = configurable.editRes
         }
@@ -53,6 +52,7 @@ class ConfigurableDtoMapper @Inject constructor(
             editRes,
             configurable.iconRaw,
             configurable.hasAutomation,
+            configurable.hasComposition,
             configurable.editableIcon,
             configurable.taggable,
             configurable.generable

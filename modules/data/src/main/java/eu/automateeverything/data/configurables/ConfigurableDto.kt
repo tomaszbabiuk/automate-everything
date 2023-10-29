@@ -31,7 +31,8 @@ data class ConfigurableDto(
     val editRes: Resource?,
     val iconRaw: String,
     val hasAutomation: Boolean,
+    val hasComposition: Boolean,
     val editableIcon: Boolean,
     val taggable: Boolean,
-    val generated : Boolean
+    val generated: Boolean
 )

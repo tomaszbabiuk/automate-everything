@@ -17,6 +17,7 @@ package eu.automateeverything.sqldelightplugin
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import eu.automateeverything.data.InstanceInterceptor
+import eu.automateeverything.data.Mapper
 import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.icons.IconCategoryDto
@@ -30,7 +31,6 @@ import eu.automateeverything.data.versioning.VersionDto
 import eu.automateeverything.sqldelightplugin.database.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
-import eu.automateeverything.data.Mapper
 
 class SqlDelightRepository : Repository {
 
@@ -43,43 +43,45 @@ class SqlDelightRepository : Repository {
         val driver = JdbcSqliteDriver("jdbc:sqlite:repository.sqlite")
         Database.Schema.create(driver)
         driver.execute(null, "PRAGMA foreign_keys=ON", 0)
-        database = Database(
-            driver
-        )
+        database = Database(driver)
     }
 
-    private val portSnapshotToPortDtoMapper: Mapper<PortSnapshot, PortDto> =
-        PortSnapshotMapper()
+    private val portSnapshotToPortDtoMapper: Mapper<PortSnapshot, PortDto> = PortSnapshotMapper()
 
-    private val iconToIconDtoMapper: Mapper<Icon, IconDto> =
-        IconToIconDtoMapper()
+    private val iconToIconDtoMapper: Mapper<Icon, IconDto> = IconToIconDtoMapper()
 
-    private val selectAllWithIconsToIconCategoryDtoMapper: Mapper<SelectAllWithIcons, IconCategoryDto> =
+    private val selectAllWithIconsToIconCategoryDtoMapper:
+        Mapper<SelectAllWithIcons, IconCategoryDto> =
         SelectAllWithIconsToIconCategoryDtoMapper()
 
     private val selectAllShortToInstanceBriefDtoMapper: Mapper<SelectAllShort, InstanceBriefDto> =
         SelectAllShortToInstanceBriefDtoMapper()
 
-    private val configurableInstanceWithTagIdsToInstanceDtoMapper: Mapper<ConfigurableInstanceWithTagIds, InstanceDto> =
+    private val configurableInstanceWithTagIdsToInstanceDtoMapper:
+        Mapper<ConfigurableInstanceWithTagIds, InstanceDto> =
         ConfigurableInstanceWithTagIdsToInstanceDtoMapper(database)
 
-    private val tagToTagDtoMapper : Mapper<Tag, TagDto> =
-        TagToTagDtoMapper()
+    private val tagToTagDtoMapper: Mapper<Tag, TagDto> = TagToTagDtoMapper()
 
-    private val versionToVersionDtoMapper : Mapper<Version, VersionDto> =
-        VersionToVersionDtoMapper()
+    private val versionToVersionDtoMapper: Mapper<Version, VersionDto> = VersionToVersionDtoMapper()
 
-    private val inboxItemToInboxItemDtoMapper : Mapper<InboxItem, InboxItemDto> =
+    private val inboxItemToInboxItemDtoMapper: Mapper<InboxItem, InboxItemDto> =
         InboxItemToInboxDtoMapper()
 
-    private val settingsFieldInstanceListToSettingsDtoList:  Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
+    private val settingsFieldInstanceListToSettingsDtoList:
+        Mapper<List<SettingsFieldInstance>, List<SettingsDto>> =
         SettingsFieldInstanceListToSettingsDtoListMapper()
 
-    override fun saveInstance(instanceDto: InstanceDto) : Long {
+    override fun saveInstance(instanceDto: InstanceDto): Long {
         var id: Long = 0
         val now = Calendar.getInstance().timeInMillis
         database.transaction {
-            database.configurableInstanceQueries.insert(instanceDto.clazz, instanceDto.iconId, instanceDto.automation)
+            database.configurableInstanceQueries.insert(
+                instanceDto.clazz,
+                instanceDto.iconId,
+                instanceDto.automation,
+                instanceDto.composition
+            )
             id = database.generalQueries.lastInsertRowId().executeAsOne()
 
             val insertedDtoId = database.generalQueries.lastInsertRowId().executeAsOne()
@@ -98,7 +100,9 @@ class SqlDelightRepository : Repository {
             markVersion(InstanceDto::class.java, now)
         }
 
-        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Saved, instanceDto.clazz) }
+        instanceInterceptors.forEach {
+            it.changed(InstanceInterceptor.Action.Saved, instanceDto.clazz)
+        }
 
         return id
     }
@@ -107,8 +111,13 @@ class SqlDelightRepository : Repository {
         val now = Calendar.getInstance().timeInMillis
 
         database.transaction {
-            database.configurableInstanceQueries.update(instanceDto.clazz, instanceDto.iconId,
-                instanceDto.automation, instanceDto.id)
+            database.configurableInstanceQueries.update(
+                instanceDto.clazz,
+                instanceDto.iconId,
+                instanceDto.automation,
+                instanceDto.composition,
+                instanceDto.id
+            )
 
             instanceDto.fields.forEach {
                 database.configurableFieldInstanceQueries.update(it.value, it.key, instanceDto.id)
@@ -127,37 +136,34 @@ class SqlDelightRepository : Repository {
             hasUpdatedInstance = true
         }
 
-        instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Updated, instanceDto.clazz) }
+        instanceInterceptors.forEach {
+            it.changed(InstanceInterceptor.Action.Updated, instanceDto.clazz)
+        }
     }
 
     override fun getAllInstances(): List<InstanceDto> {
-        return database
-                .configurableInstanceQueries
-                .selectAll()
-                .executeAsList()
-                .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
+        return database.configurableInstanceQueries
+            .selectAll()
+            .executeAsList()
+            .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
     }
 
     override fun getAllInstanceBriefs(): List<InstanceBriefDto> {
-        return database
-                .configurableInstanceQueries
-                .selectAllShort()
-                .executeAsList()
-                .map(selectAllShortToInstanceBriefDtoMapper::map)
+        return database.configurableInstanceQueries
+            .selectAllShort()
+            .executeAsList()
+            .map(selectAllShortToInstanceBriefDtoMapper::map)
     }
 
     override fun getInstancesOfClazz(clazz: String): List<InstanceDto> {
-        return database
-                .configurableInstanceQueries
-                .selectByClazz(clazz)
-                .executeAsList()
-                .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
+        return database.configurableInstanceQueries
+            .selectByClazz(clazz)
+            .executeAsList()
+            .map(configurableInstanceWithTagIdsToInstanceDtoMapper::map)
     }
 
     override fun deleteInstance(id: Long) {
-        database.transaction {
-            database.configurableInstanceQueries.delete(id)
-        }
+        database.transaction { database.configurableInstanceQueries.delete(id) }
 
         instanceInterceptors.forEach { it.changed(InstanceInterceptor.Action.Deleted, null) }
     }
@@ -166,19 +172,14 @@ class SqlDelightRepository : Repository {
         val now = Calendar.getInstance().timeInMillis
 
         database.transaction {
-            ids.forEach {
-                database.configurableInstanceQueries.delete(it)
-            }
+            ids.forEach { database.configurableInstanceQueries.delete(it) }
 
             markVersion(InstanceDto::class.java, now)
         }
     }
 
     override fun getInstance(id: Long): InstanceDto {
-        val instance = database
-                .configurableInstanceQueries
-                .selectById(id)
-                .executeAsOne()
+        val instance = database.configurableInstanceQueries.selectById(id).executeAsOne()
 
         return configurableInstanceWithTagIdsToInstanceDtoMapper.map(instance)
     }
@@ -200,11 +201,7 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllTags(): List<TagDto> {
-        return database
-                .tagQueries
-                .selectAll()
-                .executeAsList()
-                .map(tagToTagDtoMapper::map)
+        return database.tagQueries.selectAll().executeAsList().map(tagToTagDtoMapper::map)
     }
 
     override fun saveTag(tag: TagDto): Long {
@@ -242,11 +239,10 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllIconCategories(): List<IconCategoryDto> {
-        return database
-                .iconCategoryQueries
-                .selectAllWithIcons()
-                .executeAsList()
-                .map(selectAllWithIconsToIconCategoryDtoMapper::map)
+        return database.iconCategoryQueries
+            .selectAllWithIcons()
+            .executeAsList()
+            .map(selectAllWithIconsToIconCategoryDtoMapper::map)
     }
 
     override fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long {
@@ -280,26 +276,21 @@ class SqlDelightRepository : Repository {
         val now = Calendar.getInstance().timeInMillis
 
         database.transaction {
-            database.iconCategoryQueries.update(iconCategoryDto.name.serialize(), iconCategoryDto.id)
+            database.iconCategoryQueries.update(
+                iconCategoryDto.name.serialize(),
+                iconCategoryDto.id
+            )
 
             markVersion(IconCategoryDto::class.java, now)
         }
     }
 
     override fun getAllIcons(): List<IconDto> {
-        return database
-                .iconQueries
-                .selectAll()
-                .executeAsList()
-                .map(iconToIconDtoMapper::map)
+        return database.iconQueries.selectAll().executeAsList().map(iconToIconDtoMapper::map)
     }
 
     override fun getIcon(id: Long): IconDto {
-        return iconToIconDtoMapper.map(database
-                    .iconQueries
-                    .selectById(id)
-                    .executeAsOne()
-                )
+        return iconToIconDtoMapper.map(database.iconQueries.selectById(id).executeAsOne())
     }
 
     override fun saveIcon(iconDto: IconDto): Long {
@@ -337,18 +328,14 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getAllPorts(): List<PortDto> {
-        return database
-            .portQueries
+        return database.portQueries
             .selectAll()
             .executeAsList()
             .map(portSnapshotToPortDtoMapper::map)
     }
 
     override fun getPortById(id: String): PortDto? {
-        val portSnapshot = database
-            .portQueries
-            .selectById(id)
-            .executeAsOneOrNull()
+        val portSnapshot = database.portQueries.selectById(id).executeAsOneOrNull()
 
         return if (portSnapshot != null) {
             portSnapshotToPortDtoMapper.map(portSnapshot)
@@ -363,9 +350,28 @@ class SqlDelightRepository : Repository {
 
         database.transaction {
             database.portQueries.delete(port.id)
-            val canRead = if (port.canRead) { 1L } else { 0L }
-            val canWrite = if (port.canWrite) { 1L } else { 0L }
-            database.portQueries.insert(port.id, port.factoryId, port.adapterId, port.valueClazz, canRead, canWrite, port.sleepInterval, port.lastSeenTimestamp)
+            val canRead =
+                if (port.canRead) {
+                    1L
+                } else {
+                    0L
+                }
+            val canWrite =
+                if (port.canWrite) {
+                    1L
+                } else {
+                    0L
+                }
+            database.portQueries.insert(
+                port.id,
+                port.factoryId,
+                port.adapterId,
+                port.valueClazz,
+                canRead,
+                canWrite,
+                port.sleepInterval,
+                port.lastSeenTimestamp
+            )
             id = database.generalQueries.lastInsertRowId().executeAsOne()
 
             markVersion(PortDto::class.java, now)
@@ -400,9 +406,12 @@ class SqlDelightRepository : Repository {
         database.transaction {
             settingsDtos.forEach { settingDto ->
                 settingDto.fields.forEach { field ->
-                    database
-                        .settingsFieldInstanceQueries
-                        .insertOrReplace(settingDto.pluginId, settingDto.clazz, field.key, field.value)
+                    database.settingsFieldInstanceQueries.insertOrReplace(
+                        settingDto.pluginId,
+                        settingDto.clazz,
+                        field.key,
+                        field.value
+                    )
                 }
             }
 
@@ -411,36 +420,30 @@ class SqlDelightRepository : Repository {
     }
 
     override fun getSettingsByPluginId(pluginId: String): List<SettingsDto> {
-        val result = database
-            .settingsFieldInstanceQueries
-            .selectByPluginId(pluginId)
-            .executeAsList()
+        val result =
+            database.settingsFieldInstanceQueries.selectByPluginId(pluginId).executeAsList()
 
         return settingsFieldInstanceListToSettingsDtoList.map(result)
     }
 
     override fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto? {
-        val result = database
-            .settingsFieldInstanceQueries
-            .selectByPluginIdAndClazz(pluginId, clazz)
-            .executeAsList()
+        val result =
+            database.settingsFieldInstanceQueries
+                .selectByPluginIdAndClazz(pluginId, clazz)
+                .executeAsList()
 
-        return settingsFieldInstanceListToSettingsDtoList
-            .map(result)
-            .firstOrNull()
+        return settingsFieldInstanceListToSettingsDtoList.map(result).firstOrNull()
     }
 
     override fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto> {
-        return database
-            .inboxQueries
+        return database.inboxQueries
             .selectByPage(limit, offset)
             .executeAsList()
             .map(inboxItemToInboxItemDtoMapper::map)
     }
 
-    override fun getUnreadInboxItems() : List<InboxItemDto> {
-        return database
-            .inboxQueries
+    override fun getUnreadInboxItems(): List<InboxItemDto> {
+        return database.inboxQueries
             .selectUnread()
             .executeAsList()
             .map(inboxItemToInboxItemDtoMapper::map)
@@ -454,7 +457,8 @@ class SqlDelightRepository : Repository {
                 message.timestamp,
                 message.subject,
                 message.body,
-                if (message.read) 1 else 0)
+                if (message.read) 1 else 0
+            )
 
             markVersion(InboxItemDto::class.java, now)
         }
@@ -462,7 +466,7 @@ class SqlDelightRepository : Repository {
         return database.generalQueries.lastInsertRowId().executeAsOne()
     }
 
-    override fun markInboxItemAsRead(id: Long) : InboxItemDto {
+    override fun markInboxItemAsRead(id: Long): InboxItemDto {
         val now = Calendar.getInstance().timeInMillis
         var inboxItem: InboxItem? = null
 
@@ -516,7 +520,7 @@ class SqlDelightRepository : Repository {
         }
     }
 
-    private fun <T> markVersion(entity:Class<T>, timestamp: Long) {
+    private fun <T> markVersion(entity: Class<T>, timestamp: Long) {
         database.versionQueries.upsert(entity.simpleName, timestamp)
     }
 }

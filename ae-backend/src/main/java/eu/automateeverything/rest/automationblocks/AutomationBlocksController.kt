@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package eu.automateeverything.rest.blocks
+package eu.automateeverything.rest.automationblocks
 
 import eu.automateeverything.data.blocks.*
 import eu.automateeverything.data.blocks.RawJson
@@ -27,8 +27,8 @@ import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 
-@Path("blocks")
-class BlocksController
+@Path("automationblocks")
+class AutomationBlocksController
 @Inject
 constructor(
     private val pluginsCoordinator: PluginsCoordinator,

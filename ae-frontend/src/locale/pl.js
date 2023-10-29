@@ -100,6 +100,7 @@ export default {
         tags: "Tagi",
         icon: "Ikona",
         automation: "Automatyka",
+        composition: "Kompozycja",
         deleted: "(usunięto)",
         dependencies_detected_note: "Wykryto zależności! Oto obiekty, które także ZOSTANĄ USUNIĘTE!"
     },

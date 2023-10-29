@@ -24,5 +24,6 @@ data class InstanceDto(
     val tagIds: List<Long>,
     val clazz: String,
     val fields: Map<String, String?>,
-    val automation: String?
+    val automation: String?,
+    val composition: String?
 )
