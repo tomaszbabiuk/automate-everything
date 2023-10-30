@@ -17,6 +17,5 @@ package eu.automateeverything.domain.automation.blocks
 
 enum class CollectionContext {
     Automation,
-    Composition,
-    Both
+    Composition
 }

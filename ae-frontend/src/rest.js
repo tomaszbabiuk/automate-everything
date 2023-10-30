@@ -321,16 +321,16 @@ export const client = {
     )
   },
 
-  getAutomationToolboxWithCallback: async function(configurableClazz, callback) {
+  getAutomationToolboxWithCallback: async function(configurableClazz, instanceId, callback) {
     await this.handleRestError(
-      () => axiosInstance.get("rest/automationblocks/" + configurableClazz),
+      () => axiosInstance.get("rest/automationblocks/" + configurableClazz + "/" + instanceId),
       (response) => callback(response.data)
     )
   },
 
-  getCompositionToolboxWithCallback: async function(configurableClazz, callback) {
+  getCompositionToolboxWithCallback: async function(configurableClazz, instanceId, callback) {
     await this.handleRestError(
-      () => axiosInstance.get("rest/compositionblocks/" + configurableClazz),
+      () => axiosInstance.get("rest/compositionblocks/" + configurableClazz + "/" + instanceId),
       (response) => callback(response.data)
     )
   },

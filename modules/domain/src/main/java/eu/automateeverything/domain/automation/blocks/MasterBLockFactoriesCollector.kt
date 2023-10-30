@@ -29,6 +29,7 @@ class MasterBlockFactoriesCollector(
 
     override fun collect(
         thisDevice: Configurable,
+        instanceId: Long?,
         context: CollectionContext
     ): List<BlockFactory<*>> {
         val result = ArrayList<BlockFactory<*>>()
@@ -48,17 +49,18 @@ class MasterBlockFactoriesCollector(
             result.addAll(collectChangeValueBlocks(thisDevice))
         }
 
-        result.addAll(collectFromCollectors(thisDevice, context))
+        result.addAll(collectFromCollectors(thisDevice, instanceId, context))
 
         return result
     }
 
     private fun collectFromCollectors(
         thisDevice: Configurable,
+        instanceId: Long?,
         context: CollectionContext
     ): Collection<BlockFactory<*>> {
         return pluginsCoordinator.blockFactoriesCollectors.flatMap {
-            it.collect(thisDevice, context)
+            it.collect(thisDevice, instanceId, context)
         }
     }
 

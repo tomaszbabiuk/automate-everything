@@ -20,6 +20,7 @@ import eu.automateeverything.data.fields.FieldType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.automation.Block
+import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.automation.blocks.CollectionContext
@@ -115,25 +116,54 @@ constructor(
         dependencies: MutableMap<Long, Dependency>
     ) {
         allInstances.forEach { instanceDto ->
-            val automation = instanceDto.automation
-            if (automation != null) {
-                val configurable = findConfigurable(instanceDto.clazz)!!
-                val factories =
-                    blockFactoriesCollector.collect(configurable, CollectionContext.Both)
-                val xml = blocklyParser.parse(automation)
-                xml.blocks?.forEach { triggerBlock ->
-                    traverseBlock(triggerBlock) { block ->
-                        val relatedFactory =
-                            factories.find { factory -> factory.type == block.type }
-                        relatedFactory?.dependsOn()?.forEach { relatedInstanceId ->
-                            if (checkedInstance.id == relatedInstanceId) {
-                                val name = findInstanceName(instanceDto.id, allInstances)
-                                dependencies[instanceDto.id] =
-                                    Dependency(instanceDto.id, DependencyType.Automation, name)
-                            }
+            val configurable = findConfigurable(instanceDto.clazz)!!
+
+            fun checkBlocks(
+                blocklyXml: String?,
+                factories: List<BlockFactory<*>>,
+                dependencyType: DependencyType
+            ) {
+                if (blocklyXml != null) {
+                    val xml = blocklyParser.parse(blocklyXml)
+                    xml.blocks?.forEach { triggerBlock ->
+                        traverseBlock(triggerBlock) { block ->
+                            val relatedFactories =
+                                factories.filter { factory -> factory.belongs(block.type) }
+
+                            relatedFactories
+                                .flatMap { it.dependsOn() }
+                                .forEach {
+                                    if ((instanceDto.id == it) || (checkedInstance.id == it)) {
+                                        val name = findInstanceName(instanceDto.id, allInstances)
+                                        dependencies[instanceDto.id] =
+                                            Dependency(instanceDto.id, dependencyType, name)
+                                    }
+                                }
                         }
                     }
                 }
+            }
+
+            val automation = instanceDto.automation
+            if (automation != null) {
+                val factories =
+                    blockFactoriesCollector.collect(
+                        configurable,
+                        checkedInstance.id,
+                        CollectionContext.Automation
+                    )
+                checkBlocks(automation, factories, DependencyType.Automation)
+            }
+
+            val composition = instanceDto.composition
+            if (composition != null) {
+                val factories =
+                    blockFactoriesCollector.collect(
+                        configurable,
+                        checkedInstance.id,
+                        CollectionContext.Composition
+                    )
+                checkBlocks(composition, factories, DependencyType.Composition)
             }
         }
     }
@@ -143,6 +173,8 @@ constructor(
             blockFound(block)
             traverseBlock(block, blockFound)
         }
+
+        blockFound(block)
 
         if (block.next?.block != null) {
             foundAndTraverse(block.next.block)

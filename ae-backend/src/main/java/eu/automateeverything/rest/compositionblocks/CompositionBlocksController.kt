@@ -38,10 +38,11 @@ constructor(
 
     @Throws(ResourceNotFoundException::class)
     @GET
-    @Path("/{configurableClazz}")
+    @Path("/{configurableClazz}/{instanceId}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getToolbox(
-        @PathParam("configurableClazz") configurableClazz: String
+        @PathParam("configurableClazz") configurableClazz: String,
+        @PathParam("instanceId") instanceId: String
     ): BlocklyToolboxWithBlocksDto {
         try {
             val configurable =
@@ -50,7 +51,11 @@ constructor(
                 }
 
             val blockFactories =
-                blockFactoriesCollector.collect(configurable, CollectionContext.Composition)
+                blockFactoriesCollector.collect(
+                    configurable,
+                    instanceId.toLongOrNull(),
+                    CollectionContext.Composition
+                )
             val blockCategories = ArrayList<BlocklyToolboxItemCategoryDto>()
             val blockImplementations = ArrayList<RawJson>()
 

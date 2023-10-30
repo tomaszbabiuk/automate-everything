@@ -20,5 +20,9 @@ import eu.automateeverything.domain.configurable.Configurable
 import org.pf4j.ExtensionPoint
 
 interface BlockFactoriesCollector : ExtensionPoint {
-    fun collect(thisDevice: Configurable, context: CollectionContext): List<BlockFactory<*>>
+    fun collect(
+        thisDevice: Configurable,
+        instanceId: Long?,
+        context: CollectionContext
+    ): List<BlockFactory<*>>
 }

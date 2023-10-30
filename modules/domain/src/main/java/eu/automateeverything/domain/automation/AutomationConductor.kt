@@ -140,7 +140,11 @@ class AutomationConductor(
                         }
 
                     val blocksCache =
-                        blockFactoriesCollector.collect(thisDevice!!, CollectionContext.Automation)
+                        blockFactoriesCollector.collect(
+                            thisDevice!!,
+                            instanceDto.id,
+                            CollectionContext.Automation
+                        )
                     val context =
                         AutomationContext(
                             instanceDto,

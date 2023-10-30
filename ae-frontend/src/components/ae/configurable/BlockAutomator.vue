@@ -29,7 +29,9 @@ export default {
   props: ["configurableClazz"],
   methods: {
     reloadWorkspace() {
-      client.getAutomationToolboxWithCallback(this.configurableClazz, (data) => {
+      document.getElementsByClassName('blocklyDiv')[0].innerHTML = ""
+
+      client.getAutomationToolboxWithCallback(this.configurableClazz, this.$store.state.newInstance.id, (data) => {
         this.setupWorkspace(data.toolbox);
         this.setupBlocks(data.blocks);
         this.reloadBlocks(this.$store.state.newInstance.automation);
@@ -38,7 +40,7 @@ export default {
 
     reloadBlocks(xml) {
       this.workspace.clear();
-
+      
       if (xml != null) {
         Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(xml), this.workspace);
       }

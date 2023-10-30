@@ -483,15 +483,16 @@ export default {
       this.instanceDialog.activeTab = 0;
       this.instanceDialog.instance = instance;
 
-      store.commit(RESET_INSTANCE, this.configurable);
+      store.commit(RESET_INSTANCE, this.configurable, instance.id);
       store.commit(EDIT_INSTANCE, instance);
 
       if (this.$refs.blocklyA != null) {
-        this.$refs.blocklyA.reloadBlocks(instance.automation);
+       this.$refs.blocklyA.reloadBlocks(instance.automation);
       }
 
       if (this.$refs.blocklyC != null) {
-        this.$refs.blocklyC.reloadBlocks(instance.composition);
+        //this.$refs.blocklyC.reloadBlocks(instance.composition);
+        this.$refs.blocklyC.reloadWorkspace();
       }
 
       this.instanceDialog.show = true;
