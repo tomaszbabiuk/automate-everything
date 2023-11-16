@@ -120,7 +120,7 @@ constructor(
 
             fun checkBlocks(
                 blocklyXml: String?,
-                factories: List<BlockFactory<*>>,
+                factories: List<BlockFactory<*, *>>,
                 dependencyType: DependencyType
             ) {
                 if (blocklyXml != null) {

@@ -105,8 +105,8 @@ class SingletonExtensionPluginsCoordinator(
     override val configurables: List<Configurable>
         get() = wrapped.getExtensions(Configurable::class.java)
 
-    override val blockFactories: List<BlockFactory<*>>
-        get() = wrapped.getExtensions(BlockFactory::class.java) as List<BlockFactory<*>>
+    override val blockFactories: List<BlockFactory<*, *>>
+        get() = wrapped.getExtensions(BlockFactory::class.java) as List<BlockFactory<*, *>>
 
     override val blockFactoriesCollectors: List<BlockFactoriesCollector>
         get() = wrapped.getExtensions(BlockFactoriesCollector::class.java)

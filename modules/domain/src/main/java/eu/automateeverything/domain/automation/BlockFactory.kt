@@ -18,7 +18,7 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 
-interface BlockFactory<N : AutomationNode> {
+interface BlockFactory<N : AutomationNode, C> {
     val category: BlockCategory
     val type: String
 
@@ -27,7 +27,7 @@ interface BlockFactory<N : AutomationNode> {
     fun transform(
         block: Block,
         next: StatementNode?,
-        context: AutomationContext,
+        context: C,
         transformer: BlocklyTransformer,
         order: Int = 0
     ): N
@@ -38,13 +38,13 @@ interface BlockFactory<N : AutomationNode> {
 }
 
 // preventing type erasure
-interface EvaluatorBlockFactory : BlockFactory<EvaluatorNode>
+interface EvaluatorBlockFactory : BlockFactory<EvaluatorNode, AutomationContext>
 
 // preventing type erasure
-interface ValueBlockFactory : BlockFactory<ValueNode>
+interface ValueBlockFactory : BlockFactory<ValueNode, AutomationContext>
 
 // preventing type erasure
-interface StatementBlockFactory : BlockFactory<StatementNode>
+interface StatementBlockFactory : BlockFactory<StatementNode, AutomationContext>
 
 // preventing type erasure
-interface TriggerBlockFactory : BlockFactory<StatementNode>
+interface TriggerBlockFactory : BlockFactory<StatementNode, AutomationContext>
