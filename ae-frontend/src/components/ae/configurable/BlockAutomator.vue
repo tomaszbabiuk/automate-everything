@@ -48,6 +48,9 @@ export default {
 
     setupWorkspace(toolbox) {
       this.options.toolbox = toolbox;
+      this.options.maxInstances = {
+        single: 1
+      };
       this.workspace = Blockly.inject(this.$refs["blocklyDiv"], this.options);
 
       function onBlockChange(event) {

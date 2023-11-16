@@ -47,6 +47,7 @@ export default {
     if (!options.toolbox) {
       options.toolbox = this.$refs["blocklyToolbox"];
     }
+
     this.workspace = Blockly.inject(this.$refs["blocklyDiv"], options);
   }
 }
