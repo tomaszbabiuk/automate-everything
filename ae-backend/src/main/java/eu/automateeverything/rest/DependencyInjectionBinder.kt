@@ -16,16 +16,16 @@
 package eu.automateeverything.rest
 
 import eu.automateeverything.data.Repository
+import eu.automateeverything.domain.automation.AutomationConductor
+import eu.automateeverything.domain.automation.BlocklyParser
+import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
+import eu.automateeverything.domain.dependencies.DependencyChecker
 import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.hardware.HardwareManager
-import eu.automateeverything.domain.automation.AutomationConductor
-import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.inbox.Inbox
-import jakarta.inject.Singleton
-import eu.automateeverything.domain.automation.BlocklyParser
-import eu.automateeverything.domain.dependencies.DependencyChecker
 import eu.automateeverything.mappers.*
+import jakarta.inject.Singleton
 import org.glassfish.hk2.api.Factory
 import org.glassfish.hk2.utilities.binding.AbstractBinder
 
@@ -40,7 +40,7 @@ class DependencyInjectionBinder(
 ) : AbstractBinder() {
 
     override fun configure() {
-        //mappers
+        // mappers
         bind(FieldDefinitionDtoMapper::class.java)
             .to(FieldDefinitionDtoMapper::class.java)
             .`in`(Singleton::class.java)
@@ -65,9 +65,7 @@ class DependencyInjectionBinder(
             .to(EvaluationResultDtoMapper::class.java)
             .`in`(Singleton::class.java)
 
-        bind(PortDtoMapper::class.java)
-            .to(PortDtoMapper::class.java)
-            .`in`(Singleton::class.java)
+        bind(PortDtoMapper::class.java).to(PortDtoMapper::class.java).`in`(Singleton::class.java)
 
         bind(DiscoveryEventMapper::class.java)
             .to(DiscoveryEventMapper::class.java)
@@ -93,9 +91,7 @@ class DependencyInjectionBinder(
             .to(LiveEventsMapper::class.java)
             .`in`(Singleton::class.java)
 
-        bind(BlocklyParser::class.java)
-            .to(BlocklyParser::class.java)
-            .`in`(Singleton::class.java)
+        bind(BlocklyParser::class.java).to(BlocklyParser::class.java).`in`(Singleton::class.java)
 
         bind(DependencyChecker::class.java)
             .to(DependencyChecker::class.java)
@@ -105,7 +101,7 @@ class DependencyInjectionBinder(
             .to(DescriptionsUpdateDtoMapper::class.java)
             .`in`(Singleton::class.java)
 
-        //factories for objects shared with the App
+        // factories for objects shared with the App
         bindFactory(SingletonFactory(hardwareManager))
             .to(HardwareManager::class.java)
             .`in`(Singleton::class.java)
@@ -122,18 +118,13 @@ class DependencyInjectionBinder(
             .to(Repository::class.java)
             .`in`(Singleton::class.java)
 
-        bindFactory(SingletonFactory(eventBus))
-            .to(EventBus::class.java)
-            .`in`(Singleton::class.java)
+        bindFactory(SingletonFactory(eventBus)).to(EventBus::class.java).`in`(Singleton::class.java)
 
         bindFactory(SingletonFactory(blockFactoriesCollector))
             .to(BlockFactoriesCollector::class.java)
             .`in`(Singleton::class.java)
 
-        bindFactory(SingletonFactory(inbox))
-            .to(Inbox::class.java)
-            .`in`(Singleton::class.java)
-
+        bindFactory(SingletonFactory(inbox)).to(Inbox::class.java).`in`(Singleton::class.java)
     }
 
     internal class SingletonFactory<T>(private val instance: T) : Factory<T> {

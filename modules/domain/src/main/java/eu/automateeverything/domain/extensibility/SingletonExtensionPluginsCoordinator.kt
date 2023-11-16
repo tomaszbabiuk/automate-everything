@@ -32,24 +32,25 @@ class SingletonExtensionPluginsCoordinator(
 
     val extractor = SettingsExtractor(this, repository)
 
-    private val wrapped: JarPluginManager = object : JarPluginManager(), PluginStateListener {
-        override fun createExtensionFactory(): ExtensionFactory {
-            return SingletonExtensionFactoryWithDI(injectionRegistry, extractor)
-        }
+    private val wrapped: JarPluginManager =
+        object : JarPluginManager(), PluginStateListener {
+            override fun createExtensionFactory(): ExtensionFactory {
+                return SingletonExtensionFactoryWithDI(injectionRegistry, extractor)
+            }
 
-        override fun createPluginFactory(): PluginFactory {
-            return PluginFactoryWithDI(injectionRegistry, extractor)
-        }
+            override fun createPluginFactory(): PluginFactory {
+                return PluginFactoryWithDI(injectionRegistry, extractor)
+            }
 
-        init {
-            addPluginStateListener(this)
-        }
+            init {
+                addPluginStateListener(this)
+            }
 
-        override fun pluginStateChanged(event: PluginStateEvent) {
-            val plugin = event.plugin
-            liveEvents.broadcastPluginEvent(plugin)
+            override fun pluginStateChanged(event: PluginStateEvent) {
+                val plugin = event.plugin
+                liveEvents.broadcastPluginEvent(plugin)
+            }
         }
-    }
 
     override fun getPluginWrapper(pluginId: String): PluginWrapper? {
         return wrapped.getPlugin(pluginId)
@@ -67,12 +68,9 @@ class SingletonExtensionPluginsCoordinator(
     }
 
     override fun findExtensionOwner(extensionClazz: Class<*>): PluginWrapper? {
-        return wrapped
-            .plugins.firstOrNull {
-                wrapped
-                    .getExtensionClasses(it.pluginId)
-                    .contains(extensionClazz)
-            }
+        return wrapped.plugins.firstOrNull {
+            wrapped.getExtensionClasses(it.pluginId).contains(extensionClazz)
+        }
     }
 
     override fun enablePlugin(pluginId: String): PluginWrapper? {
@@ -105,10 +103,10 @@ class SingletonExtensionPluginsCoordinator(
     }
 
     override val configurables: List<Configurable>
-        get()  = wrapped.getExtensions(Configurable::class.java)
+        get() = wrapped.getExtensions(Configurable::class.java)
 
     override val blockFactories: List<BlockFactory<*>>
-        get() = wrapped.getExtensions(BlockFactory::class.java)
+        get() = wrapped.getExtensions(BlockFactory::class.java) as List<BlockFactory<*>>
 
     override val blockFactoriesCollectors: List<BlockFactoriesCollector>
         get() = wrapped.getExtensions(BlockFactoriesCollector::class.java)

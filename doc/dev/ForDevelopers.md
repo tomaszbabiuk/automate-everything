@@ -55,6 +55,7 @@ npm run build
 - Run the frontend in terminal:
 ```bash
 cd workae/automate-everything/ae-frontend
+export NODE_OPTIONS=--openssl-legacy-provider
 npm run serve
 ```
 

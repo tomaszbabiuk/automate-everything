@@ -25,14 +25,23 @@ import org.pf4j.PluginWrapper
 
 interface PluginsCoordinator {
     fun enablePlugin(pluginId: String): PluginWrapper?
+
     fun disablePlugin(pluginId: String): PluginWrapper?
+
     fun loadPlugins()
+
     fun startPlugins()
+
     fun addPluginStateListener(listener: PluginStateListener)
+
     fun getPluginWrapper(pluginId: String): PluginWrapper?
-    fun getPluginSettingGroups(pluginId: String) : List<SettingGroup>
-    fun getPluginSettingGroups(pluginWrapper: PluginWrapper) : List<SettingGroup>
+
+    fun getPluginSettingGroups(pluginId: String): List<SettingGroup>
+
+    fun getPluginSettingGroups(pluginWrapper: PluginWrapper): List<SettingGroup>
+
     fun findExtensionOwner(extensionClazz: Class<*>): PluginWrapper?
+
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
     val blockFactories: List<BlockFactory<*>>

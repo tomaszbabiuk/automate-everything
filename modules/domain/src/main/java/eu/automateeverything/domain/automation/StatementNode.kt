@@ -20,7 +20,10 @@ import java.util.*
 
 interface StatementNode : AutomationNode {
     val next: StatementNode?
-    fun process(now: Calendar, firstLoop: Boolean)
-    fun modifyNote(noteId: String, note: Resource)
-    fun removeNote(noteId: String)
+
+    fun process(now: Calendar, firstLoop: Boolean) {}
+
+    fun modifyNote(noteId: String, note: Resource) {}
+
+    fun removeNote(noteId: String) {}
 }

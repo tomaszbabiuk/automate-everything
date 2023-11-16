@@ -17,7 +17,11 @@ package eu.automateeverything.domain.automation
 
 class BlocklyTransformer {
 
-    fun transform(blocks: List<Block>, context: AutomationContext, order: Int = 0) : List<StatementNode> {
+    fun transform(
+        blocks: List<Block>,
+        context: AutomationContext,
+        order: Int = 0
+    ): List<StatementNode> {
 
         val masterNodes = ArrayList<StatementNode>()
 
@@ -29,11 +33,15 @@ class BlocklyTransformer {
         return masterNodes
     }
 
-    fun transformEvaluator(block: Block, context: AutomationContext, order: Int = 0) : EvaluatorNode {
-        val blockFactory = context
-            .blocksCache
-            .filterIsInstance<EvaluatorBlockFactory>()
-            .find { it.type == block.type }
+    fun transformEvaluator(
+        block: Block,
+        context: AutomationContext,
+        order: Int = 0
+    ): EvaluatorNode {
+        val blockFactory =
+            context.blocksCache.filterIsInstance<EvaluatorBlockFactory>().find {
+                it.type == block.type
+            }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, null, context, this, order)
@@ -43,10 +51,8 @@ class BlocklyTransformer {
     }
 
     fun transformValue(block: Block, context: AutomationContext, order: Int = 0): ValueNode {
-        val blockFactory = context
-            .blocksCache
-            .filterIsInstance<ValueBlockFactory>()
-            .find { it.type == block.type }
+        val blockFactory =
+            context.blocksCache.filterIsInstance<ValueBlockFactory>().find { it.type == block.type }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, null, context, this, order)
@@ -55,16 +61,20 @@ class BlocklyTransformer {
         throw UnknownValueBlockException(block.type)
     }
 
-    private fun transformTrigger(block: Block, context: AutomationContext, order: Int = 0) : StatementNode {
+    private fun transformTrigger(
+        block: Block,
+        context: AutomationContext,
+        order: Int = 0
+    ): StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context, order)
         }
 
-        val blockFactory = context
-            .blocksCache
-            .filterIsInstance<TriggerBlockFactory>()
-            .find { it.type == block.type }
+        val blockFactory =
+            context.blocksCache.filterIsInstance<TriggerBlockFactory>().find {
+                it.type == block.type
+            }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, next, context, this, order)
@@ -73,16 +83,20 @@ class BlocklyTransformer {
         throw UnknownTriggerBlockException(block.type)
     }
 
-    fun transformStatement(block: Block, context: AutomationContext, order: Int = 0) : StatementNode {
+    fun transformStatement(
+        block: Block,
+        context: AutomationContext,
+        order: Int = 0
+    ): StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
             next = transformStatement(block.next.block!!, context, order)
         }
 
-        val blockFactory = context
-            .blocksCache
-            .filterIsInstance<StatementBlockFactory>()
-            .find { it.type == block.type }
+        val blockFactory =
+            context.blocksCache.filterIsInstance<StatementBlockFactory>().find {
+                it.type == block.type
+            }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, next, context, this, order)
@@ -90,27 +104,21 @@ class BlocklyTransformer {
 
         throw UnknownStatementBlockException(block.type)
     }
-
 }
 
-class MalformedBlockException(type: String, malfunction: String) : Exception(
-    "Malformed block $type: $malfunction"
-)
+class MalformedBlockException(type: String, malfunction: String) :
+    Exception("Malformed block $type: $malfunction")
 
-open class UnknownBlockException(message:String) : Exception(message)
+open class UnknownBlockException(message: String) : Exception(message)
 
-class UnknownTriggerBlockException(type: String) : UnknownBlockException(
-    "Unknown trigger block: $type"
-)
+class UnknownTriggerBlockException(type: String) :
+    UnknownBlockException("Unknown trigger block: $type")
 
-class UnknownStatementBlockException(type: String) : UnknownBlockException(
-    "Unknown statement block: $type"
-)
+class UnknownStatementBlockException(type: String) :
+    UnknownBlockException("Unknown statement block: $type")
 
-class UnknownEvaluatorBlockException(type: String) : UnknownBlockException(
-    "Unknown evaluator block: $type"
-)
+class UnknownEvaluatorBlockException(type: String) :
+    UnknownBlockException("Unknown evaluator block: $type")
 
-class UnknownValueBlockException(type: String) : UnknownBlockException(
-    "Unknown value block: $type"
-)
+class UnknownValueBlockException(type: String) :
+    UnknownBlockException("Unknown value block: $type")

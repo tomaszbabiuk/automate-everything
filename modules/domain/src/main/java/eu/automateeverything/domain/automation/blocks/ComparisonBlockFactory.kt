@@ -16,12 +16,13 @@
 package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.domain.automation.*
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.automation.*
 
-open class ComparisonBlockFactory<T: PortValue>(
+open class ComparisonBlockFactory<T : PortValue>(
     private val valueType: Class<T>,
-    override val category: BlockCategory) : EvaluatorBlockFactory {
+    override val category: BlockCategory
+) : EvaluatorBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_comparison"
 
@@ -82,7 +83,8 @@ open class ComparisonBlockFactory<T: PortValue>(
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 

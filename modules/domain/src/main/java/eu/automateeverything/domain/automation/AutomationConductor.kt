@@ -126,9 +126,6 @@ class AutomationConductor(
 
         automationUnitsCache.values.forEach { it.second.bind(automationUnitsCache) }
 
-        val allInstancesMap =
-            allInstances.associateBy(keySelector = { it.id }, valueTransform = { it })
-
         return allInstances
             .filter { it.automation != null }
             .associateBy(
@@ -149,7 +146,6 @@ class AutomationConductor(
                         AutomationContext(
                             instanceDto,
                             thisDevice,
-                            allInstancesMap,
                             automationUnitsCache.mapValues { it.value.second },
                             evaluationUnitsCache,
                             blocksCache,
