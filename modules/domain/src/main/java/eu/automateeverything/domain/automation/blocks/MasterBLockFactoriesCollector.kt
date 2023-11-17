@@ -20,6 +20,7 @@ import eu.automateeverything.data.automation.StateType
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationContext
 import eu.automateeverything.domain.automation.BlockFactory
+import eu.automateeverything.domain.automation.BlocklyTransformer
 import eu.automateeverything.domain.configurable.*
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 
@@ -32,8 +33,8 @@ class MasterBlockFactoriesCollector(
         thisDevice: Configurable,
         instanceId: Long?,
         context: CollectionContext
-    ): List<BlockFactory<*, *>> {
-        val result = ArrayList<BlockFactory<*, *>>()
+    ): List<BlockFactory<*, *, *>> {
+        val result = ArrayList<BlockFactory<*, *, *>>()
 
         if (context == CollectionContext.Automation) {
             result.addAll(collectStaticBlocks())
@@ -59,14 +60,14 @@ class MasterBlockFactoriesCollector(
         thisDevice: Configurable,
         instanceId: Long?,
         context: CollectionContext
-    ): Collection<BlockFactory<*, *>> {
+    ): Collection<BlockFactory<*, *, *>> {
         return pluginsCoordinator.blockFactoriesCollectors.flatMap {
             it.collect(thisDevice, instanceId, context)
         }
     }
 
-    private fun collectStaticBlocks(): List<BlockFactory<*, *>> {
-        val staticBlocks: MutableList<BlockFactory<*, *>> =
+    private fun collectStaticBlocks(): List<BlockFactory<*, *, *>> {
+        val staticBlocks: MutableList<BlockFactory<*, *, *>> =
             mutableListOf(
                 // logic
                 LogicAndBlockFactory(),
@@ -84,7 +85,8 @@ class MasterBlockFactoriesCollector(
         return staticBlocks
     }
 
-    private fun collectConditionBlocks(): List<BlockFactory<*, AutomationContext>> {
+    private fun collectConditionBlocks():
+        List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -102,7 +104,8 @@ class MasterBlockFactoriesCollector(
             .toList()
     }
 
-    private fun collectSensorBlocks(): List<BlockFactory<*, AutomationContext>> {
+    private fun collectSensorBlocks():
+        List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -127,7 +130,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectChangeStateBlocks(
         thisDevice: Configurable
-    ): List<BlockFactory<*, AutomationContext>> {
+    ): List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         if (thisDevice is StateDeviceConfigurable) {
             return thisDevice.states
                 .filter { it.value.type == StateType.Control && it.value.action != null }
@@ -140,7 +143,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectChangeValueBlocks(
         thisDevice: Configurable
-    ): List<BlockFactory<*, AutomationContext>> {
+    ): List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         if (thisDevice is ControllerConfigurable<*>) {
             return listOf(ChangeValueBlockFactory(thisDevice.valueClazz))
         }
@@ -148,7 +151,8 @@ class MasterBlockFactoriesCollector(
         return listOf()
     }
 
-    private fun collectChangeStateTriggerBlocks(): List<BlockFactory<*, AutomationContext>> {
+    private fun collectChangeStateTriggerBlocks():
+        List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
@@ -168,7 +172,8 @@ class MasterBlockFactoriesCollector(
             .toList()
     }
 
-    private fun collectPortUpdateTriggerBlock(): BlockFactory<*, AutomationContext>? {
+    private fun collectPortUpdateTriggerBlock():
+        BlockFactory<*, AutomationContext, BlocklyTransformer>? {
         val portIds = repository.getAllPorts().map { it.id }
         if (portIds.isNotEmpty()) {
             return PortUpdatedTriggerBlockFactory(portIds)
@@ -177,7 +182,8 @@ class MasterBlockFactoriesCollector(
         return null
     }
 
-    private fun collectStateValuesBlocks(): List<BlockFactory<*, AutomationContext>> {
+    private fun collectStateValuesBlocks():
+        List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
         val instanceBriefs = repository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 

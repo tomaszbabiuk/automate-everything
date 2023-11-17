@@ -18,19 +18,13 @@ package eu.automateeverything.domain.automation
 import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.automation.blocks.BlockCategory
 
-interface BlockFactory<N : AutomationNode, C> {
+interface BlockFactory<N : AutomationNode, C, T> {
     val category: BlockCategory
     val type: String
 
     fun buildBlock(): RawJson
 
-    fun transform(
-        block: Block,
-        next: StatementNode?,
-        context: C,
-        transformer: BlocklyTransformer,
-        order: Int = 0
-    ): N
+    fun transform(block: Block, next: StatementNode?, context: C, transformer: T, order: Int = 0): N
 
     fun dependsOn(): List<Long> = listOf()
 
@@ -38,13 +32,15 @@ interface BlockFactory<N : AutomationNode, C> {
 }
 
 // preventing type erasure
-interface EvaluatorBlockFactory : BlockFactory<EvaluatorNode, AutomationContext>
+interface EvaluatorBlockFactory :
+    BlockFactory<EvaluatorNode, AutomationContext, BlocklyTransformer>
 
 // preventing type erasure
-interface ValueBlockFactory : BlockFactory<ValueNode, AutomationContext>
+interface ValueBlockFactory : BlockFactory<ValueNode, AutomationContext, BlocklyTransformer>
 
 // preventing type erasure
-interface StatementBlockFactory : BlockFactory<StatementNode, AutomationContext>
+interface StatementBlockFactory :
+    BlockFactory<StatementNode, AutomationContext, BlocklyTransformer>
 
 // preventing type erasure
-interface TriggerBlockFactory : BlockFactory<StatementNode, AutomationContext>
+interface TriggerBlockFactory : BlockFactory<StatementNode, AutomationContext, BlocklyTransformer>

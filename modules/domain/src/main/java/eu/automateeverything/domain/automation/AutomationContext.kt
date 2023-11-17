@@ -24,6 +24,6 @@ class AutomationContext(
     val thisDevice: Configurable?,
     val automationUnitsCache: Map<Long, AutomationUnit<*>>,
     val evaluationUnitsCache: Map<Long, EvaluableAutomationUnit>,
-    val blocksCache: List<BlockFactory<*, *>>,
+    val factoriesCache: List<BlockFactory<*, *, *>>,
     val eventBus: EventBus
 )

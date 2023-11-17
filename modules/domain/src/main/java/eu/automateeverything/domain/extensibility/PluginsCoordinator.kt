@@ -44,7 +44,7 @@ interface PluginsCoordinator {
 
     val plugins: List<PluginWrapper>
     val configurables: List<Configurable>
-    val blockFactories: List<BlockFactory<*, *>>
+    val blockFactories: List<BlockFactory<*, *, *>>
     val blockFactoriesCollectors: List<BlockFactoriesCollector>
     val hardwareAdapters: List<HardwareAdapter<*>>
 }

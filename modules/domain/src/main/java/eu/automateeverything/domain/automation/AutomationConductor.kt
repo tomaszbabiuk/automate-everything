@@ -136,7 +136,7 @@ class AutomationConductor(
                             configurable.javaClass.name == instanceDto.clazz
                         }
 
-                    val blocksCache =
+                    val factoriesCache =
                         blockFactoriesCollector.collect(
                             thisDevice!!,
                             instanceDto.id,
@@ -148,7 +148,7 @@ class AutomationConductor(
                             thisDevice,
                             automationUnitsCache.mapValues { it.value.second },
                             evaluationUnitsCache,
-                            blocksCache,
+                            factoriesCache,
                             eventBus
                         )
 

@@ -24,5 +24,5 @@ interface BlockFactoriesCollector : ExtensionPoint {
         thisDevice: Configurable,
         instanceId: Long?,
         context: CollectionContext
-    ): List<BlockFactory<*, *>>
+    ): List<BlockFactory<*, *, *>>
 }

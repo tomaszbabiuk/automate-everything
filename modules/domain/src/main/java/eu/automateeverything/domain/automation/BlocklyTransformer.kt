@@ -39,7 +39,7 @@ class BlocklyTransformer {
         order: Int = 0
     ): EvaluatorNode {
         val blockFactory =
-            context.blocksCache.filterIsInstance<EvaluatorBlockFactory>().find {
+            context.factoriesCache.filterIsInstance<EvaluatorBlockFactory>().find {
                 it.type == block.type
             }
 
@@ -52,7 +52,9 @@ class BlocklyTransformer {
 
     fun transformValue(block: Block, context: AutomationContext, order: Int = 0): ValueNode {
         val blockFactory =
-            context.blocksCache.filterIsInstance<ValueBlockFactory>().find { it.type == block.type }
+            context.factoriesCache.filterIsInstance<ValueBlockFactory>().find {
+                it.type == block.type
+            }
 
         if (blockFactory != null) {
             return blockFactory.transform(block, null, context, this, order)
@@ -72,7 +74,7 @@ class BlocklyTransformer {
         }
 
         val blockFactory =
-            context.blocksCache.filterIsInstance<TriggerBlockFactory>().find {
+            context.factoriesCache.filterIsInstance<TriggerBlockFactory>().find {
                 it.type == block.type
             }
 
@@ -94,7 +96,7 @@ class BlocklyTransformer {
         }
 
         val blockFactory =
-            context.blocksCache.filterIsInstance<StatementBlockFactory>().find {
+            context.factoriesCache.filterIsInstance<StatementBlockFactory>().find {
                 it.type == block.type
             }
 
