@@ -52,7 +52,8 @@ class LogicOrBlockFactory : EvaluatorBlockFactory {
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -61,7 +62,6 @@ class LogicOrBlockFactory : EvaluatorBlockFactory {
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): EvaluatorNode {
         if (block.values == null || block.values.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two <VALUE> defined")

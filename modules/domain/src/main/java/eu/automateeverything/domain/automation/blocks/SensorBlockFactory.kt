@@ -16,16 +16,17 @@
 package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.domain.automation.*
-import eu.automateeverything.domain.configurable.DeviceConfigurable
 import eu.automateeverything.data.hardware.PortValue
 import eu.automateeverything.data.localization.Resource
+import eu.automateeverything.domain.automation.*
+import eu.automateeverything.domain.configurable.DeviceConfigurable
 
-class SensorBlockFactory<T: PortValue>(
+class SensorBlockFactory<T : PortValue>(
     private val valueType: Class<T>,
     override val category: BlockCategory,
     private val sensorId: Long,
-    private val label: Resource) : ValueBlockFactory {
+    private val label: Resource
+) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName}_sensor_$sensorId"
 
@@ -38,7 +39,8 @@ class SensorBlockFactory<T: PortValue>(
                      "helpUrl": null,
                      "message0": "${label.getValue(it)}",
                      "output": "${valueType.simpleName}" }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -47,7 +49,6 @@ class SensorBlockFactory<T: PortValue>(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): ValueNode {
         val evaluator = context.automationUnitsCache[this.sensorId]
 
@@ -55,8 +56,10 @@ class SensorBlockFactory<T: PortValue>(
             return SensorAutomationNode(evaluator)
         }
 
-        throw MalformedBlockException(block.type,
-            "it's impossible to connect this block with correct ${DeviceConfigurable::class.java}")
+        throw MalformedBlockException(
+            block.type,
+            "it's impossible to connect this block with correct ${DeviceConfigurable::class.java}"
+        )
     }
 
     override fun dependsOn(): List<Long> {

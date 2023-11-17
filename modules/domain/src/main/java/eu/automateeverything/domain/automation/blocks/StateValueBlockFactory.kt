@@ -17,9 +17,8 @@ package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.R
-
+import eu.automateeverything.domain.automation.*
 
 open class StateValueBlockFactory(
     private val deviceName: String,
@@ -58,7 +57,8 @@ open class StateValueBlockFactory(
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -67,7 +67,6 @@ open class StateValueBlockFactory(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): EvaluatorNode {
 
         if (block.fields == null) {

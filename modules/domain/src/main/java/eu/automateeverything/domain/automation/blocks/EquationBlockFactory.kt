@@ -16,13 +16,13 @@
 package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.domain.automation.*
 import eu.automateeverything.data.hardware.PortValue
-import java.math.BigDecimal
+import eu.automateeverything.domain.automation.*
 
-open class EquationBlockFactory<T: PortValue>(
+open class EquationBlockFactory<T : PortValue>(
     private val valueType: Class<T>,
-    override val category: BlockCategory) : ValueBlockFactory {
+    override val category: BlockCategory
+) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_equation"
 
@@ -69,7 +69,8 @@ open class EquationBlockFactory<T: PortValue>(
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -78,19 +79,20 @@ open class EquationBlockFactory<T: PortValue>(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): EquationAutomationNode {
         if (block.fields == null || block.fields.size != 2) {
             throw MalformedBlockException(block.type, "should have exactly two FIELDS defined")
         }
 
-        val operatorValue = block.fields.find { it.name == "OPERATOR" }
-            ?: throw MalformedBlockException(block.type, "OPERATOR field not found")
+        val operatorValue =
+            block.fields.find { it.name == "OPERATOR" }
+                ?: throw MalformedBlockException(block.type, "OPERATOR field not found")
 
         val operator = MathOperator.fromString(operatorValue.value!!)
 
-        val rightValue = block.fields.find { it.name == "RIGHT" }
-            ?: throw MalformedBlockException(block.type, "RIGHT value not found")
+        val rightValue =
+            block.fields.find { it.name == "RIGHT" }
+                ?: throw MalformedBlockException(block.type, "RIGHT value not found")
         val right = rightValue.value!!.toBigDecimal()
 
         val leftValue = block.values?.find { it.name == "LEFT" }

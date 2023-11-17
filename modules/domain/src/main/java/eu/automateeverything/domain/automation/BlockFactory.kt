@@ -24,7 +24,7 @@ interface BlockFactory<N : AutomationNode, C, T> {
 
     fun buildBlock(): RawJson
 
-    fun transform(block: Block, next: StatementNode?, context: C, transformer: T, order: Int = 0): N
+    fun transform(block: Block, next: StatementNode?, context: C, transformer: T): N
 
     fun dependsOn(): List<Long> = listOf()
 

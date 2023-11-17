@@ -16,12 +16,12 @@
 package eu.automateeverything.domain.automation.blocks
 
 import eu.automateeverything.data.blocks.RawJson
-import eu.automateeverything.domain.automation.*
 import eu.automateeverything.data.hardware.PortValue
+import eu.automateeverything.domain.automation.*
 import eu.automateeverything.domain.hardware.PortValueBuilder
 import java.math.BigDecimal
 
-open class SimpleValueBlockFactory<T: PortValue>(
+open class SimpleValueBlockFactory<T : PortValue>(
     private val valueType: Class<T>,
     private val minValue: Double,
     private val maxValue: Double?,
@@ -29,7 +29,8 @@ open class SimpleValueBlockFactory<T: PortValue>(
     private val unit: String,
     typeSuffix: String,
     private val valueConverter: ValueConverter?,
-    override val category: BlockCategory) : ValueBlockFactory {
+    override val category: BlockCategory
+) : ValueBlockFactory {
 
     override val type: String = "${valueType.simpleName.lowercase()}_value$typeSuffix"
 
@@ -40,6 +41,7 @@ open class SimpleValueBlockFactory<T: PortValue>(
             ""
         }
     }
+
     override fun buildBlock(): RawJson {
         return RawJson {
             """
@@ -67,7 +69,8 @@ open class SimpleValueBlockFactory<T: PortValue>(
                   "tooltip": "",
                   "helpUrl": ""
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -76,10 +79,12 @@ open class SimpleValueBlockFactory<T: PortValue>(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): ValueNode {
         if (block.fields == null || block.fields.size != 2) {
-            throw MalformedBlockException(block.type, "should have exactly two <FIELDS> defined: VALUE and UNIT")
+            throw MalformedBlockException(
+                block.type,
+                "should have exactly two <FIELDS> defined: VALUE and UNIT"
+            )
         }
 
         val valueField = block.fields.find { it.name == "VALUE" }

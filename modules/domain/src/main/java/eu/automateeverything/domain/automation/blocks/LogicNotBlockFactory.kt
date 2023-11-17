@@ -47,7 +47,8 @@ class LogicNotBlockFactory : EvaluatorBlockFactory {
                       "tooltip": "",
                       "helpUrl": ""
                     }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -56,7 +57,6 @@ class LogicNotBlockFactory : EvaluatorBlockFactory {
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): EvaluatorNode {
         if (block.values == null || block.values.size != 1) {
             throw MalformedBlockException(block.type, "should have exactly one <VALUE> defined")

@@ -53,7 +53,8 @@ class LogicDelayBlockFactory : StatementBlockFactory {
                   "tooltip": "",
                   "helpUrl": ""
                 }
-            """.trimIndent()
+            """
+                .trimIndent()
         }
     }
 
@@ -62,7 +63,6 @@ class LogicDelayBlockFactory : StatementBlockFactory {
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): StatementNode {
         var doNode: StatementNode? = null
 

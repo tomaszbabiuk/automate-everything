@@ -19,8 +19,7 @@ import eu.automateeverything.data.blocks.RawJson
 import eu.automateeverything.domain.R
 import eu.automateeverything.domain.automation.*
 
-class PortUpdatedTriggerBlockFactory(
-    private val portIds: List<String>) : TriggerBlockFactory {
+class PortUpdatedTriggerBlockFactory(private val portIds: List<String>) : TriggerBlockFactory {
 
     override val category = CommonBlockCategories.Triggers
 
@@ -52,7 +51,8 @@ class PortUpdatedTriggerBlockFactory(
                "tooltip": null,
                "helpUrl": null
             }
-            """.trimIndent()
+            """
+                .trimIndent()
         }
     }
 
@@ -61,7 +61,6 @@ class PortUpdatedTriggerBlockFactory(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): StatementNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")
@@ -90,13 +89,12 @@ class PortUpdatedTriggerBlockFactory(
 
     private fun buildPortOptions(portIds: List<String>): String {
         val result = StringBuilder()
-        portIds
-            .forEach{
-                if (result.isNotEmpty()) {
-                    result.append(",")
-                }
-                result.append(buildPortOption(it))
+        portIds.forEach {
+            if (result.isNotEmpty()) {
+                result.append(",")
             }
+            result.append(buildPortOption(it))
+        }
 
         return result.toString()
     }

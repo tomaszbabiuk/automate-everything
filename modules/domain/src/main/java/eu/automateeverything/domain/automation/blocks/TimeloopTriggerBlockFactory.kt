@@ -31,7 +31,7 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
         Minutes5(R.minutes5, 300),
         Minutes10(R.minutes10, 600),
         Minutes30(R.minutes30, 1800),
-        Hour(R.hour, 3600);
+        Hour(R.hour, 3600)
     }
 
     override val category = CommonBlockCategories.Triggers
@@ -56,7 +56,8 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
                    "tooltip": null,
                    "helpUrl": null
                 }
-                """.trimIndent()
+                """
+                .trimIndent()
         }
     }
 
@@ -65,7 +66,6 @@ class TimeloopTriggerBlockFactory : TriggerBlockFactory {
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): StatementNode {
 
         if (block.fields == null) {

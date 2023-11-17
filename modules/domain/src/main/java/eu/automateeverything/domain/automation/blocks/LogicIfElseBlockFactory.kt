@@ -55,7 +55,8 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
                   "tooltip": null,
                   "helpUrl": null
                 }
-            """.trimIndent()
+            """
+                .trimIndent()
         }
     }
 
@@ -64,7 +65,6 @@ class LogicIfElseBlockFactory : StatementBlockFactory {
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): StatementNode {
         var ifNode: StatementNode? = null
         var elseNode: StatementNode? = null

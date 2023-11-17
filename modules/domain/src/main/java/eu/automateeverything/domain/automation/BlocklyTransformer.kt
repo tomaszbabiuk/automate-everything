@@ -20,13 +20,12 @@ class BlocklyTransformer {
     fun transform(
         blocks: List<Block>,
         context: AutomationContext,
-        order: Int = 0
     ): List<StatementNode> {
 
         val masterNodes = ArrayList<StatementNode>()
 
         blocks.forEach {
-            val masterNode = transformTrigger(it, context, order)
+            val masterNode = transformTrigger(it, context)
             masterNodes.add(masterNode)
         }
 
@@ -36,7 +35,6 @@ class BlocklyTransformer {
     fun transformEvaluator(
         block: Block,
         context: AutomationContext,
-        order: Int = 0
     ): EvaluatorNode {
         val blockFactory =
             context.factoriesCache.filterIsInstance<EvaluatorBlockFactory>().find {
@@ -44,20 +42,20 @@ class BlocklyTransformer {
             }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, null, context, this, order)
+            return blockFactory.transform(block, null, context, this)
         }
 
         throw UnknownEvaluatorBlockException(block.type)
     }
 
-    fun transformValue(block: Block, context: AutomationContext, order: Int = 0): ValueNode {
+    fun transformValue(block: Block, context: AutomationContext): ValueNode {
         val blockFactory =
             context.factoriesCache.filterIsInstance<ValueBlockFactory>().find {
                 it.type == block.type
             }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, null, context, this, order)
+            return blockFactory.transform(block, null, context, this)
         }
 
         throw UnknownValueBlockException(block.type)
@@ -66,11 +64,10 @@ class BlocklyTransformer {
     private fun transformTrigger(
         block: Block,
         context: AutomationContext,
-        order: Int = 0
     ): StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
-            next = transformStatement(block.next.block!!, context, order)
+            next = transformStatement(block.next.block!!, context)
         }
 
         val blockFactory =
@@ -79,7 +76,7 @@ class BlocklyTransformer {
             }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, next, context, this, order)
+            return blockFactory.transform(block, next, context, this)
         }
 
         throw UnknownTriggerBlockException(block.type)
@@ -88,11 +85,10 @@ class BlocklyTransformer {
     fun transformStatement(
         block: Block,
         context: AutomationContext,
-        order: Int = 0
     ): StatementNode {
         var next: StatementNode? = null
         if (block.next != null) {
-            next = transformStatement(block.next.block!!, context, order)
+            next = transformStatement(block.next.block!!, context)
         }
 
         val blockFactory =
@@ -101,7 +97,7 @@ class BlocklyTransformer {
             }
 
         if (blockFactory != null) {
-            return blockFactory.transform(block, next, context, this, order)
+            return blockFactory.transform(block, next, context, this)
         }
 
         throw UnknownStatementBlockException(block.type)

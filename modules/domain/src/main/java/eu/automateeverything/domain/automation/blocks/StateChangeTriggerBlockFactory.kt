@@ -23,7 +23,8 @@ import eu.automateeverything.domain.automation.*
 class StateChangeTriggerBlockFactory(
     private val instanceId: Long,
     private val deviceName: String,
-    private val states: Map<String, State>) : TriggerBlockFactory {
+    private val states: Map<String, State>
+) : TriggerBlockFactory {
 
     override val category = CommonBlockCategories.Triggers
 
@@ -55,7 +56,8 @@ class StateChangeTriggerBlockFactory(
                "tooltip": null,
                "helpUrl": null
             }
-            """.trimIndent()
+            """
+                .trimIndent()
         }
     }
 
@@ -64,7 +66,6 @@ class StateChangeTriggerBlockFactory(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): StatementNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have <field> defined")

@@ -93,7 +93,6 @@ open class ComparisonBlockFactory<T : PortValue>(
         next: StatementNode?,
         context: AutomationContext,
         transformer: BlocklyTransformer,
-        order: Int
     ): EvaluatorNode {
         if (block.fields == null) {
             throw MalformedBlockException(block.type, "should have one field defined")
