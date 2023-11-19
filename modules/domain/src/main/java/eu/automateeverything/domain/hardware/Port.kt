@@ -52,7 +52,7 @@ abstract class Port<V : PortValue>(
         }
     }
 
-    abstract fun readInternal(): V
+    protected abstract fun readInternal(): V
 
     @Suppress("UNCHECKED_CAST")
     fun write(value: BigDecimal) {

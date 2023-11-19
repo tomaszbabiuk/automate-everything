@@ -63,7 +63,7 @@ abstract class DeviceConfigurable<V>(val valueClazz: Class<V>) :
     abstract fun buildAutomationUnit(instance: InstanceDto): AutomationUnit<V>
 
     override val hasAutomation: Boolean = true
-    override val hasComposition: Boolean = true
+    override val hasComposition: Boolean = false
     override val taggable: Boolean = true
     override val editableIcon: Boolean = true
     override val generable: Boolean = false

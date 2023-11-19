@@ -286,7 +286,7 @@ class AutomationConductor(
 
     override fun onEvent(event: LiveEvent<*>) {
         val now = Calendar.getInstance()
-        if (event.data is PortUpdateEventData) {
+        if (event.data is PortUpdateEventData && event.data.type == PortUpdateType.ValueChange) {
             val port = event.data.port
             automationUnitsCache
                 .filter {
