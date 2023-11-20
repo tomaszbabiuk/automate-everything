@@ -85,7 +85,10 @@ abstract class StateDeviceConfigurable : DeviceConfigurable<State>(State::class.
     abstract val states: Map<String, State>
 
     companion object {
-        const val STATE_UNKNOWN = "unknown"
+        const val STATE_INIT = "init"
+        const val STATE_ERROR = "error"
+        const val STATE_REPARATION = "repairing"
+        const val STATE_OPERATIONAL = "operational"
     }
 }
 

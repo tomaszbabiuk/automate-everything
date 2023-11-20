@@ -19,7 +19,7 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.domain.configurable.ActionConfigurable
 import eu.automateeverything.domain.configurable.Configurable
 
-abstract class ActionConfigurableBase: ActionConfigurable() {
+abstract class ActionConfigurableBase : ActionConfigurable() {
 
     override val parent: Class<out Configurable>
         get() = ActionsConfigurable::class.java
@@ -27,33 +27,27 @@ abstract class ActionConfigurableBase: ActionConfigurable() {
     override val states: Map<String, State>
         get() {
             val states: MutableMap<String, State> = HashMap()
-            states[STATE_UNKNOWN] = State.buildReadOnlyState(
-                STATE_UNKNOWN,
-                eu.automateeverything.domain.R.state_unknown,
-            )
-            states[STATE_READY] = State.buildControlState(
-                STATE_READY,
-                R.state_ready,
-                R.action_reset
-            )
-            states[STATE_CANCELLED] = State.buildControlState(
-                STATE_CANCELLED,
-                R.state_cancelled,
-                R.action_cancel
-            )
-            states[STATE_SUCCESS] = State.buildReadOnlyState(
-                STATE_SUCCESS,
-                R.state_success,
-            )
-            states[STATE_FAILURE] = State.buildReadOnlyState(
-                STATE_FAILURE,
-                R.state_failure,
-            )
-            states[STATE_EXECUTING] = State.buildControlState(
-                STATE_EXECUTING,
-                R.state_executing,
-                R.action_execute
-            )
+            states[STATE_INIT] =
+                State.buildReadOnlyState(
+                    STATE_INIT,
+                    eu.automateeverything.domain.R.state_init,
+                )
+            states[STATE_READY] =
+                State.buildControlState(STATE_READY, R.state_ready, R.action_reset)
+            states[STATE_CANCELLED] =
+                State.buildControlState(STATE_CANCELLED, R.state_cancelled, R.action_cancel)
+            states[STATE_SUCCESS] =
+                State.buildReadOnlyState(
+                    STATE_SUCCESS,
+                    R.state_success,
+                )
+            states[STATE_FAILURE] =
+                State.buildReadOnlyState(
+                    STATE_FAILURE,
+                    R.state_failure,
+                )
+            states[STATE_EXECUTING] =
+                State.buildControlState(STATE_EXECUTING, R.state_executing, R.action_execute)
             return states
         }
 

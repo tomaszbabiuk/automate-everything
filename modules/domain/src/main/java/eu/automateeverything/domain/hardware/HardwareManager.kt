@@ -95,7 +95,7 @@ class HardwareManager(
                             it.valueClazz.name,
                             it.capabilities.canRead,
                             it.capabilities.canWrite,
-                            it.sleepInterval,
+                            it.maxSleepInterval,
                             it.lastSeenTimestamp
                         )
                     repository.updatePort(portSnapshot)

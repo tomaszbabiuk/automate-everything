@@ -57,7 +57,7 @@ abstract class HardwareAdapterBase<T : Port<*>>(
         try {
             internalDiscovery(mode)
         } catch (ex: Exception) {
-            logDiscovery("Internal discovery error!")
+            logDiscovery("Internal discovery error! ${ex.message}")
         }
 
         state = AdapterState.Operating

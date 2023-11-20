@@ -30,7 +30,7 @@ abstract class Port<V : PortValue>(
     private val eventBus: EventBus,
     val valueClazz: Class<V>,
     val capabilities: PortCapabilities,
-    var sleepInterval: Long,
+    var maxSleepInterval: Long,
 ) {
     var lastSeenTimestamp: Long = 0L
         private set
@@ -73,5 +73,13 @@ abstract class Port<V : PortValue>(
 
     fun reset() {
         requestedValue = null
+    }
+
+    fun assumeConnected(now: Long): Boolean {
+        if (maxSleepInterval == 0L) {
+            return true
+        }
+
+        return (now - lastSeenTimestamp) < maxSleepInterval
     }
 }

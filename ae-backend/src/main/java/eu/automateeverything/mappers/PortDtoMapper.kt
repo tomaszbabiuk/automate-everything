@@ -39,7 +39,7 @@ class PortDtoMapper {
             port.valueClazz.name,
             port.capabilities.canRead,
             port.capabilities.canWrite,
-            port.sleepInterval,
+            port.maxSleepInterval,
             port.lastSeenTimestamp
         )
     }

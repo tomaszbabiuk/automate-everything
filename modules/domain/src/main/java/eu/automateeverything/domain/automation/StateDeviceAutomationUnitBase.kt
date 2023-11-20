@@ -20,7 +20,7 @@ import eu.automateeverything.data.automation.State
 import eu.automateeverything.data.automation.StateType
 import eu.automateeverything.data.configurables.ControlType
 import eu.automateeverything.data.instances.InstanceDto
-import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_UNKNOWN
+import eu.automateeverything.domain.configurable.StateDeviceConfigurable.Companion.STATE_INIT
 import eu.automateeverything.domain.events.EventBus
 import eu.automateeverything.domain.hardware.Port
 import eu.automateeverything.domain.hardware.Relay
@@ -38,11 +38,11 @@ abstract class StateDeviceAutomationUnitBase(
         name,
         instance,
         controlType,
-        buildUnknownEvaluation(STATE_UNKNOWN, states)
+        buildUnknownEvaluation(STATE_INIT, states)
     ),
     StateDeviceAutomationUnit {
 
-    override var currentState: State = states[STATE_UNKNOWN]!!
+    override var currentState: State = states[STATE_INIT]!!
         protected set(value) {
             if (field != value) {
                 field = value
