@@ -15,31 +15,32 @@
 
 package eu.automateeverything
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.domain.automation.blocks.MasterBlockFactoriesCollector
 import eu.automateeverything.domain.events.EventBus
-import eu.automateeverything.rest.*
 import eu.automateeverything.domain.events.NumberedEventBus
+import eu.automateeverything.domain.extensibility.ConfigurableRepository
+import eu.automateeverything.domain.extensibility.InjectionRegistry
 import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.extensibility.SingletonExtensionPluginsCoordinator
 import eu.automateeverything.domain.firstrun.FileCheckingFirstRunService
 import eu.automateeverything.domain.firstrun.FirstRunService
 import eu.automateeverything.domain.hardware.HardwareManager
 import eu.automateeverything.domain.hardware.PortFinder
-import eu.automateeverything.domain.langateway.LanGatewayResolver
-import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.domain.heartbeat.Pulsar
 import eu.automateeverything.domain.inbox.BroadcastingInbox
 import eu.automateeverything.domain.inbox.Inbox
-import eu.automateeverything.domain.extensibility.InjectionRegistry
+import eu.automateeverything.domain.langateway.LanGatewayResolver
+import eu.automateeverything.domain.mqtt.MqttBrokerService
 import eu.automateeverything.interop.ByteArraySessionHandler
 import eu.automateeverything.interop.SessionHandler
 import eu.automateeverything.jsonrpc2.*
 import eu.automateeverything.langateway.JavaLanGatewayResolver
 import eu.automateeverything.mappers.*
 import eu.automateeverything.pluginfeatures.mqtt.MoquetteBroker
-import eu.automateeverything.sqldelightplugin.SqlDelightRepository
+import eu.automateeverything.rest.*
+import eu.automateeverything.sqldelightplugin.SqlDelightDataRepository
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.cbor.Cbor
@@ -51,21 +52,29 @@ open class App : ResourceConfig() {
     private val logger = LoggerFactory.getLogger(App::class.java)
 
     @OptIn(ExperimentalSerializationApi::class)
-    private val binaryFormat = Cbor {
-        ignoreUnknownKeys = true
-    }
+    private val binaryFormat = Cbor { ignoreUnknownKeys = true }
 
-    //manual injection of common services
+    // manual injection of common services
     private val injectionRegistry: InjectionRegistry = InjectionRegistry()
     private val firstRunService: FirstRunService = FileCheckingFirstRunService()
     private val eventBus: EventBus = NumberedEventBus()
-    private val repository: Repository = SqlDelightRepository()
-    private val inbox: Inbox = BroadcastingInbox(eventBus, repository)
-    private val pluginsCoordinator: PluginsCoordinator = SingletonExtensionPluginsCoordinator(eventBus, injectionRegistry, repository)
-    private val hardwareManager = HardwareManager(pluginsCoordinator, eventBus, inbox, repository)
-    private val blockFactoriesCoordinator = MasterBlockFactoriesCollector(pluginsCoordinator, repository)
-    private val automationConductor = AutomationConductor(hardwareManager, blockFactoriesCoordinator, pluginsCoordinator,
-        eventBus, inbox, repository)
+    private val dataRepository: DataRepository = SqlDelightDataRepository()
+    private val inbox: Inbox = BroadcastingInbox(eventBus, dataRepository)
+    private val pluginsCoordinator: PluginsCoordinator =
+        SingletonExtensionPluginsCoordinator(eventBus, injectionRegistry, dataRepository)
+    private val hardwareManager =
+        HardwareManager(pluginsCoordinator, eventBus, inbox, dataRepository)
+    private val blockFactoriesCoordinator =
+        MasterBlockFactoriesCollector(pluginsCoordinator, dataRepository)
+    private val automationConductor =
+        AutomationConductor(
+            hardwareManager,
+            blockFactoriesCoordinator,
+            pluginsCoordinator,
+            eventBus,
+            inbox,
+            dataRepository
+        )
     private val pulsar = Pulsar(eventBus, inbox, automationConductor)
     private val mqttBrokerService: MqttBrokerService = MoquetteBroker()
     private val lanGatewayResolver: LanGatewayResolver = JavaLanGatewayResolver()
@@ -87,33 +96,35 @@ open class App : ResourceConfig() {
         val descriptionsUpdateDtoMapper = DescriptionsUpdateDtoMapper()
         val configurablesDtoMapper = ConfigurableDtoMapper(fieldDefinitionMapper)
 
-        val eventsMapper = LiveEventsMapper(
-            portMapper,
-            pluginMapper,
-            discoveryEventMapper,
-            automationUnitMapper,
-            automationHistoryMapper,
-            heartbeatMapper,
-            inboxMessageMapper,
-            descriptionsUpdateDtoMapper
-        )
+        val eventsMapper =
+            LiveEventsMapper(
+                portMapper,
+                pluginMapper,
+                discoveryEventMapper,
+                automationUnitMapper,
+                automationHistoryMapper,
+                heartbeatMapper,
+                inboxMessageMapper,
+                descriptionsUpdateDtoMapper
+            )
 
-        val eventsSubscriptionBuilder = EventsSubscriptionBuilder(eventBus, eventsMapper, binaryFormat)
+        val eventsSubscriptionBuilder =
+            EventsSubscriptionBuilder(eventBus, eventsMapper, binaryFormat)
 
-        val methodHandlers = listOf(
-            InstancesMethodHandler(repository),
-            MessagesMethodHandler(repository),
-            IconsMethodHandler(repository),
-            TagsMethodHandler(repository),
-            VersionsMethodHandler(repository),
-            ConfigurablesMethodHandler(pluginsCoordinator, configurablesDtoMapper),
-            AutomationUnitsMethodHandler(automationConductor, automationUnitMapper),
-            SubscribeToEventsMethodHandler(eventsSubscriptionBuilder)
-        )
+        val methodHandlers =
+            listOf(
+                InstancesMethodHandler(dataRepository),
+                MessagesMethodHandler(dataRepository),
+                IconsMethodHandler(dataRepository),
+                TagsMethodHandler(dataRepository),
+                VersionsMethodHandler(dataRepository),
+                ConfigurablesMethodHandler(pluginsCoordinator, configurablesDtoMapper),
+                AutomationUnitsMethodHandler(automationConductor, automationUnitMapper),
+                SubscribeToEventsMethodHandler(eventsSubscriptionBuilder)
+            )
 
         return ByteArraySessionHandler(methodHandlers, binaryFormat)
     }
-
 
     init {
         fillInjectionRegistry()
@@ -150,8 +161,9 @@ open class App : ResourceConfig() {
         injectionRegistry.put(Inbox::class.java, inbox)
         injectionRegistry.put(MqttBrokerService::class.java, mqttBrokerService)
         injectionRegistry.put(LanGatewayResolver::class.java, lanGatewayResolver)
-        injectionRegistry.put(Repository::class.java, repository)
+        injectionRegistry.put(DataRepository::class.java, dataRepository)
         injectionRegistry.put(ByteArraySessionHandler::class.java, sessionHandler)
+        injectionRegistry.put(ConfigurableRepository::class.java, pluginsCoordinator)
     }
 
     private fun firstRunProcedure() {
@@ -176,8 +188,13 @@ open class App : ResourceConfig() {
         packages(REST_PACKAGE_NAME)
         register(
             DependencyInjectionBinder(
-                eventBus, repository, pluginsCoordinator, hardwareManager,
-                automationConductor, blockFactoriesCoordinator, inbox
+                eventBus,
+                dataRepository,
+                pluginsCoordinator,
+                hardwareManager,
+                automationConductor,
+                blockFactoriesCoordinator,
+                inbox
             )
         )
         register(GsonMessageBodyHandler())

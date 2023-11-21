@@ -15,7 +15,7 @@
 
 package eu.automateeverything.domain.hardware
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.hardware.AdapterState
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.hardware.PortValue
@@ -38,7 +38,7 @@ class HardwareManager(
     pluginsCoordinator: PluginsCoordinator,
     private val eventBus: EventBus,
     private val inbox: Inbox,
-    private val repository: Repository,
+    private val dataRepository: DataRepository,
 ) : WithStartStopScope<Void?>(), PluginStateListener, PortFinder {
 
     private val factories: MutableMap<HardwarePlugin, List<AdapterBundle>> = HashMap()
@@ -98,7 +98,7 @@ class HardwareManager(
                             it.maxSleepInterval,
                             it.lastSeenTimestamp
                         )
-                    repository.updatePort(portSnapshot)
+                    dataRepository.updatePort(portSnapshot)
                     eventBus.broadcastPortUpdateEvent(
                         bundle.owningPluginId,
                         bundle.adapter.adapterId,
@@ -106,7 +106,7 @@ class HardwareManager(
                         it
                     )
 
-                    val portNotReported = repository.getPortById(it.portId) == null
+                    val portNotReported = dataRepository.getPortById(it.portId) == null
                     if (portNotReported) {
                         inbox.sendMessage(
                             R.inbox_message_new_port_found_subject,

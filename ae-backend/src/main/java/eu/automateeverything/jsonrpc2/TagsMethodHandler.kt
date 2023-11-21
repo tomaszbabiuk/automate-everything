@@ -15,19 +15,23 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.interop.MethodHandler
 import eu.automateeverything.interop.SubscriptionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.encodeToByteArray
 
-class TagsMethodHandler(val repository: Repository) : MethodHandler {
-        override fun matches(method: String): Boolean {
-            return method == "GetTags"
-        }
-
-        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
-            val result = repository.getAllTags()
-            return format.encodeToByteArray(result)
-        }
+class TagsMethodHandler(val dataRepository: DataRepository) : MethodHandler {
+    override fun matches(method: String): Boolean {
+        return method == "GetTags"
     }
+
+    override fun handle(
+        format: BinaryFormat,
+        params: ByteArray?,
+        subscriptions: MutableList<SubscriptionHandler>
+    ): ByteArray {
+        val result = dataRepository.getAllTags()
+        return format.encodeToByteArray(result)
+    }
+}

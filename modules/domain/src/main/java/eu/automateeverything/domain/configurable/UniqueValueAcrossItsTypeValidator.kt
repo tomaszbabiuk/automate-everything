@@ -1,12 +1,12 @@
 package eu.automateeverything.domain.configurable
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.configurable.NameDescriptionConfigurable.Companion.FIELD_NAME
 
 class UniqueValueAcrossItsTypeValidator(
     private val clazz: Class<out Configurable>,
-    private val repository: Repository,
+    private val dataRepository: DataRepository,
     private val uniqueFieldName: String
 ) : Validator<String> {
     override val reason: Resource
@@ -22,7 +22,7 @@ class UniqueValueAcrossItsTypeValidator(
         }
 
         val existingInstances =
-            repository
+            dataRepository
                 .getAllInstances()
                 .filter { it.clazz == clazz.name }
                 .filter { it.fields[uniqueFieldName] == validatedFieldValue }

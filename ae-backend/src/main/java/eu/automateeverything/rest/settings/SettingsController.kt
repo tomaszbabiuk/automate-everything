@@ -15,31 +15,33 @@
 
 package eu.automateeverything.rest.settings
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.settings.SettingsDto
-import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import eu.automateeverything.domain.configurable.FieldValidationResult
 import eu.automateeverything.domain.configurable.SettingGroup
 import eu.automateeverything.domain.extensibility.PluginMetadata
+import eu.automateeverything.domain.extensibility.PluginsCoordinator
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
-import org.pf4j.PluginState
 import kotlin.collections.HashMap
+import org.pf4j.PluginState
 
 typealias ValidationResultMap = Map<String, FieldValidationResult>
+
 typealias SettingsValuesMap = Map<String, String?>
 
 @Path("settings")
-class SettingsController @Inject constructor(
+class SettingsController
+@Inject
+constructor(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val repository: Repository
+    private val dataRepository: DataRepository
 ) {
 
     private fun findSettingCategory(clazz: String): SettingGroup? {
-        return pluginsCoordinator
-            .plugins
-            .map {it.plugin }
+        return pluginsCoordinator.plugins
+            .map { it.plugin }
             .filterIsInstance<PluginMetadata>()
             .flatMap { it.settingGroups }
             .firstOrNull { it.javaClass.name == clazz }
@@ -50,11 +52,7 @@ class SettingsController @Inject constructor(
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun getSettings(@PathParam("pluginId") pluginId: String): Map<String, SettingsValuesMap> {
         val result = HashMap<String, SettingsValuesMap>()
-        repository
-            .getSettingsByPluginId(pluginId)
-            .forEach {
-                result[it.clazz] = it.fields
-            }
+        dataRepository.getSettingsByPluginId(pluginId).forEach { result[it.clazz] = it.fields }
 
         return result
     }
@@ -63,7 +61,10 @@ class SettingsController @Inject constructor(
     @Path("/{pluginId}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Throws(Exception::class)
-    fun putSettings(@PathParam("pluginId") pluginId: String, settings: Map<String, SettingsValuesMap>): Map<String, ValidationResultMap> {
+    fun putSettings(
+        @PathParam("pluginId") pluginId: String,
+        settings: Map<String, SettingsValuesMap>
+    ): Map<String, ValidationResultMap> {
         val validationResult = HashMap<String, ValidationResultMap>()
         var hasErrors = false
 
@@ -80,7 +81,7 @@ class SettingsController @Inject constructor(
         }
 
         if (!hasErrors) {
-            repository.updateSettings(settingsDtos)
+            dataRepository.updateSettings(settingsDtos)
             restartPlugin(pluginId)
         }
 
@@ -95,8 +96,7 @@ class SettingsController @Inject constructor(
         }
     }
 
-    private fun validate(settingsDto: SettingsDto):
-            ValidationResultMap {
+    private fun validate(settingsDto: SettingsDto): ValidationResultMap {
         val category = findSettingCategory(settingsDto.clazz)
         return if (category != null) {
             val validationResult: MutableMap<String, FieldValidationResult> = HashMap()

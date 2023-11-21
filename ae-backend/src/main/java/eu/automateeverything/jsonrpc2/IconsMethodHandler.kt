@@ -15,28 +15,30 @@
 
 package eu.automateeverything.jsonrpc2
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.interop.MethodHandler
 import eu.automateeverything.interop.SubscriptionHandler
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 
-class IconsMethodHandler(val repository: Repository) : MethodHandler {
-        override fun matches(method: String): Boolean {
-            return method == "GetIcons"
+class IconsMethodHandler(val dataRepository: DataRepository) : MethodHandler {
+    override fun matches(method: String): Boolean {
+        return method == "GetIcons"
+    }
+
+    override fun handle(
+        format: BinaryFormat,
+        params: ByteArray?,
+        subscriptions: MutableList<SubscriptionHandler>
+    ): ByteArray {
+        if (params != null) {
+            val ids: List<Long> = format.decodeFromByteArray(params)
+            val icons = ids.map { dataRepository.getIcon(it) }
+
+            return format.encodeToByteArray(icons)
         }
 
-        override fun handle(format: BinaryFormat, params: ByteArray?, subscriptions: MutableList<SubscriptionHandler>): ByteArray {
-            if (params != null) {
-                val ids: List<Long> = format.decodeFromByteArray(params)
-                val icons = ids.map {
-                    repository.getIcon(it)
-                }
-                
-                return format.encodeToByteArray(icons)
-            }
-            
-            return format.encodeToByteArray(repository.getAllIcons())
-        }
+        return format.encodeToByteArray(dataRepository.getAllIcons())
+    }
 }

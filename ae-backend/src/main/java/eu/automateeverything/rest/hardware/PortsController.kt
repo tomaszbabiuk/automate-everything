@@ -15,7 +15,7 @@
 
 package eu.automateeverything.rest.hardware
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.domain.ResourceNotFoundException
 import eu.automateeverything.domain.hardware.*
@@ -31,14 +31,14 @@ class PortsController
 @Inject
 constructor(
     private val hardwareManager: HardwareManager,
-    private val repository: Repository,
+    private val dataRepository: DataRepository,
     private val portDtoMapper: PortDtoMapper
 ) {
 
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @GET
     fun getPorts(): List<PortDto> {
-        val portsInRepo = repository.getAllPorts().toMutableList()
+        val portsInRepo = dataRepository.getAllPorts().toMutableList()
 
         hardwareManager.checkNewPorts()
 
@@ -86,6 +86,6 @@ constructor(
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deletePort(@PathParam("id") id: String) {
-        repository.deletePort(id)
+        dataRepository.deletePort(id)
     }
 }

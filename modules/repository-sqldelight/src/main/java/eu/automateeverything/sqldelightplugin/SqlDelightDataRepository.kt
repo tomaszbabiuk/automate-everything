@@ -16,9 +16,9 @@
 package eu.automateeverything.sqldelightplugin
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.InstanceInterceptor
 import eu.automateeverything.data.Mapper
-import eu.automateeverything.data.Repository
 import eu.automateeverything.data.hardware.PortDto
 import eu.automateeverything.data.icons.IconCategoryDto
 import eu.automateeverything.data.icons.IconDto
@@ -32,7 +32,7 @@ import eu.automateeverything.sqldelightplugin.database.*
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
-class SqlDelightRepository : Repository {
+class SqlDelightDataRepository : DataRepository {
 
     private var database: Database
     private var hasUpdatedInstance = false

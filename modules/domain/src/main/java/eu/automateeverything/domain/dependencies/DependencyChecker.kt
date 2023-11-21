@@ -15,7 +15,7 @@
 
 package eu.automateeverything.domain.dependencies
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.fields.FieldType
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.ResourceNotFoundException
@@ -36,10 +36,10 @@ constructor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val blocklyParser: BlocklyParser,
     private val blockFactoriesCollector: BlockFactoriesCollector,
-    private val repository: Repository
+    private val dataRepository: DataRepository
 ) {
     fun checkInstance(instanceId: Long): HashMap<Long, Dependency> {
-        val allInstances = repository.getAllInstances()
+        val allInstances = dataRepository.getAllInstances()
 
         val checkedInstance = findInstance(instanceId, allInstances)
         if (checkedInstance != null) {

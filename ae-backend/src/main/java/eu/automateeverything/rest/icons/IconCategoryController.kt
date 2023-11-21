@@ -15,42 +15,36 @@
 
 package eu.automateeverything.rest.icons
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.icons.IconCategoryDto
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 
 @Path("iconcategories")
-class IconCategoryController @Inject constructor(
-    private val repository: Repository
-) {
+class IconCategoryController @Inject constructor(private val dataRepository: DataRepository) {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun postIconCategory(iconCategoryDto: IconCategoryDto): Long {
-        return repository
-                    .saveIconCategory(iconCategoryDto)
+        return dataRepository.saveIconCategory(iconCategoryDto)
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun putIconCategory(iconCategoryDto: IconCategoryDto) {
-        repository
-            .updateIconCategory(iconCategoryDto)
+        dataRepository.updateIconCategory(iconCategoryDto)
     }
 
     @get:Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @get:GET
     val allIConCategories: List<IconCategoryDto>
-        get() = repository
-                    .getAllIconCategories()
+        get() = dataRepository.getAllIconCategories()
 
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deleteIconCategory(@PathParam("id") id: Long) {
-        repository
-            .deleteIconCategory(id)
+        dataRepository.deleteIconCategory(id)
     }
 }

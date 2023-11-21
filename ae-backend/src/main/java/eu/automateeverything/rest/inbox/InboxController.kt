@@ -15,37 +15,37 @@
 
 package eu.automateeverything.rest.inbox
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.inbox.InboxMessageDto
-import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.domain.ResourceNotFoundException
+import eu.automateeverything.domain.inbox.Inbox
 import eu.automateeverything.mappers.InboxMessageDtoMapper
-import jakarta.servlet.http.HttpServletResponse
 import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
 
 @Path("inbox")
-class InboxController @Inject constructor(
-    private val repository: Repository,
+class InboxController
+@Inject
+constructor(
+    private val dataRepository: DataRepository,
     private val inbox: Inbox,
     private val mapper: InboxMessageDtoMapper
 ) {
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    fun allInboxItems(@QueryParam("limit") limit: Long,
-                      @QueryParam("offset") offset: Long,
-                      @Context response: HttpServletResponse
+    fun allInboxItems(
+        @QueryParam("limit") limit: Long,
+        @QueryParam("offset") offset: Long,
+        @Context response: HttpServletResponse
     ): List<InboxMessageDto> {
 
         includeInboxState(response)
 
-        return repository
-            .getInboxItems(if (limit == 0L) 20 else limit, offset)
-            .map(mapper::map)
+        return dataRepository.getInboxItems(if (limit == 0L) 20 else limit, offset).map(mapper::map)
     }
 
     @DELETE
@@ -56,8 +56,7 @@ class InboxController @Inject constructor(
             throw ResourceNotFoundException()
         }
 
-        repository
-            .deleteInboxItem(id)
+        dataRepository.deleteInboxItem(id)
 
         includeInboxState(response)
     }
@@ -66,8 +65,7 @@ class InboxController @Inject constructor(
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     fun deleteAllInboxItems(@Context response: HttpServletResponse) {
-        repository
-            .deleteAllInboxItems()
+        dataRepository.deleteAllInboxItems()
 
         includeInboxState(response)
     }
@@ -75,12 +73,15 @@ class InboxController @Inject constructor(
     @PUT
     @Path("/{id}/read")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateRead(@PathParam("id") id: Long?, @Context response: HttpServletResponse): InboxMessageDto {
+    fun updateRead(
+        @PathParam("id") id: Long?,
+        @Context response: HttpServletResponse
+    ): InboxMessageDto {
         if (id == null) {
             throw ResourceNotFoundException()
         }
 
-        val x = repository.markInboxItemAsRead(id)
+        val x = dataRepository.markInboxItemAsRead(id)
 
         includeInboxState(response)
 
@@ -90,8 +91,8 @@ class InboxController @Inject constructor(
     @PUT
     @Path("all/read")
     @Produces(MediaType.APPLICATION_JSON + ";charset=UTF-8")
-    fun updateAllRead( @Context response: HttpServletResponse) {
-        repository.markAllInboxItemAsRead()
+    fun updateAllRead(@Context response: HttpServletResponse) {
+        dataRepository.markAllInboxItemAsRead()
 
         includeInboxState(response)
     }

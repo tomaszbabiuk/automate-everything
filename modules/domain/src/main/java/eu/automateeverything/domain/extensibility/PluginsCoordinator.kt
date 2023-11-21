@@ -23,7 +23,7 @@ import eu.automateeverything.domain.hardware.HardwareAdapter
 import org.pf4j.PluginStateListener
 import org.pf4j.PluginWrapper
 
-interface PluginsCoordinator {
+interface PluginsCoordinator : ConfigurableRepository {
     fun enablePlugin(pluginId: String): PluginWrapper?
 
     fun disablePlugin(pluginId: String): PluginWrapper?
@@ -47,4 +47,8 @@ interface PluginsCoordinator {
     val blockFactories: List<BlockFactory<*, *, *>>
     val blockFactoriesCollectors: List<BlockFactoriesCollector>
     val hardwareAdapters: List<HardwareAdapter<*>>
+
+    override fun getAllConfigurables(): List<Configurable> {
+        return configurables
+    }
 }

@@ -15,7 +15,7 @@
 
 package eu.automateeverything.domain.automation
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.instances.InstanceDto
 import eu.automateeverything.domain.R
 import eu.automateeverything.domain.WithStartStopScope
@@ -36,7 +36,7 @@ class AutomationConductor(
     private val pluginsCoordinator: PluginsCoordinator,
     private val eventBus: EventBus,
     private val inbox: Inbox,
-    private val repository: Repository
+    private val dataRepository: DataRepository
 ) : WithStartStopScope<Void?>(), LiveEventsListener {
 
     init {
@@ -90,7 +90,7 @@ class AutomationConductor(
 
         eventBus.unsubscribeFromStateChanges()
 
-        val allInstances = repository.getAllInstances()
+        val allInstances = dataRepository.getAllInstances()
         val allConfigurables = pluginsCoordinator.configurables
 
         allInstances.forEach { instance ->
@@ -225,7 +225,7 @@ class AutomationConductor(
 
                     val hasAutomations = automations.isNotEmpty()
                     val hasNewPorts = hardwareManager.checkNewPorts()
-                    val hasUpdatedInstance = repository.hasUpdatedInstance()
+                    val hasUpdatedInstance = dataRepository.hasUpdatedInstance()
 
                     if (hasNewPorts || hasUpdatedInstance) {
                         if (hasNewPorts) {
@@ -235,7 +235,7 @@ class AutomationConductor(
 
                         if (hasUpdatedInstance) {
                             logger.debug("Repository has updated instance... rebuilding automation")
-                            repository.clearInstanceUpdatedFlag()
+                            dataRepository.clearInstanceUpdatedFlag()
                         }
 
                         automations = rebuildAutomations()

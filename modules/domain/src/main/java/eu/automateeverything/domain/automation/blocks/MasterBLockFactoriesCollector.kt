@@ -15,7 +15,7 @@
 
 package eu.automateeverything.domain.automation.blocks
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.automation.StateType
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.automation.AutomationContext
@@ -26,7 +26,7 @@ import eu.automateeverything.domain.extensibility.PluginsCoordinator
 
 class MasterBlockFactoriesCollector(
     val pluginsCoordinator: PluginsCoordinator,
-    private val repository: Repository,
+    private val dataRepository: DataRepository,
 ) : BlockFactoriesCollector {
 
     override fun collect(
@@ -87,7 +87,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectConditionBlocks():
         List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
-        val instanceBriefs = repository.getAllInstanceBriefs()
+        val instanceBriefs = dataRepository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
@@ -106,7 +106,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectSensorBlocks():
         List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
-        val instanceBriefs = repository.getAllInstanceBriefs()
+        val instanceBriefs = dataRepository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
@@ -153,7 +153,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectChangeStateTriggerBlocks():
         List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
-        val instanceBriefs = repository.getAllInstanceBriefs()
+        val instanceBriefs = dataRepository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs
@@ -174,7 +174,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectPortUpdateTriggerBlock():
         BlockFactory<*, AutomationContext, BlocklyTransformer>? {
-        val portIds = repository.getAllPorts().map { it.id }
+        val portIds = dataRepository.getAllPorts().map { it.id }
         if (portIds.isNotEmpty()) {
             return PortUpdatedTriggerBlockFactory(portIds)
         }
@@ -184,7 +184,7 @@ class MasterBlockFactoriesCollector(
 
     private fun collectStateValuesBlocks():
         List<BlockFactory<*, AutomationContext, BlocklyTransformer>> {
-        val instanceBriefs = repository.getAllInstanceBriefs()
+        val instanceBriefs = dataRepository.getAllInstanceBriefs()
         val allConfigurables = pluginsCoordinator.configurables
 
         return instanceBriefs

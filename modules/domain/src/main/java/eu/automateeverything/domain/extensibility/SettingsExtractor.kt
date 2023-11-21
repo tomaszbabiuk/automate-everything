@@ -15,12 +15,13 @@
 
 package eu.automateeverything.domain.extensibility
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.settings.SettingsDto
 
 class SettingsExtractor(
     private val pluginsCoordinator: PluginsCoordinator,
-    private val repository: Repository) {
+    private val dataRepository: DataRepository
+) {
 
     fun extractSettings(extensionClazz: Class<*>): List<SettingsDto> {
         val pluginContainingThisExtension = pluginsCoordinator.findExtensionOwner(extensionClazz)
@@ -29,8 +30,8 @@ class SettingsExtractor(
     }
 
     fun extractSettings(pluginId: String): List<SettingsDto> {
-        return pluginsCoordinator
-            .getPluginSettingGroups(pluginId)
-            .mapNotNull { repository.getSettingsByPluginIdAndClazz(pluginId, it.javaClass.name) }
+        return pluginsCoordinator.getPluginSettingGroups(pluginId).mapNotNull {
+            dataRepository.getSettingsByPluginIdAndClazz(pluginId, it.javaClass.name)
+        }
     }
 }

@@ -15,39 +15,37 @@
 
 package eu.automateeverything.domain.inbox
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.data.inbox.InboxItemDto
 import eu.automateeverything.data.localization.Resource
 import eu.automateeverything.domain.events.EventBus
 import java.util.*
 
-class BroadcastingInbox(
-    val eventBus: EventBus,
-    val repository: Repository
-) : Inbox {
+class BroadcastingInbox(val eventBus: EventBus, val dataRepository: DataRepository) : Inbox {
 
     init {
         refreshCounters()
     }
 
     override fun sendMessage(subject: Resource, body: Resource) {
-        val inboxItem = InboxItemDto(
-            timestamp = calculateNow(),
-            subject = subject.serialize(),
-            body = body.serialize()
-        )
+        val inboxItem =
+            InboxItemDto(
+                timestamp = calculateNow(),
+                subject = subject.serialize(),
+                body = body.serialize()
+            )
 
-        inboxItem.id = repository.saveInboxItem(inboxItem)
+        inboxItem.id = dataRepository.saveInboxItem(inboxItem)
         eventBus.broadcastInboxMessage(inboxItem)
         refreshCounters()
     }
 
-    override var unreadMessagesCount : Long = 0
-    override var totalMessagesCount : Long = 0
+    override var unreadMessagesCount: Long = 0
+    override var totalMessagesCount: Long = 0
 
     override fun refreshCounters() {
-        unreadMessagesCount = repository.countUnreadInboxItems()
-        totalMessagesCount = repository.countAllInboxItems()
+        unreadMessagesCount = dataRepository.countUnreadInboxItems()
+        totalMessagesCount = dataRepository.countAllInboxItems()
     }
 
     private fun calculateNow(): Long {

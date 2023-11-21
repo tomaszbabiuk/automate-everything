@@ -15,7 +15,7 @@
 
 package eu.automateeverything.rest
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.domain.automation.AutomationConductor
 import eu.automateeverything.domain.automation.BlocklyParser
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
@@ -31,7 +31,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder
 
 class DependencyInjectionBinder(
     private val eventBus: EventBus,
-    private val repository: Repository,
+    private val dataRepository: DataRepository,
     private val pluginsCoordinator: PluginsCoordinator,
     private val hardwareManager: HardwareManager,
     private val automationConductor: AutomationConductor,
@@ -114,8 +114,8 @@ class DependencyInjectionBinder(
             .to(PluginsCoordinator::class.java)
             .`in`(Singleton::class.java)
 
-        bindFactory(SingletonFactory(repository))
-            .to(Repository::class.java)
+        bindFactory(SingletonFactory(dataRepository))
+            .to(DataRepository::class.java)
             .`in`(Singleton::class.java)
 
         bindFactory(SingletonFactory(eventBus)).to(EventBus::class.java).`in`(Singleton::class.java)

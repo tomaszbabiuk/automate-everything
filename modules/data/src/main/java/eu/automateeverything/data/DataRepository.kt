@@ -25,56 +25,91 @@ import eu.automateeverything.data.settings.SettingsDto
 import eu.automateeverything.data.tags.TagDto
 import eu.automateeverything.data.versioning.VersionDto
 
-interface Repository {
+interface DataRepository {
 
     fun saveInstance(instanceDto: InstanceDto): Long
+
     fun updateInstance(instanceDto: InstanceDto)
+
     fun getAllInstances(): List<InstanceDto>
-    fun getAllInstanceBriefs() : List<InstanceBriefDto>
+
+    fun getAllInstanceBriefs(): List<InstanceBriefDto>
+
     fun getInstancesOfClazz(clazz: String): List<InstanceDto>
+
     fun deleteInstance(id: Long)
+
     fun deleteInstances(ids: List<Long>)
+
     fun getInstance(id: Long): InstanceDto
+
     fun clearInstanceUpdatedFlag()
+
     fun addInstanceInterceptor(interceptor: InstanceInterceptor)
+
     fun removeInstanceInterceptor(interceptor: InstanceInterceptor)
+
     fun hasUpdatedInstance(): Boolean
 
     fun getAllTags(): List<TagDto>
+
     fun saveTag(tag: TagDto): Long
+
     fun deleteTag(id: Long)
+
     fun updateTag(tagDto: TagDto)
 
     fun getAllIconCategories(): List<IconCategoryDto>
-    fun saveIconCategory(iconCategoryDto: IconCategoryDto) : Long
+
+    fun saveIconCategory(iconCategoryDto: IconCategoryDto): Long
+
     fun deleteIconCategory(id: Long)
+
     fun updateIconCategory(iconCategoryDto: IconCategoryDto)
 
     fun getAllIcons(): List<IconDto>
+
     fun getIcon(id: Long): IconDto
-    fun saveIcon(iconDto: IconDto) : Long
+
+    fun saveIcon(iconDto: IconDto): Long
+
     fun deleteIcon(id: Long)
+
     fun updateIcon(iconDto: IconDto)
 
     fun getAllPorts(): List<PortDto>
+
     fun getPortById(id: String): PortDto?
+
     fun updatePort(port: PortDto): Long
+
     fun deletePort(id: String)
+
     fun deletePortSnapshot(id: String)
+
     fun updateSettings(settingsDtos: List<SettingsDto>)
 
     fun getSettingsByPluginIdAndClazz(pluginId: String, clazz: String): SettingsDto?
+
     fun getSettingsByPluginId(pluginId: String): List<SettingsDto>
 
     fun getInboxItems(limit: Long, offset: Long): List<InboxItemDto>
-    fun getUnreadInboxItems() : List<InboxItemDto>
-    fun saveInboxItem(message: InboxItemDto) : Long
-    fun markInboxItemAsRead(id: Long) : InboxItemDto
+
+    fun getUnreadInboxItems(): List<InboxItemDto>
+
+    fun saveInboxItem(message: InboxItemDto): Long
+
+    fun markInboxItemAsRead(id: Long): InboxItemDto
+
     fun deleteInboxItem(id: Long)
+
     fun countAllInboxItems(): Long
+
     fun countUnreadInboxItems(): Long
 
     fun getVersions(): List<VersionDto>
+
     fun deleteAllInboxItems()
+
     fun markAllInboxItemAsRead()
 }

@@ -15,7 +15,7 @@
 
 package eu.automateeverything.domain.extensibility
 
-import eu.automateeverything.data.Repository
+import eu.automateeverything.data.DataRepository
 import eu.automateeverything.domain.automation.BlockFactory
 import eu.automateeverything.domain.automation.blocks.BlockFactoriesCollector
 import eu.automateeverything.domain.configurable.Configurable
@@ -27,10 +27,10 @@ import org.pf4j.*
 class SingletonExtensionPluginsCoordinator(
     private val liveEvents: EventBus,
     private val injectionRegistry: InjectionRegistry,
-    repository: Repository
+    dataRepository: DataRepository
 ) : PluginsCoordinator {
 
-    val extractor = SettingsExtractor(this, repository)
+    val extractor = SettingsExtractor(this, dataRepository)
 
     private val wrapped: JarPluginManager =
         object : JarPluginManager(), PluginStateListener {
